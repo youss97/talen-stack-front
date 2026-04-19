@@ -99,7 +99,7 @@ const CVUpload: React.FC<CVUploadProps> = ({
                 <li>Le CV sera automatiquement analysé et les informations extraites</li>
                 <li>Formats acceptés: PDF, DOC, DOCX, TXT, RTF</li>
                 <li>Taille maximale: 10MB</li>
-                <li>Stockage sécurisé via Cloudinary</li>
+                <li>Stockage sécurisé</li>
               </ul>
             </div>
           </div>

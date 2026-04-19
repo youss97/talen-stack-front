@@ -252,13 +252,13 @@ export default function Profile() {
                     <div className="mt-2">
                       <div className="flex items-center">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
-                        <span className="text-sm text-blue-600">Upload vers Cloudinary en cours...</span>
+                        <span className="text-sm text-blue-600">Upload en cours...</span>
                       </div>
                     </div>
                   )}
                   
                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    Upload automatique vers Cloudinary - JPG, PNG, GIF, WebP (max 5MB)
+                    JPG, PNG, GIF, WebP (max 5MB)
                   </p>
                   
 

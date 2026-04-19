@@ -113,7 +113,7 @@ export default function CloudinaryImageUpload({
       }
 
       if (imageUrl) {
-        toast.success('Image uploadée avec succès vers Cloudinary !');
+        toast.success('Image uploadée avec succès !');
         return imageUrl;
       } else {
         throw new Error('URL d\'image manquante dans la réponse du serveur');
@@ -213,7 +213,7 @@ export default function CloudinaryImageUpload({
                 style={{ width: `${uploadProgress}%` }}
               ></div>
             </div>
-            <p className="text-sm text-gray-600">Upload vers Cloudinary... {uploadProgress}%</p>
+            <p className="text-sm text-gray-600">Upload en cours... {uploadProgress}%</p>
           </div>
         ) : preview ? (
           <div className="relative w-full h-full p-4 flex items-center justify-center">
@@ -255,7 +255,7 @@ export default function CloudinaryImageUpload({
               {fileName || "Cliquez pour sélectionner une image"}
             </p>
             <p className="mt-1 text-xs text-gray-400">
-              {autoUpload ? "Upload automatique vers Cloudinary" : "PNG, JPG, GIF, WebP jusqu'à 5MB"}
+              {autoUpload ? "PNG, JPG, GIF, WebP jusqu'à 5MB" : "PNG, JPG, GIF, WebP jusqu'à 5MB"}
             </p>
             {autoUpload && (
               <div className="mt-2 flex items-center justify-center text-xs text-blue-600">

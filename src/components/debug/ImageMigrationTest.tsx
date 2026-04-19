@@ -55,7 +55,7 @@ export default function ImageMigrationTest() {
 
         <div className="text-sm space-y-1">
           <p><strong>ID Utilisateur:</strong> {user?.id}</p>
-          <p><strong>Image Cloudinary:</strong> {(user as any)?.image || 'Non définie'}</p>
+          <p><strong>Image:</strong> {(user as any)?.image || 'Non définie'}</p>
           <p><strong>Photo Path:</strong> {user?.photo_path || 'Non définie'}</p>
           <p><strong>URL calculée:</strong> {imageUrl || 'Aucune'}</p>
         </div>
@@ -66,7 +66,7 @@ export default function ImageMigrationTest() {
             disabled={isLoading}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
           >
-            {isLoading ? 'Migration...' : 'Migrer vers Cloudinary'}
+            {isLoading ? 'Migration...' : "Migrer l'image"}
           </button>
         )}
 

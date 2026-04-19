@@ -220,7 +220,7 @@ export default function ClientFormModal({
                   entityId={client?.id || 'new'}
                   autoUpload={true}
                   accept="image/jpeg,image/png,image/gif,image/webp"
-                  helperText="Upload automatique vers Cloudinary - Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)"
+                  helperText="Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)"
                 />
               </div>
 

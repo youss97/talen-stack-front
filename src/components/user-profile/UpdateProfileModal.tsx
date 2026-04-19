@@ -146,7 +146,7 @@ export default function UpdateProfileModal({
               <p className="mt-1 text-sm text-red-500">{errors.photo.message}</p>
             )}
             <p className="mt-1 text-xs text-gray-500">
-              Upload automatique vers Cloudinary - Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)
+              Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)
             </p>
           </div>
 
