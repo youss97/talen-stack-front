@@ -11,10 +11,10 @@ export interface PaginatedResponse<T> {
   };
 }
 
-// Pagination response with nested meta object
+// Pagination response with nested meta object (DEPRECATED - use PaginatedResponse instead)
 export interface PaginatedResponseWithMeta<T> {
   data: T[];
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;

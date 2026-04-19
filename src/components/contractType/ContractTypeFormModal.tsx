@@ -38,7 +38,8 @@ export default function ContractTypeFormModal({
     reset,
     formState: { errors },
   } = useForm<ContractTypeFormData>({
-    resolver: yupResolver(contractTypeSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: yupResolver(contractTypeSchema) as any,
     defaultValues: {
       name: "",
       description: "",

@@ -253,7 +253,7 @@ export default function AgendaPage() {
             Erreur lors du chargement des données
           </h3>
           <p className="text-red-600 dark:text-red-400 text-sm">
-            {loadError?.data?.message || loadError?.message || 'Erreur inconnue'}
+            {(loadError as any)?.data?.message || (loadError as any)?.message || 'Erreur inconnue'}
           </p>
         </div>
       </div>
@@ -574,21 +574,21 @@ export default function AgendaPage() {
             }}
             formats={{
               timeGutterFormat: "HH:mm",
-              eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
+              eventTimeRangeFormat: ({ start, end }: { start: Date; end: Date }, culture: any, localizer: any) =>
                 `${localizer?.format(start, "HH:mm", culture)} - ${localizer?.format(end, "HH:mm", culture)}`,
-              agendaTimeRangeFormat: ({ start, end }, culture, localizer) =>
+              agendaTimeRangeFormat: ({ start, end }: { start: Date; end: Date }, culture: any, localizer: any) =>
                 `${localizer?.format(start, "HH:mm", culture)} - ${localizer?.format(end, "HH:mm", culture)}`,
-              agendaDateFormat: (date, culture, localizer) =>
+              agendaDateFormat: (date: Date, culture: any, localizer: any) =>
                 localizer?.format(date, "dddd DD MMMM YYYY", culture) || "",
-              dayHeaderFormat: (date, culture, localizer) =>
+              dayHeaderFormat: (date: Date, culture: any, localizer: any) =>
                 localizer?.format(date, "dddd DD MMMM", culture) || "",
-              dayRangeHeaderFormat: ({ start, end }, culture, localizer) =>
+              dayRangeHeaderFormat: ({ start, end }: { start: Date; end: Date }, culture: any, localizer: any) =>
                 `${localizer?.format(start, "DD MMMM", culture)} - ${localizer?.format(end, "DD MMMM YYYY", culture)}`,
-              monthHeaderFormat: (date, culture, localizer) =>
+              monthHeaderFormat: (date: Date, culture: any, localizer: any) =>
                 localizer?.format(date, "MMMM YYYY", culture) || "",
-              dayFormat: (date, culture, localizer) =>
+              dayFormat: (date: Date, culture: any, localizer: any) =>
                 localizer?.format(date, "DD", culture) || "",
-              weekdayFormat: (date, culture, localizer) =>
+              weekdayFormat: (date: Date, culture: any, localizer: any) =>
                 localizer?.format(date, "ddd", culture) || "",
             }}
             min={new Date(1970, 1, 1, 7, 0, 0)}

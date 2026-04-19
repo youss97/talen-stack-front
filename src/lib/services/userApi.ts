@@ -57,8 +57,8 @@ export const userApi = createApi({
       infiniteQueryOptions: {
         initialPageParam: 1,
         getNextPageParam: (lastPage, allPages) => {
-          if (lastPage.meta.page < lastPage.meta.totalPages) {
-            return lastPage.meta.page + 1;
+          if (lastPage.pagination.page < lastPage.pagination.totalPages) {
+            return lastPage.pagination.page + 1;
           }
           return undefined;
         },
@@ -78,8 +78,8 @@ export const userApi = createApi({
           limit: 10,
         },
         getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-          const currentPage = lastPage.meta.page;
-          const totalPages = lastPage.meta.totalPages;
+          const currentPage = lastPage.pagination.page;
+          const totalPages = lastPage.pagination.totalPages;
           if (currentPage >= totalPages) {
             return undefined;
           }
@@ -197,7 +197,7 @@ export const userApi = createApi({
 
 export const {
   useGetUsersQuery,
-  useGetUsersInfiniteQuery,
+  useGetUsersInfiniteInfiniteQuery,
   useGetUsersForSelectInfiniteQuery,
   useGetUserByIdQuery,
   useLazyGetUserByIdQuery,

@@ -63,7 +63,7 @@ export const useProfileUpdate = (options?: UseProfileUpdateOptions) => {
         console.log('🔄 Mise à jour Redux:', updatedUser);
         
         dispatch(setCredentials({
-          user: updatedUser,
+          user: updatedUser as any,
           token,
         }));
       }

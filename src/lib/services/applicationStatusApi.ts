@@ -69,6 +69,7 @@ export const applicationStatusApi = createApi({
 export const {
   useGetApplicationStatusesQuery,
   useGetApplicationStatusByIdQuery,
+  useLazyGetApplicationStatusByIdQuery,
   useCreateApplicationStatusMutation,
   useUpdateApplicationStatusMutation,
   useDeleteApplicationStatusMutation,

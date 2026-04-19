@@ -58,7 +58,8 @@ export default function ApplicationRequestFormModal({
     control,
     formState: { errors },
   } = useForm<CreateApplicationRequestFormData>({
-    resolver: yupResolver(createApplicationRequestSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: yupResolver(createApplicationRequestSchema) as any,
     defaultValues: {
       client_id: "",
       manager_id: "",
@@ -115,9 +116,9 @@ export default function ApplicationRequestFormModal({
       return [{
         id: applicationRequest.client.id,
         name: applicationRequest.client.name,
-      }];
+      }] as Client[];
     }
-    return [];
+    return [] as Client[];
   }, [applicationRequest]);
 
   const initialManager = useMemo(() => {
@@ -128,9 +129,9 @@ export default function ApplicationRequestFormModal({
         lastName: applicationRequest.manager.last_name,
         displayName: `${applicationRequest.manager.first_name} ${applicationRequest.manager.last_name}`,
         position: applicationRequest.manager.position,
-      }];
+      }] as Manager[];
     }
-    return [];
+    return [] as Manager[];
   }, [applicationRequest]);
 
   useEffect(() => {
@@ -264,7 +265,6 @@ export default function ApplicationRequestFormModal({
                 <div>
                   <InfiniteSelect<Client>
                     label="Client"
-                    required
                     value={clientId}
                     onChange={handleClientChange}
                     useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
@@ -283,7 +283,6 @@ export default function ApplicationRequestFormModal({
                 <div>
                   <InfiniteSelect<Manager>
                     label="Manager"
-                    required
                     value={managerId}
                     onChange={(value) => setValue("manager_id", value)}
                     useInfiniteQuery={useGetClientManagersForSelectInfiniteQuery}

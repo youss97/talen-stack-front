@@ -27,7 +27,7 @@ import { useActions } from "@/hooks/useActions";
 import { exportCandidaturesToExcel, type ExportableCandidate } from "@/utils/excelExport";
 import { EmailIcon, CalendarIcon } from "@/components/tables/DataTableWithSelection";
 import type { Recruiter } from "@/types/recruiter";
-import type { CreateRecruiterRequest } from "@/types/recruiter";
+import type { CreateRecruiterRequest, UpdateRecruiterRequest, WorkflowStatus } from "@/types/recruiter";
 import type { CreateInterviewRequest } from "@/types/interview";
 
 export default function ApplicationsPage() {
@@ -35,7 +35,7 @@ export default function ApplicationsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
-  const [workflowStatusFilter, setWorkflowStatusFilter] = useState<string>("");
+  const [workflowStatusFilter, setWorkflowStatusFilter] = useState<WorkflowStatus | "">("");
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -256,7 +256,7 @@ export default function ApplicationsPage() {
     {
       key: "workflow_status",
       header: "Workflow",
-      render: (value, row) => {
+      render: (value: any, row: Recruiter) => {
         const status = (value as string) || 'draft';
         const isActive = status === 'active';
         
@@ -289,7 +289,7 @@ export default function ApplicationsPage() {
     {
       key: "status",
       header: "Statut",
-      render: (value) => (
+      render: (value: any) => (
         <Badge
           color={getStatusColor(value as string) as "success" | "error" | "warning" | "info" | "light"}
           variant="light"
@@ -302,7 +302,7 @@ export default function ApplicationsPage() {
     {
       key: "recruiter_notes",
       header: "Notes",
-      render: (value) => (
+      render: (value: any) => (
         <span className="truncate max-w-[200px] block">
           {(value as string) || "-"}
         </span>
@@ -408,16 +408,16 @@ export default function ApplicationsPage() {
     }
   };
 
-  const handleFormSubmit = async (data: CreateRecruiterRequest) => {
+  const handleFormSubmit = async (data: any) => {
     try {
       if (selectedApplication) {
         await updateApplication({
           id: selectedApplication.id,
-          data,
+          data: data as UpdateRecruiterRequest,
         }).unwrap();
         addToast("success", "Succès", "Application modifiée avec succès");
       } else {
-        await createApplication(data).unwrap();
+        await createApplication(data as CreateRecruiterRequest).unwrap();
         addToast("success", "Succès", "Application créée avec succès");
       }
       setIsFormModalOpen(false);
@@ -506,7 +506,7 @@ export default function ApplicationsPage() {
               <select
                 value={workflowStatusFilter}
                 onChange={(e) => {
-                  setWorkflowStatusFilter(e.target.value);
+                  setWorkflowStatusFilter(e.target.value as WorkflowStatus | "");
                   setPage(1);
                 }}
                 className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
@@ -558,13 +558,13 @@ export default function ApplicationsPage() {
           emptyMessage="Aucune application trouvée"
         />
 
-        {data && data.meta && (
+        {data && data.pagination && (
           <div className="p-5 border-t border-gray-100 dark:border-gray-800">
             <Pagination
               currentPage={page}
-              totalPages={data.meta.totalPages}
-              totalItems={data.meta.total}
-              itemsPerPage={data.meta.limit}
+              totalPages={data.pagination.totalPages}
+              totalItems={data.pagination.total}
+              itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
             />
           </div>

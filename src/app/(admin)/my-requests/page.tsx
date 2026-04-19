@@ -242,13 +242,13 @@ export default function MyRequestsPage() {
       )}
 
       {/* Pagination */}
-      {data && data.meta && (
+      {data && data.pagination && (
         <div className="p-5 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 rounded-lg">
           <Pagination
             currentPage={page}
-            totalPages={data.meta.totalPages}
-            totalItems={data.meta.total}
-            itemsPerPage={data.meta.limit}
+            totalPages={data.pagination.totalPages}
+            totalItems={data.pagination.total}
+            itemsPerPage={data.pagination.limit}
             onPageChange={setPage}
           />
         </div>

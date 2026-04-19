@@ -111,7 +111,7 @@ export default function PublicJobPage() {
     );
   }
 
-  const brandColor = offer.brand_color || "#3B82F6";
+  const brandColor = offer.public_brand_color || "#3B82F6";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -203,7 +203,7 @@ export default function PublicJobPage() {
                         onChange={handleChange}
                         required
                         className="w-full h-11 rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50"
-                        style={{ focusRingColor: brandColor }}
+                        style={{ '--tw-ring-color': brandColor } as React.CSSProperties}
                       />
                     </div>
                     <div>

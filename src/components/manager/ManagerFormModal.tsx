@@ -7,7 +7,7 @@ import Button from "../ui/button/Button";
 import InputField from "../form/input/InputField";
 import ImageUpload from "../form/input/ImageUpload";
 import Label from "../form/Label";
-import type { Manager } from "@/types/manager";
+import type { Manager } from "@/types/client";
 import {
   createManagerSchema,
   type CreateManagerFormData,

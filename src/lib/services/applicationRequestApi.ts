@@ -9,7 +9,7 @@ import { baseQueryWithReauth } from "./baseQueryWithReauth";
 
 interface ApplicationRequestPaginatedResponse {
   data: ApplicationRequest[];
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;
@@ -62,8 +62,8 @@ export const applicationRequestApi = createApi({
           limit: 10,
         },
         getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-          const currentPage = lastPage.meta.page;
-          const totalPages = lastPage.meta.totalPages;
+          const currentPage = lastPage.pagination.page;
+          const totalPages = lastPage.pagination.totalPages;
           if (currentPage >= totalPages) {
             return undefined;
           }

@@ -72,6 +72,7 @@ export interface Recruiter {
     candidate_email?: string;
     candidate_phone?: string;
     last_position?: string;
+    profile_title?: string;
     total_experience?: number;
     skills?: string[];
     file_path?: string;
@@ -114,27 +115,27 @@ export interface CreateRecruiterRequest {
   cv_id: string;
   
   // Workflow (default: draft)
-  workflow_status?: WorkflowStatus;
+  workflow_status?: WorkflowStatus | null;
   
   // Situation actuelle
   currently_employed?: boolean;
   current_contract_type?: string;
   
   // Rémunération
-  current_salary?: number;
-  daily_rate?: number;
-  package_rate?: number;
+  current_salary?: number | null;
+  daily_rate?: number | null;
+  package_rate?: number | null;
   currency?: Currency;
   
   // Type de contrat de l'offre
-  offer_contract_types?: string[];
+  offer_contract_types?: (string | undefined)[];
   
   // Disponibilité
   availability_type?: AvailabilityType;
-  availability_reason?: string;
-  availability_days?: number;
-  availability_custom_value?: number;
-  availability_custom_unit?: AvailabilityUnit;
+  availability_reason?: string | null;
+  availability_days?: number | null;
+  availability_custom_value?: number | null;
+  availability_custom_unit?: AvailabilityUnit | null;
   availability_negotiable?: boolean;
   
   // Langues
@@ -142,12 +143,12 @@ export interface CreateRecruiterRequest {
   
   // Qualification
   qualification_report?: string;
-  recruiter_notes?: string;
-  recruiter_interview_date?: string;
+  recruiter_notes?: string | null;
+  recruiter_interview_date?: string | null;
   
   // Anonymisation et ajustements
   is_anonymized?: boolean;
-  adjusted_experience?: number;
+  adjusted_experience?: number | null;
 }
 
 export interface UpdateRecruiterRequest {
@@ -156,27 +157,27 @@ export interface UpdateRecruiterRequest {
   status?: "proposed" | "pending" | "interview" | "qualified" | "accepted" | "rejected" | "withdrawn";
   
   // Workflow
-  workflow_status?: WorkflowStatus;
+  workflow_status?: WorkflowStatus | null;
   
   // Situation actuelle
   currently_employed?: boolean;
   current_contract_type?: string;
   
   // Rémunération
-  current_salary?: number;
-  daily_rate?: number;
-  package_rate?: number;
+  current_salary?: number | null;
+  daily_rate?: number | null;
+  package_rate?: number | null;
   currency?: Currency;
   
   // Type de contrat de l'offre
-  offer_contract_types?: string[];
+  offer_contract_types?: (string | undefined)[];
   
   // Disponibilité
   availability_type?: AvailabilityType;
-  availability_reason?: string;
-  availability_days?: number;
-  availability_custom_value?: number;
-  availability_custom_unit?: AvailabilityUnit;
+  availability_reason?: string | null;
+  availability_days?: number | null;
+  availability_custom_value?: number | null;
+  availability_custom_unit?: AvailabilityUnit | null;
   availability_negotiable?: boolean;
   
   // Langues
@@ -184,12 +185,12 @@ export interface UpdateRecruiterRequest {
   
   // Qualification
   qualification_report?: string;
-  recruiter_notes?: string;
-  recruiter_interview_date?: string;
+  recruiter_notes?: string | null;
+  recruiter_interview_date?: string | null;
   
   // Anonymisation et ajustements
   is_anonymized?: boolean;
-  adjusted_experience?: number;
+  adjusted_experience?: number | null;
 }
 
 export interface RecruiterPaginationParams {

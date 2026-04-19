@@ -52,7 +52,7 @@ export default function UserDropdown() {
         className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
       >
         <UserAvatar
-          user={user}
+          user={user ?? undefined}
           size={44}
           className="mr-3"
         />

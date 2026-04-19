@@ -140,9 +140,9 @@ export default function ApplicationRequestDetailModal({
               </div>
               <Badge
                 variant="light"
-                color={getUrgencyColor(applicationRequest.urgency)}
+                color={getUrgencyColor(applicationRequest.urgency || '')}
               >
-                {getUrgencyLabel(applicationRequest.urgency)}
+                {getUrgencyLabel(applicationRequest.urgency || '')}
               </Badge>
             </div>
 
@@ -252,7 +252,7 @@ export default function ApplicationRequestDetailModal({
                     Salaire minimum
                   </p>
                   <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                    {applicationRequest.min_salary.toLocaleString("fr-FR")} €
+                    {applicationRequest.min_salary?.toLocaleString("fr-FR") ?? '-'} €
                   </p>
                 </div>
                 <div>

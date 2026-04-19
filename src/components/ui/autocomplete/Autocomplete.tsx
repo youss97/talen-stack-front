@@ -75,7 +75,7 @@ export default function AutocompletePaginated({
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useRef<HTMLLIElement>(null);
 
   // Debounce du terme de recherche
   const debouncedSearchTerm = useDebounce(searchTerm, debounceMs);

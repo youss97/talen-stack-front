@@ -106,7 +106,7 @@ export const recruiterApi = createApi({
         const patchResult = dispatch(
           recruiterApi.util.updateQueryData('getRecruiterById', id, (draft) => {
             if (draft) {
-              draft.status = new_status;
+              draft.status = new_status as Recruiter['status'];
             }
           })
         );

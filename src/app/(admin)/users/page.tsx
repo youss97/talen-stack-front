@@ -20,7 +20,7 @@ import { useActions } from "@/hooks/useActions";
 import { usePermissions } from "@/hooks/usePermissions";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store";
-import type { User } from "@/types/user";
+import type { User, CreateUserRequest, UpdateUserRequest } from "@/types/user";
 import type { CreateUserFormData } from "@/validations/userValidation";
 
 export default function UsersPage() {
@@ -210,12 +210,12 @@ export default function UsersPage() {
           });
           await updateUser({
             id: selectedUser.id,
-            data: formData as unknown as CreateUserFormData,
+            data: formData as unknown as UpdateUserRequest,
           }).unwrap();
         } else {
           await updateUser({
             id: selectedUser.id,
-            data,
+            data: data as unknown as UpdateUserRequest,
           }).unwrap();
         }
         addToast("success", "Succès", "Utilisateur modifié avec succès");
@@ -232,7 +232,7 @@ export default function UsersPage() {
             }
           }
         });
-        await createUser(formData as unknown as CreateUserFormData).unwrap();
+        await createUser(formData as unknown as CreateUserRequest).unwrap();
         addToast("success", "Succès", "Utilisateur créé avec succès");
       }
       setIsFormModalOpen(false);
@@ -313,13 +313,13 @@ export default function UsersPage() {
           emptyMessage="Aucun utilisateur trouvé"
         />
 
-        {data && data.meta && (
+        {data && data.pagination && (
           <div className="p-5 border-t border-gray-100 dark:border-gray-800">
             <Pagination
               currentPage={page}
-              totalPages={data.meta.totalPages}
-              totalItems={data.meta.total}
-              itemsPerPage={data.meta.limit}
+              totalPages={data.pagination.totalPages}
+              totalItems={data.pagination.total}
+              itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
             />
           </div>

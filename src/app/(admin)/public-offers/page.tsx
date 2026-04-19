@@ -99,7 +99,7 @@ export default function PublicOffersPage() {
       header: "Vues",
       render: (value) => (
         <span className="text-gray-600 dark:text-gray-400">
-          {value || 0}
+          {(value as number) || 0}
         </span>
       ),
     },
@@ -203,13 +203,13 @@ export default function PublicOffersPage() {
           emptyMessage="Aucune offre publique trouvée"
         />
 
-        {data && data.meta && (
+        {data && data.pagination && (
           <div className="p-5 border-t border-gray-100 dark:border-gray-800">
             <Pagination
               currentPage={page}
-              totalPages={data.meta.totalPages}
-              totalItems={data.meta.total}
-              itemsPerPage={data.meta.limit}
+              totalPages={data.pagination.totalPages}
+              totalItems={data.pagination.total}
+              itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
             />
           </div>

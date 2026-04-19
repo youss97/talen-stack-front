@@ -10,7 +10,7 @@ import { baseQueryWithReauth } from "./baseQueryWithReauth";
 
 interface ClientPaginatedResponse {
   data: Client[];
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;
@@ -20,7 +20,7 @@ interface ClientPaginatedResponse {
 
 interface ManagerPaginatedResponse {
   data: Manager[];
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;
@@ -74,8 +74,8 @@ export const clientApi = createApi({
           limit: 10,
         },
         getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-          const currentPage = lastPage.meta.page;
-          const totalPages = lastPage.meta.totalPages;
+          const currentPage = lastPage.pagination.page;
+          const totalPages = lastPage.pagination.totalPages;
           if (currentPage >= totalPages) {
             return undefined;
           }
@@ -211,8 +211,8 @@ export const clientApi = createApi({
           limit: 10,
         },
         getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-          const currentPage = lastPage.meta.page;
-          const totalPages = lastPage.meta.totalPages;
+          const currentPage = lastPage.pagination.page;
+          const totalPages = lastPage.pagination.totalPages;
           if (currentPage >= totalPages) {
             return undefined;
           }

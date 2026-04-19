@@ -38,7 +38,7 @@ export const interviewApi = createApi({
     // GET /applications/interviews - Liste paginée des entretiens
     getInterviews: builder.query<{
       data: Interview[];
-      meta: {
+      pagination: {
         total: number;
         page: number;
         limit: number;

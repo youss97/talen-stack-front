@@ -6,7 +6,7 @@ import type { RootState } from '@/lib/store';
 import CloudinaryImage from '../common/CloudinaryImage';
 
 const ProfileImageTest = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector((state: RootState) => state.auth.user) as any;
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">

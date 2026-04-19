@@ -4,6 +4,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   success?: boolean;
   error?: boolean;
   hint?: string; // Optional hint text
+  label?: string; // Optional label text
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(({
@@ -13,6 +14,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
   success = false,
   error = false,
   hint,
+  label,
   ...rest
 }, ref) => {
   // Determine input styles based on state (disabled, success, error)
@@ -31,6 +33,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
 
   return (
     <div className="relative">
+      {label && (
+        <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+          {label}
+        </label>
+      )}
       <input
         ref={ref}
         type={type}

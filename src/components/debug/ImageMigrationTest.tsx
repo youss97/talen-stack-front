@@ -41,7 +41,7 @@ export default function ImageMigrationTest() {
     }
   };
 
-  const imageUrl = getUserAvatarUrl(user);
+  const imageUrl = getUserAvatarUrl(user ?? undefined);
 
   return (
     <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
@@ -50,17 +50,17 @@ export default function ImageMigrationTest() {
       <div className="space-y-4">
         <div>
           <h3 className="font-semibold mb-2">Avatar actuel:</h3>
-          <UserAvatar user={user} size={80} />
+          <UserAvatar user={user ?? undefined} size={80} />
         </div>
 
         <div className="text-sm space-y-1">
           <p><strong>ID Utilisateur:</strong> {user?.id}</p>
-          <p><strong>Image Cloudinary:</strong> {user?.image || 'Non définie'}</p>
+          <p><strong>Image Cloudinary:</strong> {(user as any)?.image || 'Non définie'}</p>
           <p><strong>Photo Path:</strong> {user?.photo_path || 'Non définie'}</p>
           <p><strong>URL calculée:</strong> {imageUrl || 'Aucune'}</p>
         </div>
 
-        {user?.photo_path && !user?.image && (
+        {user?.photo_path && !(user as any)?.image && (
           <button
             onClick={handleMigration}
             disabled={isLoading}

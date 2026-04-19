@@ -329,13 +329,13 @@ export default function RolesPage() {
           emptyMessage="Aucun rôle trouvé"
         />
 
-        {data && data.total >= 0 && (
+        {data && data.pagination && data.pagination.total >= 0 && (
           <div className="p-5 border-t border-gray-100 dark:border-gray-800">
             <Pagination
               currentPage={page}
-              totalPages={Math.ceil(data.total / (data.limit || 5))}
-              totalItems={data.total}
-              itemsPerPage={data.limit || 5}
+              totalPages={data.pagination.totalPages}
+              totalItems={data.pagination.total}
+              itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
             />
           </div>

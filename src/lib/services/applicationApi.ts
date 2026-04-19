@@ -38,7 +38,7 @@ export interface ApplicationSearchResponse {
       };
     };
   }>;
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;
@@ -56,7 +56,7 @@ export interface SendEmailRequest {
 
 export interface ApplicationsResponse {
   data: Application[];
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;

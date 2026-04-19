@@ -109,7 +109,7 @@ export default function RecruiterFormModal({
   const initialRequest = recruiter?.request ? [{
     id: recruiter.request.id,
     title: recruiter.request.title,
-  }] : [];
+  }] as ApplicationRequest[] : [] as ApplicationRequest[];
 
   const initialCV = recruiter?.cv ? [{
     id: recruiter.cv.id,
@@ -333,7 +333,7 @@ export default function RecruiterFormModal({
                     value={cvId}
                     onChange={(value, selectedItem) => {
                       console.log("CV Selected - Value:", value, "Item:", selectedItem);
-                      setValue("cv_id", value);
+                      setValue("cv_id", Array.isArray(value) ? value[0] : value);
                       // Store the selected CV object
                       if (selectedItem && !Array.isArray(selectedItem)) {
                         setSelectedCV(selectedItem);
@@ -510,15 +510,13 @@ export default function RecruiterFormModal({
               <div>
                 <MultiSelect
                   label=""
-                  value={watch("offer_contract_types") || []}
                   onChange={(value) => setValue("offer_contract_types", value)}
                   options={contractTypes.map((type) => ({
                     value: type.name,
                     text: type.name,
                     selected: (watch("offer_contract_types") || []).includes(type.name),
                   }))}
-                  defaultSelected={watch("offer_contract_types") || []}
-                  placeholder="Sélectionner les types de contrat..."
+                  defaultSelected={(watch("offer_contract_types") || []).filter((v): v is string => v !== undefined)}
                 />
                 {contractTypes.length === 0 && (
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">

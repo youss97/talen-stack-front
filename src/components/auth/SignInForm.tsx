@@ -28,7 +28,8 @@ export default function SignInForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormInputs>({
-    resolver: yupResolver(loginSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: yupResolver(loginSchema) as any,
     mode: "onSubmit",
   });
 

@@ -125,8 +125,8 @@ export default function CreateIntegrationModal({
           label: app.candidate_name,
           subtitle: `${app.position} - ${app.client_name} (${app.reference})`
         })),
-        hasMore: result.meta.hasMore,
-        total: result.meta.total,
+        hasMore: result.pagination.hasMore,
+        total: result.pagination.total,
       };
       
     } catch (error) {
@@ -135,8 +135,9 @@ export default function CreateIntegrationModal({
       
       // Vérifier si c'est une erreur RTK Query
       if (error && typeof error === 'object' && 'status' in error) {
-        console.error('❌ Status:', error.status);
-        console.error('❌ Data:', error.data);
+        const rtkError = error as { status: unknown; data?: unknown };
+        console.error('❌ Status:', rtkError.status);
+        console.error('❌ Data:', rtkError.data);
       }
       
       return {

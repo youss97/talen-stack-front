@@ -24,7 +24,7 @@ export const publicJobOfferApi = createApi({
   tagTypes: ['PublicJobOffer', 'PublicApplication', 'ApplicationRequest'],
   endpoints: (builder) => ({
     // Admin endpoints - Utilise maintenant recruitment_requests
-    getPublicJobOffers: builder.query<{ data: PublicJobOffer[]; meta: { page: number; limit: number; total: number; totalPages: number } }, { page?: number; limit?: number; search?: string }>({
+    getPublicJobOffers: builder.query<{ data: PublicJobOffer[]; pagination: { page: number; limit: number; total: number; totalPages: number } }, { page?: number; limit?: number; search?: string }>({
       query: ({ page = 1, limit = 5, search } = {}) => ({
         url: '/requests/public/all',
         params: { page, limit, ...(search && { search }) }

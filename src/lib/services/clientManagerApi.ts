@@ -9,7 +9,7 @@ interface ManagerRequestWithStats extends ApplicationRequest {
 
 interface ManagerRequestsPaginatedResponse {
   data: ManagerRequestWithStats[];
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;
@@ -19,7 +19,7 @@ interface ManagerRequestsPaginatedResponse {
 
 interface CandidatesPaginatedResponse {
   data: Recruiter[];
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;

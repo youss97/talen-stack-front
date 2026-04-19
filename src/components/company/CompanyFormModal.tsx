@@ -158,7 +158,7 @@ export default function CompanyFormModal({
       adminPhoto: cloudinaryAdminPhotoUrl || adminPhotoFile,
     };
     
-    onSubmit(dataWithFiles);
+    onSubmit(dataWithFiles as unknown as CreateCompanyFormData);
   };
 
   return (
@@ -206,7 +206,7 @@ export default function CompanyFormModal({
                   shape="square"
                   disabled={readOnly}
                   onChange={handleLogoChange}
-                  uploadType="company-logo"
+                  uploadType="generic"
                   entityId={company?.id || 'new'}
                   autoUpload={true}
                   accept="image/jpeg,image/png,image/gif,image/webp"

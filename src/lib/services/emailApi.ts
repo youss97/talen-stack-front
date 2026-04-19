@@ -8,7 +8,7 @@ import { baseQueryWithReauth } from "./baseQueryWithReauth";
 
 interface EmailPaginatedResponse {
   data: Email[];
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;

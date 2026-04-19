@@ -54,7 +54,7 @@ export default function CVFormModal({
       last_position: "",
       industry_experience: "",
       remote_preferred: false,
-      status: "",
+      status: undefined,
     },
   });
 
@@ -70,7 +70,7 @@ export default function CVFormModal({
         last_position: cv.last_position || "",
         industry_experience: cv.industry_experience || "",
         remote_preferred: cv.remote_preferred || false,
-        status: cv.status || "",
+        status: cv.status || undefined,
       });
       setSkillsInput(cv.additional_skills?.join(", ") || "");
       setMobilityInput(cv.geographic_mobility?.join(", ") || "");
@@ -86,7 +86,7 @@ export default function CVFormModal({
         last_position: "",
         industry_experience: "",
         remote_preferred: false,
-        status: "",
+        status: undefined,
       });
       setSelectedFile(null);
       setSkillsInput("");

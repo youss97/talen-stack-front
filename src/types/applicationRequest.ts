@@ -231,7 +231,7 @@ export interface ApplicationRequestPaginationParams {
 
 export interface PaginatedApplicationRequestResponse {
   data: ApplicationRequest[];
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;

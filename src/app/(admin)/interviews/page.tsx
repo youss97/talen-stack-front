@@ -26,7 +26,7 @@ export default function InterviewsPage() {
   const [createInterview, { isLoading: isCreating }] = useCreateInterviewMutation();
 
   const interviews = data?.data || [];
-  const totalInterviews = data?.meta?.total || 0;
+  const totalInterviews = data?.pagination?.total || 0;
 
   const handleCreateInterview = async (applicationId: string, data: CreateInterviewRequest) => {
     try {
@@ -57,14 +57,14 @@ export default function InterviewsPage() {
   };
 
   const getStatusBadge = (status: string) => {
-    const styles = {
+    const styles: Record<string, string> = {
       scheduled: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',
       completed: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
       cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300',
       rescheduled: 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300',
     };
 
-    const labels = {
+    const labels: Record<string, string> = {
       scheduled: 'Planifié',
       completed: 'Terminé',
       cancelled: 'Annulé',
@@ -352,13 +352,13 @@ export default function InterviewsPage() {
           )}
 
           {/* Pagination - Always visible */}
-          {data && data.meta && (
+          {data && data.pagination && (
             <div className="p-5 border-t border-gray-100 dark:border-gray-800">
               <Pagination
                 currentPage={page}
-                totalPages={data.meta.totalPages}
-                totalItems={data.meta.total}
-                itemsPerPage={data.meta.limit}
+                totalPages={data.pagination.totalPages}
+                totalItems={data.pagination.total}
+                itemsPerPage={data.pagination.limit}
                 onPageChange={setPage}
               />
             </div>
@@ -383,8 +383,6 @@ export default function InterviewsPage() {
             setSelectedInterview(null);
           }}
           interview={selectedInterview}
-          onChangeStatus={() => {}}
-          onDelete={() => {}}
         />
       )}
     </>

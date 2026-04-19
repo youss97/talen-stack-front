@@ -9,7 +9,7 @@ import { baseQueryWithReauth } from "./baseQueryWithReauth";
 
 interface CompanyPaginatedResponse {
   data: Company[];
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;
@@ -64,8 +64,8 @@ export const companyApi = createApi({
       infiniteQueryOptions: {
         initialPageParam: 1,
         getNextPageParam: (lastPage) => {
-          if (lastPage.meta.page < lastPage.meta.totalPages) {
-            return lastPage.meta.page + 1;
+          if (lastPage.pagination.page < lastPage.pagination.totalPages) {
+            return lastPage.pagination.page + 1;
           }
           return undefined;
         },
@@ -121,7 +121,7 @@ export const companyApi = createApi({
 
 export const {
   useGetCompaniesQuery,
-  useGetCompaniesInfiniteQuery,
+  useGetCompaniesInfiniteInfiniteQuery,
   useGetCompanyByIdQuery,
   useLazyGetCompanyByIdQuery,
   useCreateCompanyMutation,

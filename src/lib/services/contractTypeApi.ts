@@ -69,6 +69,7 @@ export const contractTypeApi = createApi({
 export const {
   useGetContractTypesQuery,
   useGetContractTypeByIdQuery,
+  useLazyGetContractTypeByIdQuery,
   useCreateContractTypeMutation,
   useUpdateContractTypeMutation,
   useDeleteContractTypeMutation,

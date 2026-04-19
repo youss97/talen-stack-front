@@ -35,6 +35,7 @@ export interface Interview {
       candidate_first_name: string;
       candidate_last_name: string;
       candidate_email: string;
+      candidate_phone?: string;
     };
     request: {
       title: string;

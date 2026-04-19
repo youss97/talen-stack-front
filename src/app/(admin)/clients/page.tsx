@@ -133,8 +133,8 @@ export default function ClientsPage() {
           city: formData.city,
           postal_code: formData.postal_code,
           country: formData.country,
-          phone: formData.phone,
-          email: formData.email,
+          contact_phone: formData.phone,
+          contact_email: formData.email,
           status: formData.status,
         };
         await updateClient({
@@ -296,13 +296,13 @@ export default function ClientsPage() {
           emptyMessage="Aucun client trouvé"
         />
 
-        {data && data.meta && (
+        {data && data.pagination && (
           <div className="p-5 border-t border-gray-100 dark:border-gray-800">
             <Pagination
               currentPage={page}
-              totalPages={data.meta.totalPages}
-              totalItems={data.meta.total}
-              itemsPerPage={data.meta.limit}
+              totalPages={data.pagination.totalPages}
+              totalItems={data.pagination.total}
+              itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
             />
           </div>

@@ -134,7 +134,7 @@ export const createApplicationRequestSchema = yup.object({
   // Statut
   status: yup
     .string()
-    .oneOf(["in_progress", "standby", "abandoned", "filled"], "Statut invalide")
+    .oneOf(["in_progress", "standby", "abandoned", "filled", "open"], "Statut invalide")
     .nullable(),
   
   // Dates

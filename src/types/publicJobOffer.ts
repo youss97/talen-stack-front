@@ -24,6 +24,17 @@ export interface PublicJobOffer {
   public_brand_color?: string;
   published_at?: string;
   
+  // Champs additionnels retournés par l'API publique
+  company_name?: string;
+  skills?: string[];
+  salary?: string;
+  experience_required?: string;
+  company?: {
+    id?: string;
+    name?: string;
+    logo?: string;
+  };
+
   // Relations
   client?: {
     id: string;
@@ -36,7 +47,7 @@ export interface PublicJobOffer {
     first_name: string;
     last_name: string;
   };
-  
+
   created_at: string;
   updated_at?: string;
 }

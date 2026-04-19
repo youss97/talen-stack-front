@@ -105,7 +105,7 @@ export default function ApplicationStatusesPage() {
       key: "is_active",
       header: "Statut",
       render: (value) => (
-        <Badge variant="solid" color={value ? "success" : "gray"}>
+        <Badge variant="solid" color={value ? "success" : "light"}>
           {value ? "Actif" : "Inactif"}
         </Badge>
       ),
@@ -159,13 +159,13 @@ export default function ApplicationStatusesPage() {
           onDelete={(row) => setConfirmModal({ isOpen: true, status: row })}
         />
 
-        {data && data.meta && (
+        {data && data.pagination && (
           <div className="p-5 border-t border-gray-100 dark:border-gray-800">
             <Pagination
               currentPage={page}
-              totalPages={data.meta.totalPages}
-              totalItems={data.meta.total}
-              itemsPerPage={data.meta.limit}
+              totalPages={data.pagination.totalPages}
+              totalItems={data.pagination.total}
+              itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
             />
           </div>

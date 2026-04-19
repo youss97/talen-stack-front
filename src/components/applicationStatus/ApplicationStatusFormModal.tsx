@@ -38,7 +38,8 @@ export default function ApplicationStatusFormModal({
     reset,
     formState: { errors },
   } = useForm<ApplicationStatusFormData>({
-    resolver: yupResolver(applicationStatusSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: yupResolver(applicationStatusSchema) as any,
     defaultValues: {
       name: "",
       description: "",

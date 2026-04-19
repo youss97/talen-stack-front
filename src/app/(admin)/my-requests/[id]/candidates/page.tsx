@@ -343,11 +343,11 @@ export default function RequestCandidatesPage() {
                           const token = localStorage.getItem('token');
                           
                           console.log('📥 Téléchargement CV anonymisé:', {
-                            cvId: candidate.cv.id,
-                            url: `${apiUrl}/cvs/${candidate.cv.id}/anonymized`
+                            cvId: candidate.cv!.id,
+                            url: `${apiUrl}/cvs/${candidate.cv!.id}/anonymized`
                           });
-                          
-                          const response = await fetch(`${apiUrl}/cvs/${candidate.cv.id}/anonymized`, {
+
+                          const response = await fetch(`${apiUrl}/cvs/${candidate.cv!.id}/anonymized`, {
                             headers: {
                               'Authorization': `Bearer ${token}`
                             }
@@ -369,7 +369,7 @@ export default function RequestCandidatesPage() {
                           const url = window.URL.createObjectURL(blob);
                           const a = document.createElement('a');
                           a.href = url;
-                          a.download = `cv-anonymise-${candidate.cv.id.substring(0, 8)}.pdf`;
+                          a.download = `cv-anonymise-${candidate.cv!.id.substring(0, 8)}.pdf`;
                           document.body.appendChild(a);
                           a.click();
                           window.URL.revokeObjectURL(url);
@@ -393,7 +393,7 @@ export default function RequestCandidatesPage() {
                     <Button
                       onClick={() => {
                         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-                        window.open(`${apiUrl}/${candidate.cv.file_path}`, '_blank');
+                        window.open(`${apiUrl}/${candidate.cv!.file_path}`, '_blank');
                       }}
                       size="sm"
                       variant="outline"
@@ -422,9 +422,9 @@ export default function RequestCandidatesPage() {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
           <Pagination
             currentPage={page}
-            totalPages={data.meta.totalPages}
+            totalPages={data.pagination.totalPages}
             onPageChange={setPage}
-            totalItems={data.meta.total}
+            totalItems={data.pagination.total}
             itemsPerPage={5}
           />
         </div>

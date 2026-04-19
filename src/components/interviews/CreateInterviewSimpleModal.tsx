@@ -14,7 +14,7 @@ interface CreateInterviewSimpleModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (applicationId: string, data: CreateInterviewRequest) => Promise<void>;
-  application: any; // La candidature sélectionnée
+  application?: any; // La candidature sélectionnée
   isLoading?: boolean;
 }
 

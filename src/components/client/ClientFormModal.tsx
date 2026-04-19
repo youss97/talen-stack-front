@@ -50,7 +50,8 @@ export default function ClientFormModal({
     reset,
     formState: { errors },
   } = useForm<CreateClientFormData>({
-    resolver: yupResolver(isEditing ? updateClientSchema : createClientSchema) as Resolver<CreateClientFormData>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: yupResolver(isEditing ? updateClientSchema : createClientSchema) as any,
     defaultValues: {
       name: "",
       siret: "",
@@ -177,7 +178,7 @@ export default function ClientFormModal({
       adminPhoto: cloudinaryAdminPhotoUrl || adminPhotoFile,
     };
     
-    onSubmit(formDataWithFiles);
+    onSubmit(formDataWithFiles as unknown as CreateClientFormData);
   };
 
   return (
@@ -215,7 +216,7 @@ export default function ClientFormModal({
                   shape="square"
                   disabled={readOnly}
                   onChange={handleLogoChange}
-                  uploadType="client-logo"
+                  uploadType="generic"
                   entityId={client?.id || 'new'}
                   autoUpload={true}
                   accept="image/jpeg,image/png,image/gif,image/webp"

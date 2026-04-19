@@ -57,8 +57,8 @@ export const roleApi = createApi({
           limit: 10,
         },
         getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-          const currentPage = lastPage.meta?.page ?? lastPage.page ?? 1;
-          const totalPages = lastPage.meta?.totalPages ?? Math.ceil((lastPage.total ?? 0) / (lastPage.limit ?? 10));
+          const currentPage = lastPage.pagination?.page ?? 1;
+          const totalPages = lastPage.pagination?.totalPages ?? 1;
           if (currentPage >= totalPages) {
             return undefined;
           }
@@ -101,8 +101,8 @@ export const roleApi = createApi({
           limit: 10,
         },
         getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-          const currentPage = lastPage.meta?.page ?? lastPage.page ?? 1;
-          const totalPages = lastPage.meta?.totalPages ?? Math.ceil((lastPage.total ?? 0) / (lastPage.limit ?? 10));
+          const currentPage = lastPage.pagination?.page ?? 1;
+          const totalPages = lastPage.pagination?.totalPages ?? 1;
           if (currentPage >= totalPages) {
             return undefined;
           }
@@ -162,8 +162,8 @@ export const roleApi = createApi({
           limit: 10,
         },
         getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-          const currentPage = lastPage.meta?.page ?? lastPage.page ?? 1;
-          const totalPages = lastPage.meta?.totalPages ?? Math.ceil((lastPage.total ?? 0) / (lastPage.limit ?? 10));
+          const currentPage = lastPage.pagination?.page ?? 1;
+          const totalPages = lastPage.pagination?.totalPages ?? 1;
           if (currentPage >= totalPages) {
             return undefined;
           }

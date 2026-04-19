@@ -64,7 +64,7 @@ export interface PaginatedManagerResponse {
   client: ClientInfo;
   managers: Manager[];
   total_managers: number;
-  meta: {
+  pagination: {
     page: number;
     limit: number;
     total: number;

@@ -103,7 +103,7 @@ const authSlice = createSlice({
             ...payload.user,
             // S'assurer que photo_path est mise à jour correctement
             photo_path: payload.user.photo_path || state.user.photo_path,
-          };
+          } as any;
         }
       }
     );

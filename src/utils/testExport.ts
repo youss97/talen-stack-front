@@ -7,7 +7,7 @@ import { exportApplicationRequestsToExcel, exportCandidaturesToExcel, type Expor
 import type { ApplicationRequest } from '@/types/applicationRequest';
 
 // Données de test pour les demandes de recrutement
-const testApplicationRequests: ApplicationRequest[] = [
+const testApplicationRequests = [
   {
     id: '1',
     reference: 'REF-2026-001',
@@ -74,7 +74,7 @@ const testApplicationRequests: ApplicationRequest[] = [
     created_at: '2026-03-09T10:00:00Z',
     updated_at: '2026-03-10T16:30:00Z',
   }
-] as ApplicationRequest[];
+] as unknown as ApplicationRequest[];
 
 // Données de test pour les candidatures
 const testCandidates: ExportableCandidate[] = [

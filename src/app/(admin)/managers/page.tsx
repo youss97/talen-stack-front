@@ -9,7 +9,7 @@ import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import ManagerFormModal from "@/components/manager/ManagerFormModal";
 import InfiniteSelect from "@/components/form/InfiniteSelect";
 import { useActions } from "@/hooks/useActions";
-import type { Manager } from "@/types/manager";
+import type { Manager } from "@/types/client";
 import type { CreateManagerFormData } from "@/validations/managerValidation";
 import {
   useGetClientManagersQuery,
@@ -281,10 +281,8 @@ export default function ManagersPage() {
       {/* Client Selection Card */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="max-w-md">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Sélectionner un client
-          </label>
           <InfiniteSelect
+            label="Sélectionner un client"
             value={selectedClientId}
             onChange={(value) => {
               setSelectedClientId(value);
@@ -326,13 +324,13 @@ export default function ManagersPage() {
           </div>
 
           {/* Pagination */}
-          {data && data.meta && (
+          {data && data.pagination && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
               <Pagination
                 currentPage={page}
-                totalPages={data.meta.totalPages}
-                totalItems={data.meta.total}
-                itemsPerPage={data.meta.limit}
+                totalPages={data.pagination.totalPages}
+                totalItems={data.pagination.total}
+                itemsPerPage={data.pagination.limit}
                 onPageChange={setPage}
               />
             </div>

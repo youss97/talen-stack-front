@@ -21,10 +21,10 @@ export const integrationApi = createApi({
     }),
 
     // Récupérer les intégrations par période (optimisé agenda)
-    getIntegrationsByDateRange: builder.query<Integration[], { 
-      startDate: string; 
-      endDate: string; 
-      status?: IntegrationStatus 
+    getIntegrationsByDateRange: builder.query<Integration[], {
+      startDate: string;
+      endDate: string;
+      status?: IntegrationStatus | 'all'
     }>({
       query: ({ startDate, endDate, status }) => ({
         url: '/integrations/by-date-range',
@@ -41,9 +41,12 @@ export const integrationApi = createApi({
     getIntegrations: builder.query<
       {
         data: Integration[];
-        total: number;
-        page: number;
-        limit: number;
+        pagination: {
+          total: number;
+          page: number;
+          limit: number;
+          totalPages: number;
+        };
       },
       {
         page?: number;
