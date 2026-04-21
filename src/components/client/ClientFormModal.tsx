@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useForm, Resolver } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
@@ -15,6 +15,7 @@ import {
   type CreateClientFormData,
 } from "@/validations/clientValidation";
 import type { Client } from "@/types/client";
+import { COUNTRY_LIST } from "@/types/client";
 import { EyeIcon, EyeCloseIcon } from "@/icons";
 import { getImageUrl } from "@/utils/imageHelper";
 
@@ -38,11 +39,11 @@ export default function ClientFormModal({
   const isEditing = !!client && !readOnly;
   const [showPassword, setShowPassword] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(client?.logo || null);
-  const [cloudinaryLogoUrl, setCloudinaryLogoUrl] = useState<string>('');
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [cloudinaryLogoUrl, setCloudinaryLogoUrl] = useState<string>("");
   const [adminPhotoFile, setAdminPhotoFile] = useState<File | null>(null);
   const [adminPhotoPreview, setAdminPhotoPreview] = useState<string | null>(null);
-  const [cloudinaryAdminPhotoUrl, setCloudinaryAdminPhotoUrl] = useState<string>('');
+  const [cloudinaryAdminPhotoUrl, setCloudinaryAdminPhotoUrl] = useState<string>("");
 
   const {
     register,
@@ -50,15 +51,14 @@ export default function ClientFormModal({
     reset,
     formState: { errors },
   } = useForm<CreateClientFormData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: yupResolver(isEditing ? updateClientSchema : createClientSchema) as any,
     defaultValues: {
       name: "",
-      siret: "",
+      ice: "",
       address: "",
       city: "",
       postal_code: "",
-      country: "France",
+      country: "Maroc",
       phone: "",
       email: "",
       status: "active",
@@ -74,19 +74,18 @@ export default function ClientFormModal({
   useEffect(() => {
     if (isOpen) {
       if (client) {
-        // En mode édition ou lecture, utiliser les données de la company
         const displayName = client.company_name || client.name;
-        const displaySiret = client.company_siret || client.siret;
+        const displayIce = client.company_ice || client.ice || client.company_siret || client.siret || "";
         const displayAddress = client.company_address || client.address;
         const displayCity = client.company_city || client.city;
         const displayPostalCode = client.company_postal_code || client.postal_code;
         const displayCountry = client.company_country || client.country;
-        const displayPhone = client.company_phone || client.phone;
-        const displayEmail = client.company_email || client.email;
+        const displayPhone = client.company_phone || client.phone || "";
+        const displayEmail = client.company_email || client.email || "";
 
         reset({
           name: displayName,
-          siret: displaySiret,
+          ice: displayIce,
           address: displayAddress,
           city: displayCity,
           postal_code: displayPostalCode,
@@ -101,18 +100,20 @@ export default function ClientFormModal({
           adminPhone: "",
           adminPosition: "",
         });
-        setLogoPreview(getImageUrl(client.company_logo_path || client.logo));
+        setLogoPreview(getImageUrl(client.company_logo_path || client.logo) || null);
         setLogoFile(null);
         setAdminPhotoFile(null);
         setAdminPhotoPreview(null);
+        setCloudinaryLogoUrl("");
+        setCloudinaryAdminPhotoUrl("");
       } else {
         reset({
           name: "",
-          siret: "",
+          ice: "",
           address: "",
           city: "",
           postal_code: "",
-          country: "France",
+          country: "Maroc",
           phone: "",
           email: "",
           status: "active",
@@ -127,6 +128,8 @@ export default function ClientFormModal({
         setLogoFile(null);
         setAdminPhotoFile(null);
         setAdminPhotoPreview(null);
+        setCloudinaryLogoUrl("");
+        setCloudinaryAdminPhotoUrl("");
         setShowPassword(false);
       }
     }
@@ -140,13 +143,11 @@ export default function ClientFormModal({
     setLogoFile(file);
     if (file && !cloudinaryUrl) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogoPreview(reader.result as string);
-      };
+      reader.onloadend = () => setLogoPreview(reader.result as string);
       reader.readAsDataURL(file);
     } else if (!file && !cloudinaryUrl) {
       setLogoFile(null);
-      setLogoPreview(getImageUrl(client?.company_logo_path || client?.logo));
+      setLogoPreview(getImageUrl(client?.company_logo_path || client?.logo) || null);
     }
   };
 
@@ -158,9 +159,7 @@ export default function ClientFormModal({
     setAdminPhotoFile(file);
     if (file && !cloudinaryUrl) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setAdminPhotoPreview(reader.result as string);
-      };
+      reader.onloadend = () => setAdminPhotoPreview(reader.result as string);
       reader.readAsDataURL(file);
     } else if (!file && !cloudinaryUrl) {
       setAdminPhotoFile(null);
@@ -170,45 +169,49 @@ export default function ClientFormModal({
 
   const handleFormSubmit = (data: CreateClientFormData) => {
     if (!onSubmit) return;
-    
-    // Add files to form data
-    const formDataWithFiles = {
+    onSubmit({
       ...data,
-      logo: cloudinaryLogoUrl || logoFile,
-      adminPhoto: cloudinaryAdminPhotoUrl || adminPhotoFile,
-    };
-    
-    onSubmit(formDataWithFiles as unknown as CreateClientFormData);
+      logo: cloudinaryLogoUrl || logoFile || undefined,
+      adminPhoto: cloudinaryAdminPhotoUrl || adminPhotoFile || undefined,
+    } as CreateClientFormData);
   };
+
+  const selectClass = (hasError: boolean) =>
+    `h-11 w-full appearance-none rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 disabled:bg-gray-100 disabled:cursor-not-allowed dark:disabled:bg-gray-800 ${
+      hasError
+        ? "border-error-500 focus:border-error-500 focus:ring-error-500/10"
+        : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700 dark:focus:border-brand-800"
+    }`;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
+      {/* Header */}
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          {readOnly
-            ? "Détails du client"
-            : isEditing
-            ? "Modifier le client"
-            : "Ajouter un client"}
+          {readOnly ? "Détails du client" : isEditing ? "Modifier le client" : "Ajouter un client"}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {readOnly
             ? "Consultez les informations du client"
             : isEditing
             ? "Modifiez les informations du client"
-            : "Remplissez les informations pour créer un nouveau client avec son administrateur"}
+            : "Remplissez les informations pour créer un nouveau client"}
         </p>
       </div>
 
-      <form onSubmit={!readOnly && onSubmit ? handleSubmit(handleFormSubmit) : (e) => e.preventDefault()} className="flex flex-col flex-1 min-h-0">
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar">
-          {/* Section Informations Client */}
-          <div className="mb-6">
-            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-              Informations du client
+      <form
+        onSubmit={!readOnly && onSubmit ? handleSubmit(handleFormSubmit) : (e) => e.preventDefault()}
+        className="flex flex-col flex-1 min-h-0"
+      >
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar space-y-6">
+
+          {/* ── Section Informations de la société ── */}
+          <section>
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+              Informations de la société
             </h3>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              {/* Logo avec Cloudinary - En premier */}
+              {/* Logo */}
               <div className="sm:col-span-2">
                 <CloudinaryImageUpload
                   label="Logo du client"
@@ -217,16 +220,17 @@ export default function ClientFormModal({
                   disabled={readOnly}
                   onChange={handleLogoChange}
                   uploadType="generic"
-                  entityId={client?.id || 'new'}
+                  entityId={client?.id || "new"}
                   autoUpload={true}
                   accept="image/jpeg,image/png,image/gif,image/webp"
                   helperText="Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)"
                 />
               </div>
 
-              <div>
+              {/* Raison sociale */}
+              <div className="sm:col-span-2">
                 <Label>
-                  Nom {!readOnly && <span className="text-error-500">*</span>}
+                  Raison sociale {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
                   placeholder="Tech Solutions SARL"
@@ -234,30 +238,45 @@ export default function ClientFormModal({
                   error={!!errors.name}
                   disabled={readOnly}
                 />
-                {errors.name && (
-                  <p className="mt-1 text-sm text-error-500">
-                    {errors.name.message}
-                  </p>
-                )}
+                {errors.name && <p className="mt-1 text-sm text-error-500">{errors.name.message}</p>}
               </div>
 
+              {/* ICE */}
               <div>
                 <Label>
-                  SIRET {!readOnly && <span className="text-error-500">*</span>}
+                  ICE {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
-                  placeholder="12345678901234"
-                  {...register("siret")}
-                  error={!!errors.siret}
+                  placeholder="123456789012345"
+                  maxLength={15}
+                  {...register("ice")}
+                  error={!!errors.ice}
                   disabled={readOnly}
                 />
-                {errors.siret && (
-                  <p className="mt-1 text-sm text-error-500">
-                    {errors.siret.message}
-                  </p>
+                {errors.ice && <p className="mt-1 text-sm text-error-500">{errors.ice.message}</p>}
+                {!readOnly && (
+                  <p className="mt-1 text-xs text-gray-400">Identifiant Commun de l'Entreprise · 15 chiffres</p>
                 )}
               </div>
 
+              {/* Pays */}
+              <div>
+                <Label>
+                  Pays {!readOnly && <span className="text-error-500">*</span>}
+                </Label>
+                {readOnly ? (
+                  <Input value={client?.company_country || client?.country || ""} disabled />
+                ) : (
+                  <select {...register("country")} className={selectClass(!!errors.country)}>
+                    {COUNTRY_LIST.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                )}
+                {errors.country && <p className="mt-1 text-sm text-error-500">{errors.country.message}</p>}
+              </div>
+
+              {/* Adresse */}
               <div className="sm:col-span-2">
                 <Label>
                   Adresse {!readOnly && <span className="text-error-500">*</span>}
@@ -268,319 +287,179 @@ export default function ClientFormModal({
                   error={!!errors.address}
                   disabled={readOnly}
                 />
-                {errors.address && (
-                  <p className="mt-1 text-sm text-error-500">
-                    {errors.address.message}
-                  </p>
-                )}
+                {errors.address && <p className="mt-1 text-sm text-error-500">{errors.address.message}</p>}
               </div>
 
+              {/* Ville */}
               <div>
                 <Label>
                   Ville {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
-                  placeholder="Paris"
+                  placeholder="Casablanca"
                   {...register("city")}
                   error={!!errors.city}
                   disabled={readOnly}
                 />
-                {errors.city && (
-                  <p className="mt-1 text-sm text-error-500">
-                    {errors.city.message}
-                  </p>
-                )}
+                {errors.city && <p className="mt-1 text-sm text-error-500">{errors.city.message}</p>}
               </div>
 
+              {/* Code postal */}
               <div>
-                <Label>
-                  Code postal
-                </Label>
+                <Label>Code postal</Label>
                 <Input
-                  placeholder="75001"
+                  placeholder="20000"
                   {...register("postal_code")}
                   error={!!errors.postal_code}
                   disabled={readOnly}
                 />
-                {errors.postal_code && (
-                  <p className="mt-1 text-sm text-error-500">
-                    {errors.postal_code.message}
-                  </p>
-                )}
               </div>
 
+              {/* Statut */}
               <div>
                 <Label>
-                  Pays {!readOnly && <span className="text-error-500">*</span>}
+                  Statut {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
-                <Input
-                  placeholder="France"
-                  {...register("country")}
-                  error={!!errors.country}
-                  disabled={readOnly}
-                />
-                {errors.country && (
-                  <p className="mt-1 text-sm text-error-500">
-                    {errors.country.message}
-                  </p>
+                {readOnly ? (
+                  <div className="mt-2">
+                    <Badge color={client?.status === "active" ? "success" : "error"} variant="light">
+                      {client?.status === "active" ? "Actif" : "Inactif"}
+                    </Badge>
+                  </div>
+                ) : (
+                  <select {...register("status")} className={selectClass(!!errors.status)}>
+                    <option value="active">Actif</option>
+                    <option value="inactive">Inactif</option>
+                  </select>
                 )}
+                {errors.status && <p className="mt-1 text-sm text-error-500">{errors.status.message}</p>}
               </div>
+            </div>
+          </section>
 
+          {/* ── Section Contact ── */}
+          <section>
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+              Contact
+            </h3>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              {/* Téléphone */}
               <div>
                 <Label>
                   Téléphone {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
-                  placeholder="+33612345678"
+                  type="tel"
+                  placeholder="+212612345678"
                   {...register("phone")}
                   error={!!errors.phone}
                   disabled={readOnly}
                 />
-                {errors.phone && (
-                  <p className="mt-1 text-sm text-error-500">
-                    {errors.phone.message}
-                  </p>
-                )}
+                {errors.phone && <p className="mt-1 text-sm text-error-500">{errors.phone.message}</p>}
               </div>
 
+              {/* Email */}
               <div>
                 <Label>
                   Email {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
                   type="email"
-                  placeholder="contact@techsolutions.fr"
+                  placeholder="contact@techsolutions.ma"
                   {...register("email")}
                   error={!!errors.email}
                   disabled={readOnly}
                 />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-error-500">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label>
-                  Statut {!readOnly && <span className="text-error-500">*</span>}
-                </Label>
-                <select
-                  {...register("status")}
-                  disabled={readOnly}
-                  className={`h-11 w-full appearance-none rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 disabled:bg-gray-100 disabled:cursor-not-allowed dark:disabled:bg-gray-800 ${
-                    errors.status
-                      ? "border-error-500 focus:border-error-500 focus:ring-error-500/10"
-                      : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700 dark:focus:border-brand-800"
-                  }`}
-                >
-                  <option value="active">Actif</option>
-                  <option value="inactive">Inactif</option>
-                </select>
-                {errors.status && (
-                  <p className="mt-1 text-sm text-error-500">
-                    {errors.status.message}
-                  </p>
-                )}
+                {errors.email && <p className="mt-1 text-sm text-error-500">{errors.email.message}</p>}
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Section Administrateur (uniquement en lecture) */}
+          {/* ── Admin info (read-only view) ── */}
           {readOnly && client?.managers && client.managers.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+            <section>
+              <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
                 Administrateur du client
               </h3>
-              {client.managers.map((managerAssignment: any) => {
-                const manager = managerAssignment.manager;
+              {client.managers.map((assignment: any) => {
+                const mgr = assignment.manager;
                 return (
-                  <div key={managerAssignment.id} className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                    {/* Photo de l'administrateur */}
+                  <div key={assignment.id} className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div className="sm:col-span-2">
-                      <ImageUpload
-                        label="Photo de l'administrateur"
-                        preview={getImageUrl(manager.photo_path)}
-                        shape="circle"
-                        disabled={true}
-                      />
+                      <ImageUpload label="Photo" preview={getImageUrl(mgr.photo_path)} shape="circle" disabled />
                     </div>
-
                     <div>
                       <Label>Prénom</Label>
-                      <Input
-                        value={manager.first_name}
-                        disabled
-                      />
+                      <Input value={mgr.first_name} disabled />
                     </div>
-
                     <div>
                       <Label>Nom</Label>
-                      <Input
-                        value={manager.last_name}
-                        disabled
-                      />
+                      <Input value={mgr.last_name} disabled />
                     </div>
-
                     <div>
                       <Label>Email</Label>
-                      <Input
-                        type="email"
-                        value={manager.email}
-                        disabled
-                      />
+                      <Input type="email" value={mgr.email} disabled />
                     </div>
-
                     <div>
                       <Label>Téléphone</Label>
-                      <Input
-                        type="tel"
-                        value={manager.phone || "Non renseigné"}
-                        placeholder="Non renseigné"
-                        disabled
-                      />
+                      <Input value={mgr.phone || "Non renseigné"} disabled />
                     </div>
-
                     <div className="sm:col-span-2">
-                      <Label>Position</Label>
-                      <Input
-                        value={manager.position || ""}
-                        placeholder="Non renseignée"
-                        disabled
-                      />
-                    </div>
-
-                    <div>
                       <Label>Statut</Label>
                       <div className="mt-2">
-                        <Badge
-                          color={manager.status === "active" ? "success" : "error"}
-                          variant="light"
-                        >
-                          {manager.status === "active" ? "Actif" : "Inactif"}
+                        <Badge color={mgr.status === "active" ? "success" : "error"} variant="light">
+                          {mgr.status === "active" ? "Actif" : "Inactif"}
                         </Badge>
                       </div>
                     </div>
                   </div>
                 );
               })}
-            </div>
+            </section>
           )}
 
-          {/* Section Informations supplémentaires (uniquement en lecture) */}
-          {readOnly && client && (client.industry || client.company_size || client.vat_rate || client.payment_terms || client.contact_person || client.contact_email || client.contact_phone) && (
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+          {/* ── Extra info (read-only) ── */}
+          {readOnly && client && (client.industry || client.company_size || client.vat_rate || client.payment_terms) && (
+            <section>
+              <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
                 Informations supplémentaires
               </h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {client.industry && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                      Secteur d'activité
-                    </p>
-                    <p className="text-sm text-gray-900 dark:text-white">
-                      {client.industry}
-                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Secteur</p>
+                    <p className="text-sm text-gray-900 dark:text-white">{client.industry}</p>
                   </div>
                 )}
                 {client.company_size && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                      Taille de l'entreprise
-                    </p>
-                    <p className="text-sm text-gray-900 dark:text-white">
-                      {client.company_size}
-                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Taille</p>
+                    <p className="text-sm text-gray-900 dark:text-white">{client.company_size}</p>
                   </div>
                 )}
                 {client.vat_rate && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                      Taux de TVA
-                    </p>
-                    <p className="text-sm text-gray-900 dark:text-white">
-                      {client.vat_rate}%
-                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Taux TVA</p>
+                    <p className="text-sm text-gray-900 dark:text-white">{client.vat_rate}%</p>
                   </div>
                 )}
                 {client.payment_terms && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                      Conditions de paiement
-                    </p>
-                    <p className="text-sm text-gray-900 dark:text-white">
-                      {client.payment_terms}
-                    </p>
-                  </div>
-                )}
-                {client.contact_person && (
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                      Personne de contact
-                    </p>
-                    <p className="text-sm text-gray-900 dark:text-white">
-                      {client.contact_person}
-                    </p>
-                  </div>
-                )}
-                {client.contact_email && (
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                      Email de contact
-                    </p>
-                    <p className="text-sm text-gray-900 dark:text-white">
-                      {client.contact_email}
-                    </p>
-                  </div>
-                )}
-                {client.contact_phone && (
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                      Téléphone de contact
-                    </p>
-                    <p className="text-sm text-gray-900 dark:text-white">
-                      {client.contact_phone}
-                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Conditions de paiement</p>
+                    <p className="text-sm text-gray-900 dark:text-white">{client.payment_terms}</p>
                   </div>
                 )}
               </div>
-            </div>
+            </section>
           )}
 
-          {/* Section Dates (uniquement en lecture) */}
-          {readOnly && client && client.created_at && (
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-                Historique
-              </h3>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                    Créé le
-                  </p>
-                  <p className="text-sm text-gray-900 dark:text-white">
-                    {new Date(client.created_at).toLocaleDateString("fr-FR", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Section Administrateur (uniquement en création) */}
+          {/* ── Admin creation section ── */}
           {!isEditing && !readOnly && (
-            <div>
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+            <section>
+              <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
                 Administrateur du client
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                {/* Photo de l'administrateur - En premier */}
                 <div className="sm:col-span-2">
                   <ImageUpload
                     label="Photo de l'administrateur"
@@ -591,79 +470,35 @@ export default function ClientFormModal({
                 </div>
 
                 <div>
-                  <Label>
-                    Prénom <span className="text-error-500">*</span>
-                  </Label>
-                  <Input
-                    placeholder="John"
-                    {...register("adminFirstName")}
-                    error={!!errors.adminFirstName}
-                  />
-                  {errors.adminFirstName && (
-                    <p className="mt-1 text-sm text-error-500">
-                      {errors.adminFirstName.message}
-                    </p>
-                  )}
+                  <Label>Prénom <span className="text-error-500">*</span></Label>
+                  <Input placeholder="John" {...register("adminFirstName")} error={!!errors.adminFirstName} />
+                  {errors.adminFirstName && <p className="mt-1 text-sm text-error-500">{errors.adminFirstName.message}</p>}
                 </div>
 
                 <div>
-                  <Label>
-                    Nom <span className="text-error-500">*</span>
-                  </Label>
-                  <Input
-                    placeholder="Doe"
-                    {...register("adminLastName")}
-                    error={!!errors.adminLastName}
-                  />
-                  {errors.adminLastName && (
-                    <p className="mt-1 text-sm text-error-500">
-                      {errors.adminLastName.message}
-                    </p>
-                  )}
+                  <Label>Nom <span className="text-error-500">*</span></Label>
+                  <Input placeholder="Doe" {...register("adminLastName")} error={!!errors.adminLastName} />
+                  {errors.adminLastName && <p className="mt-1 text-sm text-error-500">{errors.adminLastName.message}</p>}
                 </div>
 
                 <div>
-                  <Label>
-                    Email <span className="text-error-500">*</span>
-                  </Label>
-                  <Input
-                    type="email"
-                    placeholder="admin@example.com"
-                    {...register("adminEmail")}
-                    error={!!errors.adminEmail}
-                  />
-                  {errors.adminEmail && (
-                    <p className="mt-1 text-sm text-error-500">
-                      {errors.adminEmail.message}
-                    </p>
-                  )}
+                  <Label>Email <span className="text-error-500">*</span></Label>
+                  <Input type="email" placeholder="admin@example.com" {...register("adminEmail")} error={!!errors.adminEmail} />
+                  {errors.adminEmail && <p className="mt-1 text-sm text-error-500">{errors.adminEmail.message}</p>}
                 </div>
 
                 <div>
-                  <Label>
-                    Téléphone
-                  </Label>
-                  <Input
-                    type="tel"
-                    placeholder="+33612345678"
-                    {...register("adminPhone")}
-                    error={!!errors.adminPhone}
-                  />
-                  {errors.adminPhone && (
-                    <p className="mt-1 text-sm text-error-500">
-                      {errors.adminPhone.message}
-                    </p>
-                  )}
+                  <Label>Téléphone <span className="text-error-500">*</span></Label>
+                  <Input type="tel" placeholder="+212612345678" {...register("adminPhone")} error={!!errors.adminPhone} />
+                  {errors.adminPhone && <p className="mt-1 text-sm text-error-500">{errors.adminPhone.message}</p>}
                 </div>
 
                 <div>
-                  <Label>
-                    Mot de passe <span className="text-error-500">*</span>
-                  </Label>
+                  <Label>Mot de passe <span className="text-error-500">*</span></Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      placeholder="StrongPassword123"
+                      placeholder="Min. 8 caractères"
                       {...register("adminPassword")}
                       error={!!errors.adminPassword}
                     />
@@ -678,49 +513,27 @@ export default function ClientFormModal({
                       )}
                     </span>
                   </div>
-                  {errors.adminPassword && (
-                    <p className="mt-1 text-sm text-error-500">
-                      {errors.adminPassword.message}
-                    </p>
-                  )}
+                  {errors.adminPassword && <p className="mt-1 text-sm text-error-500">{errors.adminPassword.message}</p>}
                 </div>
 
                 <div>
-                  <Label>
-                    Position
-                  </Label>
-                  <Input
-                    placeholder="Directeur Général"
-                    {...register("adminPosition")}
-                    error={!!errors.adminPosition}
-                  />
-                  {errors.adminPosition && (
-                    <p className="mt-1 text-sm text-error-500">
-                      {errors.adminPosition.message}
-                    </p>
-                  )}
+                  <Label>Position</Label>
+                  <Input placeholder="Directeur Général" {...register("adminPosition")} error={!!errors.adminPosition} />
                 </div>
               </div>
-            </div>
+            </section>
           )}
         </div>
 
+        {/* Footer */}
         <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
           {readOnly ? (
-            <Button variant="outline" onClick={onClose}>
-              Fermer
-            </Button>
+            <Button variant="outline" onClick={onClose}>Fermer</Button>
           ) : (
             <>
-              <Button variant="outline" onClick={onClose} disabled={isLoading}>
-                Annuler
-              </Button>
+              <Button variant="outline" onClick={onClose} disabled={isLoading}>Annuler</Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading
-                  ? "Enregistrement..."
-                  : isEditing
-                  ? "Modifier"
-                  : "Ajouter"}
+                {isLoading ? "Enregistrement..." : isEditing ? "Modifier" : "Ajouter"}
               </Button>
             </>
           )}

@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./baseQueryWithReauth";
-import type { ApplicationRequest } from "@/types/applicationRequest";
+import type { ApplicationRequest, CreateApplicationRequestRequest } from "@/types/applicationRequest";
 import type { Recruiter } from "@/types/recruiter";
 
 interface ManagerRequestWithStats extends ApplicationRequest {
@@ -103,6 +103,19 @@ export const clientManagerApi = createApi({
           : [{ type: "ManagerCandidate", id: `REQUEST-${requestId}` }],
     }),
 
+    // POST /applications/manager/requests - Create a recruitment request as a client manager
+    createManagerRequest: builder.mutation<
+      ApplicationRequest,
+      Omit<CreateApplicationRequestRequest, 'client_id' | 'manager_id'>
+    >({
+      query: (dto) => ({
+        url: "/applications/manager/requests",
+        method: "POST",
+        body: dto,
+      }),
+      invalidatesTags: [{ type: "ManagerRequest", id: "LIST" }],
+    }),
+
     // PATCH /applications/:id/manager-notes - Update manager notes
     updateManagerNotes: builder.mutation<
       Recruiter,
@@ -124,5 +137,6 @@ export const clientManagerApi = createApi({
 export const {
   useGetManagerRequestsQuery,
   useGetCandidatesForRequestQuery,
+  useCreateManagerRequestMutation,
   useUpdateManagerNotesMutation,
 } = clientManagerApi;

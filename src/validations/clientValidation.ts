@@ -3,12 +3,12 @@ import * as yup from "yup";
 export const createClientSchema = yup.object({
   name: yup
     .string()
-    .required("Le nom est requis")
-    .min(2, "Le nom doit contenir au moins 2 caractères"),
-  siret: yup
+    .required("La raison sociale est requise")
+    .min(2, "La raison sociale doit contenir au moins 2 caractères"),
+  ice: yup
     .string()
-    .required("Le SIRET est requis")
-    .matches(/^\d{14}$/, "Le SIRET doit contenir 14 chiffres"),
+    .required("L'ICE est requis")
+    .matches(/^\d{15}$/, "L'ICE doit contenir exactement 15 chiffres"),
   address: yup
     .string()
     .required("L'adresse est requise"),
@@ -50,7 +50,7 @@ export const createClientSchema = yup.object({
     .min(2, "Le nom doit contenir au moins 2 caractères"),
   adminPhone: yup
     .string()
-    .optional(),
+    .required("Le téléphone de l'administrateur est requis"),
   adminPosition: yup
     .string()
     .optional(),
@@ -59,10 +59,11 @@ export const createClientSchema = yup.object({
 export const updateClientSchema = yup.object({
   name: yup
     .string()
-    .min(2, "Le nom doit contenir au moins 2 caractères"),
-  siret: yup
+    .min(2, "La raison sociale doit contenir au moins 2 caractères"),
+  ice: yup
     .string()
-    .matches(/^\d{14}$/, "Le SIRET doit contenir 14 chiffres"),
+    .matches(/^\d{15}$/, "L'ICE doit contenir exactement 15 chiffres")
+    .optional(),
   address: yup.string(),
   city: yup.string(),
   postal_code: yup.string(),
@@ -73,9 +74,9 @@ export const updateClientSchema = yup.object({
 });
 
 export type CreateClientFormData = yup.InferType<typeof createClientSchema> & {
-  logo?: File | null;
-  adminPhoto?: File | null;
+  logo?: File | string | null;
+  adminPhoto?: File | string | null;
 };
 export type UpdateClientFormData = yup.InferType<typeof updateClientSchema> & {
-  logo?: File | null;
+  logo?: File | string | null;
 };

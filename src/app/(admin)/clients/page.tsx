@@ -128,25 +128,21 @@ export default function ClientsPage() {
       if (editingClient) {
         const updateData: UpdateClientRequest = {
           name: formData.name,
-          siret: formData.siret,
+          ice: formData.ice,
           address: formData.address,
           city: formData.city,
           postal_code: formData.postal_code,
           country: formData.country,
-          contact_phone: formData.phone,
-          contact_email: formData.email,
+          phone: formData.phone,
+          email: formData.email,
           status: formData.status,
         };
-        await updateClient({
-          id: editingClient.id,
-          data: updateData,
-        }).unwrap();
+        await updateClient({ id: editingClient.id, data: updateData }).unwrap();
         addToast("success", "Succès", "Client modifié avec succès");
       } else {
-        // Create FormData for file upload
         const formDataToSend = new FormData();
         formDataToSend.append("name", formData.name);
-        formDataToSend.append("siret", formData.siret);
+        if (formData.ice) formDataToSend.append("ice", formData.ice);
         formDataToSend.append("address", formData.address);
         formDataToSend.append("city", formData.city);
         formDataToSend.append("postal_code", formData.postal_code || "");
@@ -158,21 +154,22 @@ export default function ClientsPage() {
         formDataToSend.append("adminPassword", formData.adminPassword);
         formDataToSend.append("adminFirstName", formData.adminFirstName);
         formDataToSend.append("adminLastName", formData.adminLastName);
-        
-        if (formData.adminPhone) {
-          formDataToSend.append("adminPhone", formData.adminPhone);
+        if (formData.adminPhone) formDataToSend.append("adminPhone", formData.adminPhone);
+        if (formData.adminPosition) formDataToSend.append("adminPosition", formData.adminPosition);
+
+        const logo = (formData as any).logo;
+        const adminPhoto = (formData as any).adminPhoto;
+        if (logo instanceof File) {
+          formDataToSend.append("logo", logo);
+        } else if (typeof logo === "string" && logo.startsWith("http")) {
+          formDataToSend.append("logo_url", logo);
         }
-        if (formData.adminPosition) {
-          formDataToSend.append("adminPosition", formData.adminPosition);
+        if (adminPhoto instanceof File) {
+          formDataToSend.append("adminPhoto", adminPhoto);
+        } else if (typeof adminPhoto === "string" && adminPhoto.startsWith("http")) {
+          formDataToSend.append("adminPhoto_url", adminPhoto);
         }
-        
-        if (formData.logo) {
-          formDataToSend.append("logo", formData.logo);
-        }
-        if (formData.adminPhoto) {
-          formDataToSend.append("adminPhoto", formData.adminPhoto);
-        }
-        
+
         await createClient(formDataToSend as unknown as CreateClientRequest).unwrap();
         addToast("success", "Succès", "Client créé avec succès");
       }
@@ -189,7 +186,7 @@ export default function ClientsPage() {
   const columns: Column<Client>[] = [
     {
       key: "name",
-      header: "Nom",
+      header: "Raison sociale",
       className: "font-medium",
     },
     {

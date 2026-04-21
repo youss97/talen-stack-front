@@ -88,7 +88,7 @@ export default function RoleFormModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-5xl mx-4 my-2 h-[96vh] flex flex-col modal-responsive">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
           {isEditing ? "Modifier le rôle" : "Ajouter un rôle"}

@@ -8,6 +8,7 @@ import Backdrop from "@/layout/Backdrop";
 import AuthGuard from "@/components/auth/AuthGuard";
 import PermissionGuard from "@/components/auth/PermissionGuard";
 import InstallPWA from "@/components/pwa/InstallPWA";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import React from "react";
 
 export default function AdminLayout({
@@ -42,11 +43,13 @@ export default function AdminLayout({
           <AppHeader />
           {/* Page Content */}
           <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
-            {isRootPath ? (
-              children
-            ) : (
-              <PermissionGuard>{children}</PermissionGuard>
-            )}
+            <ErrorBoundary>
+              {isRootPath ? (
+                children
+              ) : (
+                <PermissionGuard>{children}</PermissionGuard>
+              )}
+            </ErrorBoundary>
           </div>
         </div>
         {/* PWA Install Component */}

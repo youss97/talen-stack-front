@@ -4,7 +4,8 @@ export interface Client {
   [key: string]: unknown;
   id: string;
   name: string;
-  siret: string;
+  ice?: string;
+  siret?: string; // deprecated
   address: string;
   city: string;
   postal_code: string;
@@ -25,6 +26,7 @@ export interface Client {
   payment_terms?: string | null;
   // Company fields from linked company
   company_name?: string;
+  company_ice?: string;
   company_siret?: string;
   company_address?: string;
   company_city?: string;
@@ -60,38 +62,46 @@ export interface Client {
 
 export interface CreateClientRequest {
   name: string;
-  siret: string;
+  ice?: string;
+  siret?: string;
   address: string;
   city: string;
   postal_code: string;
   country: string;
-  contact_phone: string;
-  contact_email: string;
-  contact_person?: string;
-  industry?: string;
-  company_size?: string;
-  logo?: string;
-  status: "active" | "inactive";
-  adminEmail: string;
-  adminPassword: string;
-  adminFirstName: string;
-  adminLastName: string;
-  adminPhoto?: string;
-}
-
-export interface UpdateClientRequest {
-  name?: string;
-  siret?: string;
-  address?: string;
-  city?: string;
-  postal_code?: string;
-  country?: string;
+  phone: string;
+  email: string;
   contact_phone?: string;
   contact_email?: string;
   contact_person?: string;
   industry?: string;
   company_size?: string;
-  logo?: string;
+  logo?: string | File;
+  status: "active" | "inactive";
+  adminEmail: string;
+  adminPassword: string;
+  adminFirstName: string;
+  adminLastName: string;
+  adminPhone?: string;
+  adminPosition?: string;
+  adminPhoto?: string | File;
+}
+
+export interface UpdateClientRequest {
+  name?: string;
+  ice?: string;
+  siret?: string;
+  address?: string;
+  city?: string;
+  postal_code?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
+  contact_phone?: string;
+  contact_email?: string;
+  contact_person?: string;
+  industry?: string;
+  company_size?: string;
+  logo?: string | File;
   status?: "active" | "inactive";
 }
 
@@ -111,5 +121,31 @@ export interface Manager {
   position?: string | null;
   photo?: string;
   status?: string;
-  displayName?: string; // Computed field for display in selects
+  displayName?: string;
 }
+
+export const COUNTRY_LIST = [
+  "Maroc",
+  "France",
+  "Algérie",
+  "Tunisie",
+  "Libye",
+  "Mauritanie",
+  "Sénégal",
+  "Côte d'Ivoire",
+  "Espagne",
+  "Italie",
+  "Belgique",
+  "Suisse",
+  "Allemagne",
+  "Pays-Bas",
+  "Portugal",
+  "Royaume-Uni",
+  "Canada",
+  "États-Unis",
+  "Émirats arabes unis",
+  "Arabie saoudite",
+  "Qatar",
+  "Turquie",
+  "Égypte",
+] as const;

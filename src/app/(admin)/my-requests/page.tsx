@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useGetManagerRequestsQuery } from "@/lib/services/clientManagerApi";
+import { useGetManagerRequestsQuery, useCreateManagerRequestMutation } from "@/lib/services/clientManagerApi";
 import Button from "@/components/ui/button/Button";
 import InputField from "@/components/form/input/InputField";
 import Pagination from "@/components/tables/Pagination";
 import { useDebounce } from "@/hooks/useDebounce";
+import ManagerRequestFormModal from "@/components/applicationRequest/ManagerRequestFormModal";
+import { ToastContainer, type ToastItem } from "@/components/ui/toast/Toast";
 
 export default function MyRequestsPage() {
   const router = useRouter();
@@ -14,8 +16,22 @@ export default function MyRequestsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [contractTypeFilter, setContractTypeFilter] = useState("");
-  
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
+
+  const addToast = useCallback(
+    (variant: "success" | "error" | "warning" | "info", title: string, message?: string) => {
+      const id = Date.now().toString();
+      setToasts((prev) => [...prev, { id, variant, title, message }]);
+    },
+    []
+  );
+  const removeToast = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
   const debouncedSearch = useDebounce(search, 500);
+  const [createManagerRequest, { isLoading: isCreating }] = useCreateManagerRequestMutation();
 
   const { data, isLoading, isFetching } = useGetManagerRequestsQuery({
     page,
@@ -59,8 +75,22 @@ export default function MyRequestsPage() {
     );
   };
 
+  const handleCreateSubmit = async (formData: any) => {
+    try {
+      await createManagerRequest(formData).unwrap();
+      addToast("success", "Succès", "Offre créée avec succès");
+      setIsFormOpen(false);
+    } catch (error: any) {
+      const msg = error?.data?.message || error?.message || "Erreur lors de la création de l'offre";
+      addToast("error", "Erreur", msg);
+      throw error;
+    }
+  };
+
   return (
     <div className="space-y-6">
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -71,6 +101,9 @@ export default function MyRequestsPage() {
             Gérez vos offres et consultez les candidats proposés
           </p>
         </div>
+        <Button onClick={() => setIsFormOpen(true)}>
+          + Nouvelle offre
+        </Button>
       </div>
 
       {/* Filters */}
@@ -253,6 +286,13 @@ export default function MyRequestsPage() {
           />
         </div>
       )}
+
+      <ManagerRequestFormModal
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        onSubmit={handleCreateSubmit}
+        isLoading={isCreating}
+      />
     </div>
   );
 }
