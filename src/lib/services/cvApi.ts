@@ -36,6 +36,7 @@ export const cvApi = createApi({
           ...(params.max_experience && { max_experience: params.max_experience }),
           ...(params.industry && { industry: params.industry }),
           ...(params.email && { email: params.email }),
+          ...(params.contract_type && { contract_type: params.contract_type }),
         },
       }),
       providesTags: (result) =>
@@ -129,6 +130,9 @@ export const cvApi = createApi({
         locations?: string[];
         languages?: string[];
         summary?: string;
+        contract_type_preferences?: string[];
+        experiences?: import("@/types/cv").CvExperience[];
+        formations?: import("@/types/cv").CvFormation[];
       };
       confidence_score?: number;
       file_type?: string;

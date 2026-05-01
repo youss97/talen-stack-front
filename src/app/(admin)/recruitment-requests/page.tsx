@@ -21,6 +21,7 @@ import { publicJobOfferApi } from "@/lib/services/publicJobOfferApi";
 import { useAppDispatch } from "@/lib/hooks";
 import { useActions } from "@/hooks/useActions";
 import { exportApplicationRequestsToExcel } from "@/utils/excelExport";
+import { formatDate } from "@/utils/dateFormat";
 import type { ApplicationRequest, UpdateApplicationRequestRequest } from "@/types/applicationRequest";
 import type { CreateApplicationRequestFormData } from "@/validations/applicationRequestValidation";
 
@@ -197,7 +198,8 @@ export default function RecruitmentPage() {
         if (formData.status) updateData.status = formData.status;
         if (formData.desired_start_date) updateData.desired_start_date = formData.desired_start_date;
         if (formData.number_of_profiles !== undefined) updateData.number_of_profiles = formData.number_of_profiles;
-        
+        if ((formData as any).currency) updateData.currency = (formData as any).currency;
+
         await updateRequest({
           id: editingRequest.id,
           data: updateData,
@@ -266,9 +268,11 @@ export default function RecruitmentPage() {
         if (formData.desired_start_date) {
           createData.desired_start_date = formData.desired_start_date;
         }
-        
+        // Devise (MAD par défaut)
+        createData.currency = (formData as any).currency || 'MAD';
+
         console.log('Sending data to backend:', createData);
-        
+
         await createRequest(createData).unwrap();
         addToast("success", "Succès", "Demande créée avec succès");
       }
@@ -473,8 +477,7 @@ export default function RecruitmentPage() {
       key: "desired_start_date" as keyof ApplicationRequest,
       header: "Date de début",
       render: (value: unknown) => {
-        if (!value) return <span className="text-gray-400">-</span>;
-        return new Date(value as string).toLocaleDateString("fr-FR");
+        return <span className="text-gray-400">{formatDate(value as string)}</span>;
       },
     },
   ];

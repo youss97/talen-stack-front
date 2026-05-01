@@ -11,6 +11,7 @@ import FeedbackModal from "@/components/recruiter/FeedbackModal";
 import FeedbackListModal from "@/components/recruiter/FeedbackListModal";
 import Pagination from "@/components/tables/Pagination";
 import { useDebounce } from "@/hooks/useDebounce";
+import { formatDate } from "@/utils/dateFormat";
 import type { Recruiter } from "@/types/recruiter";
 
 export default function RequestCandidatesPage() {
@@ -300,7 +301,7 @@ export default function RequestCandidatesPage() {
                                 {feedback.title}
                               </h4>
                               <span className="text-xs text-gray-500 dark:text-gray-400">
-                                {new Date(feedback.created_at).toLocaleDateString("fr-FR", {
+                                {formatDate(feedback.created_at, {
                                   day: "2-digit",
                                   month: "short",
                                   year: "numeric",

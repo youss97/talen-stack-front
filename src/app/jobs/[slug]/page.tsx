@@ -356,11 +356,13 @@ export default function PublicJobPage() {
                   <div>
                     <p className="text-xs text-gray-500 mb-1">Date limite</p>
                     <p className="text-sm font-medium text-gray-900">
-                      {new Date(offer.deadline).toLocaleDateString("fr-FR", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
+                      {!isNaN(new Date(offer.deadline).getTime())
+                        ? new Date(offer.deadline).toLocaleDateString("fr-FR", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })
+                        : "-"}
                     </p>
                   </div>
                 )}

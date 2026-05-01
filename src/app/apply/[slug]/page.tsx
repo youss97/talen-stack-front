@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useGetPublicJobOfferBySlugQuery, useSubmitPublicApplicationMutation } from "@/lib/services/publicJobOfferApi";
+import { formatDate } from "@/utils/dateFormat";
 
 export default function PublicApplyPage() {
   const params = useParams();
@@ -246,6 +247,20 @@ export default function PublicApplyPage() {
                 Informations complémentaires
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {offer.reference && (
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${brandColor}20` }}>
+                      <svg className="w-5 h-5" style={{ color: brandColor }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Référence</p>
+                      <p className="text-lg font-semibold text-gray-900">{offer.reference}</p>
+                    </div>
+                  </div>
+                )}
+
                 {offer.min_experience && (
                   <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
                     <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${brandColor}20` }}>
@@ -281,7 +296,50 @@ export default function PublicApplyPage() {
                   </div>
                 )}
 
-                {offer.remote_possible && (
+                {offer.contract_type && (
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${brandColor}20` }}>
+                      <svg className="w-5 h-5" style={{ color: brandColor }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Type de contrat</p>
+                      <p className="text-lg font-semibold text-gray-900">{offer.contract_type}</p>
+                    </div>
+                  </div>
+                )}
+
+                {offer.contract_duration && (
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${brandColor}20` }}>
+                      <svg className="w-5 h-5" style={{ color: brandColor }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Durée du contrat</p>
+                      <p className="text-lg font-semibold text-gray-900">{offer.contract_duration}</p>
+                    </div>
+                  </div>
+                )}
+
+                {offer.location && (
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${brandColor}20` }}>
+                      <svg className="w-5 h-5" style={{ color: brandColor }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Localisation</p>
+                      <p className="text-lg font-semibold text-gray-900">{offer.location}</p>
+                    </div>
+                  </div>
+                )}
+
+                {offer.remote_possible !== undefined && (
                   <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
                     <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${brandColor}20` }}>
                       <svg className="w-5 h-5" style={{ color: brandColor }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -290,7 +348,9 @@ export default function PublicApplyPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-500">Télétravail</p>
-                      <p className="text-lg font-semibold text-green-600">Possible</p>
+                      <p className={`text-lg font-semibold ${offer.remote_possible ? 'text-green-600' : 'text-gray-900'}`}>
+                        {offer.remote_possible ? 'Possible' : 'Non'}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -303,14 +363,48 @@ export default function PublicApplyPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-500">Date limite</p>
+                      <p className="text-sm font-medium text-gray-500">Date limite de candidature</p>
                       <p className="text-lg font-semibold text-gray-900">
-                        {new Date(offer.deadline).toLocaleDateString('fr-FR', {
+                        {formatDate(offer.deadline, {
                           day: 'numeric',
                           month: 'long',
                           year: 'numeric'
                         })}
                       </p>
+                    </div>
+                  </div>
+                )}
+
+                {offer.desired_start_date && (
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${brandColor}20` }}>
+                      <svg className="w-5 h-5" style={{ color: brandColor }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Date de début souhaitée</p>
+                      <p className="text-lg font-semibold text-gray-900">
+                        {formatDate(offer.desired_start_date, {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {offer.client?.industry && (
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${brandColor}20` }}>
+                      <svg className="w-5 h-5" style={{ color: brandColor }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Secteur d'activité</p>
+                      <p className="text-lg font-semibold text-gray-900">{offer.client.industry}</p>
                     </div>
                   </div>
                 )}

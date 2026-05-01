@@ -154,15 +154,17 @@ export default function IntegrationDetailModal({
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR');
+  const formatDate = (dateString: string | null | undefined): string => {
+    if (!dateString) return '-';
+    const d = new Date(dateString);
+    return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('fr-FR');
   };
 
   const formatCurrency = (amount: number | undefined, currency: string) => {
     if (!amount) return '-';
     return new Intl.NumberFormat('fr-FR', {
       style: 'currency',
-      currency: currency || 'EUR',
+      currency: currency || 'MAD',
     }).format(amount);
   };
 

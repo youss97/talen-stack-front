@@ -185,7 +185,10 @@ export interface CreateApplicationRequestRequest {
   
   // Nombre de profils
   number_of_profiles: number;
-  
+
+  // Devise
+  currency?: string;
+
   // Pièce jointe
   attachment?: File;
 }
@@ -216,6 +219,7 @@ export interface UpdateApplicationRequestRequest {
   status?: "in_progress" | "standby" | "abandoned" | "filled";
   desired_start_date?: string;
   number_of_profiles?: number;
+  currency?: string;
 }
 
 export interface ApplicationRequestPaginationParams {

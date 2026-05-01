@@ -125,8 +125,8 @@ export default function UserFormModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl">
-      <div className="p-6 sm:p-8 pb-0">
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl max-h-[90vh] flex flex-col">
+      <div className="flex-shrink-0 p-6 sm:p-8 pb-0">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
           {readOnly
             ? "Détails de l'utilisateur"
@@ -153,8 +153,8 @@ export default function UserFormModal({
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <div className="max-h-[60vh] overflow-y-auto px-6 sm:px-8 py-6 custom-scrollbar">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col flex-1 min-h-0">
+        <div className="flex-1 overflow-y-auto px-6 sm:px-8 py-6 custom-scrollbar">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {/* Photo de profil - En premier */}
             <div className="sm:col-span-2">
@@ -308,7 +308,7 @@ export default function UserFormModal({
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 p-6 sm:p-8 pt-0 border-t border-gray-100 dark:border-gray-800">
+        <div className="flex-shrink-0 flex justify-end gap-3 p-6 sm:p-8 pt-4 border-t border-gray-100 dark:border-gray-800">
           {readOnly ? (
             <Button variant="outline" onClick={onClose}>
               Fermer

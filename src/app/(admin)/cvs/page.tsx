@@ -24,7 +24,7 @@ export default function CVsPage() {
   const [minExperience, setMinExperience] = useState<string>("");
   const [maxExperience, setMaxExperience] = useState<string>("");
   const [industryFilter, setIndustryFilter] = useState<string>("");
-  const [emailFilter, setEmailFilter] = useState<string>("");
+  const [profileTypeFilter, setProfileTypeFilter] = useState<string>("");
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailCV, setDetailCV] = useState<CV | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -58,7 +58,7 @@ export default function CVsPage() {
     min_experience: minExperience ? parseInt(minExperience) : undefined,
     max_experience: maxExperience ? parseInt(maxExperience) : undefined,
     industry: industryFilter || undefined,
-    email: emailFilter || undefined,
+    contract_type: profileTypeFilter || undefined,
   });
 
   const [getCVById, { isLoading: isLoadingDetail }] = useLazyGetCVByIdQuery();
@@ -166,7 +166,7 @@ export default function CVsPage() {
             <div>
               <input
                 type="text"
-                placeholder="Rechercher par prénom, nom ou poste..."
+                placeholder="Rechercher par nom, prénom, poste ou email..."
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -224,16 +224,23 @@ export default function CVsPage() {
               />
             </div>
             <div>
-              <input
-                type="email"
-                placeholder="Filtrer par email du candidat..."
-                value={emailFilter}
+              <select
+                value={profileTypeFilter}
                 onChange={(e) => {
-                  setEmailFilter(e.target.value);
+                  setProfileTypeFilter(e.target.value);
                   setPage(1);
                 }}
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
-              />
+              >
+                <option value="">Tous les types de profil</option>
+                <option value="CDI">CDI</option>
+                <option value="CDD">CDD</option>
+                <option value="Freelance">Freelance</option>
+                <option value="Stage">Stage</option>
+                <option value="Alternance">Alternance</option>
+                <option value="Intérim">Intérim</option>
+                <option value="Portage salarial">Portage salarial</option>
+              </select>
             </div>
           </div>
         </div>

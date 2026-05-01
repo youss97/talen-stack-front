@@ -1,5 +1,22 @@
 // CV Types for TalentStack
 
+export interface CvExperience {
+  company: string;
+  title: string;
+  start_date?: string;
+  end_date?: string;
+  location?: string;
+  description?: string;
+}
+
+export interface CvFormation {
+  institution: string;
+  degree: string;
+  field?: string;
+  start_date?: string;
+  end_date?: string;
+}
+
 export enum ContractType {
   CDI = 'CDI',
   CDD = 'CDD',
@@ -14,9 +31,10 @@ export interface CV {
   candidate_phone?: string;
   candidate_first_name?: string;
   candidate_last_name?: string;
-  profile_title?: string; // Titre du profil
+  profile_title?: string;
   skills?: string[];
   additional_skills?: string[];
+  languages?: string[];
   total_experience?: number;
   last_education?: string;
   last_position?: string;
@@ -24,9 +42,12 @@ export interface CV {
   geographic_mobility?: string[];
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
+  experiences?: CvExperience[];
+  formations?: CvFormation[];
   cv_document?: unknown;
   file_name?: string;
   file_path?: string;
+  cloudinary_url?: string;
   file_size?: number;
   mime_type?: string;
   full_information?: {
@@ -42,6 +63,9 @@ export interface CV {
     locations?: string[];
     current_position?: string;
     experience_years?: number;
+    experiences?: CvExperience[];
+    formations?: CvFormation[];
+    contract_type_preferences?: string[];
     user_provided_data?: Record<string, unknown>;
   };
   status?: "new" | "reviewed" | "shortlisted" | "interviewed" | "hired" | "rejected" | "archived";
@@ -56,6 +80,7 @@ export interface CreateCVRequest {
   candidate_first_name?: string;
   candidate_last_name?: string;
   additional_skills?: string[];
+  languages?: string[];
   total_experience?: number;
   last_education?: string;
   last_position?: string;
@@ -64,6 +89,8 @@ export interface CreateCVRequest {
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
   status?: string;
+  experiences?: CvExperience[];
+  formations?: CvFormation[];
 }
 
 export interface UpdateCVRequest {
@@ -72,6 +99,7 @@ export interface UpdateCVRequest {
   candidate_first_name?: string;
   candidate_last_name?: string;
   additional_skills?: string[];
+  languages?: string[];
   total_experience?: number;
   last_education?: string;
   last_position?: string;
@@ -80,6 +108,8 @@ export interface UpdateCVRequest {
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
   status?: string;
+  experiences?: CvExperience[];
+  formations?: CvFormation[];
 }
 
 export interface CVPaginationParams {
@@ -92,4 +122,5 @@ export interface CVPaginationParams {
   max_experience?: number;
   industry?: string;
   email?: string;
+  contract_type?: string;
 }

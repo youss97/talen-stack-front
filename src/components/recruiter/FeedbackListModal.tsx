@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import FeedbackModal from "./FeedbackModal";
+import { formatDateTime } from "@/utils/dateFormat";
 import type { ApplicationFeedback } from "@/types/recruiter";
 
 interface FeedbackListModalProps {
@@ -80,13 +81,7 @@ export default function FeedbackListModal({
                       {feedback.title}
                     </h3>
                     <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ml-4">
-                      {new Date(feedback.created_at).toLocaleDateString("fr-FR", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {formatDateTime(feedback.created_at)}
                     </span>
                   </div>
                   

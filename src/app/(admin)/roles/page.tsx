@@ -18,6 +18,7 @@ import {
 import { useVerifyUserQuery } from "@/lib/services/authApi"; // Import pour forcer le refetch des permissions
 import { triggerRoleUpdateEvent, triggerRolePermissionsUpdateEvent } from "@/components/auth/PermissionsRefresher";
 import { useActions } from "@/hooks/useActions";
+import { formatDate } from "@/utils/dateFormat";
 import type { Role, RoleWithFeatures } from "@/types/role";
 import type { CreateRoleFormData } from "@/validations/roleValidation";
 
@@ -124,9 +125,7 @@ export default function RolesPage() {
       key: "createdAt",
       header: "Date de création",
       render: (value) => {
-        if (!value) return "-";
-        const date = new Date(value as string);
-        return date.toLocaleDateString("fr-FR", {
+        return formatDate(value as string, {
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
@@ -310,22 +309,6 @@ export default function RolesPage() {
           data={data?.data && Array.isArray(data.data) ? data.data : []}
           isLoading={isLoading || isFetching}
           onView={handleViewClick}
-          onEdit={canUpdate ? (role: Role) => {
-            // Ne pas permettre l'édition des rôles protégés
-            if (role.is_protected) {
-              addToast("warning", "Attention", "Ce rôle est protégé et ne peut pas être modifié");
-              return;
-            }
-            handleEditClick(role);
-          } : undefined}
-          onDelete={canDelete ? (role: Role) => {
-            // Ne pas permettre la suppression des rôles protégés
-            if (role.is_protected) {
-              addToast("warning", "Attention", "Ce rôle est protégé et ne peut pas être supprimé");
-              return;
-            }
-            handleDeleteClick(role);
-          } : undefined}
           emptyMessage="Aucun rôle trouvé"
         />
 

@@ -20,6 +20,7 @@ import {
   useGetClientManagersForSelectInfiniteQuery,
 } from "@/lib/services/clientApi";
 import { useGetContractTypesQuery } from "@/lib/services/contractTypeApi";
+import { getCurrencyByCode, DEFAULT_CURRENCY } from "@/lib/currencies";
 
 interface ApplicationRequestFormModalProps {
   isOpen: boolean;
@@ -100,6 +101,10 @@ export default function ApplicationRequestFormModal({
 
   const managerQueryArg = useMemo(() => ({ clientId: clientId || "" }), [clientId]);
   const isFreelance = contractType?.toLowerCase() === "freelance";
+
+  // Devise dynamique — MAD par défaut
+  const [currency, setCurrency] = useState(DEFAULT_CURRENCY);
+  const currencySymbol = getCurrencyByCode(currency)?.symbol || currency;
 
   // Fetch contract types
   const { data: contractTypesData } = useGetContractTypesQuery({ 
@@ -252,7 +257,7 @@ export default function ApplicationRequestFormModal({
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 min-h-0">
+      <form onSubmit={handleSubmit((data) => onSubmit({ ...data, currency }))} className="flex flex-col flex-1 min-h-0">
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar">
           <div className="space-y-8">
             
@@ -471,11 +476,31 @@ export default function ApplicationRequestFormModal({
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
                 5. Budget
               </h3>
+
+              {/* Sélecteur de devise */}
+              <div className="mb-4">
+                <Label>Devise</Label>
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+                >
+                  <option value="MAD">MAD — Dirham marocain (د.م.)</option>
+                  <option value="EUR">EUR — Euro (€)</option>
+                  <option value="USD">USD — Dollar américain ($)</option>
+                  <option value="GBP">GBP — Livre sterling (£)</option>
+                  <option value="TND">TND — Dinar tunisien (د.ت)</option>
+                  <option value="DZD">DZD — Dinar algérien (د.ج)</option>
+                  <option value="AED">AED — Dirham des EAU (د.إ)</option>
+                  <option value="SAR">SAR — Riyal saoudien (﷼)</option>
+                </select>
+              </div>
+
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 {isFreelance ? (
                   <>
                     <div>
-                      <Label>TJM minimum (€)</Label>
+                      <Label>TJM minimum ({currencySymbol})</Label>
                       <Input
                         type="number"
                         placeholder="400"
@@ -488,7 +513,7 @@ export default function ApplicationRequestFormModal({
                     </div>
 
                     <div>
-                      <Label>TJM maximum (€)</Label>
+                      <Label>TJM maximum ({currencySymbol})</Label>
                       <Input
                         type="number"
                         placeholder="600"
@@ -503,7 +528,7 @@ export default function ApplicationRequestFormModal({
                 ) : (
                   <>
                     <div>
-                      <Label>Salaire minimum (€/an)</Label>
+                      <Label>Salaire minimum ({currencySymbol}/an)</Label>
                       <Input
                         type="number"
                         placeholder="45000"
@@ -516,7 +541,7 @@ export default function ApplicationRequestFormModal({
                     </div>
 
                     <div>
-                      <Label>Salaire maximum (€/an)</Label>
+                      <Label>Salaire maximum ({currencySymbol}/an)</Label>
                       <Input
                         type="number"
                         placeholder="55000"

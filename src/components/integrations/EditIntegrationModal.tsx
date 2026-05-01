@@ -28,7 +28,7 @@ export default function EditIntegrationModal({
     salary_type: 'monthly',
     salary: '',
     daily_rate: '',
-    currency: 'EUR',
+    currency: 'MAD',
     contract_type: ContractType.CDI,
     trial_period_duration: '',
     trial_period_end_date: '',
@@ -54,7 +54,7 @@ export default function EditIntegrationModal({
         salary_type: integration.salary ? 'monthly' : 'daily',
         salary: integration.salary?.toString() || '',
         daily_rate: integration.daily_rate?.toString() || '',
-        currency: integration.currency || 'EUR',
+        currency: integration.currency || 'MAD',
         contract_type: integration.contract_type || ContractType.CDI,
         trial_period_duration: integration.trial_period_duration?.toString() || '',
         trial_period_end_date: integration.trial_period_end_date ? new Date(integration.trial_period_end_date).toISOString().split('T')[0] : '',
@@ -302,9 +302,14 @@ export default function EditIntegrationModal({
                     onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
+                    <option value="MAD">MAD (د.م.)</option>
                     <option value="EUR">EUR (€)</option>
                     <option value="USD">USD ($)</option>
                     <option value="GBP">GBP (£)</option>
+                    <option value="TND">TND (د.ت)</option>
+                    <option value="DZD">DZD (د.ج)</option>
+                    <option value="AED">AED (د.إ)</option>
+                    <option value="SAR">SAR (﷼)</option>
                   </select>
                 </div>
               </div>

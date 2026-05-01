@@ -81,7 +81,10 @@ export const NAV_CONFIG: Record<string, { title: string; icon: React.ReactNode }
     title: "Rôles",
     icon: <LockIcon />,
   },
-  // Ajoutez d'autres paths ici selon vos besoins
+  "/subscriptions": {
+    title: "Abonnements",
+    icon: <GridIcon />,
+  },
 };
 
 // Default icon for paths not in config

@@ -6,6 +6,7 @@ import Badge from "@/components/ui/badge/Badge";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
+import { formatDate } from "@/utils/dateFormat";
 import {
   useGetPublicJobOffersQuery,
   useTogglePublicJobOfferActiveMutation,
@@ -108,13 +109,30 @@ export default function PublicOffersPage() {
       header: "Date de création",
       render: (value) => (
         <span className="text-gray-600 dark:text-gray-400">
-          {new Date(value as string).toLocaleDateString('fr-FR')}
+          {formatDate(value as string)}
         </span>
       ),
     },
   ];
 
   const customActions = [
+    {
+      label: "Voir l'offre",
+      icon: (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+      ),
+      onClick: (offer: PublicJobOffer) => {
+        if (offer.is_public && offer.public_slug) {
+          const url = `${window.location.origin}/apply/${offer.public_slug}`;
+          window.open(url, '_blank');
+        } else {
+          addToast("warning", "Attention", "Cette offre n'est pas publique ou n'a pas de slug");
+        }
+      },
+    },
     {
       label: "Copier lien",
       icon: (

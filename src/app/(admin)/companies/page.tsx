@@ -15,6 +15,8 @@ import {
   useUpdateCompanyMutation,
   useDeleteCompanyMutation,
 } from "@/lib/services/companyApi";
+import { useSetCompanyFeaturesMutation } from "@/lib/services/roleApi";
+import { useAssignPlanToCompanyMutation, useRemoveCompanyPlanMutation } from "@/lib/services/subscriptionApi";
 import { useActions } from "@/hooks/useActions";
 import type { Company } from "@/types/company";
 import type { CreateCompanyFormData } from "@/validations/companyValidation";
@@ -29,18 +31,14 @@ export default function CompaniesPage() {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [viewCompany, setViewCompany] = useState<Company | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
-  const [confirmModal, setConfirmModal] = useState<{
-    isOpen: boolean;
-    company: Company | null;
-  }>({ isOpen: false, company: null });
+  const [confirmModal, setConfirmModal] = useState<{ isOpen: boolean; company: Company | null }>({
+    isOpen: false,
+    company: null,
+  });
   const [isDeleting, setIsDeleting] = useState(false);
 
   const addToast = useCallback(
-    (
-      variant: "success" | "error" | "warning" | "info",
-      title: string,
-      message?: string
-    ) => {
+    (variant: "success" | "error" | "warning" | "info", title: string, message?: string) => {
       const id = Date.now().toString();
       setToasts((prev) => [...prev, { id, variant, title, message }]);
     },
@@ -48,7 +46,7 @@ export default function CompaniesPage() {
   );
 
   const removeToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
   const { data, isLoading, isFetching } = useGetCompaniesQuery({
@@ -58,11 +56,13 @@ export default function CompaniesPage() {
     status: statusFilter || undefined,
   });
 
-  const [getCompanyById, { isLoading: isLoadingDetail }] =
-    useLazyGetCompanyByIdQuery();
+  const [getCompanyById, { isLoading: isLoadingDetail }] = useLazyGetCompanyByIdQuery();
   const [createCompany, { isLoading: isCreating }] = useCreateCompanyMutation();
   const [updateCompany, { isLoading: isUpdating }] = useUpdateCompanyMutation();
   const [deleteCompany] = useDeleteCompanyMutation();
+  const [setCompanyFeatures] = useSetCompanyFeaturesMutation();
+  const [assignPlanToCompany] = useAssignPlanToCompanyMutation();
+  const [removeCompanyPlan] = useRemoveCompanyPlanMutation();
 
   const getErrorMessage = (error: unknown, defaultMessage: string): string => {
     if (error && typeof error === "object") {
@@ -73,36 +73,16 @@ export default function CompaniesPage() {
   };
 
   const columns: Column<Company>[] = [
-    {
-      key: "name",
-      header: "Nom",
-      className: "font-medium",
-    },
-    {
-      key: "siret",
-      header: "SIRET",
-    },
-    {
-      key: "city",
-      header: "Ville",
-    },
-    {
-      key: "email",
-      header: "Email",
-    },
-    {
-      key: "phone",
-      header: "Téléphone",
-    },
+    { key: "name", header: "Nom", className: "font-medium" },
+    { key: "siret", header: "SIRET" },
+    { key: "city", header: "Ville" },
+    { key: "email", header: "Email" },
+    { key: "phone", header: "Téléphone" },
     {
       key: "status",
       header: "Statut",
       render: (value) => (
-        <Badge
-          color={value === "active" ? "success" : "error"}
-          variant="light"
-          size="sm"
-        >
+        <Badge color={value === "active" ? "success" : "error"} variant="light" size="sm">
           {value === "active" ? "Actif" : "Inactif"}
         </Badge>
       ),
@@ -115,8 +95,8 @@ export default function CompaniesPage() {
     try {
       const result = await getCompanyById(company.id).unwrap();
       setViewCompany(result);
-    } catch (error) {
-      console.error("Error fetching company details:", error);
+    } catch {
+      console.error("Error fetching company details");
     }
   };
 
@@ -131,8 +111,7 @@ export default function CompaniesPage() {
     try {
       const result = await getCompanyById(company.id).unwrap();
       setSelectedCompany(result);
-    } catch (error) {
-      console.error("Error fetching company details:", error);
+    } catch {
       addToast("error", "Erreur", "Erreur lors du chargement des détails de l'entreprise");
       setIsFormModalOpen(false);
     }
@@ -144,66 +123,103 @@ export default function CompaniesPage() {
 
   const handleConfirmDelete = async () => {
     if (!confirmModal.company) return;
-
     setIsDeleting(true);
     try {
       await deleteCompany(confirmModal.company.id).unwrap();
       addToast("success", "Succès", "Entreprise supprimée avec succès");
       setConfirmModal({ isOpen: false, company: null });
     } catch (error) {
-      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la suppression de l'entreprise"));
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la suppression"));
     } finally {
       setIsDeleting(false);
     }
   };
 
-  const handleFormSubmit = async (data: CreateCompanyFormData) => {
+  const handleFormSubmit = async (
+    data: CreateCompanyFormData & { featureIds?: string[]; planId?: string }
+  ) => {
+    const { featureIds, planId, ...companyFormData } = data as typeof data & {
+      featureIds?: string[];
+      planId?: string;
+    };
+
     try {
       if (selectedCompany) {
-        // For update, exclude admin fields and only send company data
-        const { adminEmail, adminPassword, adminFirstName, adminLastName, adminPhoto, ...companyData } = data;
-        
-        // Always use FormData for updates to handle file uploads properly
+        // Mise à jour
+        const { adminEmail, adminPassword, adminFirstName, adminLastName, adminPhoto, ...companyData } =
+          companyFormData as typeof companyFormData & {
+            adminEmail?: string; adminPassword?: string;
+            adminFirstName?: string; adminLastName?: string; adminPhoto?: unknown;
+          };
+
         const formData = new FormData();
         Object.keys(companyData).forEach((key) => {
-          const value = companyData[key as keyof typeof companyData];
+          const value = (companyData as Record<string, unknown>)[key];
           if (value !== undefined && value !== null) {
-            if (key === 'logo' && value instanceof File) {
+            if (key === "logo" && value instanceof File) {
               formData.append(key, value);
-            } else if (typeof value === 'string' && key === 'logo' && value.startsWith('http')) {
-              // Si c'est une URL Cloudinary, l'envoyer comme string
-              formData.append('logo_url', value);
-            } else if (typeof value !== 'object') {
+            } else if (typeof value === "string" && key === "logo" && value.startsWith("http")) {
+              formData.append("logo_url", value);
+            } else if (typeof value !== "object") {
               formData.append(key, String(value));
             }
           }
         });
-        
-        await updateCompany({
-          id: selectedCompany.id,
-          data: formData,
-        }).unwrap();
-        
+
+        await updateCompany({ id: selectedCompany.id, data: formData }).unwrap();
+
+        // Plan ou features manuelles
+        if (planId) {
+          await assignPlanToCompany({ companyId: selectedCompany.id, planId }).unwrap();
+        } else if (planId === "") {
+          // Plan retiré explicitement — supprimer le plan et appliquer les features manuelles
+          await removeCompanyPlan(selectedCompany.id).unwrap();
+          if (featureIds !== undefined) {
+            await setCompanyFeatures({ companyId: selectedCompany.id, featureIds }).unwrap();
+          }
+        } else if (featureIds !== undefined) {
+          await setCompanyFeatures({ companyId: selectedCompany.id, featureIds }).unwrap();
+        }
+
         addToast("success", "Succès", "Entreprise modifiée avec succès");
       } else {
-        // For create, always use FormData with all fields including admin
+        // Création
         const formData = new FormData();
-        Object.keys(data).forEach((key) => {
-          const value = data[key as keyof CreateCompanyFormData];
+        Object.keys(companyFormData).forEach((key) => {
+          const value = (companyFormData as Record<string, unknown>)[key];
           if (value !== undefined && value !== null) {
-            if ((key === 'logo' || key === 'adminPhoto') && value instanceof File) {
+            if ((key === "logo" || key === "adminPhoto") && value instanceof File) {
               formData.append(key, value);
-            } else if (typeof value === 'string' && (key === 'logo' || key === 'adminPhoto') && value.startsWith('http')) {
-              // Si c'est une URL Cloudinary, l'envoyer avec un suffixe _url
+            } else if (
+              typeof value === "string" &&
+              (key === "logo" || key === "adminPhoto") &&
+              value.startsWith("http")
+            ) {
               formData.append(`${key}_url`, value);
-            } else if (typeof value !== 'object') {
+            } else if (typeof value !== "object") {
               formData.append(key, String(value));
             }
           }
         });
-        await createCompany(formData).unwrap();
+
+        const result = await createCompany(formData).unwrap();
+        const companyId =
+          (result as { company?: { id: string }; id?: string })?.company?.id ||
+          (result as { id?: string })?.id;
+
+        if (companyId) {
+          if (planId) {
+            // Assigner le plan → auto-sync des features
+            await assignPlanToCompany({ companyId, planId }).unwrap();
+          } else if (featureIds && featureIds.length > 0) {
+            // Sélection manuelle
+            await setCompanyFeatures({ companyId, featureIds }).unwrap();
+          }
+        }
+
         addToast("success", "Succès", "Entreprise créée avec succès");
       }
+
       setIsFormModalOpen(false);
       setSelectedCompany(null);
     } catch (error) {
@@ -219,13 +235,12 @@ export default function CompaniesPage() {
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 border-b border-gray-100 dark:border-gray-800">
           <div>
-            <h1 className="text-lg font-semibold text-gray-800 dark:text-white">
-              Entreprises
-            </h1>
+            <h1 className="text-lg font-semibold text-gray-800 dark:text-white">Entreprises</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Gérez les entreprises de la plateforme
+              Gérez les entreprises et leurs modules accessibles
             </p>
           </div>
           {canCreate && (
@@ -235,34 +250,25 @@ export default function CompaniesPage() {
           )}
         </div>
 
+        {/* Filtres */}
         <div className="p-5 border-b border-gray-100 dark:border-gray-800">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <input
-                type="text"
-                placeholder="Rechercher une entreprise..."
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
-                className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
-              />
-            </div>
-            <div>
-              <select
-                value={statusFilter}
-                onChange={(e) => {
-                  setStatusFilter(e.target.value);
-                  setPage(1);
-                }}
-                className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
-              >
-                <option value="">Tous les statuts</option>
-                <option value="active">Actif</option>
-                <option value="inactive">Inactif</option>
-              </select>
-            </div>
+            <input
+              type="text"
+              placeholder="Rechercher une entreprise..."
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+            />
+            <select
+              value={statusFilter}
+              onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+              className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+            >
+              <option value="">Tous les statuts</option>
+              <option value="active">Actif</option>
+              <option value="inactive">Inactif</option>
+            </select>
           </div>
         </div>
 
@@ -276,7 +282,7 @@ export default function CompaniesPage() {
           emptyMessage="Aucune entreprise trouvée"
         />
 
-        {data && data.pagination && (
+        {data?.pagination && (
           <div className="p-5 border-t border-gray-100 dark:border-gray-800">
             <Pagination
               currentPage={page}
@@ -291,10 +297,7 @@ export default function CompaniesPage() {
 
       <CompanyFormModal
         isOpen={isFormModalOpen}
-        onClose={() => {
-          setIsFormModalOpen(false);
-          setSelectedCompany(null);
-        }}
+        onClose={() => { setIsFormModalOpen(false); setSelectedCompany(null); }}
         onSubmit={handleFormSubmit}
         company={selectedCompany}
         isLoading={isCreating || isUpdating || isLoadingDetail}
@@ -302,10 +305,7 @@ export default function CompaniesPage() {
 
       <CompanyDetailModal
         isOpen={isViewModalOpen}
-        onClose={() => {
-          setIsViewModalOpen(false);
-          setViewCompany(null);
-        }}
+        onClose={() => { setIsViewModalOpen(false); setViewCompany(null); }}
         company={viewCompany}
         isLoading={isLoadingDetail}
       />
@@ -327,22 +327,8 @@ export default function CompaniesPage() {
 
 function PlusIcon() {
   return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M10 4.16667V15.8333M4.16667 10H15.8333"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 4.16667V15.8333M4.16667 10H15.8333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
-
-

@@ -25,6 +25,7 @@ import {
 } from "@/lib/services/recruiterApi";
 import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
 import { useCreateInterviewMutation, useGetApplicationInterviewsQuery, useUpdateInterviewNotesMutation, useCancelInterviewMutation } from "@/lib/services/interviewApi";
+import { formatDateTime } from "@/utils/dateFormat";
 
 interface RecruiterDetailModalProps {
   isOpen: boolean;
@@ -679,14 +680,7 @@ export default function RecruiterDetailModal({
                           )}
                         </div>
                         <span className="text-gray-500 dark:text-gray-500">
-                          {new Date(feedback.created_at).toLocaleDateString("fr-FR", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })} à {new Date(feedback.created_at).toLocaleTimeString("fr-FR", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {formatDateTime(feedback.created_at)}
                         </span>
                       </div>
                     </div>

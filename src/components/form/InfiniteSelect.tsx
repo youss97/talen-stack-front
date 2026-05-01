@@ -84,6 +84,23 @@ function InfiniteSelectInner<T extends Record<string, unknown>>(
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Close dropdown on scroll or resize
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleScrollOrResize = () => {
+      setIsOpen(false);
+    };
+
+    window.addEventListener("scroll", handleScrollOrResize, true);
+    window.addEventListener("resize", handleScrollOrResize);
+
+    return () => {
+      window.removeEventListener("scroll", handleScrollOrResize, true);
+      window.removeEventListener("resize", handleScrollOrResize);
+    };
+  }, [isOpen]);
+
   // Query params with search
   const queryWithSearch = useMemo(() => {
     return {
@@ -187,9 +204,11 @@ function InfiniteSelectInner<T extends Record<string, unknown>>(
 
   return (
     <div ref={dropdownRef} className="relative">
-      <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-        {label}
-      </label>
+      {label && (
+        <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+          {label}
+        </label>
+      )}
       <div
         className={`relative h-11 w-full rounded-lg border bg-transparent text-sm shadow-theme-xs cursor-pointer
           ${error
@@ -267,7 +286,14 @@ function InfiniteSelectInner<T extends Record<string, unknown>>(
       </div>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
+        <div 
+          className="fixed z-[9999] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden"
+          style={{
+            top: dropdownRef.current ? `${dropdownRef.current.getBoundingClientRect().bottom + 4}px` : '0',
+            left: dropdownRef.current ? `${dropdownRef.current.getBoundingClientRect().left}px` : '0',
+            width: dropdownRef.current ? `${dropdownRef.current.getBoundingClientRect().width}px` : 'auto',
+          }}
+        >
           <ul
             ref={listRef}
             className="max-h-60 overflow-y-auto custom-scrollbar"

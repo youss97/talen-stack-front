@@ -79,7 +79,7 @@ export default function RecruiterFormModal({
       current_salary: undefined,
       daily_rate: undefined,
       package_rate: undefined,
-      currency: "EUR",
+      currency: "MAD",
       offer_contract_types: [],
       availability_type: "one_month",
       availability_reason: "",
@@ -166,7 +166,7 @@ export default function RecruiterFormModal({
         current_salary: recruiter.current_salary,
         daily_rate: recruiter.daily_rate,
         package_rate: recruiter.package_rate,
-        currency: recruiter.currency || "EUR",
+        currency: recruiter.currency || "MAD",
         offer_contract_types: recruiter.offer_contract_types || [],
         availability_type: recruiter.availability_type || "one_month",
         availability_reason: recruiter.availability_reason || "",
@@ -196,7 +196,7 @@ export default function RecruiterFormModal({
         current_salary: undefined,
         daily_rate: undefined,
         package_rate: undefined,
-        currency: "EUR",
+        currency: "MAD",
         offer_contract_types: [],
         availability_type: "one_month",
         availability_reason: "",
@@ -490,7 +490,7 @@ export default function RecruiterFormModal({
                 <div>
                   <Label>Devise</Label>
                   <CurrencySelector
-                    value={watch("currency") || "EUR"}
+                    value={watch("currency") || "MAD"}
                     onChange={(currencyCode) => setValue("currency", currencyCode)}
                     placeholder="Sélectionner une devise..."
                     className="h-11"
@@ -504,7 +504,7 @@ export default function RecruiterFormModal({
             {/* Section 4: Type de Contrat de l'Offre */}
             <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                Type(s) de contrat accepté(s)
+                Type(s) de contrat souhaité(s)
               </h3>
               
               <div>

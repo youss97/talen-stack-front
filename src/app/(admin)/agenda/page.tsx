@@ -11,6 +11,7 @@ import IntegrationAgendaModal from "@/components/integrations/IntegrationAgendaM
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import { ToastContainer } from "@/components/ui/toast/Toast";
 import { useToast } from "@/hooks/useToast";
+import { useAppSelector } from "@/lib/hooks";
 import type { Interview } from "@/types/interview";
 
 // Configuration de moment en français
@@ -18,6 +19,10 @@ moment.locale("fr");
 const localizer = momentLocalizer(moment);
 
 export default function AgendaPage() {
+  const user = useAppSelector((state) => state.auth.user);
+  // Client company users have parent_company_id set — they get read-only access
+  const isClientUser = !!user?.company?.parent_company_id;
+
   const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
   const [selectedIntegrationId, setSelectedIntegrationId] = useState<string | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -661,9 +666,9 @@ export default function AgendaPage() {
             setSelectedInterview(null);
           }}
           interview={selectedInterview}
-          onChangeStatus={handleChangeStatus}
-          onReschedule={handleReschedule}
-          onDelete={handleDeleteClick}
+          onChangeStatus={isClientUser ? undefined : handleChangeStatus}
+          onReschedule={isClientUser ? undefined : handleReschedule}
+          onDelete={isClientUser ? undefined : handleDeleteClick}
         />
       )}
 

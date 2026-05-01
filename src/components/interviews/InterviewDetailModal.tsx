@@ -26,7 +26,8 @@ export default function InterviewDetailModal({
   const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
   const [isRescheduling, setIsRescheduling] = useState(false);
   
-  const interviewDate = new Date(interview.scheduled_date);
+  const interviewDateRaw = interview.scheduled_date ? new Date(interview.scheduled_date) : null;
+  const interviewDate = interviewDateRaw && !isNaN(interviewDateRaw.getTime()) ? interviewDateRaw : null;
 
   const handleReschedule = async (interviewId: string, newDate: Date, newDuration?: number) => {
     if (!onReschedule) return;
@@ -163,18 +164,18 @@ export default function InterviewDetailModal({
           </h3>
           <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4">
             <div className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
-              {interviewDate.toLocaleDateString("fr-FR", {
+              {interviewDate ? interviewDate.toLocaleDateString("fr-FR", {
                 weekday: "long",
                 day: "numeric",
                 month: "long",
                 year: "numeric",
-              })}
+              }) : '-'}
             </div>
             <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
-              {interviewDate.toLocaleTimeString("fr-FR", {
+              {interviewDate ? interviewDate.toLocaleTimeString("fr-FR", {
                 hour: "2-digit",
                 minute: "2-digit",
-              })} • Durée: {interview.duration_minutes} minutes
+              }) : '-'} • Durée: {interview.duration_minutes} minutes
             </div>
           </div>
         </div>
@@ -291,19 +292,11 @@ export default function InterviewDetailModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-xs text-gray-500 dark:text-gray-400">
             <div>
               <span className="font-medium">Créé le:</span>{" "}
-              {new Date(interview.created_at).toLocaleDateString("fr-FR")} à{" "}
-              {new Date(interview.created_at).toLocaleTimeString("fr-FR", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              {interview.created_at ? (() => { const d = new Date(interview.created_at); return isNaN(d.getTime()) ? '-' : `${d.toLocaleDateString("fr-FR")} à ${d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`; })() : '-'}
             </div>
             <div>
               <span className="font-medium">Modifié le:</span>{" "}
-              {new Date(interview.updated_at).toLocaleDateString("fr-FR")} à{" "}
-              {new Date(interview.updated_at).toLocaleTimeString("fr-FR", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              {interview.updated_at ? (() => { const d = new Date(interview.updated_at); return isNaN(d.getTime()) ? '-' : `${d.toLocaleDateString("fr-FR")} à ${d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`; })() : '-'}
             </div>
           </div>
         </div>

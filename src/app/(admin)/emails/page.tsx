@@ -10,6 +10,7 @@ import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import EmailFormModal from "@/components/email/EmailFormModal";
 import EmailDetailModal from "@/components/email/EmailDetailModal";
 import { useGetEmailsQuery, useDeleteEmailMutation } from "@/lib/services/emailApi";
+import { formatDateTime } from "@/utils/dateFormat";
 import type { Email } from "@/types/email";
 import { useModal } from "@/hooks/useModal";
 import { useActions } from "@/hooks/useActions";
@@ -144,15 +145,7 @@ const EmailsPage = () => {
       header: "Date d'envoi",
       render: (_, email) => (
         <span className="text-sm">
-          {email.sent_at
-            ? new Date(email.sent_at).toLocaleDateString("fr-FR", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            : "-"}
+          {formatDateTime(email.sent_at)}
         </span>
       ),
     },
@@ -161,13 +154,7 @@ const EmailsPage = () => {
       header: "Créé le",
       render: (_, email) => (
         <span className="text-sm">
-          {new Date(email.created_at).toLocaleDateString("fr-FR", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {formatDateTime(email.created_at)}
         </span>
       ),
     },

@@ -199,6 +199,8 @@ export interface RecruiterPaginationParams {
   search?: string;
   status?: string;
   request_id?: string;
+  recruiter_id?: string;
+  client_id?: string;
   workflow_status?: WorkflowStatus;
 }
 

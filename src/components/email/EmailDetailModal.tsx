@@ -192,13 +192,7 @@ const EmailDetailModal: React.FC<EmailDetailModalProps> = ({
                   Date de création
                 </h3>
                 <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {new Date(email.created_at).toLocaleString("fr-FR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {email.created_at ? (() => { const d = new Date(email.created_at); return isNaN(d.getTime()) ? '-' : d.toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }); })() : '-'}
                 </p>
               </div>
               {email.sent_at && (

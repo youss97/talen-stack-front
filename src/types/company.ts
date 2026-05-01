@@ -22,7 +22,8 @@ export interface CompanyUser {
 export interface Company {
   id: string;
   name: string;
-  siret: string;
+  siret?: string;
+  ice?: string;
   address: string;
   city: string;
   postal_code: string;

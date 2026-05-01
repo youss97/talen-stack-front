@@ -1,13 +1,17 @@
 "use client";
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/lib/store";
 import { usePermissions } from "./usePermissions";
-import { NAV_CONFIG, DEFAULT_ICON } from "@/layout/nav-config";
+import { NAV_CONFIG } from "@/layout/nav-config";
 import type { NavItem } from "@/layout/nav-config";
 
 // ----------------------------------------------------------------------
 
 export function useNavigation() {
   const { features, canAccessPath } = usePermissions();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isSuperAdmin = user?.role?.code === "super_admin";
 
   const navItems: NavItem[] = useMemo(() => {
     if (!features || features.length === 0) {
@@ -17,32 +21,27 @@ export function useNavigation() {
     const allowedPaths = new Set<string>();
     features.forEach((feature) => {
       feature.pages?.forEach((page) => {
-        if (page.path) {
-          allowedPaths.add(page.path);
-        }
+        if (page.path) allowedPaths.add(page.path);
       });
     });
 
     const items: NavItem[] = [];
 
     allowedPaths.forEach((path) => {
-      // Utiliser canAccessPath pour vérifier l'accès (inclut les restrictions Super Admin)
       if (canAccessPath(path)) {
         const config = NAV_CONFIG[path];
-        if (config) {
-          items.push({
-            title: config.title,
-            path,
-            icon: config.icon,
-          });
-        }
+        if (config) items.push({ title: config.title, path, icon: config.icon });
       }
-      // Ne plus afficher les paths sans config (comme /profile)
-      // Ils sont accessibles mais ne doivent pas apparaître dans la sidebar
     });
 
+    // Injecter /subscriptions uniquement pour le super admin
+    if (isSuperAdmin && !items.find((i) => i.path === "/subscriptions")) {
+      const subConfig = NAV_CONFIG["/subscriptions"];
+      if (subConfig) items.push({ title: subConfig.title, path: "/subscriptions", icon: subConfig.icon });
+    }
+
     return items;
-  }, [features, canAccessPath]);
+  }, [features, canAccessPath, isSuperAdmin]);
 
   return navItems;
 }

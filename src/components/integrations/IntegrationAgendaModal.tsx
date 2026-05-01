@@ -84,7 +84,7 @@ export default function IntegrationAgendaModal({
     if (!amount) return '-';
     return new Intl.NumberFormat('fr-FR', {
       style: 'currency',
-      currency: currency || 'EUR',
+      currency: currency || 'MAD',
     }).format(amount);
   };
   if (isLoading) {
@@ -191,7 +191,7 @@ export default function IntegrationAgendaModal({
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">Date d'intégration:</span>
                     <span className="ml-2 font-medium">
-                      {new Date(integration.integration_date).toLocaleDateString('fr-FR')}
+                      {integration.integration_date ? (() => { const d = new Date(integration.integration_date); return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('fr-FR'); })() : '-'}
                     </span>
                   </div>
                 </div>

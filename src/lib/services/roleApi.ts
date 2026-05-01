@@ -284,6 +284,28 @@ export const roleApi = createApi({
       providesTags: [{ type: "Feature", id: "ALL" }],
     }),
 
+    // GET /roles/companies/:companyId/features - Get features assigned to a company
+    getCompanyFeatures: builder.query<Feature[], string>({
+      query: (companyId) => ({
+        url: `/roles/companies/${companyId}/features`,
+        method: "GET",
+      }),
+      providesTags: (_r, _e, companyId) => [{ type: "Feature", id: `COMPANY_${companyId}` }],
+    }),
+
+    // POST /roles/companies/:companyId/features - Set features for a company
+    setCompanyFeatures: builder.mutation<Feature[], { companyId: string; featureIds: string[] }>({
+      query: ({ companyId, featureIds }) => ({
+        url: `/roles/companies/${companyId}/features`,
+        method: "POST",
+        body: { featureIds },
+      }),
+      invalidatesTags: (_r, _e, { companyId }) => [
+        { type: "Feature", id: `COMPANY_${companyId}` },
+        { type: "Feature", id: "ALL" },
+      ],
+    }),
+
     // POST /roles/:id/actions - Assign actions to role
     assignActionsToRole: builder.mutation<void, { id: string; data: AssignActionsRequest }>({
       query: ({ id, data }) => ({
@@ -339,6 +361,8 @@ export const {
   useUpdateRoleMutation,
   useDeleteRoleMutation,
   useGetFeaturesQuery,
+  useGetCompanyFeaturesQuery,
+  useSetCompanyFeaturesMutation,
   useAssignActionsToRoleMutation,
   useGetRoleActionsQuery,
 } = roleApi;

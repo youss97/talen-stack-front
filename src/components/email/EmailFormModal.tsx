@@ -312,7 +312,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({
           <Button variant="outline" onClick={handleClose}>
             Annuler
           </Button>
-          <Button disabled={isSending || totalRecipients === 0}>
+          <Button type="submit" disabled={isSending || totalRecipients === 0}>
             {isSending ? "Envoi en cours..." : "Envoyer"}
           </Button>
         </div>

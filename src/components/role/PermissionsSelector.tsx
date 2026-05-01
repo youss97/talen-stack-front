@@ -58,7 +58,20 @@ export default function PermissionsSelector({
       onPagesChange([]);
       onActionsChange([]);
     } else {
+      // Sélectionner toutes les features
       onFeaturesChange(allFeatureIds);
+      
+      // Auto-sélectionner toutes les pages de toutes les features
+      const allPageIdsFromFeatures = allFeatures.flatMap((f) => f.pages?.map((p) => p.id) ?? []);
+      onPagesChange(allPageIdsFromFeatures);
+      
+      // Auto-sélectionner TOUTES les actions de toutes les pages
+      const allActionIdsFromFeatures = allFeatures.flatMap((f) => 
+        f.pages?.flatMap((p) => 
+          p.actions?.map((a) => a.id) ?? []
+        ) ?? []
+      );
+      onActionsChange(allActionIdsFromFeatures);
     }
   };
 
@@ -96,7 +109,21 @@ export default function PermissionsSelector({
       onPagesChange(selectedPages.filter((id) => !pageIds.includes(id)));
       onActionsChange(selectedActions.filter((id) => !actionIds.includes(id)));
     } else {
+      // Sélectionner la feature
       onFeaturesChange([...selectedFeatures, featureId]);
+      
+      // Auto-sélectionner toutes les pages de cette feature
+      const feature = allFeatures.find((f) => f.id === featureId);
+      const pageIds = feature?.pages?.map((p) => p.id) ?? [];
+      const newPages = Array.from(new Set([...selectedPages, ...pageIds]));
+      onPagesChange(newPages);
+      
+      // Auto-sélectionner toutes les actions READ de ces pages
+      const readActionIds = feature?.pages?.flatMap((p) => 
+        p.actions?.filter((a) => isReadAction(a.code)).map((a) => a.id) ?? []
+      ) ?? [];
+      const newActions = Array.from(new Set([...selectedActions, ...readActionIds]));
+      onActionsChange(newActions);
     }
   };
 

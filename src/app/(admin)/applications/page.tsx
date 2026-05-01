@@ -1,5 +1,6 @@
 "use client";
 import { useState, useCallback } from "react";
+import { Controller, useForm } from "react-hook-form";
 import DataTableWithSelection from "@/components/tables/DataTableWithSelection";
 import BulkActions from "@/components/tables/BulkActions";
 import Pagination from "@/components/tables/Pagination";
@@ -11,6 +12,7 @@ import RecruiterFormModal from "@/components/recruiter/RecruiterFormModal";
 import RecruiterDetailModal from "@/components/recruiter/RecruiterDetailModal";
 import BulkEmailModal from "@/components/recruiter/BulkEmailModal";
 import CreateInterviewSimpleModal from "@/components/interviews/CreateInterviewSimpleModal";
+import InfiniteSelect from "@/components/form/InfiniteSelect";
 import {
   useGetRecruitersQuery,
   useGetRecruiterByIdQuery,
@@ -22,6 +24,8 @@ import {
   useSendApplicationEmailMutation,
 } from "@/lib/services/recruiterApi";
 import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
+import { useGetClientsForSelectInfiniteQuery } from "@/lib/services/clientApi";
+import { useGetApplicationRequestsForSelectInfiniteQuery } from "@/lib/services/applicationRequestApi";
 import { useCreateInterviewMutation } from "@/lib/services/interviewApi";
 import { useActions } from "@/hooks/useActions";
 import { exportCandidaturesToExcel, type ExportableCandidate } from "@/utils/excelExport";
@@ -37,6 +41,17 @@ export default function ApplicationsPage() {
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [workflowStatusFilter, setWorkflowStatusFilter] = useState<WorkflowStatus | "">("");
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  
+  // Form for filters
+  const { control, watch } = useForm({
+    defaultValues: {
+      clientFilter: "",
+      requestFilter: "",
+    },
+  });
+
+  const clientFilter = watch("clientFilter");
+  const requestFilter = watch("requestFilter");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isBulkEmailModalOpen, setIsBulkEmailModalOpen] = useState(false);
@@ -81,6 +96,8 @@ export default function ApplicationsPage() {
     search: search || undefined,
     status: statusFilter || undefined,
     workflow_status: workflowStatusFilter || undefined,
+    client_id: clientFilter || undefined,
+    request_id: requestFilter || undefined,
   });
 
   // Récupérer les statuts de candidature
@@ -489,7 +506,7 @@ export default function ApplicationsPage() {
         </div>
 
         <div className="p-5 border-b border-gray-100 dark:border-gray-800">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <div>
               <input
                 type="text"
@@ -500,6 +517,48 @@ export default function ApplicationsPage() {
                   setPage(1);
                 }}
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+              />
+            </div>
+            <div>
+              <Controller
+                name="clientFilter"
+                control={control}
+                render={({ field }) => (
+                  <InfiniteSelect
+                    label=""
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      setPage(1);
+                    }}
+                    useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
+                    itemLabelKey="name"
+                    itemValueKey="id"
+                    placeholder="Tous les clients"
+                    emptyMessage="Aucun client trouvé"
+                  />
+                )}
+              />
+            </div>
+            <div>
+              <Controller
+                name="requestFilter"
+                control={control}
+                render={({ field }) => (
+                  <InfiniteSelect
+                    label=""
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      setPage(1);
+                    }}
+                    useInfiniteQuery={useGetApplicationRequestsForSelectInfiniteQuery}
+                    itemLabelKey="title"
+                    itemValueKey="id"
+                    placeholder="Toutes les demandes"
+                    emptyMessage="Aucune demande trouvée"
+                  />
+                )}
               />
             </div>
             <div>

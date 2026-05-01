@@ -78,8 +78,10 @@ export default function InterviewsPage() {
     );
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return '-';
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '-';
     return date.toLocaleDateString('fr-FR', {
       weekday: 'long',
       day: 'numeric',
@@ -88,8 +90,10 @@ export default function InterviewsPage() {
     });
   };
 
-  const formatTime = (dateString: string) => {
+  const formatTime = (dateString: string | null | undefined) => {
+    if (!dateString) return '-';
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '-';
     return date.toLocaleTimeString('fr-FR', {
       hour: '2-digit',
       minute: '2-digit',
@@ -371,6 +375,7 @@ export default function InterviewsPage() {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSubmit={handleCreateInterview}
+        application={undefined}
         isLoading={isCreating}
       />
 

@@ -184,11 +184,13 @@ export default function PublicOfferDetailPage() {
                     Date limite
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {new Date(offer.deadline).toLocaleDateString("fr-FR", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
+                    {offer.deadline && !isNaN(new Date(offer.deadline).getTime())
+                      ? new Date(offer.deadline).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })
+                      : "-"}
                   </p>
                 </div>
               )}
@@ -212,7 +214,7 @@ export default function PublicOfferDetailPage() {
               </div>
               <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                 <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                  {offer.published_at 
+                  {offer.published_at && !isNaN(new Date(offer.published_at).getTime())
                     ? new Date(offer.published_at).toLocaleDateString('fr-FR')
                     : 'N/A'
                   }

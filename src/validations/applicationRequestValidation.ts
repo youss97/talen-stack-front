@@ -147,6 +147,9 @@ export const createApplicationRequestSchema = yup.object({
     .number()
     .min(1, "Au moins 1 profil requis")
     .required("Le nombre de profils est requis"),
+
+  // Devise
+  currency: yup.string().default("MAD"),
 });
 
 export const updateApplicationRequestSchema = yup.object({
@@ -214,6 +217,7 @@ export const updateApplicationRequestSchema = yup.object({
   number_of_profiles: yup
     .number()
     .min(1, "Au moins 1 profil requis"),
+  currency: yup.string().default("MAD"),
 });
 
 export type CreateApplicationRequestFormData = yup.InferType<typeof createApplicationRequestSchema>;

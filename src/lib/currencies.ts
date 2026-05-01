@@ -8,6 +8,9 @@ export interface Currency {
 }
 
 export const CURRENCIES: Currency[] = [
+  // Devise par défaut (Maroc)
+  { code: 'MAD', name: 'Dirham marocain', symbol: 'د.م.', flag: '🇲🇦', region: 'Afrique' },
+
   // Devises principales (Europe)
   { code: 'EUR', name: 'Euro', symbol: '€', flag: '🇪🇺', region: 'Europe' },
   { code: 'CHF', name: 'Franc suisse', symbol: 'CHF', flag: '🇨🇭', region: 'Europe' },
@@ -54,7 +57,6 @@ export const CURRENCIES: Currency[] = [
   { code: 'NGN', name: 'Naira nigérian', symbol: '₦', flag: '🇳🇬', region: 'Afrique' },
   { code: 'KES', name: 'Shilling kényan', symbol: 'KSh', flag: '🇰🇪', region: 'Afrique' },
   { code: 'GHS', name: 'Cedi ghanéen', symbol: '₵', flag: '🇬🇭', region: 'Afrique' },
-  { code: 'MAD', name: 'Dirham marocain', symbol: 'د.م.', flag: '🇲🇦', region: 'Afrique' },
   { code: 'TND', name: 'Dinar tunisien', symbol: 'د.ت', flag: '🇹🇳', region: 'Afrique' },
   { code: 'DZD', name: 'Dinar algérien', symbol: 'د.ج', flag: '🇩🇿', region: 'Afrique' },
 
@@ -75,10 +77,13 @@ export const CURRENCIES: Currency[] = [
   { code: 'UZS', name: 'Sum ouzbek', symbol: 'лв', flag: '🇺🇿', region: 'Asie centrale' },
 ];
 
-// Devises les plus utilisées (pour affichage prioritaire)
+// Devises les plus utilisées (pour affichage prioritaire — MAD en premier)
 export const POPULAR_CURRENCIES = [
-  'EUR', 'USD', 'GBP', 'CHF', 'CAD', 'JPY', 'AUD', 'CNY', 'SEK', 'NOK', 'DKK'
+  'MAD', 'EUR', 'USD', 'GBP', 'CHF', 'CAD', 'TND', 'DZD', 'AED', 'SAR'
 ];
+
+// Devise par défaut de l'application
+export const DEFAULT_CURRENCY = 'MAD';
 
 // Grouper les devises par région
 export const CURRENCIES_BY_REGION = CURRENCIES.reduce((acc, currency) => {

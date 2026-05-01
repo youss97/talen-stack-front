@@ -42,7 +42,8 @@ export default function CancelInterviewModal({
 
   if (!interview) return null;
 
-  const interviewDate = new Date(interview.scheduled_date);
+  const interviewDateRaw = interview.scheduled_date ? new Date(interview.scheduled_date) : null;
+  const interviewDate = interviewDateRaw && !isNaN(interviewDateRaw.getTime()) ? interviewDateRaw : null;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-lg">
@@ -52,15 +53,15 @@ export default function CancelInterviewModal({
             ❌ Annuler l'entretien
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            Entretien du {interviewDate.toLocaleDateString('fr-FR', {
+            {interviewDate ? `Entretien du ${interviewDate.toLocaleDateString('fr-FR', {
               weekday: 'long',
               day: 'numeric',
               month: 'long',
               year: 'numeric'
-            })} à {interviewDate.toLocaleTimeString('fr-FR', {
+            })} à ${interviewDate.toLocaleTimeString('fr-FR', {
               hour: '2-digit',
               minute: '2-digit'
-            })}
+            })}` : 'Annuler l\'entretien'}
           </p>
         </div>
 

@@ -59,10 +59,15 @@ export function usePermissions(): UsePermissionsReturn {
       return isSuperAdmin || isMainCompany;
     }
     
+    // /subscriptions est réservé au super admin
+    if (normalizedPath === "/subscriptions" || normalizedPath.startsWith("/subscriptions/")) {
+      return user?.role?.code === 'super_admin';
+    }
+
     // Restrictions pour Super Admin : exclure Integrations et Agenda
     if (user?.role?.code === 'super_admin') {
       if (normalizedPath === "/integrations" || normalizedPath === "/agenda") {
-        return false; // Super Admin ne peut pas accéder à ces sections
+        return false;
       }
     }
     

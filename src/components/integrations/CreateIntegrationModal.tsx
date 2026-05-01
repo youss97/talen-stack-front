@@ -33,7 +33,7 @@ export default function CreateIntegrationModal({
     salary_type: 'monthly', // 'monthly' ou 'daily'
     salary: '',
     daily_rate: '',
-    currency: 'EUR', // Devise par défaut
+    currency: 'MAD', // Devise par défaut
     contract_type: ContractType.CDI,
     trial_period_duration: '',
     trial_period_end_date: '',
@@ -158,7 +158,7 @@ export default function CreateIntegrationModal({
         salary_type: 'monthly',
         salary: '',
         daily_rate: '',
-        currency: 'EUR',
+        currency: 'MAD',
         contract_type: ContractType.CDI,
         trial_period_duration: '',
         trial_period_end_date: '',
