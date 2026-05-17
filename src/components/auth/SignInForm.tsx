@@ -40,21 +40,27 @@ export default function SignInForm() {
       const response = await login(data).unwrap();
       console.log('🔐 Connexion réussie:', response);
 
-      // Si l'utilisateur est un client manager, rediriger vers "Mes offres"
-      const userRoleCode = response.user?.role?.code;
+      const u = response.user;
+      const userRoleCode = u?.role?.code;
+      const isSuperAdmin =
+        userRoleCode === 'super_admin' ||
+        (!u?.company && u?.role?.level != null && u.role.level >= 999);
+
+      // Super Admin → gestion des entreprises
+      if (isSuperAdmin) {
+        router.push('/companies');
+        return;
+      }
+
+      // Client Manager → ses demandes
       if (userRoleCode?.startsWith('CLIENT_MANAGER_')) {
-        console.log('👤 Client Manager détecté, redirection vers /my-requests');
         router.push('/my-requests');
         return;
       }
 
       // Sinon, rediriger vers le premier chemin autorisé ou dashboard par défaut
-      const firstFeaturePath = response.user?.features?.[0]?.pages?.[0]?.path;
+      const firstFeaturePath = u?.features?.[0]?.pages?.[0]?.path;
       const redirectPath = firstFeaturePath || "/dashboard";
-      
-      console.log('🎯 Redirection vers:', redirectPath);
-      
-      // S'assurer que la redirection va vers l'application admin
       const adminPath = redirectPath.startsWith('/') ? redirectPath : `/${redirectPath}`;
       router.push(adminPath);
     } catch (error) {

@@ -134,6 +134,16 @@ export const applicationRequestApi = createApi({
       }),
       invalidatesTags: [{ type: "ApplicationRequest", id: "LIST" }],
     }),
+
+    // PATCH /applications/requests/:id/assign - Assign responsible to request
+    assignApplicationRequest: builder.mutation<ApplicationRequest, { id: string; responsible_id: string | null }>({
+      query: ({ id, responsible_id }) => ({
+        url: `/applications/requests/${id}/assign`,
+        method: "PATCH",
+        body: { responsible_id },
+      }),
+      invalidatesTags: [{ type: "ApplicationRequest", id: "LIST" }],
+    }),
   }),
 });
 
@@ -145,4 +155,5 @@ export const {
   useCreateApplicationRequestMutation,
   useUpdateApplicationRequestMutation,
   useDeleteApplicationRequestMutation,
+  useAssignApplicationRequestMutation,
 } = applicationRequestApi;

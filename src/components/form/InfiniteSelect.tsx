@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import {
   useState,
   useRef,
@@ -9,7 +10,7 @@ import {
 } from "react";
 
 interface InfiniteSelectProps<T> {
-  label: string;
+  label: React.ReactNode;
   value: string;
   onChange: (value: string, selectedItem?: T) => void;
   useInfiniteQuery: unknown;

@@ -158,18 +158,18 @@ export default function CVFormModal({
             {!isEditing && (
               <div>
                 <Label>
-                  Fichier CV (PDF) <span className="text-error-500">*</span>
+                  Fichier CV (DOCX obligatoire, PDF supporté) <span className="text-error-500">*</span>
                 </Label>
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept=".pdf"
+                  accept=".pdf,.doc,.docx"
                   onChange={handleFileChange}
                   className="hidden"
                 />
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className={`h-24 w-full rounded-lg border-2 border-dashed cursor-pointer flex flex-col items-center justify-center transition-colors ${
+                  className={`h-28 w-full rounded-lg border-2 border-dashed cursor-pointer flex flex-col items-center justify-center transition-colors ${
                     errors.file
                       ? "border-error-500 bg-error-50 dark:bg-error-500/10"
                       : "border-gray-300 hover:border-brand-400 dark:border-gray-700"
@@ -187,9 +187,12 @@ export default function CVFormModal({
                   ) : (
                     <div className="text-center">
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Cliquez pour sélectionner un fichier PDF
+                        Cliquez pour sélectionner un fichier
                       </p>
-                      <p className="text-xs text-gray-400">Max 10MB</p>
+                      <p className="text-xs text-gray-400">PDF, DOC, DOCX - Max 10MB</p>
+                      <p className="text-xs text-brand-600 dark:text-brand-400 mt-1">
+                        ✨ Extraction locale gratuite (sans IA payante)
+                      </p>
                     </div>
                   )}
                 </div>
@@ -198,6 +201,9 @@ export default function CVFormModal({
                     {errors.file.message}
                   </p>
                 )}
+                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  💡 L'extraction utilise d'abord un algorithme local gratuit (regex + NLP), puis OpenAI si nécessaire. Aucune API payante par défaut.
+                </p>
               </div>
             )}
 
@@ -311,7 +317,7 @@ export default function CVFormModal({
                 {...register("remote_preferred")}
                 className="h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500"
               />
-              <Label htmlFor="remote_preferred">Préférence pour le télétravail</Label>
+              <Label htmlFor="remote_preferred">Ouvert uniquement au télétravail</Label>
             </div>
 
             <div>

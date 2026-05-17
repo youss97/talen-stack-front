@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store";
 import type { UserFeature, UserPage, UserAction } from "@/types/auth";
@@ -41,50 +41,53 @@ export function usePermissions(): UsePermissionsReturn {
     return actions;
   }, [features]);
 
-  const canAccessPath = (path: string): boolean => {
-    // Si pas de features, pas d'accès
-    if (!features || features.length === 0) return false;
-    
-    // Vérifier que path est une chaîne valide
+  const canAccessPath = useCallback((path: string): boolean => {
     if (!path || typeof path !== "string") return false;
-    
-    // Remove trailing slash for comparison
-    const normalizedPath = path.replace(/\/$/, "") || "/";
-    
-    // Exception spéciale pour /settings et ses sous-pages
-    // Accessible uniquement pour SuperAdmin ou sociétés principales
-    if (normalizedPath === "/settings" || normalizedPath.startsWith("/settings/")) {
-      const isSuperAdmin = user?.role?.code === 'super_admin';
-      const isMainCompany = user?.company?.parent_company_id === null;
-      return isSuperAdmin || isMainCompany;
-    }
-    
-    // /subscriptions est réservé au super admin
-    if (normalizedPath === "/subscriptions" || normalizedPath.startsWith("/subscriptions/")) {
-      return user?.role?.code === 'super_admin';
-    }
+    if (!user) return false;
 
-    // Restrictions pour Super Admin : exclure Integrations et Agenda
-    if (user?.role?.code === 'super_admin') {
+    const normalizedPath = path.replace(/\/$/, "") || "/";
+
+    const isSuperAdmin = user.role?.code === 'super_admin' || (!user.company && user.role?.level >= 999);
+    if (isSuperAdmin) {
       if (normalizedPath === "/integrations" || normalizedPath === "/agenda") {
         return false;
       }
+      return true;
     }
-    
+
+    if (!features || features.length === 0) return false;
+
+    if (normalizedPath === "/settings" || normalizedPath.startsWith("/settings/")) {
+      const isMainCompany = user?.company?.parent_company_id === null;
+      return isMainCompany;
+    }
+
     return allowedPaths.some((allowedPath) => {
       const normalizedAllowed = allowedPath.replace(/\/$/, "") || "/";
       return normalizedPath === normalizedAllowed || normalizedPath.startsWith(normalizedAllowed + "/");
     });
-  };
+  }, [user, features, allowedPaths]);
 
-  const canDoAction = (actionCode: string): boolean => {
+  const canDoAction = useCallback((actionCode: string): boolean => {
     return allActions.some((action) => action.code === actionCode);
-  };
+  }, [allActions]);
 
-  const getActionsForPath = (path: string): UserAction[] => {
-    // Vérifier que path est une chaîne valide
+  const getActionsForPath = useCallback((path: string): UserAction[] => {
     if (!path || typeof path !== "string") return [];
-    
+
+    const isSuperAdmin =
+      user?.role?.code === 'super_admin' ||
+      (!user?.company && user?.role?.level != null && user.role.level >= 999);
+
+    if (isSuperAdmin) {
+      return [
+        { id: 'sa-create', name: 'create', code: 'create' },
+        { id: 'sa-read',   name: 'read',   code: 'read'   },
+        { id: 'sa-update', name: 'update', code: 'update' },
+        { id: 'sa-delete', name: 'delete', code: 'delete' },
+      ];
+    }
+
     const normalizedPath = path.replace(/\/$/, "") || "/";
     for (const feature of features) {
       for (const page of feature.pages || []) {
@@ -95,12 +98,11 @@ export function usePermissions(): UsePermissionsReturn {
       }
     }
     return [];
-  };
+  }, [user, features]);
 
-  const getPageByPath = (path: string): UserPage | undefined => {
-    // Vérifier que path est une chaîne valide
+  const getPageByPath = useCallback((path: string): UserPage | undefined => {
     if (!path || typeof path !== "string") return undefined;
-    
+
     const normalizedPath = path.replace(/\/$/, "") || "/";
     for (const feature of features) {
       for (const page of feature.pages || []) {
@@ -111,7 +113,7 @@ export function usePermissions(): UsePermissionsReturn {
       }
     }
     return undefined;
-  };
+  }, [features]);
 
   return {
     features,

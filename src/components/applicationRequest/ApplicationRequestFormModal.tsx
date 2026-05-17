@@ -8,6 +8,7 @@ import Input from "@/components/form/input/InputField";
 import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
 import InfiniteSelect from "@/components/form/InfiniteSelect";
+import MultiSelect from "@/components/form/MultiSelect";
 import DatePicker from "@/components/form/date-picker";
 import {
   createApplicationRequestSchema,
@@ -69,7 +70,7 @@ export default function ApplicationRequestFormModal({
       required_skills: [],
       min_experience: undefined,
       max_experience: undefined,
-      contract_type: "",
+      contract_types: [],
       mission_duration_months: undefined,
       mission_renewable: false,
       min_salary: undefined,
@@ -95,24 +96,24 @@ export default function ApplicationRequestFormModal({
   const requiredSkills = watch("required_skills") || [];
   const clientId = watch("client_id");
   const managerId = watch("manager_id");
-  const contractType = watch("contract_type");
+  const contractTypes = watch("contract_types") || [];
   const workType = watch("work_type");
   const selectedLanguages = watch("languages") || [];
 
   const managerQueryArg = useMemo(() => ({ clientId: clientId || "" }), [clientId]);
-  const isFreelance = contractType?.toLowerCase() === "freelance";
+  const isFreelance = contractTypes.some(v => v?.toLowerCase() === "freelance");
 
   // Devise dynamique — MAD par défaut
   const [currency, setCurrency] = useState(DEFAULT_CURRENCY);
   const currencySymbol = getCurrencyByCode(currency)?.symbol || currency;
 
   // Fetch contract types
-  const { data: contractTypesData } = useGetContractTypesQuery({ 
-    page: 1, 
-    limit: 100, 
-    is_active: true 
+  const { data: contractTypesData } = useGetContractTypesQuery({
+    page: 1,
+    limit: 100,
+    is_active: true
   });
-  const contractTypes = contractTypesData?.data || [];
+  const availableContractTypes = contractTypesData?.data || [];
   const isHybrid = workType === "hybrid";
 
   // Préparer les objets initiaux pour les selects
@@ -149,7 +150,7 @@ export default function ApplicationRequestFormModal({
         required_skills: applicationRequest.required_skills || [],
         min_experience: applicationRequest.min_experience,
         max_experience: applicationRequest.max_experience,
-        contract_type: applicationRequest.contract_type,
+        contract_types: applicationRequest.contract_types || (applicationRequest.contract_type ? [applicationRequest.contract_type] : []),
         mission_duration_months: applicationRequest.mission_duration_months,
         mission_renewable: applicationRequest.mission_renewable || false,
         min_salary: applicationRequest.min_salary,
@@ -180,7 +181,7 @@ export default function ApplicationRequestFormModal({
         required_skills: [],
         min_experience: undefined,
         max_experience: undefined,
-        contract_type: "",
+        contract_types: [],
         mission_duration_months: undefined,
         mission_renewable: false,
         min_salary: undefined,
@@ -257,8 +258,22 @@ export default function ApplicationRequestFormModal({
         </p>
       </div>
 
-      <form onSubmit={handleSubmit((data) => onSubmit({ ...data, currency }))} className="flex flex-col flex-1 min-h-0">
+      <form onSubmit={handleSubmit(
+        (data) => onSubmit({ ...data, currency }),
+        () => {
+          // Scroll to first error when validation fails
+          setTimeout(() => {
+            const firstError = document.querySelector('[class*="text-error-500"]');
+            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 50);
+        }
+      )} className="flex flex-col flex-1 min-h-0">
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar">
+          {Object.keys(errors).length > 0 && (
+            <div className="mb-4 p-3 rounded-lg bg-error-50 border border-error-200 dark:bg-error-500/10 dark:border-error-500/30 text-error-700 dark:text-error-400 text-sm">
+              Veuillez corriger les {Object.keys(errors).length} erreur(s) avant de soumettre le formulaire.
+            </div>
+          )}
           <div className="space-y-8">
             
             {/* Section 1: Informations Générales */}
@@ -269,7 +284,7 @@ export default function ApplicationRequestFormModal({
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
                   <InfiniteSelect<Client>
-                    label="Client"
+                    label={<>Client <span className="text-error-500">*</span></>}
                     value={clientId}
                     onChange={handleClientChange}
                     useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
@@ -287,7 +302,7 @@ export default function ApplicationRequestFormModal({
 
                 <div>
                   <InfiniteSelect<Manager>
-                    label="Manager"
+                    label={<>Manager <span className="text-error-500">*</span></>}
                     value={managerId}
                     onChange={(value) => setValue("manager_id", value)}
                     useInfiniteQuery={useGetClientManagersForSelectInfiniteQuery}
@@ -419,24 +434,19 @@ export default function ApplicationRequestFormModal({
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
-                  <Label>Type de contrat <span className="text-error-500">*</span></Label>
-                  <select
-                    {...register("contract_type")}
-                    className={`h-11 w-full appearance-none rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 ${
-                      errors.contract_type
-                        ? "border-error-500 focus:border-error-500 focus:ring-error-500/10"
-                        : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"
-                    }`}
-                  >
-                    <option value="">Sélectionner...</option>
-                    {contractTypes.map((type) => (
-                      <option key={type.id} value={type.name}>
-                        {type.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.contract_type && (
-                    <p className="mt-1 text-sm text-error-500">{errors.contract_type.message}</p>
+                  <MultiSelect
+                    label="Type(s) de contrat *"
+                    options={availableContractTypes.map((type) => ({
+                      value: type.name,
+                      text: type.name,
+                      selected: contractTypes.includes(type.name),
+                    }))}
+                    defaultSelected={contractTypes}
+                    onChange={(selected) => setValue("contract_types", selected, { shouldValidate: true })}
+                    placeholder="Sélectionner un ou plusieurs types..."
+                  />
+                  {errors.contract_types && (
+                    <p className="mt-1 text-sm text-error-500">{errors.contract_types.message}</p>
                   )}
                 </div>
 

@@ -2,8 +2,8 @@
 
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
-import Badge from "@/components/ui/badge/Badge";
 import type { RoleWithFeatures } from "@/types/role";
+import { formatDate } from "@/utils/dateFormat";
 
 interface RoleDetailModalProps {
   isOpen: boolean;
@@ -29,6 +29,11 @@ export default function RoleDetailModal({
         {role?.description && (
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {role.description}
+          </p>
+        )}
+        {role?.createdAt && (
+          <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+            Créé le {formatDate(role.createdAt, { day: "2-digit", month: "long", year: "numeric" })}
           </p>
         )}
       </div>
@@ -64,26 +69,30 @@ export default function RoleDetailModal({
                         <div className="p-4 space-y-3">
                           {feature.pages.map((page) => (
                             <div key={page.id}>
-                              <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                 {page.name}
                                 {page.path && (
-                                  <span className="text-xs text-gray-500 ml-2">
+                                  <span className="text-xs text-gray-400 ml-2 font-normal">
                                     ({page.path})
                                   </span>
                                 )}
                               </p>
+                              {page.description && (
+                                <p className="text-xs text-gray-400 dark:text-gray-500 mb-2 mt-0.5">
+                                  {page.description}
+                                </p>
+                              )}
 
                               {page.actions && page.actions.length > 0 && (
-                                <div className="flex flex-wrap gap-1.5 ml-4">
+                                <div className="flex flex-wrap gap-1.5 ml-4 mt-1.5">
                                   {page.actions.map((action) => (
-                                    <Badge
+                                    <span
                                       key={action.id}
-                                      color="light"
-                                      variant="solid"
-                                      size="sm"
+                                      title={action.description || undefined}
+                                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 cursor-default"
                                     >
                                       {action.name}
-                                    </Badge>
+                                    </span>
                                   ))}
                                 </div>
                               )}

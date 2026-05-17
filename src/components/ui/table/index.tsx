@@ -23,6 +23,9 @@ interface TableRowProps {
   children: ReactNode; // Cells (th or td)
   className?: string; // Optional className for styling
   onClick?: () => void; // Optional click handler
+  onMouseEnter?: (e: React.MouseEvent<HTMLTableRowElement>) => void;
+  onMouseMove?: (e: React.MouseEvent<HTMLTableRowElement>) => void;
+  onMouseLeave?: (e: React.MouseEvent<HTMLTableRowElement>) => void;
 }
 
 // Props for TableCell
@@ -49,8 +52,8 @@ const TableBody: React.FC<TableBodyProps> = ({ children, className }) => {
 };
 
 // TableRow Component
-const TableRow: React.FC<TableRowProps> = ({ children, className, onClick }) => {
-  return <tr className={className} onClick={onClick}>{children}</tr>;
+const TableRow: React.FC<TableRowProps> = ({ children, className, onClick, onMouseEnter, onMouseMove, onMouseLeave }) => {
+  return <tr className={className} onClick={onClick} onMouseEnter={onMouseEnter} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}>{children}</tr>;
 };
 
 // TableCell Component

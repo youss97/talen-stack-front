@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
 import Badge from "@/components/ui/badge/Badge";
 import { useGetLogsQuery } from "@/lib/services/logApi";
+import type { RootState } from "@/lib/store";
 import type { Log } from "@/types/log";
 
 export default function LogsPage() {
@@ -11,11 +13,16 @@ export default function LogsPage() {
   const [actionFilter, setActionFilter] = useState<string>("");
   const [tableNameFilter, setTableNameFilter] = useState<string>("");
 
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const roleCode: string = (currentUser as any)?.role?.code || "";
+  const isAdmin = roleCode.includes("ADMIN_") || roleCode === "ADMIN" || roleCode === "SUPER_ADMIN";
+
   const { data, isLoading, isFetching } = useGetLogsQuery({
     page,
     limit: 5,
     action: actionFilter || undefined,
     tableName: tableNameFilter || undefined,
+    userId: isAdmin ? undefined : (currentUser?.id || undefined),
   });
 
   const getActionColor = (action?: string) => {

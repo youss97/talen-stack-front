@@ -124,8 +124,9 @@ export default function RolesPage() {
     {
       key: "createdAt",
       header: "Date de création",
-      render: (value) => {
-        return formatDate(value as string, {
+      render: (value, row) => {
+        const date = (value as string) || (row as Record<string, unknown>)["created_at"] as string;
+        return formatDate(date, {
           day: "2-digit",
           month: "2-digit",
           year: "numeric",

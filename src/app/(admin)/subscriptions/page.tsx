@@ -191,7 +191,7 @@ function PlanCard({
         <span className="text-2xl font-bold text-brand-600 dark:text-brand-400">
           {Number(plan.price).toFixed(2)}
         </span>
-        <span className="text-sm text-gray-400">MAD</span>
+        <span className="text-sm text-gray-400">{plan.currency || "MAD"}</span>
         <span className="text-xs text-gray-400">/ {BILLING_LABELS[plan.billing_cycle] || plan.billing_cycle}</span>
       </div>
 

@@ -96,7 +96,7 @@ export default function ManagersPage() {
         const manager = row as any;
         const name = manager.displayName || `${manager.firstName || ''} ${manager.lastName || ''}`.trim() || 'N/A';
         const position = manager.position;
-        
+
         return (
           <div>
             <div className="font-medium text-gray-900 dark:text-white">{name}</div>
@@ -124,11 +124,9 @@ export default function ManagersPage() {
       header: "Téléphone",
       render: (_value, row) => {
         const manager = row as any;
-        // Les données sont dans row.manager.phone car l'API retourne { manager: { ... } }
-        const phone = manager.manager?.phone || manager.phone;
         return (
           <div className="text-sm text-gray-600 dark:text-gray-300">
-            {phone || '-'}
+            {manager.phone || '-'}
           </div>
         );
       },

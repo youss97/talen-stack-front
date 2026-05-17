@@ -43,7 +43,7 @@ export default function RequestCandidatesPage() {
     limit: 5,
     search: debouncedSearch,
     status: statusFilter || undefined,
-  });
+  }, { pollingInterval: 30000 });
 
   const [createFeedback, { isLoading: isCreatingFeedback }] = useCreateFeedbackMutation();
 
@@ -157,6 +157,14 @@ export default function RequestCandidatesPage() {
             Consultez les candidats et ajoutez vos commentaires
           </p>
         </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => refetch()}
+          disabled={isFetching}
+        >
+          {isFetching ? "..." : "↻ Actualiser"}
+        </Button>
       </div>
 
       {/* Filters */}
@@ -273,25 +281,33 @@ export default function RequestCandidatesPage() {
                     </div>
                   )}
 
-                  {/* Feedbacks Section */}
-                  {candidate.feedbacks && candidate.feedbacks.length > 0 && (
+                  {/* Feedbacks Section — client sees only their own feedbacks */}
+                  {(() => {
+                    const clientFeedbacks = (candidate.feedbacks || []).filter((f) =>
+                      f.created_by?.role?.code?.startsWith('CLIENT_MANAGER_')
+                    );
+                    if (clientFeedbacks.length === 0) return null;
+                    return (
                     <div className="mb-4">
                       <div className="flex items-center justify-between mb-3">
                         <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                          💭 Feedbacks ({candidate.feedbacks.length})
+                          💭 Mes feedbacks ({clientFeedbacks.length})
                         </p>
-                        {candidate.feedbacks.length > 2 && (
+                        {clientFeedbacks.length > 2 && (
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleOpenFeedbackListModal(candidate)}
+                            onClick={() => {
+                              setSelectedCandidate({ ...candidate, feedbacks: clientFeedbacks });
+                              setIsFeedbackListModalOpen(true);
+                            }}
                           >
                             Voir tous
                           </Button>
                         )}
                       </div>
                       <div className="space-y-3">
-                        {candidate.feedbacks.slice(0, 2).map((feedback: any) => (
+                        {clientFeedbacks.slice(0, 2).map((feedback) => (
                           <div 
                             key={feedback.id} 
                             className={`rounded-lg p-3 border-l-4 ${getFeedbackCardColor(feedback)}`}
@@ -328,7 +344,8 @@ export default function RequestCandidatesPage() {
                         ))}
                       </div>
                     </div>
-                  )}
+                    );
+                  })()}
                 </div>
               </div>
 
@@ -390,16 +407,32 @@ export default function RequestCandidatesPage() {
                   )
                 ) : (
                   // Candidature non anonyme: afficher le CV normal
-                  candidate.cv?.file_path && (
+                  candidate.cv?.id && (
                     <Button
-                      onClick={() => {
+                      onClick={async () => {
                         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-                        window.open(`${apiUrl}/${candidate.cv!.file_path}`, '_blank');
+                        const token = localStorage.getItem('token');
+                        try {
+                          const res = await fetch(`${apiUrl}/cvs/${candidate.cv!.id}/download`, {
+                            headers: token ? { Authorization: `Bearer ${token}` } : {},
+                          });
+                          if (!res.ok) throw new Error();
+                          const blob = await res.blob();
+                          const disposition = res.headers.get('Content-Disposition') || '';
+                          const match = disposition.match(/filename="?([^"]+)"?/);
+                          const filename = match?.[1] || 'CV.pdf';
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url; a.download = filename; a.click();
+                          URL.revokeObjectURL(url);
+                        } catch {
+                          if (candidate.cv?.file_path) window.open(candidate.cv.file_path, '_blank');
+                        }
                       }}
                       size="sm"
                       variant="outline"
                     >
-                      📄 Voir le CV
+                      📄 Télécharger le CV
                     </Button>
                   )
                 )}

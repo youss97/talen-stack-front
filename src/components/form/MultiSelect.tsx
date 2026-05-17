@@ -50,6 +50,12 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     setIsOpen((prev) => !prev);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setIsOpen(false);
+    }
+  };
+
   const handleSelect = (optionValue: string) => {
     const next = selectedOptions.includes(optionValue)
       ? selectedOptions.filter((v) => v !== optionValue)
@@ -70,7 +76,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   );
 
   return (
-    <div className="w-full" ref={containerRef}>
+    <div className="w-full" ref={containerRef} onKeyDown={handleKeyDown} tabIndex={-1}>
       {label && (
         <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
           {label}
@@ -161,6 +167,15 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                 );
               })
             )}
+            <div className="sticky bottom-0 border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-2">
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="w-full text-sm text-brand-600 dark:text-brand-400 font-medium py-1 hover:underline text-center"
+              >
+                Fermer
+              </button>
+            </div>
           </div>
         )}
       </div>

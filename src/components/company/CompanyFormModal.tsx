@@ -142,6 +142,8 @@ export default function CompanyFormModal({
       });
       setLogoPreview(null);
       setAdminPhotoPreview(null);
+      setCloudinaryLogoUrl("");
+      setCloudinaryAdminPhotoUrl("");
     }
     setLogoFile(null);
     setAdminPhotoFile(null);
@@ -468,7 +470,7 @@ export default function CompanyFormModal({
                     <option value="">— Aucun abonnement (sélection manuelle) —</option>
                     {allPlans.filter((p: SubscriptionPlan) => p.is_active).map((p: SubscriptionPlan) => (
                       <option key={p.id} value={p.id}>
-                        {p.name} — {Number(p.price).toFixed(2)} MAD/{p.billing_cycle === "monthly" ? "mois" : p.billing_cycle === "annual" ? "an" : "unique"}
+                        {p.name} — {Number(p.price).toFixed(2)} {p.currency || "MAD"}/{p.billing_cycle === "monthly" ? "mois" : p.billing_cycle === "annual" ? "an" : "unique"}
                       </option>
                     ))}
                   </select>
@@ -497,29 +499,38 @@ export default function CompanyFormModal({
                 {allFeatures.length === 0 ? (
                   <p className="text-sm text-gray-400 italic">Aucun module disponible</p>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {allFeatures.map((feature) => {
                       const checked = selectedFeatureIds.has(feature.id);
                       const icon = FEATURE_ICONS[feature.name] || "⚙️";
                       return (
                         <label
                           key={feature.id}
-                          className={`flex items-center gap-2 rounded-xl border-2 p-2.5 cursor-pointer transition-all select-none ${
+                          className={`flex items-start gap-2.5 rounded-xl border-2 p-3 cursor-pointer transition-all select-none ${
                             checked
                               ? "border-brand-400 bg-brand-50 dark:border-brand-600 dark:bg-brand-900/20"
                               : "border-gray-200 bg-white hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800/30"
                           }`}
                         >
-                          <div className={`w-4 h-4 shrink-0 rounded border-2 flex items-center justify-center transition-colors ${
+                          <div className={`w-4 h-4 mt-0.5 shrink-0 rounded border-2 flex items-center justify-center transition-colors ${
                             checked ? "bg-brand-500 border-brand-500" : "border-gray-300 dark:border-gray-600"
                           }`}>
                             {checked && <svg width="10" height="8" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" /></svg>}
                           </div>
                           <input type="checkbox" checked={checked} onChange={() => toggleFeature(feature.id)} className="sr-only" />
-                          <span className="text-sm">{icon}</span>
-                          <span className={`text-xs font-medium truncate ${checked ? "text-brand-700 dark:text-brand-300" : "text-gray-700 dark:text-gray-300"}`}>
-                            {feature.name}
-                          </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1">
+                              <span className="text-sm">{icon}</span>
+                              <span className={`text-xs font-medium ${checked ? "text-brand-700 dark:text-brand-300" : "text-gray-700 dark:text-gray-300"}`}>
+                                {feature.name}
+                              </span>
+                            </div>
+                            {feature.description && (
+                              <p className="mt-0.5 text-xs leading-tight line-clamp-2 text-gray-400 dark:text-gray-500">
+                                {feature.description}
+                              </p>
+                            )}
+                          </div>
                         </label>
                       );
                     })}
@@ -540,19 +551,26 @@ export default function CompanyFormModal({
                     <span>📦</span>
                     <div>
                       <p className="text-sm font-semibold text-brand-700 dark:text-brand-300">{companyCurrentPlan.name}</p>
-                      <p className="text-xs text-brand-500">{Number(companyCurrentPlan.price).toFixed(2)} MAD</p>
+                      <p className="text-xs text-brand-500">{Number(companyCurrentPlan.price).toFixed(2)} {(companyCurrentPlan as SubscriptionPlan).currency || "MAD"}</p>
                     </div>
                   </div>
                 )}
                 {companyFeatures.length === 0 ? (
                   <p className="text-sm text-gray-400 italic">Tous les modules (aucune restriction)</p>
                 ) : (
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {companyFeatures.map((f: Feature) => (
-                      <span key={f.id} className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">
-                        <span>{FEATURE_ICONS[f.name] || "⚙️"}</span>
-                        {f.name}
-                      </span>
+                      <div key={f.id} className="flex items-start gap-2 rounded-xl border border-brand-200 dark:border-brand-800 bg-brand-50 dark:bg-brand-900/20 px-3 py-2.5">
+                        <span className="text-base mt-0.5 shrink-0">{FEATURE_ICONS[f.name] || "⚙️"}</span>
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-brand-700 dark:text-brand-300">{f.name}</p>
+                          {f.description && (
+                            <p className="mt-0.5 text-xs leading-tight text-brand-500/80 dark:text-brand-400/70 line-clamp-2">
+                              {f.description}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 )}

@@ -225,6 +225,25 @@ export default function ApplicationRequestDetailModal({
               </div>
             </div>
 
+            {/* Langues */}
+            {applicationRequest.languages && applicationRequest.languages.length > 0 && (
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Langues requises
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {applicationRequest.languages.map((lang, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 rounded-full text-sm"
+                    >
+                      {lang}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Informations du poste */}
             <div>
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
@@ -232,46 +251,105 @@ export default function ApplicationRequestDetailModal({
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Type de contrat
-                  </p>
-                  <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                    {applicationRequest.contract_type}
-                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type de contrat</p>
+                  <p className="mt-1 text-sm text-gray-900 dark:text-white">{applicationRequest.contract_type || "-"}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Expérience minimum
-                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Mode de travail</p>
                   <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                    {applicationRequest.min_experience} ans
+                    {applicationRequest.work_type === "remote" ? "Télétravail"
+                      : applicationRequest.work_type === "hybrid" ? "Hybride"
+                      : applicationRequest.work_type === "on_site" ? "Présentiel"
+                      : "-"}
                   </p>
                 </div>
+                {applicationRequest.location && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Localisation</p>
+                    <p className="mt-1 text-sm text-gray-900 dark:text-white">
+                      {[applicationRequest.location, applicationRequest.country].filter(Boolean).join(", ")}
+                    </p>
+                  </div>
+                )}
+                {applicationRequest.number_of_profiles && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nombre de profils</p>
+                    <p className="mt-1 text-sm text-gray-900 dark:text-white">{applicationRequest.number_of_profiles}</p>
+                  </div>
+                )}
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Salaire minimum
-                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Expérience</p>
                   <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                    {applicationRequest.min_salary?.toLocaleString("fr-FR") ?? '-'} €
+                    {applicationRequest.min_experience != null && applicationRequest.max_experience != null
+                      ? `${applicationRequest.min_experience} – ${applicationRequest.max_experience} ans`
+                      : applicationRequest.min_experience != null
+                      ? `Min. ${applicationRequest.min_experience} ans`
+                      : "-"}
                   </p>
                 </div>
+                {(applicationRequest.min_salary != null || applicationRequest.max_salary != null) && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Salaire</p>
+                    <p className="mt-1 text-sm text-gray-900 dark:text-white">
+                      {applicationRequest.min_salary != null && applicationRequest.max_salary != null
+                        ? `${applicationRequest.min_salary.toLocaleString("fr-FR")} – ${applicationRequest.max_salary.toLocaleString("fr-FR")} ${applicationRequest.currency || "MAD"}`
+                        : applicationRequest.min_salary != null
+                        ? `Min. ${applicationRequest.min_salary.toLocaleString("fr-FR")} ${applicationRequest.currency || "MAD"}`
+                        : `Max. ${applicationRequest.max_salary?.toLocaleString("fr-FR")} ${applicationRequest.currency || "MAD"}`}
+                    </p>
+                  </div>
+                )}
+                {(applicationRequest.daily_rate_min != null || applicationRequest.daily_rate_max != null) && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">TJM (Freelance)</p>
+                    <p className="mt-1 text-sm text-gray-900 dark:text-white">
+                      {applicationRequest.daily_rate_min != null && applicationRequest.daily_rate_max != null
+                        ? `${applicationRequest.daily_rate_min} – ${applicationRequest.daily_rate_max} ${applicationRequest.currency || "MAD"}/j`
+                        : applicationRequest.daily_rate_min != null
+                        ? `Min. ${applicationRequest.daily_rate_min} ${applicationRequest.currency || "MAD"}/j`
+                        : `Max. ${applicationRequest.daily_rate_max} ${applicationRequest.currency || "MAD"}/j`}
+                    </p>
+                  </div>
+                )}
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Date de début
-                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date de début souhaitée</p>
                   <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                    {applicationRequest.desired_start_date 
-                      ? new Date(applicationRequest.desired_start_date).toLocaleDateString("fr-FR", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })
-                      : "-"
-                    }
+                    {applicationRequest.desired_start_date
+                      ? new Date(applicationRequest.desired_start_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
+                      : "-"}
                   </p>
                 </div>
               </div>
             </div>
+
+            {/* Primes & Avantages */}
+            {(applicationRequest.benefits || applicationRequest.bonuses || applicationRequest.variables) && (
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Rémunération & Avantages
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {applicationRequest.benefits && (
+                    <div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Avantages</p>
+                      <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{applicationRequest.benefits}</p>
+                    </div>
+                  )}
+                  {applicationRequest.bonuses && (
+                    <div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Primes</p>
+                      <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{applicationRequest.bonuses}</p>
+                    </div>
+                  )}
+                  {applicationRequest.variables && (
+                    <div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Variables</p>
+                      <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{applicationRequest.variables}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Statut de la demande */}
             <div>

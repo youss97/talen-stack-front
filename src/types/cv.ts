@@ -23,6 +23,42 @@ export enum ContractType {
   FREELANCE = 'FREELANCE',
 }
 
+export interface CVDetails {
+  experiences?: Array<{
+    title?: string;
+    company?: string;
+    location?: string;
+    start_date?: string;
+    end_date?: string;
+    duration?: string;
+    description?: string;
+  }>;
+  formations?: Array<{
+    degree?: string;
+    field?: string;
+    institution?: string;
+    start_date?: string;
+    end_date?: string;
+  }>;
+  technical_skills?: string[];
+  soft_skills?: string[];
+  languages_detailed?: Array<{
+    language: string;
+    level: string;
+  }>;
+  certifications?: string[];
+  summary?: string;
+  notes?: string;
+  stats?: {
+    total_experiences?: number;
+    total_formations?: number;
+    total_skills?: number;
+    total_languages?: number;
+    total_certifications?: number;
+    completeness_score?: number;
+  };
+}
+
 export interface CV {
   [key: string]: unknown;
   id: string;
@@ -68,9 +104,18 @@ export interface CV {
     contract_type_preferences?: string[];
     user_provided_data?: Record<string, unknown>;
   };
+  details?: CVDetails;
   status?: "new" | "reviewed" | "shortlisted" | "interviewed" | "hired" | "rejected" | "archived";
   created_at?: string;
   updated_at?: string;
+  created_by_name?: string;
+  responsible_id?: string | null;
+  responsible?: {
+    id: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+  } | null;
 }
 
 export interface CreateCVRequest {

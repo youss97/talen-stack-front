@@ -14,17 +14,18 @@ export interface ApplicationRequest {
   
   // Type de contrat
   contract_type: string;
-  
+  contract_types?: string[];
+
   // Freelance
   mission_duration_months?: number;
   mission_renewable?: boolean;
-  
+
   // Budget
   min_salary?: number;
   max_salary?: number;
   daily_rate_min?: number;
   daily_rate_max?: number;
-  
+
   // Localisation
   location?: string;
   country?: string;
@@ -131,6 +132,13 @@ export interface ApplicationRequest {
   };
   created_at?: string;
   updated_at?: string;
+  responsible_id?: string | null;
+  responsible?: {
+    id: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+  } | null;
 }
 
 export interface CreateApplicationRequestRequest {
@@ -146,17 +154,18 @@ export interface CreateApplicationRequestRequest {
   
   // Type de contrat
   contract_type: string;
-  
+  contract_types?: string[];
+
   // Freelance
   mission_duration_months?: number;
   mission_renewable?: boolean;
-  
+
   // Budget
   min_salary?: number;
   max_salary?: number;
   daily_rate_min?: number;
   daily_rate_max?: number;
-  
+
   // Localisation
   location: string;
   country: string;
@@ -200,6 +209,7 @@ export interface UpdateApplicationRequestRequest {
   min_experience?: number;
   max_experience?: number;
   contract_type?: string;
+  contract_types?: string[];
   mission_duration_months?: number;
   mission_renewable?: boolean;
   min_salary?: number;

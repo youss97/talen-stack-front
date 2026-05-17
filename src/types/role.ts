@@ -4,6 +4,7 @@ export interface Action {
   id: string;
   name: string;
   code: string;
+  description?: string;
   selected?: boolean;
 }
 
@@ -11,6 +12,7 @@ export interface Page {
   id: string;
   name: string;
   path?: string;
+  description?: string;
   selected?: boolean;
   actions?: Action[];
 }

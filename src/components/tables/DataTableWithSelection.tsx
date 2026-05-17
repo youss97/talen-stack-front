@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   Table,
   TableHeader,
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 
 export interface Column<T> {
+  id?: string;
   key: keyof T | string;
   header: string;
   render?: (value: T[keyof T], row: T) => React.ReactNode;
@@ -33,6 +34,7 @@ export interface DataTableWithSelectionProps<T> {
   actions?: (row: T) => React.ReactNode;
   isLoading?: boolean;
   emptyMessage?: string;
+  renderRowTooltip?: (row: T) => React.ReactNode;
 }
 
 function DataTableWithSelection<T extends { id: string }>({
@@ -48,8 +50,27 @@ function DataTableWithSelection<T extends { id: string }>({
   actions,
   isLoading = false,
   emptyMessage = "Aucune donnée disponible",
+  renderRowTooltip,
 }: DataTableWithSelectionProps<T>) {
   const hasActionHandlers = onView || onEdit || onDelete || customActions;
+  const [tooltip, setTooltip] = useState<{ row: T; x: number; y: number } | null>(null);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleRowMouseEnter = useCallback((row: T, e: React.MouseEvent) => {
+    if (!renderRowTooltip) return;
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    setTooltip({ row, x: e.clientX, y: e.clientY });
+  }, [renderRowTooltip]);
+
+  const handleRowMouseMove = useCallback((row: T, e: React.MouseEvent) => {
+    if (!renderRowTooltip) return;
+    setTooltip(prev => prev ? { ...prev, x: e.clientX, y: e.clientY } : null);
+  }, [renderRowTooltip]);
+
+  const handleRowMouseLeave = useCallback(() => {
+    if (!renderRowTooltip) return;
+    hideTimer.current = setTimeout(() => setTooltip(null), 100);
+  }, [renderRowTooltip]);
   
   const getValue = (row: T, key: string): T[keyof T] => {
     const keys = key.split(".");
@@ -91,7 +112,21 @@ function DataTableWithSelection<T extends { id: string }>({
     );
   }
 
+  const tooltipLeft = tooltip ? Math.min(tooltip.x + 16, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 320) : 0;
+  const tooltipTop = tooltip ? tooltip.y + 16 : 0;
+
   return (
+    <>
+    {tooltip && renderRowTooltip && (
+      <div
+        className="fixed z-50 pointer-events-none"
+        style={{ left: tooltipLeft, top: tooltipTop }}
+        onMouseEnter={() => hideTimer.current && clearTimeout(hideTimer.current)}
+        onMouseLeave={() => setTooltip(null)}
+      >
+        {renderRowTooltip(tooltip.row)}
+      </div>
+    )}
     <div className="overflow-x-auto">
       <Table className="border-collapse">
         <TableHeader className="border-b border-gray-100 dark:border-gray-800">
@@ -112,7 +147,7 @@ function DataTableWithSelection<T extends { id: string }>({
             </TableCell>
             {columns.map((column) => (
               <TableCell
-                key={String(column.key)}
+                key={column.id ?? String(column.key)}
                 isHeader
                 className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400"
               >
@@ -144,8 +179,8 @@ function DataTableWithSelection<T extends { id: string }>({
               <TableRow
                 key={row.id}
                 className={`border-b border-gray-100 dark:border-gray-800 ${
-                  selectedItems.includes(row.id) 
-                    ? "bg-brand-50 dark:bg-brand-900/10" 
+                  selectedItems.includes(row.id)
+                    ? "bg-brand-50 dark:bg-brand-900/10"
                     : ""
                 } ${
                   onRowClick
@@ -153,6 +188,9 @@ function DataTableWithSelection<T extends { id: string }>({
                     : ""
                 }`}
                 onClick={() => onRowClick?.(row)}
+                onMouseEnter={(e) => handleRowMouseEnter(row, e)}
+                onMouseMove={(e) => handleRowMouseMove(row, e)}
+                onMouseLeave={handleRowMouseLeave}
               >
                 <TableCell className="px-5 py-4 w-12">
                   <div onClick={(e) => e.stopPropagation()}>
@@ -166,9 +204,10 @@ function DataTableWithSelection<T extends { id: string }>({
                 </TableCell>
                 {columns.map((column) => {
                   const value = getValue(row, String(column.key));
+                  const columnKey = (column as any).id || String(column.key);
                   return (
                     <TableCell
-                      key={String(column.key)}
+                      key={columnKey}
                       className={`px-5 py-4 text-sm text-gray-800 dark:text-gray-200 ${
                         column.className || ""
                       }`}
@@ -241,6 +280,7 @@ function DataTableWithSelection<T extends { id: string }>({
         </TableBody>
       </Table>
     </div>
+    </>
   );
 }
 export default DataTableWithSelection;

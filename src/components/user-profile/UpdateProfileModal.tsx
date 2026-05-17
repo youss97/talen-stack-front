@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
+import { useAppSelector } from "@/lib/hooks";
 import { Modal } from "@/components/ui/modal";
 import FormInput from "@/components/form/FormInput";
 import { updateProfileSchema, UpdateProfileFormData } from "@/validations/profileValidation";
@@ -20,6 +21,7 @@ interface UpdateProfileModalProps {
 
 export default function UpdateProfileModal({ isOpen, onClose, user }: UpdateProfileModalProps) {
   const dispatch = useDispatch();
+  const currentUser = useAppSelector((state) => state.auth.user);
   const [updateProfile, { isLoading }] = useUpdateProfileMutation();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -85,7 +87,17 @@ export default function UpdateProfileModal({ isOpen, onClose, user }: UpdateProf
       if (result.user) {
         const token = localStorage.getItem("token");
         const refresh_token = localStorage.getItem("refresh_token");
-        dispatch(setCredentials({ user: result.user as any, token: token || "", refresh_token: refresh_token || undefined }));
+        dispatch(setCredentials({
+          user: {
+            ...currentUser,
+            ...result.user,
+            features: currentUser?.features,
+            role: currentUser?.role,
+            company: currentUser?.company,
+          } as any,
+          token: token || "",
+          refresh_token: refresh_token || undefined,
+        }));
       }
 
       onClose();

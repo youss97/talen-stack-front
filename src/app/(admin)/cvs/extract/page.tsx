@@ -12,6 +12,8 @@ import {
   useExtractCVMutation,
 } from "@/lib/services/cvApi";
 import type { CvExperience, CvFormation } from "@/types/cv";
+import MonthYearPicker from "@/components/form/MonthYearPicker";
+import YearPicker from "@/components/form/YearPicker";
 
 const LANGUAGE_LEVELS = ["Natif", "Courant", "Intermédiaire", "Notions"] as const;
 const CONTRACT_TYPES = ["CDI", "CDD", "Freelance", "Stage", "Alternance", "Intérim"] as const;
@@ -357,19 +359,19 @@ export default function CVExtractPage() {
             Document CV
           </h3>
 
+          {/* File input always in DOM so the ref is always valid */}
+          <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.rtf,.jpg,.jpeg,.png"
+            onChange={handleFileChange} className="hidden" />
+
           {!previewUrl && !isEditing && (
-            <>
-              <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.rtf,.jpg,.jpeg,.png"
-                onChange={handleFileChange} className="hidden" />
-              <div onClick={() => fileInputRef.current?.click()}
-                className="h-[220px] w-full rounded-xl border-2 border-dashed border-gray-300 hover:border-brand-400 dark:border-gray-700 dark:hover:border-brand-600 cursor-pointer flex flex-col items-center justify-center gap-3 transition-colors">
-                <UploadIcon />
-                <div className="text-center">
-                  <p className="text-sm font-medium text-gray-800 dark:text-white">Cliquez pour uploader un CV</p>
-                  <p className="text-xs text-gray-500 mt-1">PDF, DOCX, DOC, Images, TXT, RTF (max 20MB)</p>
-                </div>
+            <div onClick={() => fileInputRef.current?.click()}
+              className="h-[220px] w-full rounded-xl border-2 border-dashed border-gray-300 hover:border-brand-400 dark:border-gray-700 dark:hover:border-brand-600 cursor-pointer flex flex-col items-center justify-center gap-3 transition-colors">
+              <UploadIcon />
+              <div className="text-center">
+                <p className="text-sm font-medium text-gray-800 dark:text-white">Cliquez pour uploader un CV</p>
+                <p className="text-xs text-gray-500 mt-1">PDF, DOCX, DOC, Images, TXT, RTF (max 20MB)</p>
               </div>
-            </>
+            </div>
           )}
 
           {isExtracting && (
@@ -401,11 +403,15 @@ export default function CVExtractPage() {
                 <Button variant="outline" size="sm" onClick={() => window.open(previewUrl, "_blank")}>
                   Voir le CV
                 </Button>
-                {!isEditing && (
-                  <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
-                    Changer
+                {selectedFile && (
+                  <Button variant="outline" size="sm" onClick={() => extractCVData(selectedFile)}
+                    startIcon={<RefreshIcon />}>
+                    Réextraire
                   </Button>
                 )}
+                <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                  Changer
+                </Button>
               </div>
             </div>
           )}
@@ -500,13 +506,18 @@ export default function CVExtractPage() {
                   </div>
                   <div>
                     <Label>Date de début</Label>
-                    <input className={inputClass} placeholder="01/2020" value={exp.start_date || ""}
-                      onChange={(e) => updateExp(i, "start_date", e.target.value)} />
+                    <MonthYearPicker
+                      value={exp.start_date || ""}
+                      onChange={(v) => updateExp(i, "start_date", v)}
+                    />
                   </div>
                   <div>
-                    <Label>Date de fin (vide = Présent)</Label>
-                    <input className={inputClass} placeholder="12/2023 ou vide" value={exp.end_date || ""}
-                      onChange={(e) => updateExp(i, "end_date", e.target.value)} />
+                    <Label>Date de fin <span className="text-gray-400 font-normal">(vide = Présent)</span></Label>
+                    <MonthYearPicker
+                      value={exp.end_date || ""}
+                      onChange={(v) => updateExp(i, "end_date", v)}
+                      placeholder="Présent"
+                    />
                   </div>
                   <div>
                     <Label>Lieu</Label>
@@ -568,13 +579,18 @@ export default function CVExtractPage() {
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <Label>Début</Label>
-                      <input className={inputClass} placeholder="2016" value={f.start_date || ""}
-                        onChange={(e) => updateForm(i, "start_date", e.target.value)} />
+                      <YearPicker
+                        value={f.start_date || ""}
+                        onChange={(v) => updateForm(i, "start_date", v)}
+                      />
                     </div>
                     <div>
                       <Label>Fin</Label>
-                      <input className={inputClass} placeholder="2018" value={f.end_date || ""}
-                        onChange={(e) => updateForm(i, "end_date", e.target.value)} />
+                      <YearPicker
+                        value={f.end_date || ""}
+                        onChange={(v) => updateForm(i, "end_date", v)}
+                        placeholder="En cours"
+                      />
                     </div>
                   </div>
                 </div>
@@ -715,7 +731,7 @@ export default function CVExtractPage() {
                 className={`relative w-10 h-5 rounded-full transition-colors ${remotePreferred ? "bg-brand-500" : "bg-gray-200 dark:bg-gray-700"}`}>
                 <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${remotePreferred ? "translate-x-5" : "translate-x-0"}`} />
               </div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">Ouvert au télétravail</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">Ouvert uniquement au télétravail</span>
             </label>
           </div>
         </div>
@@ -787,6 +803,15 @@ function XSmallIcon() {
     <svg width="10" height="10" viewBox="0 0 20 20" fill="none">
       <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="2"
         strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function RefreshIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+      <path d="M4 4v5h.582m15.356 2A8 8 0 004.582 9m0 0H9m-5 8v-5h-.582m0 0a8 8 0 0015.355-2M15 15h-4.582"
+        stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

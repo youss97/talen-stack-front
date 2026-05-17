@@ -66,51 +66,35 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({
   const managerEmails = watch("managerEmails");
   const selectedClientForManagers = watch("selectedClientForManagers");
 
-  // Déterminer quel type est actif
-  const hasSelection = candidateIds.length > 0 || clientEmails.length > 0 || 
-                       userEmails.length > 0 || managerEmails.length > 0;
-
-  const isCandidateActive = candidateIds.length > 0;
-  const isClientActive = clientEmails.length > 0;
-  const isUserActive = userEmails.length > 0;
-  const isManagerActive = managerEmails.length > 0;
-
   const onSubmit = async (data: FormData) => {
     try {
-      let emailType: BulkEmailType;
-      let recipients: string[];
+      const allRecipients: string[] = [];
 
       if (data.candidateIds.length > 0) {
-        // Use MANUAL type for specific candidate emails
-        emailType = BulkEmailType.MANUAL;
-        // Extract emails from selected CVs
-        recipients = selectedCVs
+        const candidateEmails = selectedCVs
           .filter(cv => cv.candidate_email)
           .map(cv => cv.candidate_email as string);
-        
-        if (recipients.length === 0) {
-          alert("Aucun email trouvé pour les candidats sélectionnés");
-          return;
-        }
-      } else if (data.clientEmails.length > 0) {
-        emailType = BulkEmailType.MANUAL;
-        recipients = data.clientEmails;
-      } else if (data.userEmails.length > 0) {
-        emailType = BulkEmailType.MANUAL;
-        recipients = data.userEmails;
-      } else if (data.managerEmails.length > 0) {
-        emailType = BulkEmailType.MANUAL;
-        recipients = data.managerEmails;
-      } else {
-        alert("Veuillez sélectionner au moins un destinataire");
+        allRecipients.push(...candidateEmails);
+      }
+
+      // Filter out placeholder values for clients without email
+      allRecipients.push(...data.clientEmails.filter(v => v && !v.startsWith('no-email-')));
+      allRecipients.push(...data.userEmails);
+      allRecipients.push(...data.managerEmails);
+
+      // Dédupliquer
+      const uniqueRecipients = [...new Set(allRecipients)];
+
+      if (uniqueRecipients.length === 0) {
+        alert("Veuillez sélectionner au moins un destinataire avec un email valide");
         return;
       }
 
       const payload: SendEmailRequest = {
         subject: data.subject,
         body: data.body,
-        type: emailType,
-        recipients,
+        type: BulkEmailType.MANUAL,
+        recipients: uniqueRecipients,
       };
 
       await sendEmail(payload).unwrap();
@@ -129,8 +113,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({
     onClose();
   };
 
-  // Compter le total de destinataires
-  const totalRecipients = candidateIds.length + clientEmails.length + 
+  const totalRecipients = candidateIds.length + clientEmails.length +
                           userEmails.length + managerEmails.length;
 
   return (
@@ -158,7 +141,6 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({
                     value={field.value}
                     onChange={(value, selectedItems) => {
                       field.onChange(value);
-                      // Store selected CVs to extract emails later
                       if (Array.isArray(selectedItems)) {
                         setSelectedCVs(selectedItems);
                       } else if (selectedItems) {
@@ -170,7 +152,6 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({
                     useInfiniteQuery={useGetCVsForSelectInfiniteQuery}
                     placeholder="Rechercher des candidats..."
                     multiple
-                    disabled={hasSelection && !isCandidateActive}
                   />
                 )}
               />
@@ -187,11 +168,13 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({
                     useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
                     value={field.value}
                     onChange={field.onChange}
-                    getOptionLabel={(client: any) => `${client.name} - ${client.contact_email || client.email}`}
-                    getOptionValue={(client: any) => client.contact_email || client.email}
+                    getOptionLabel={(client: any) => {
+                      const email = client.contact_email;
+                      return email ? `${client.name} - ${email}` : `${client.name} (pas d'email)`;
+                    }}
+                    getOptionValue={(client: any) => client.contact_email || `no-email-${client.id}`}
                     placeholder="Rechercher des clients..."
                     multiple
-                    disabled={hasSelection && !isClientActive}
                   />
                 )}
               />
@@ -212,7 +195,6 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({
                     getOptionValue={(user: any) => user.email}
                     placeholder="Rechercher des utilisateurs..."
                     multiple
-                    disabled={hasSelection && !isUserActive}
                   />
                 )}
               />
@@ -235,7 +217,6 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({
                   getOptionValue={(client: any) => client.id}
                   placeholder="Sélectionner un client d'abord..."
                   multiple={false}
-                  disabled={hasSelection && !isManagerActive}
                 />
               </div>
 
@@ -254,7 +235,6 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({
                       getOptionValue={(manager: any) => manager.email}
                       placeholder="Rechercher des managers..."
                       multiple
-                      disabled={hasSelection && !isManagerActive}
                     />
                   )}
                 />

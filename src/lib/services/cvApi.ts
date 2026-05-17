@@ -179,6 +179,15 @@ export const cvApi = createApi({
         { type: "CV", id: "LIST" },
       ],
     }),
+
+    assignCV: builder.mutation<CV, { id: string; responsible_id: string | null }>({
+      query: ({ id, responsible_id }) => ({
+        url: `/cvs/${id}/assign`,
+        method: "PATCH",
+        body: { responsible_id },
+      }),
+      invalidatesTags: [{ type: "CV", id: "LIST" }],
+    }),
   }),
 });
 
@@ -192,4 +201,5 @@ export const {
   useDeleteCVMutation,
   useUpdateCVStatusMutation,
   useExtractCVMutation,
+  useAssignCVMutation,
 } = cvApi;

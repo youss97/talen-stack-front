@@ -291,7 +291,7 @@ function MultiInfiniteSelect<T extends Record<string, unknown>>({
 
                   return (
                     <li
-                      key={getOptionValue(option)}
+                      key={getOptionValue(option) ?? `option-${index}`}
                       className={`px-4 py-2.5 cursor-pointer transition-colors ${
                         isSelected
                           ? "bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400"

@@ -263,9 +263,8 @@ export default function MyRequestsPage() {
                   <Button
                     onClick={() => router.push(`/my-requests/${request.id}/candidates`)}
                     size="sm"
-                    disabled={request.candidates_count === 0}
                   >
-                    Voir les candidats
+                    {request.candidates_count > 0 ? "Voir les candidats" : "Consulter l'offre"}
                   </Button>
                 </div>
               </div>

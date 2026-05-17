@@ -10,12 +10,14 @@ import ApplicationRequestFormModal from "@/components/applicationRequest/Applica
 import ApplicationRequestDetailModal from "@/components/applicationRequest/ApplicationRequestDetailModal";
 import PublicOfferToggleSimple from "@/components/recruitment/PublicOfferToggleSimple";
 import PublicStatusCell from "@/components/recruitment/PublicStatusCell";
+import AssignModal from "@/components/assign/AssignModal";
 import {
   useGetApplicationRequestsQuery,
   useLazyGetApplicationRequestByIdQuery,
   useCreateApplicationRequestMutation,
   useUpdateApplicationRequestMutation,
   useDeleteApplicationRequestMutation,
+  useAssignApplicationRequestMutation,
 } from "@/lib/services/applicationRequestApi";
 import { publicJobOfferApi } from "@/lib/services/publicJobOfferApi";
 import { useAppDispatch } from "@/lib/hooks";
@@ -27,6 +29,7 @@ import type { CreateApplicationRequestFormData } from "@/validations/application
 
 export default function RecruitmentPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/recruitment-requests");
+  const canAssign = canUpdate;
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -44,7 +47,12 @@ export default function RecruitmentPage() {
     isOpen: boolean;
     request: ApplicationRequest | null;
   }>({ isOpen: false, request: null });
+  const [assignModal, setAssignModal] = useState<{
+    isOpen: boolean;
+    request: ApplicationRequest | null;
+  }>({ isOpen: false, request: null });
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isAssigning, setIsAssigning] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [optimisticPublicStates, setOptimisticPublicStates] = useState<Record<string, boolean>>({});
 
@@ -81,6 +89,7 @@ export default function RecruitmentPage() {
   const [createRequest, { isLoading: isCreating }] = useCreateApplicationRequestMutation();
   const [updateRequest, { isLoading: isUpdating }] = useUpdateApplicationRequestMutation();
   const [deleteRequest] = useDeleteApplicationRequestMutation();
+  const [assignRequest] = useAssignApplicationRequestMutation();
 
   const getErrorMessage = (error: unknown, defaultMessage: string): string => {
     if (error && typeof error === "object") {
@@ -134,6 +143,23 @@ export default function RecruitmentPage() {
     setConfirmModal({ isOpen: true, request });
   };
 
+  const handleAssignClick = (request: ApplicationRequest) => {
+    setAssignModal({ isOpen: true, request });
+  };
+
+  const handleAssignRequest = async (responsibleId: string | null) => {
+    if (!assignModal.request) return;
+    setIsAssigning(true);
+    try {
+      await assignRequest({ id: assignModal.request.id, responsible_id: responsibleId }).unwrap();
+      addToast("success", "Succès", responsibleId ? "Responsable affecté avec succès" : "Affectation retirée avec succès");
+    } catch (error) {
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de l'affectation"));
+    } finally {
+      setIsAssigning(false);
+    }
+  };
+
   const handleConfirmDelete = async () => {
     if (!confirmModal.request) return;
 
@@ -178,7 +204,7 @@ export default function RecruitmentPage() {
         if (formData.required_skills) updateData.required_skills = formData.required_skills;
         if (formData.min_experience !== undefined) updateData.min_experience = formData.min_experience;
         if (formData.max_experience !== undefined) updateData.max_experience = formData.max_experience;
-        if (formData.contract_type) updateData.contract_type = formData.contract_type;
+        if (formData.contract_types && formData.contract_types.length > 0) updateData.contract_types = formData.contract_types;
         if (formData.mission_duration_months !== undefined) updateData.mission_duration_months = formData.mission_duration_months;
         if (formData.mission_renewable !== undefined) updateData.mission_renewable = formData.mission_renewable;
         if (formData.min_salary !== undefined) updateData.min_salary = formData.min_salary;
@@ -213,7 +239,7 @@ export default function RecruitmentPage() {
           title: formData.title,
           description: formData.description,
           required_skills: formData.required_skills,
-          contract_type: formData.contract_type,
+          contract_types: formData.contract_types || [],
           location: formData.location,
           country: formData.country,
           work_type: formData.work_type,
@@ -426,13 +452,25 @@ export default function RecruitmentPage() {
       },
     },
     {
-      key: "contract_type" as keyof ApplicationRequest,
+      key: "contract_types" as keyof ApplicationRequest,
       header: "Contrat",
+      render: (value: unknown, row: ApplicationRequest) => {
+        const types = (value as string[]) || (row.contract_type ? [row.contract_type] : []);
+        return types.length > 0 ? types.join(", ") : "-";
+      },
     },
     {
       key: "min_experience" as keyof ApplicationRequest,
       header: "Expérience",
       render: (value: unknown) => `${value} ans`,
+    },
+    {
+      key: "responsible" as keyof ApplicationRequest,
+      header: "Responsable",
+      render: (value: unknown) => {
+        const r = value as { first_name?: string; last_name?: string } | null;
+        return r ? `${r.first_name || ''} ${r.last_name || ''}`.trim() || "-" : "-";
+      },
     },
     {
       key: "status" as keyof ApplicationRequest,
@@ -478,6 +516,20 @@ export default function RecruitmentPage() {
       header: "Date de début",
       render: (value: unknown) => {
         return <span className="text-gray-400">{formatDate(value as string)}</span>;
+      },
+    },
+    {
+      id: "created_by_manager",
+      key: "manager" as keyof ApplicationRequest,
+      header: "Créé par",
+      render: (_value: unknown, row?: ApplicationRequest) => {
+        const m = row?.manager;
+        const name = m ? `${m.first_name || ""} ${m.last_name || ""}`.trim() : "";
+        return (
+          <span className="text-sm text-gray-700 dark:text-gray-300">
+            {name || "-"}
+          </span>
+        );
       },
     },
   ];
@@ -608,7 +660,60 @@ export default function RecruitmentPage() {
           onView={handleRowClick}
           onEdit={canUpdate ? handleEditClick : undefined}
           onDelete={canDelete ? handleDeleteClick : undefined}
+          customActions={canAssign ? [{ label: "Affecter", icon: <AssignIcon />, onClick: handleAssignClick }] : undefined}
           emptyMessage="Aucune demande trouvée"
+          renderRowTooltip={(row: ApplicationRequest) => {
+            const managerName = row.manager ? `${row.manager.first_name || ""} ${row.manager.last_name || ""}`.trim() : null;
+            const skills = Array.isArray(row.required_skills) ? row.required_skills.slice(0, 3) : [];
+            const priorityColors: Record<string, string> = {
+              low: "text-gray-500", normal: "text-blue-500",
+              high: "text-orange-500", urgent: "text-red-500",
+            };
+            return (
+              <div className="w-72 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 text-sm">
+                <div className="font-semibold text-gray-900 dark:text-white mb-0.5 truncate">{row.title || "-"}</div>
+                <div className="text-xs text-gray-400 mb-2">Réf: {row.reference || "-"}</div>
+                <div className="space-y-1.5">
+                  {row.client?.name && (
+                    <div className="flex gap-2">
+                      <span className="text-gray-400 shrink-0">Client</span>
+                      <span className="text-gray-700 dark:text-gray-300">{row.client.name}</span>
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <span className="text-gray-400 shrink-0">Contrat</span>
+                    <span className="text-gray-700 dark:text-gray-300">{(row.contract_types && row.contract_types.length > 0 ? row.contract_types.join(", ") : row.contract_type) || "-"}</span>
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    <span className="text-gray-400 shrink-0">Priorité</span>
+                    <span className={`font-medium ${priorityColors[row.priority] || ""}`}>{row.priority || "-"}</span>
+                  </div>
+                  {managerName && (
+                    <div className="flex gap-2">
+                      <span className="text-gray-400 shrink-0">Créé par</span>
+                      <span className="text-gray-700 dark:text-gray-300">{managerName}</span>
+                    </div>
+                  )}
+                  {skills.length > 0 && (
+                    <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+                      <div className="flex flex-wrap gap-1">
+                        {skills.map((s, i) => (
+                          <span key={i} className="px-2 py-0.5 text-xs rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">
+                            {s}
+                          </span>
+                        ))}
+                        {row.required_skills.length > 3 && (
+                          <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800">
+                            +{row.required_skills.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          }}
         />
 
         {data && data.pagination && (
@@ -657,6 +762,15 @@ export default function RecruitmentPage() {
         variant="danger"
         isLoading={isDeleting}
       />
+
+      <AssignModal
+        isOpen={assignModal.isOpen}
+        onClose={() => setAssignModal({ isOpen: false, request: null })}
+        onAssign={handleAssignRequest}
+        currentResponsible={assignModal.request?.responsible}
+        entityLabel="cette demande"
+        isLoading={isAssigning}
+      />
     </div>
   );
 }
@@ -676,6 +790,16 @@ function PlusIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+}
+
+function AssignIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13.3333 17.5V15.8333C13.3333 14.9493 12.9821 14.1014 12.357 13.4763C11.7319 12.8512 10.884 12.5 10 12.5H4.16667C3.28261 12.5 2.43477 12.8512 1.80964 13.4763C1.18452 14.1014 0.833336 14.9493 0.833336 15.8333V17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M7.08333 9.16667C8.92428 9.16667 10.4167 7.67428 10.4167 5.83333C10.4167 3.99238 8.92428 2.5 7.08333 2.5C5.24238 2.5 3.75 3.99238 3.75 5.83333C3.75 7.67428 5.24238 9.16667 7.08333 9.16667Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M15.8333 6.66667V11.6667M13.3333 9.16667H18.3333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   );
 }

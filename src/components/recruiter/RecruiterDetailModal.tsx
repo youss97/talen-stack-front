@@ -376,12 +376,28 @@ export default function RecruiterDetailModal({
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => {
+                        onClick={async () => {
                           const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-                          window.open(`${apiUrl}/${recruiter.cv?.file_path}`, '_blank');
+                          const token = localStorage.getItem('token');
+                          try {
+                            const res = await fetch(`${apiUrl}/cvs/${recruiter.cv?.id}/download`, {
+                              headers: token ? { Authorization: `Bearer ${token}` } : {},
+                            });
+                            if (!res.ok) throw new Error();
+                            const blob = await res.blob();
+                            const disposition = res.headers.get('Content-Disposition') || '';
+                            const match = disposition.match(/filename="?([^"]+)"?/);
+                            const filename = match?.[1] || 'CV.pdf';
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url; a.download = filename; a.click();
+                            URL.revokeObjectURL(url);
+                          } catch {
+                            if (recruiter.cv?.file_path) window.open(recruiter.cv.file_path, '_blank');
+                          }
                         }}
                       >
-                        📄 Voir le CV
+                        📄 Télécharger le CV
                       </Button>
                       {recruiter.cv.id && (
                         <Button

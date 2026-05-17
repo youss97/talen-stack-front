@@ -42,6 +42,7 @@ export default function SubscriptionPlanModal({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<string>("0");
+  const [currency, setCurrency] = useState<string>("MAD");
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual" | "one_time">("monthly");
   const [isActive, setIsActive] = useState(true);
   const [selectedFeatureIds, setSelectedFeatureIds] = useState<Set<string>>(new Set());
@@ -58,13 +59,14 @@ export default function SubscriptionPlanModal({
       setName(plan.name);
       setDescription(plan.description || "");
       setPrice(String(plan.price ?? 0));
+      setCurrency(plan.currency || "MAD");
       setBillingCycle((plan.billing_cycle as "monthly" | "annual" | "one_time") || "monthly");
       setIsActive(plan.is_active ?? true);
       const ids = plan.planFeatures?.map((pf) => pf.feature_id || pf.feature?.id).filter(Boolean) as string[];
       setSelectedFeatureIds(new Set(ids));
     } else {
       setName(""); setDescription(""); setPrice("0");
-      setBillingCycle("monthly"); setIsActive(true);
+      setCurrency("MAD"); setBillingCycle("monthly"); setIsActive(true);
       setSelectedFeatureIds(new Set());
     }
   }, [plan, isOpen]);
@@ -92,6 +94,7 @@ export default function SubscriptionPlanModal({
       name: name.trim(),
       description: description.trim() || undefined,
       price: parseFloat(price) || 0,
+      currency,
       billing_cycle: billingCycle,
       is_active: isActive,
       featureIds: Array.from(selectedFeatureIds),
@@ -151,15 +154,29 @@ export default function SubscriptionPlanModal({
               />
             </div>
             <div>
-              <Label>Prix (MAD)</Label>
-              <Input
-                type="number"
-                min={0}
-                step={0.01}
-                placeholder="0.00"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
+              <Label>Prix</Label>
+              <div className="flex gap-2">
+                <Input
+                  type="number"
+                  min={0}
+                  step={0.01}
+                  placeholder="0.00"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="h-11 w-24 shrink-0 rounded-lg border border-gray-300 px-2 text-sm focus:outline-none focus:ring-2 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white dark:border-gray-700"
+                >
+                  <option value="MAD">MAD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                  <option value="GBP">GBP</option>
+                  <option value="CAD">CAD</option>
+                  <option value="CHF">CHF</option>
+                </select>
+              </div>
             </div>
             <div>
               <Label>Facturation</Label>
@@ -201,20 +218,20 @@ export default function SubscriptionPlanModal({
             </button>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {availableFeatures.map((feature) => {
               const checked = selectedFeatureIds.has(feature.id);
               const icon = FEATURE_ICONS[feature.name] || "⚙️";
               return (
                 <label
                   key={feature.id}
-                  className={`flex items-center gap-2.5 rounded-xl border-2 p-3 cursor-pointer transition-all select-none ${
+                  className={`flex items-start gap-2.5 rounded-xl border-2 p-3 cursor-pointer transition-all select-none ${
                     checked
                       ? "border-brand-400 bg-brand-50 dark:border-brand-600 dark:bg-brand-900/20"
                       : "border-gray-200 bg-white hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800/40 dark:hover:border-gray-600"
                   }`}
                 >
-                  <div className={`w-4 h-4 shrink-0 rounded border-2 flex items-center justify-center transition-colors ${
+                  <div className={`w-4 h-4 mt-0.5 shrink-0 rounded border-2 flex items-center justify-center transition-colors ${
                     checked ? "bg-brand-500 border-brand-500" : "border-gray-300 dark:border-gray-600"
                   }`}>
                     {checked && (
@@ -224,13 +241,18 @@ export default function SubscriptionPlanModal({
                     )}
                   </div>
                   <input type="checkbox" checked={checked} onChange={() => toggle(feature.id)} className="sr-only" />
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1">
                       <span className="text-sm">{icon}</span>
-                      <span className={`text-xs font-medium truncate ${checked ? "text-brand-700 dark:text-brand-300" : "text-gray-700 dark:text-gray-300"}`}>
+                      <span className={`text-xs font-medium ${checked ? "text-brand-700 dark:text-brand-300" : "text-gray-700 dark:text-gray-300"}`}>
                         {feature.name}
                       </span>
                     </div>
+                    {feature.description && (
+                      <p className="mt-0.5 text-xs leading-tight line-clamp-2 text-gray-400 dark:text-gray-500">
+                        {feature.description}
+                      </p>
+                    )}
                   </div>
                 </label>
               );

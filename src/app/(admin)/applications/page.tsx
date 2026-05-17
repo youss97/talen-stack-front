@@ -11,6 +11,8 @@ import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import RecruiterFormModal from "@/components/recruiter/RecruiterFormModal";
 import RecruiterDetailModal from "@/components/recruiter/RecruiterDetailModal";
 import BulkEmailModal from "@/components/recruiter/BulkEmailModal";
+import AssignRecruiterModal from "@/components/recruiter/AssignRecruiterModal";
+import AssignModal from "@/components/assign/AssignModal";
 import CreateInterviewSimpleModal from "@/components/interviews/CreateInterviewSimpleModal";
 import InfiniteSelect from "@/components/form/InfiniteSelect";
 import {
@@ -22,6 +24,8 @@ import {
   useDeleteRecruiterMutation,
   useActivateApplicationMutation,
   useSendApplicationEmailMutation,
+  useAssignApplicationMutation,
+  useAssignApplicationResponsibleMutation,
 } from "@/lib/services/recruiterApi";
 import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
 import { useGetClientsForSelectInfiniteQuery } from "@/lib/services/clientApi";
@@ -36,6 +40,7 @@ import type { CreateInterviewRequest } from "@/types/interview";
 
 export default function ApplicationsPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/applications");
+  const canAssign = canUpdate;
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
@@ -55,6 +60,7 @@ export default function ApplicationsPage() {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isBulkEmailModalOpen, setIsBulkEmailModalOpen] = useState(false);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [isInterviewModalOpen, setIsInterviewModalOpen] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<Recruiter | null>(null);
   const [detailApplicationId, setDetailApplicationId] = useState<string | null>(null);
@@ -73,6 +79,12 @@ export default function ApplicationsPage() {
   const [isActivating, setIsActivating] = useState(false);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isAssigning, setIsAssigning] = useState(false);
+  const [assignResponsibleModal, setAssignResponsibleModal] = useState<{
+    isOpen: boolean;
+    application: Recruiter | null;
+  }>({ isOpen: false, application: null });
+  const [isAssigningResponsible, setIsAssigningResponsible] = useState(false);
 
   const addToast = useCallback(
     (
@@ -112,6 +124,8 @@ export default function ApplicationsPage() {
   const [deleteApplication] = useDeleteRecruiterMutation();
   const [activateApplication] = useActivateApplicationMutation();
   const [sendApplicationEmail] = useSendApplicationEmailMutation();
+  const [assignApplication] = useAssignApplicationMutation();
+  const [assignApplicationResponsible] = useAssignApplicationResponsibleMutation();
   const [createInterview, { isLoading: isCreatingInterview }] = useCreateInterviewMutation();
   const [getApplicationById, { isLoading: isLoadingApplication }] = useLazyGetRecruiterByIdQuery();
 
@@ -217,6 +231,45 @@ export default function ApplicationsPage() {
     }
   };
 
+  const handleAssign = async (recruiterId: string, recruiterName: string) => {
+    setIsAssigning(true);
+    try {
+      const results = await Promise.allSettled(
+        selectedItems.map(id => assignApplication({ id, recruiter_id: recruiterId }).unwrap())
+      );
+      const successful = results.filter(r => r.status === 'fulfilled').length;
+      const failed = results.filter(r => r.status === 'rejected').length;
+      if (failed > 0) {
+        addToast("warning", "Affectation partielle", `${successful} affectée(s). ${failed} erreur(s).`);
+      } else {
+        addToast("success", "Succès", `${successful} candidature(s) affectée(s) à ${recruiterName}`);
+      }
+      setSelectedItems([]);
+      setIsAssignModalOpen(false);
+    } catch (error) {
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de l'affectation"));
+    } finally {
+      setIsAssigning(false);
+    }
+  };
+
+  const handleAssignResponsibleClick = (application: Recruiter) => {
+    setAssignResponsibleModal({ isOpen: true, application });
+  };
+
+  const handleAssignResponsible = async (responsibleId: string | null) => {
+    if (!assignResponsibleModal.application) return;
+    setIsAssigningResponsible(true);
+    try {
+      await assignApplicationResponsible({ id: assignResponsibleModal.application.id, responsible_id: responsibleId }).unwrap();
+      addToast("success", "Succès", responsibleId ? "Responsable affecté avec succès" : "Affectation retirée avec succès");
+    } catch (error) {
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de l'affectation"));
+    } finally {
+      setIsAssigningResponsible(false);
+    }
+  };
+
   // Actions directes sur les lignes
   const handleSendEmail = (application: Recruiter) => {
     // Ouvrir le modal d'email pour une seule candidature
@@ -258,6 +311,7 @@ export default function ApplicationsPage() {
       },
     },
     {
+      id: "request",
       key: "request" as keyof Recruiter,
       header: "Demande",
       render: (value: unknown) => {
@@ -267,6 +321,19 @@ export default function ApplicationsPage() {
             <div className="font-medium text-gray-900 dark:text-white">{request?.title || "-"}</div>
             <div className="text-xs text-gray-500 dark:text-gray-400">Réf: {request?.reference || "-"}</div>
           </div>
+        );
+      },
+    },
+    {
+      id: "client",
+      key: "request" as keyof Recruiter,
+      header: "Client",
+      render: (_value: unknown, row: Recruiter) => {
+        const request = row.request as { client?: { name: string } } | undefined;
+        return (
+          <span className="text-sm text-gray-800 dark:text-gray-200">
+            {request?.client?.name || "-"}
+          </span>
         );
       },
     },
@@ -317,6 +384,20 @@ export default function ApplicationsPage() {
       ),
     },
     {
+      id: "created_by_recruiter",
+      key: "recruiter" as keyof Recruiter,
+      header: "Créé par",
+      render: (_value: unknown, row: Recruiter) => {
+        const r = row.recruiter as { first_name?: string; last_name?: string } | undefined;
+        const name = r ? `${r.first_name || ""} ${r.last_name || ""}`.trim() : "";
+        return (
+          <span className="text-sm text-gray-700 dark:text-gray-300">
+            {name || "-"}
+          </span>
+        );
+      },
+    },
+    {
       key: "recruiter_notes",
       header: "Notes",
       render: (value: any) => (
@@ -341,6 +422,11 @@ export default function ApplicationsPage() {
       onClick: handleScheduleInterview,
       color: 'success' as const,
     },
+    ...(canAssign ? [{
+      label: "Affecter",
+      icon: <AssignIcon />,
+      onClick: handleAssignResponsibleClick,
+    }] : []),
   ];
 
   const handleRowClick = async (application: Recruiter) => {
@@ -601,6 +687,7 @@ export default function ApplicationsPage() {
           onClearSelection={handleClearSelection}
           onBulkDelete={handleBulkDelete}
           onBulkEmail={handleBulkEmail}
+          onBulkAssign={() => setIsAssignModalOpen(true)}
           isDeleting={isBulkDeleting}
         />
 
@@ -615,6 +702,50 @@ export default function ApplicationsPage() {
           onDelete={canDelete ? handleDeleteClick : undefined}
           customActions={customActions}
           emptyMessage="Aucune application trouvée"
+          renderRowTooltip={(row: Recruiter) => {
+            const cv = row.cv as { candidate_first_name?: string; candidate_last_name?: string; candidate_email?: string } | undefined;
+            const request = row.request as { title?: string; reference?: string; client?: { name?: string } } | undefined;
+            const recruiter = row.recruiter as { first_name?: string; last_name?: string } | undefined;
+            const candidateName = cv ? `${cv.candidate_first_name || ""} ${cv.candidate_last_name || ""}`.trim() : "-";
+            const recruiterName = recruiter ? `${recruiter.first_name || ""} ${recruiter.last_name || ""}`.trim() : null;
+            return (
+              <div className="w-72 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 text-sm">
+                <div className="font-semibold text-gray-900 dark:text-white mb-1">{candidateName}</div>
+                {cv?.candidate_email && (
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">{cv.candidate_email}</div>
+                )}
+                <div className="space-y-1.5">
+                  {request?.title && (
+                    <div className="flex gap-2">
+                      <span className="text-gray-400 shrink-0">Demande</span>
+                      <span className="text-gray-700 dark:text-gray-300 truncate">{request.title}</span>
+                    </div>
+                  )}
+                  {request?.client?.name && (
+                    <div className="flex gap-2">
+                      <span className="text-gray-400 shrink-0">Client</span>
+                      <span className="text-gray-700 dark:text-gray-300">{request.client.name}</span>
+                    </div>
+                  )}
+                  <div className="flex gap-2 items-center">
+                    <span className="text-gray-400 shrink-0">Statut</span>
+                    <span className="text-gray-700 dark:text-gray-300">{row.status || "-"}</span>
+                  </div>
+                  {recruiterName && (
+                    <div className="flex gap-2">
+                      <span className="text-gray-400 shrink-0">Créé par</span>
+                      <span className="text-gray-700 dark:text-gray-300">{recruiterName}</span>
+                    </div>
+                  )}
+                  {row.recruiter_notes && (
+                    <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                      {row.recruiter_notes}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          }}
         />
 
         {data && data.pagination && (
@@ -695,6 +826,15 @@ export default function ApplicationsPage() {
         isLoading={isSendingEmail}
       />
 
+      {/* Modal d'affectation à un recruteur */}
+      <AssignRecruiterModal
+        isOpen={isAssignModalOpen}
+        onClose={() => setIsAssignModalOpen(false)}
+        onAssign={handleAssign}
+        applicationCount={selectedItems.length}
+        isLoading={isAssigning}
+      />
+
       {/* Modal de planification d'entretien */}
       {interviewCandidate && (
         <CreateInterviewSimpleModal
@@ -708,6 +848,15 @@ export default function ApplicationsPage() {
           isLoading={isCreatingInterview}
         />
       )}
+
+      <AssignModal
+        isOpen={assignResponsibleModal.isOpen}
+        onClose={() => setAssignResponsibleModal({ isOpen: false, application: null })}
+        onAssign={handleAssignResponsible}
+        currentResponsible={(assignResponsibleModal.application as any)?.responsible}
+        entityLabel="cette candidature"
+        isLoading={isAssigningResponsible}
+      />
     </div>
   );
 }
@@ -732,4 +881,12 @@ function PlusIcon() {
   );
 }
 
-
+function AssignIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13.3333 17.5V15.8333C13.3333 14.9493 12.9821 14.1014 12.357 13.4763C11.7319 12.8512 10.884 12.5 10 12.5H4.16667C3.28261 12.5 2.43477 12.8512 1.80964 13.4763C1.18452 14.1014 0.833336 14.9493 0.833336 15.8333V17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M7.08333 9.16667C8.92428 9.16667 10.4167 7.67428 10.4167 5.83333C10.4167 3.99238 8.92428 2.5 7.08333 2.5C5.24238 2.5 3.75 3.99238 3.75 5.83333C3.75 7.67428 5.24238 9.16667 7.08333 9.16667Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M15.8333 6.66667V11.6667M13.3333 9.16667H18.3333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}

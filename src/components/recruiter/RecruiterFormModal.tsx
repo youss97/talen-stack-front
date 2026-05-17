@@ -457,7 +457,7 @@ export default function RecruiterFormModal({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {currentContractType === "Freelance" ? (
                   <div>
-                    <Label>TJM (€)</Label>
+                    <Label>TJM</Label>
                     <input
                       type="number"
                       {...register("daily_rate")}
@@ -467,7 +467,7 @@ export default function RecruiterFormModal({
                   </div>
                 ) : currentContractType === "Forfait" ? (
                   <div>
-                    <Label>Forfait (€)</Label>
+                    <Label>Forfait</Label>
                     <input
                       type="number"
                       {...register("package_rate")}
@@ -477,7 +477,7 @@ export default function RecruiterFormModal({
                   </div>
                 ) : (
                   <div>
-                    <Label>Salaire annuel (€)</Label>
+                    <Label>Salaire annuel</Label>
                     <input
                       type="number"
                       {...register("current_salary")}

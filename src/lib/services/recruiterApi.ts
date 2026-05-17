@@ -84,6 +84,19 @@ export const recruiterApi = createApi({
       ],
     }),
 
+    // PATCH /applications/:id - Assigner à un recruteur
+    assignApplication: builder.mutation<Recruiter, { id: string; recruiter_id: string }>({
+      query: ({ id, recruiter_id }) => ({
+        url: `/applications/${id}`,
+        method: "PATCH",
+        body: { recruiter_id },
+      }),
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Recruiter", id },
+        { type: "Recruiter", id: "LIST" },
+      ],
+    }),
+
     // DELETE /applications/:id - Delete an application
     deleteRecruiter: builder.mutation<void, string>({
       query: (id) => ({
@@ -181,6 +194,16 @@ export const recruiterApi = createApi({
         body: { recipients, subject, message },
       }),
     }),
+
+    // PATCH /applications/:id/assign - Assign responsible_id to an application
+    assignApplicationResponsible: builder.mutation<Recruiter, { id: string; responsible_id: string | null }>({
+      query: ({ id, responsible_id }) => ({
+        url: `/applications/${id}/assign`,
+        method: "PATCH",
+        body: { responsible_id },
+      }),
+      invalidatesTags: [{ type: "Recruiter", id: "LIST" }],
+    }),
   }),
 });
 
@@ -195,6 +218,8 @@ export const {
   useGetApplicationStatusHistoryQuery,
   useLazyGetApplicationStatusHistoryQuery,
   useActivateApplicationMutation,
+  useAssignApplicationMutation,
+  useAssignApplicationResponsibleMutation,
   useCreateFeedbackMutation,
   useGetApplicationFeedbacksQuery,
   useLazyGetApplicationFeedbacksQuery,

@@ -8,14 +8,23 @@ import { useAppSelector } from "@/lib/hooks";
 export default function DefaultRedirect() {
   const router = useRouter();
   const { allowedPaths } = usePermissions();
-  const { permissionsReady } = useAppSelector((state) => state.auth);
+  const { permissionsReady, user } = useAppSelector((state) => state.auth);
+
+  const isSuperAdmin = !!(
+    user?.role?.code === 'super_admin' ||
+    (!user?.company && user?.role?.level != null && user.role.level >= 999)
+  );
 
   useEffect(() => {
     if (permissionsReady) {
-      const firstPath = allowedPaths[0] || "/access-denied";
+      if (isSuperAdmin) {
+        router.replace("/companies");
+        return;
+      }
+      const firstPath = allowedPaths[0] || "/dashboard";
       router.replace(firstPath);
     }
-  }, [permissionsReady, allowedPaths, router]);
+  }, [permissionsReady, isSuperAdmin, allowedPaths, router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">

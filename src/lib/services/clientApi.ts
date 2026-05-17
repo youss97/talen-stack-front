@@ -186,6 +186,7 @@ export const clientApi = createApi({
             firstName: mgr.first_name,
             lastName: mgr.last_name,
             email: mgr.email,
+            phone: mgr.phone,
             position: mgr.position,
             status: mgr.status,
             displayName: `${mgr.first_name} ${mgr.last_name}${mgr.position ? ` - ${mgr.position}` : ''}`,
@@ -250,6 +251,7 @@ export const clientApi = createApi({
             firstName: mgr.first_name,
             lastName: mgr.last_name,
             email: mgr.email,
+            phone: mgr.phone,
             position: mgr.position,
             displayName: `${mgr.first_name} ${mgr.last_name}${mgr.position ? ` - ${mgr.position}` : ''}`,
           };

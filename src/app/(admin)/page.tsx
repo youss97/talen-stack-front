@@ -12,19 +12,23 @@ export default function AdminHomePage() {
     console.log('🔍 Admin page - État auth:', { isAuth, user: user?.email });
     
     if (isAuth && user) {
-      // Si l'utilisateur est un client manager, rediriger vers "Mes offres"
       const userRoleCode = user.role?.code;
+      const isSuperAdmin =
+        userRoleCode === 'super_admin' ||
+        (!user.company && user.role?.level != null && user.role.level >= 999);
+
+      if (isSuperAdmin) {
+        router.push('/companies');
+        return;
+      }
+
       if (userRoleCode?.startsWith('CLIENT_MANAGER_')) {
-        console.log('👤 Client Manager détecté, redirection vers /my-requests');
         router.push('/my-requests');
         return;
       }
 
-      // Sinon, rediriger vers le premier chemin autorisé
       const firstFeaturePath = user.features?.[0]?.pages?.[0]?.path;
       const redirectPath = firstFeaturePath || "/dashboard";
-      
-      console.log('🎯 Redirection depuis admin page vers:', redirectPath);
       router.push(redirectPath);
     } else if (isAuth === false) {
       // Si pas connecté, rediriger vers la page de connexion (pas la landing)

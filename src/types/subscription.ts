@@ -12,6 +12,7 @@ export interface SubscriptionPlan {
   name: string;
   description?: string;
   price: number;
+  currency: string;
   billing_cycle: "monthly" | "annual" | "one_time";
   is_active: boolean;
   created_at: string;
@@ -23,6 +24,7 @@ export interface CreateSubscriptionPlanRequest {
   name: string;
   description?: string;
   price?: number;
+  currency?: string;
   billing_cycle?: "monthly" | "annual" | "one_time";
   is_active?: boolean;
   featureIds: string[];

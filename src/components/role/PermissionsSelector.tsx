@@ -35,10 +35,10 @@ export default function PermissionsSelector({
 
   // Derive actions from selected pages
   const visibleActions: Action[] = [];
-  const actionsByPage: Record<string, Action[]> = {};
+  const actionsByPage: Record<string, { page: Page; actions: Action[] }> = {};
   visiblePages.forEach((p) => {
     if (selectedPages.includes(p.id) && p.actions) {
-      actionsByPage[p.name] = p.actions;
+      actionsByPage[p.id] = { page: p, actions: p.actions };
       visibleActions.push(...p.actions);
     }
   });
@@ -58,18 +58,11 @@ export default function PermissionsSelector({
       onPagesChange([]);
       onActionsChange([]);
     } else {
-      // Sélectionner toutes les features
       onFeaturesChange(allFeatureIds);
-      
-      // Auto-sélectionner toutes les pages de toutes les features
       const allPageIdsFromFeatures = allFeatures.flatMap((f) => f.pages?.map((p) => p.id) ?? []);
       onPagesChange(allPageIdsFromFeatures);
-      
-      // Auto-sélectionner TOUTES les actions de toutes les pages
-      const allActionIdsFromFeatures = allFeatures.flatMap((f) => 
-        f.pages?.flatMap((p) => 
-          p.actions?.map((a) => a.id) ?? []
-        ) ?? []
+      const allActionIdsFromFeatures = allFeatures.flatMap((f) =>
+        f.pages?.flatMap((p) => p.actions?.map((a) => a.id) ?? []) ?? []
       );
       onActionsChange(allActionIdsFromFeatures);
     }
@@ -81,21 +74,17 @@ export default function PermissionsSelector({
       onActionsChange([]);
     } else {
       onPagesChange(allPageIds);
-      // Auto-select READ actions for all pages
       const readIds = visiblePages.flatMap((p) => p.actions?.filter((a) => isReadAction(a.code)).map((a) => a.id) ?? []);
-      const merged = Array.from(new Set([...selectedActions, ...readIds]));
-      onActionsChange(merged);
+      onActionsChange(Array.from(new Set([...selectedActions, ...readIds])));
     }
   };
 
   const handleSelectAllActions = () => {
     if (allActionsSelected) {
-      // Keep only read actions (can't deselect them)
       const readIds = visibleActions.filter((a) => isReadAction(a.code)).map((a) => a.id);
       onActionsChange(readIds);
     } else {
-      const merged = Array.from(new Set([...selectedActions, ...allActionIds]));
-      onActionsChange(merged);
+      onActionsChange(Array.from(new Set([...selectedActions, ...allActionIds])));
     }
   };
 
@@ -109,21 +98,14 @@ export default function PermissionsSelector({
       onPagesChange(selectedPages.filter((id) => !pageIds.includes(id)));
       onActionsChange(selectedActions.filter((id) => !actionIds.includes(id)));
     } else {
-      // Sélectionner la feature
       onFeaturesChange([...selectedFeatures, featureId]);
-      
-      // Auto-sélectionner toutes les pages de cette feature
       const feature = allFeatures.find((f) => f.id === featureId);
       const pageIds = feature?.pages?.map((p) => p.id) ?? [];
-      const newPages = Array.from(new Set([...selectedPages, ...pageIds]));
-      onPagesChange(newPages);
-      
-      // Auto-sélectionner toutes les actions READ de ces pages
-      const readActionIds = feature?.pages?.flatMap((p) => 
+      onPagesChange(Array.from(new Set([...selectedPages, ...pageIds])));
+      const readActionIds = feature?.pages?.flatMap((p) =>
         p.actions?.filter((a) => isReadAction(a.code)).map((a) => a.id) ?? []
       ) ?? [];
-      const newActions = Array.from(new Set([...selectedActions, ...readActionIds]));
-      onActionsChange(newActions);
+      onActionsChange(Array.from(new Set([...selectedActions, ...readActionIds])));
     }
   };
 
@@ -153,7 +135,6 @@ export default function PermissionsSelector({
     );
   };
 
-  // Select all per feature (pages + actions)
   const handleSelectFeatureAll = (feature: Feature) => {
     const pageIds = feature.pages?.map((p) => p.id) ?? [];
     const actionIds = feature.pages?.flatMap((p) => p.actions?.map((a) => a.id) ?? []) ?? [];
@@ -175,9 +156,23 @@ export default function PermissionsSelector({
     );
   }
 
+  // Humanize action code suffix → French label
+  const humanizeAction = (name: string, code: string): string => {
+    if (name && name.toLowerCase() !== code.toLowerCase()) return name;
+    const suffix = code.split(".").pop()?.toLowerCase() ?? code;
+    const map: Record<string, string> = {
+      read: "Consulter", create: "Créer", update: "Modifier",
+      delete: "Supprimer", export: "Exporter", import: "Importer",
+      approve: "Approuver", reject: "Rejeter", archive: "Archiver",
+      send: "Envoyer", assign: "Assigner", manage: "Gérer",
+      resend: "Renvoyer", stats: "Statistiques", "update-status": "Changer le statut",
+    };
+    return map[suffix] ?? name;
+  };
+
   const colClass = "border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden flex flex-col";
   const headerClass = "bg-gray-50 dark:bg-gray-800 px-3 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between";
-  const checkboxClass = "h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500";
+  const checkboxClass = "h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 shrink-0 mt-0.5";
   const selectAllBtn = "text-xs text-brand-600 hover:text-brand-800 font-medium px-1";
 
   return (
@@ -190,7 +185,8 @@ export default function PermissionsSelector({
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 h-[460px]">
+      <div className="grid grid-cols-3 gap-4 h-[500px]">
+
         {/* ── Modules column ── */}
         <div className={colClass}>
           <div className={headerClass}>
@@ -209,29 +205,40 @@ export default function PermissionsSelector({
               <ul className="divide-y divide-gray-100 dark:divide-gray-800">
                 {allFeatures.map((feature) => {
                   const featurePageIds = feature.pages?.map((p) => p.id) ?? [];
-                  const featureAllPages = featurePageIds.length > 0 && featurePageIds.every((id) => selectedPages.includes(id));
+                  const featureAllPages =
+                    featurePageIds.length > 0 &&
+                    featurePageIds.every((id) => selectedPages.includes(id));
+                  const isSelected = selectedFeatures.includes(feature.id);
                   return (
                     <li key={feature.id}>
-                      <div className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                        <label className="flex items-center gap-2 flex-1 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={selectedFeatures.includes(feature.id)}
-                            onChange={() => handleFeatureToggle(feature.id)}
-                            className={checkboxClass}
-                          />
-                          <div>
-                            <p className="text-sm text-gray-800 dark:text-gray-200 font-medium">{feature.name}</p>
-                            {feature.description && (
-                              <p className="text-xs text-gray-400">{feature.description}</p>
-                            )}
-                          </div>
-                        </label>
-                        {selectedFeatures.includes(feature.id) && (
+                      <div
+                        className={`flex items-start gap-2 px-3 py-2.5 transition-colors ${
+                          isSelected
+                            ? "bg-brand-50 dark:bg-brand-500/10"
+                            : "hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handleFeatureToggle(feature.id)}
+                          className={checkboxClass}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-gray-800 dark:text-gray-200 font-medium leading-tight">
+                            {feature.name}
+                          </p>
+                          {feature.description && (
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
+                              {feature.description}
+                            </p>
+                          )}
+                        </div>
+                        {isSelected && (
                           <button
                             type="button"
                             onClick={() => handleSelectFeatureAll(feature)}
-                            className={`${selectAllBtn} shrink-0`}
+                            className={`${selectAllBtn} shrink-0 mt-0.5`}
                             title={featureAllPages ? "Retirer toutes les pages" : "Sélectionner toutes les pages"}
                           >
                             {featureAllPages ? "−" : "+"}
@@ -266,22 +273,39 @@ export default function PermissionsSelector({
               <p className="p-4 text-sm text-gray-500 text-center">Aucune page disponible</p>
             ) : (
               <ul className="divide-y divide-gray-100 dark:divide-gray-800">
-                {visiblePages.map((page) => (
-                  <li key={page.id}>
-                    <label className="flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                      <input
-                        type="checkbox"
-                        checked={selectedPages.includes(page.id)}
-                        onChange={() => handlePageToggle(page.id)}
-                        className={checkboxClass}
-                      />
-                      <div>
-                        <p className="text-sm text-gray-800 dark:text-gray-200">{page.name}</p>
-                        {page.path && <p className="text-xs text-gray-400">{page.path}</p>}
+                {visiblePages.map((page) => {
+                  const isSelected = selectedPages.includes(page.id);
+                  return (
+                    <li key={page.id}>
+                      <div
+                        className={`flex items-start gap-2.5 px-3 py-2.5 cursor-pointer transition-colors ${
+                          isSelected
+                            ? "bg-brand-50 dark:bg-brand-500/10"
+                            : "hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                        }`}
+                        onClick={() => handlePageToggle(page.id)}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handlePageToggle(page.id)}
+                          onClick={(e) => e.stopPropagation()}
+                          className={checkboxClass}
+                        />
+                        <div className="min-w-0">
+                          <p className="text-sm text-gray-800 dark:text-gray-200 font-medium leading-tight">
+                            {page.name}
+                          </p>
+                          {page.description && (
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
+                              {page.description}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </label>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -307,36 +331,61 @@ export default function PermissionsSelector({
               <p className="p-4 text-sm text-gray-500 text-center">Aucune action</p>
             ) : (
               <div>
-                {Object.entries(actionsByPage).map(([pageName, actions]) => (
-                  <div key={pageName}>
-                    <div className="bg-gray-100 dark:bg-gray-800 px-3 py-1.5 border-b border-gray-200 dark:border-gray-700">
-                      <p className="text-xs font-semibold text-gray-600 dark:text-gray-400">{pageName}</p>
+                {Object.values(actionsByPage).map(({ page, actions }) => (
+                  <div key={page.id}>
+                    {/* Page sub-header inside actions column */}
+                    <div className="bg-gray-100 dark:bg-gray-800 px-3 py-2 border-b border-gray-200 dark:border-gray-700">
+                      <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{page.name}</p>
+                      {page.description && (
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
+                          {page.description}
+                        </p>
+                      )}
                     </div>
                     <ul className="divide-y divide-gray-100 dark:divide-gray-800">
                       {actions.map((action) => {
                         const isRead = isReadAction(action.code);
+                        const isSelected = selectedActions.includes(action.id);
                         return (
                           <li key={action.id}>
-                            <label
-                              className={`flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 ${
-                                isRead ? "cursor-not-allowed opacity-70" : "cursor-pointer"
+                            <div
+                              className={`flex items-start gap-2.5 px-3 py-2 transition-colors ${
+                                isRead
+                                  ? "cursor-not-allowed"
+                                  : "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                              } ${
+                                isSelected && !isRead
+                                  ? "bg-brand-50 dark:bg-brand-500/10"
+                                  : ""
                               }`}
+                              onClick={() => !isRead && handleActionToggle(action.id)}
                             >
                               <input
                                 type="checkbox"
-                                checked={selectedActions.includes(action.id)}
+                                checked={isSelected}
                                 onChange={() => handleActionToggle(action.id)}
-                                disabled={isRead && selectedActions.includes(action.id)}
-                                className={checkboxClass}
+                                onClick={(e) => e.stopPropagation()}
+                                disabled={isRead && isSelected}
+                                className={`${checkboxClass} ${isRead ? "opacity-60" : ""}`}
                               />
-                              <div>
-                                <p className="text-sm text-gray-800 dark:text-gray-200">{action.name}</p>
-                                <p className="text-xs text-gray-400">{action.code}</p>
-                                {isRead && (
-                                  <p className="text-xs text-amber-500">Requis</p>
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <p className="text-sm text-gray-800 dark:text-gray-200 font-medium leading-tight">
+                                    {humanizeAction(action.name, action.code)}
+                                  </p>
+                                  {isRead && (
+                                    <span className="text-xs text-amber-600 dark:text-amber-400 font-medium bg-amber-50 dark:bg-amber-500/10 px-1.5 py-0.5 rounded">
+                                      Obligatoire
+                                    </span>
+                                  )}
+                                </div>
+                                {action.description && (
+                                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
+                                    {action.description}
+                                  </p>
                                 )}
                               </div>
-                            </label>
+                            </div>
                           </li>
                         );
                       })}
@@ -347,6 +396,7 @@ export default function PermissionsSelector({
             )}
           </div>
         </div>
+
       </div>
     </div>
   );
