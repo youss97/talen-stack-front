@@ -7,6 +7,7 @@ import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import ManagerFormModal from "@/components/manager/ManagerFormModal";
+import ManagerDetailModal from "@/components/manager/ManagerDetailModal";
 import InfiniteSelect from "@/components/form/InfiniteSelect";
 import { useActions } from "@/hooks/useActions";
 import type { Manager } from "@/types/client";
@@ -28,6 +29,8 @@ export default function ManagersPage() {
   const [selectedClientId, setSelectedClientId] = useState<string>("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedManager, setSelectedManager] = useState<Manager | null>(null);
+  const [viewManager, setViewManager] = useState<Manager | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -87,10 +90,15 @@ export default function ManagersPage() {
     return defaultMessage;
   };
 
+  const handleViewClick = (manager: Manager) => {
+    setViewManager(manager);
+    setIsViewModalOpen(true);
+  };
+
   const columns: Column<Manager>[] = [
     {
       key: "displayName",
-      header: "Manager",
+      header: "Collaborateur",
       className: "font-medium",
       render: (_value, row) => {
         const manager = row as any;
@@ -193,14 +201,14 @@ export default function ManagersPage() {
           managerId: selectedManager.id,
           managerData: formDataToSend,
         }).unwrap();
-        addToast("success", "Manager modifié avec succès");
+        addToast("success", "Collaborateur modifié avec succès");
       } else {
         // Mode création
         await createManager({
           clientId: selectedClientId,
           managerData: formDataToSend,
         }).unwrap();
-        addToast("success", "Manager créé avec succès");
+        addToast("success", "Collaborateur créé avec succès");
       }
       
       setIsFormModalOpen(false);
@@ -208,7 +216,7 @@ export default function ManagersPage() {
     } catch (error) {
       const message = getErrorMessage(
         error,
-        selectedManager ? "Erreur lors de la modification du manager" : "Erreur lors de la création du manager"
+        selectedManager ? "Erreur lors de la modification du collaborateur" : "Erreur lors de la création du collaborateur"
       );
       addToast("error", "Erreur", message);
     }
@@ -263,15 +271,15 @@ export default function ManagersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Gestion des Managers
+            Gestion des Collaborateurs
           </h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Gérez les managers assignés aux clients
+            Gérez les collaborateurs assignés aux clients
           </p>
         </div>
         {canCreate && selectedClientId && canToggleManagerStatus && (
           <Button onClick={handleAddClick}>
-            + Ajouter un Manager
+            + Ajouter un Collaborateur
           </Button>
         )}
       </div>
@@ -315,7 +323,8 @@ export default function ManagersPage() {
               columns={columns}
               data={data?.data || []}
               isLoading={isLoading}
-              emptyMessage="Aucun manager trouvé pour ce client"
+              emptyMessage="Aucun collaborateur trouvé pour ce client"
+              onView={handleViewClick}
               onEdit={canUpdate && canToggleManagerStatus ? handleEditClick : undefined}
               onDelete={canDelete && canToggleManagerStatus ? handleDeleteClick : undefined}
             />
@@ -353,7 +362,7 @@ export default function ManagersPage() {
             Sélectionnez un client
           </h3>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Choisissez un client pour voir et gérer ses managers
+            Choisissez un client pour voir et gérer ses collaborateurs
           </p>
         </div>
       )}
@@ -368,6 +377,15 @@ export default function ManagersPage() {
         onSubmit={handleCreateManager}
         manager={selectedManager}
         isLoading={isCreating || isUpdating}
+      />
+
+      <ManagerDetailModal
+        isOpen={isViewModalOpen}
+        onClose={() => {
+          setIsViewModalOpen(false);
+          setViewManager(null);
+        }}
+        manager={viewManager}
       />
 
       <ConfirmModal

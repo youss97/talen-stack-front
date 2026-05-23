@@ -1,11 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
+import StarRating from "@/components/form/StarRating";
+
+interface SkillWithLevel { name: string; level: number; }
 
 interface ManagerRequestFormData {
   title: string;
@@ -19,13 +22,49 @@ interface ManagerRequestFormData {
   max_experience?: number;
   number_of_profiles: number;
   required_skills: string[];
+  soft_skills: string[];
   languages: string[];
+  min_salary?: number;
+  max_salary?: number;
+  daily_rate_min?: number;
+  daily_rate_max?: number;
+  package_current?: number;
+  package_desired?: number;
+  bonuses?: string;
+  benefits?: string;
+  desired_start_date?: string;
+  note_client?: string;
 }
 
 interface ManagerRequestFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: ManagerRequestFormData) => Promise<void>;
+  initialData?: {
+    title?: string;
+    description?: string;
+    contract_type?: string;
+    contract_types?: string[];
+    location?: string;
+    country?: string;
+    work_type?: string;
+    priority?: string;
+    min_experience?: number;
+    max_experience?: number;
+    number_of_profiles?: number;
+    required_skills?: (string | { name: string; level?: number })[];
+    languages?: string[];
+    min_salary?: number;
+    max_salary?: number;
+    daily_rate_min?: number;
+    daily_rate_max?: number;
+    package_current?: number;
+    package_desired?: number;
+    bonuses?: string;
+    benefits?: string;
+    desired_start_date?: string;
+    note_client?: string;
+  } | null;
   isLoading?: boolean;
 }
 
@@ -143,18 +182,22 @@ export default function ManagerRequestFormModal({
   isOpen,
   onClose,
   onSubmit,
+  initialData,
   isLoading = false,
 }: ManagerRequestFormModalProps) {
+  const isEditing = !!initialData;
   const [skillInput, setSkillInput] = useState("");
-  const [skills, setSkills] = useState<string[]>([]);
+  const [skills, setSkills] = useState<SkillWithLevel[]>([]);
+  const [softSkillInput, setSoftSkillInput] = useState("");
+  const [softSkills, setSoftSkills] = useState<string[]>([]);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["Français"]);
   const [selectedCountry, setSelectedCountry] = useState("Maroc");
+  const [selectedContractTypes, setSelectedContractTypes] = useState<string[]>(["CDI"]);
 
   const {
     register,
     handleSubmit,
     reset,
-    watch,
     setValue,
     formState: { errors },
   } = useForm<ManagerRequestFormData>({
@@ -165,27 +208,103 @@ export default function ManagerRequestFormModal({
       number_of_profiles: 1,
       country: "Maroc",
       location: "",
+      bonuses: "",
+      benefits: "",
+      desired_start_date: "",
+      note_client: "",
     },
   });
+
+  // Initialize from initialData when in edit mode
+  useEffect(() => {
+    if (isOpen && initialData) {
+      const initContractTypes = initialData.contract_types?.length
+        ? initialData.contract_types
+        : initialData.contract_type
+        ? [initialData.contract_type]
+        : ["CDI"];
+      reset({
+        title: initialData.title || "",
+        description: initialData.description || "",
+        contract_type: initContractTypes[0] || "CDI",
+        location: initialData.location || "",
+        country: initialData.country || "Maroc",
+        work_type: (initialData.work_type as any) || "on_site",
+        priority: (initialData.priority as any) || "normal",
+        min_experience: initialData.min_experience,
+        max_experience: initialData.max_experience,
+        number_of_profiles: initialData.number_of_profiles || 1,
+        min_salary: initialData.min_salary,
+        max_salary: initialData.max_salary,
+        daily_rate_min: initialData.daily_rate_min,
+        daily_rate_max: initialData.daily_rate_max,
+        package_current: initialData.package_current,
+        package_desired: initialData.package_desired,
+        bonuses: initialData.bonuses || "",
+        benefits: initialData.benefits || "",
+        desired_start_date: initialData.desired_start_date?.split("T")[0] || "",
+        note_client: initialData.note_client || "",
+      });
+      const rawSkills = (initialData.required_skills || []).map(s =>
+        typeof s === "string" ? { name: s, level: 1 } : { name: s.name, level: s.level || 1 }
+      );
+      setSkills(rawSkills);
+      setSoftSkills([]);
+      setSelectedLanguages(initialData.languages?.length ? initialData.languages : ["Français"]);
+      setSelectedCountry(initialData.country || "Maroc");
+      setSelectedContractTypes(initContractTypes);
+    } else if (isOpen && !initialData) {
+      reset({
+        contract_type: "CDI",
+        work_type: "on_site",
+        priority: "normal",
+        number_of_profiles: 1,
+        country: "Maroc",
+        location: "",
+      });
+      setSkills([]);
+      setSkillInput("");
+      setSoftSkills([]);
+      setSoftSkillInput("");
+      setSelectedLanguages(["Français"]);
+      setSelectedCountry("Maroc");
+      setSelectedContractTypes(["CDI"]);
+    }
+  }, [isOpen, initialData]);
 
   const handleClose = () => {
     reset();
     setSkills([]);
     setSkillInput("");
+    setSoftSkills([]);
+    setSoftSkillInput("");
     setSelectedLanguages(["Français"]);
     setSelectedCountry("Maroc");
+    setSelectedContractTypes(["CDI"]);
     onClose();
   };
 
   const addSkill = () => {
     const trimmed = skillInput.trim();
-    if (trimmed && !skills.includes(trimmed)) {
-      setSkills((prev) => [...prev, trimmed]);
+    if (trimmed && !skills.some((s) => s.name === trimmed)) {
+      setSkills((prev) => [...prev, { name: trimmed, level: 1 }]);
       setSkillInput("");
     }
   };
 
-  const removeSkill = (skill: string) => setSkills((prev) => prev.filter((s) => s !== skill));
+  const removeSkill = (name: string) => setSkills((prev) => prev.filter((s) => s.name !== name));
+  const updateSkillLevel = (name: string, level: number) =>
+    setSkills((prev) => prev.map((s) => (s.name === name ? { ...s, level } : s)));
+
+  const addSoftSkill = () => {
+    const trimmed = softSkillInput.trim();
+    if (trimmed && !softSkills.includes(trimmed)) {
+      setSoftSkills((prev) => [...prev, trimmed]);
+      setSoftSkillInput("");
+    }
+  };
+
+  const removeSoftSkill = (name: string) => setSoftSkills((prev) => prev.filter((s) => s !== name));
 
   const toggleLanguage = (lang: string) => {
     setSelectedLanguages((prev) =>
@@ -193,13 +312,27 @@ export default function ManagerRequestFormModal({
     );
   };
 
+  const toggleContractType = (type: string) => {
+    setSelectedContractTypes((prev) =>
+      prev.includes(type)
+        ? prev.length > 1 ? prev.filter((t) => t !== type) : prev
+        : [...prev, type]
+    );
+  };
+
+  const showSalary = selectedContractTypes.some((t) => ["CDI", "CDD", "Stage", "Alternance"].includes(t));
+  const showTJM = selectedContractTypes.includes("Freelance");
+
   const handleFormSubmit = async (data: ManagerRequestFormData) => {
     if (skills.length === 0) return;
     await onSubmit({
       ...data,
-      required_skills: skills,
+      contract_type: selectedContractTypes[0] || "CDI",
+      contract_types: selectedContractTypes,
+      required_skills: skills as any,
+      soft_skills: softSkills,
       languages: selectedLanguages.length > 0 ? selectedLanguages : ["Français"],
-    });
+    } as any);
     handleClose();
   };
 
@@ -210,8 +343,12 @@ export default function ManagerRequestFormModal({
   return (
     <Modal isOpen={isOpen} onClose={handleClose} className="max-w-2xl mx-4 my-4 max-h-[95vh] flex flex-col">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Nouvelle offre de recrutement</h2>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Décrivez le profil que vous recherchez</p>
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+          {isEditing ? "Modifier l'offre de recrutement" : "Nouvelle offre de recrutement"}
+        </h2>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          {isEditing ? "Modifiez les informations de votre offre" : "Décrivez le profil que vous recherchez"}
+        </p>
       </div>
 
       <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col flex-1 min-h-0">
@@ -255,12 +392,15 @@ export default function ManagerRequestFormModal({
               <Button type="button" variant="outline" onClick={addSkill}>Ajouter</Button>
             </div>
             {skills.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-2">
+              <div className="mt-3 flex flex-col gap-2">
                 {skills.map((skill) => (
-                  <span key={skill} className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">
-                    {skill}
-                    <button type="button" onClick={() => removeSkill(skill)} className="ml-1 text-brand-500 hover:text-brand-700 text-base leading-none">×</button>
-                  </span>
+                  <div key={skill.name} className="inline-flex items-center justify-between gap-3 px-3 py-2 bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400 rounded-lg text-sm font-medium">
+                    <span className="truncate">{skill.name}</span>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <StarRating value={skill.level} onChange={(v) => updateSkillLevel(skill.name, v)} />
+                      <button type="button" onClick={() => removeSkill(skill.name)} className="text-brand-500 hover:text-brand-900 dark:hover:text-brand-300 text-base leading-none">×</button>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
@@ -269,15 +409,95 @@ export default function ManagerRequestFormModal({
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {/* Type de contrat */}
-            <div>
-              <Label>Type de contrat <span className="text-error-500">*</span></Label>
-              <select {...register("contract_type", { required: true })} className={selectClass}>
-                {CONTRACT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-              </select>
+          {/* Softskills */}
+          <div>
+            <Label>Softskills</Label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={softSkillInput}
+                onChange={(e) => setSoftSkillInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSoftSkill(); } }}
+                placeholder="Ex: Leadership, Travail en équipe..."
+                className="h-11 flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+              />
+              <Button type="button" variant="outline" onClick={addSoftSkill}>Ajouter</Button>
             </div>
+            {softSkills.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {softSkills.map((skill) => (
+                  <span key={skill} className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border border-purple-200 dark:border-purple-500/30">
+                    {skill}
+                    <button type="button" onClick={() => removeSoftSkill(skill)} className="ml-1 text-purple-500 hover:text-purple-700 text-base leading-none">×</button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
 
+          {/* Types de contrat */}
+          <div>
+            <Label>Types de contrat <span className="text-error-500">*</span></Label>
+            <div className="flex flex-wrap gap-2 mt-1">
+              {CONTRACT_TYPES.map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => toggleContractType(type)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                    selectedContractTypes.includes(type)
+                      ? "bg-brand-500 text-white"
+                      : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Budget conditionnel */}
+          {showSalary && (
+            <div className="rounded-lg border border-green-200 dark:border-green-800 p-4 space-y-3">
+              <p className="text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wide">Prétentions salariales (MAD/mois)</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Salaire min</Label>
+                  <Input type="number" placeholder="0" {...register("min_salary", { valueAsNumber: true, min: 0 })} />
+                </div>
+                <div>
+                  <Label>Salaire max</Label>
+                  <Input type="number" placeholder="0" {...register("max_salary", { valueAsNumber: true, min: 0 })} />
+                </div>
+                <div>
+                  <Label>Package actuel (MAD)</Label>
+                  <Input type="number" placeholder="0" {...register("package_current", { valueAsNumber: true, min: 0 })} />
+                </div>
+                <div>
+                  <Label>Package souhaité (MAD)</Label>
+                  <Input type="number" placeholder="0" {...register("package_desired", { valueAsNumber: true, min: 0 })} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showTJM && (
+            <div className="rounded-lg border border-purple-200 dark:border-purple-800 p-4 space-y-3">
+              <p className="text-xs font-medium text-purple-700 dark:text-purple-400 uppercase tracking-wide">TJM souhaité (MAD/jour)</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>TJM min</Label>
+                  <Input type="number" placeholder="0" {...register("daily_rate_min", { valueAsNumber: true, min: 0 })} />
+                </div>
+                <div>
+                  <Label>TJM max</Label>
+                  <Input type="number" placeholder="0" {...register("daily_rate_max", { valueAsNumber: true, min: 0 })} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {/* Mode de travail */}
             <div>
               <Label>Mode de travail <span className="text-error-500">*</span></Label>
@@ -386,6 +606,46 @@ export default function ManagerRequestFormModal({
               ))}
             </div>
           </div>
+
+          {/* Date de début souhaitée */}
+          <div>
+            <Label>Date de début souhaitée</Label>
+            <Input
+              type="date"
+              {...register("desired_start_date")}
+            />
+          </div>
+
+          {/* Avantages & Primes */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <Label>Avantages</Label>
+              <TextArea
+                placeholder="Mutuelle, tickets restaurant, véhicule de fonction..."
+                {...register("benefits")}
+                rows={3}
+              />
+            </div>
+            <div>
+              <Label>Primes</Label>
+              <TextArea
+                placeholder="Prime de performance, 13ème mois..."
+                {...register("bonuses")}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          {/* Note pour l'entreprise */}
+          <div>
+            <Label>Note</Label>
+            <TextArea
+              placeholder="Informations complémentaires pour l'équipe RH..."
+              {...register("note_client")}
+              rows={3}
+            />
+            <p className="mt-1 text-xs text-gray-400">Visible par vous et l'équipe RH</p>
+          </div>
         </div>
 
         <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
@@ -393,7 +653,7 @@ export default function ManagerRequestFormModal({
             Annuler
           </Button>
           <Button type="submit" disabled={isLoading || skills.length === 0}>
-            {isLoading ? "Enregistrement..." : "Créer l'offre"}
+            {isLoading ? "Enregistrement..." : isEditing ? "Modifier l'offre" : "Créer l'offre"}
           </Button>
         </div>
       </form>

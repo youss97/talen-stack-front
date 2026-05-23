@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   Table,
   TableHeader,
@@ -7,6 +7,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import ActionsMenu from "./ActionsMenu";
 
 export interface Column<T> {
   key: keyof T | string;
@@ -22,15 +23,19 @@ export interface DataTableProps<T> {
   onView?: (row: T) => void;
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
+  canDeleteRow?: (row: T) => boolean;
   customActions?: Array<{
     label: string;
     icon: React.ReactNode;
     onClick: (row: T) => void;
+    color?: 'default' | 'primary' | 'success' | 'warning' | 'error';
+    hidden?: (row: T) => boolean;
   }>;
   actions?: (row: T) => React.ReactNode;
   isLoading?: boolean;
   emptyMessage?: string;
   renderRowTooltip?: (row: T) => React.ReactNode;
+  useActionsMenu?: boolean;
 }
 
 function DataTable<T extends { id: string }>({
@@ -40,23 +45,62 @@ function DataTable<T extends { id: string }>({
   onView,
   onEdit,
   onDelete,
+  canDeleteRow,
   customActions,
   actions,
   isLoading = false,
   emptyMessage = "Aucune donnée disponible",
   renderRowTooltip,
+  useActionsMenu = true,
 }: DataTableProps<T>) {
   const hasActionHandlers = onView || onEdit || onDelete || customActions;
   const [tooltip, setTooltip] = useState<{ row: T; x: number; y: number } | null>(null);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!openDropdownId) return;
-    const close = () => setOpenDropdownId(null);
-    document.addEventListener("click", close);
-    return () => document.removeEventListener("click", close);
-  }, [openDropdownId]);
+  // Construire les actions pour le menu
+  const buildActionsMenu = useCallback((row: T) => {
+    const menuActions = [];
+
+    if (onView) {
+      menuActions.push({
+        label: "Voir les détails",
+        icon: <ViewIcon />,
+        onClick: () => onView(row),
+        color: 'default' as const,
+      });
+    }
+
+    if (onEdit) {
+      menuActions.push({
+        label: "Modifier",
+        icon: <EditIcon />,
+        onClick: () => onEdit(row),
+        color: 'default' as const,
+      });
+    }
+
+    if (customActions) {
+      menuActions.push(...customActions
+        .filter(action => !action.hidden || !action.hidden(row))
+        .map(action => ({
+          label: action.label,
+          icon: action.icon,
+          color: action.color,
+          onClick: () => action.onClick(row),
+        })));
+    }
+
+    if (onDelete && (!canDeleteRow || canDeleteRow(row))) {
+      menuActions.push({
+        label: "Supprimer",
+        icon: <TrashIcon />,
+        onClick: () => onDelete(row),
+        color: 'error' as const,
+      });
+    }
+
+    return menuActions;
+  }, [onView, onEdit, onDelete, canDeleteRow, customActions]);
 
   const handleRowMouseEnter = useCallback((row: T, e: React.MouseEvent) => {
     if (!renderRowTooltip) return;
@@ -108,15 +152,16 @@ function DataTable<T extends { id: string }>({
         {renderRowTooltip(tooltip.row)}
       </div>
     )}
-    <div className="overflow-x-auto">
-      <Table className="border-collapse">
+    <div className="w-full overflow-x-auto">
+    <div className="inline-block min-w-full align-middle">
+      <Table className="border-collapse min-w-full">
         <TableHeader className="border-b border-gray-100 dark:border-gray-800">
           <TableRow>
             {columns.map((column) => (
               <TableCell
-                key={String(column.key)}
+                key={column.header}
                 isHeader
-                className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400"
+                className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap"
               >
                 {column.header}
               </TableCell>
@@ -124,7 +169,7 @@ function DataTable<T extends { id: string }>({
             {(actions || hasActionHandlers) && (
               <TableCell
                 isHeader
-                className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400"
+                className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap"
               >
                 Actions
               </TableCell>
@@ -159,7 +204,7 @@ function DataTable<T extends { id: string }>({
                   const value = getValue(row, String(column.key));
                   return (
                     <TableCell
-                      key={String(column.key)}
+                      key={column.header}
                       className={`px-5 py-4 text-sm text-gray-800 dark:text-gray-200 ${
                         column.className || ""
                       }`}
@@ -170,9 +215,16 @@ function DataTable<T extends { id: string }>({
                 })}
                 {(actions || hasActionHandlers) && (
                   <TableCell className="px-5 py-4">
-                    <div onClick={(e) => e.stopPropagation()}>
+                    <div 
+                      onClick={(e) => e.stopPropagation()}
+                      onMouseEnter={(e) => e.stopPropagation()}
+                      onMouseMove={(e) => e.stopPropagation()}
+                      onMouseLeave={(e) => e.stopPropagation()}
+                    >
                       {actions ? (
                         actions(row)
+                      ) : useActionsMenu ? (
+                        <ActionsMenu actions={buildActionsMenu(row)} />
                       ) : (
                         <div className="flex items-center gap-1">
                           {onView && (
@@ -202,38 +254,6 @@ function DataTable<T extends { id: string }>({
                               <TrashIcon />
                             </button>
                           )}
-                          {customActions && customActions.length > 0 && (
-                            <div className="relative">
-                              <button
-                                onClick={(e) => { e.stopPropagation(); setOpenDropdownId(openDropdownId === row.id ? null : row.id); }}
-                                className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                                title="Plus d'actions"
-                              >
-                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <circle cx="9" cy="4" r="1.5" fill="currentColor"/>
-                                  <circle cx="9" cy="9" r="1.5" fill="currentColor"/>
-                                  <circle cx="9" cy="14" r="1.5" fill="currentColor"/>
-                                </svg>
-                              </button>
-                              {openDropdownId === row.id && (
-                                <div
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="absolute right-0 z-50 mt-1 min-w-[140px] rounded-xl border border-gray-100 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
-                                >
-                                  {customActions.map((action, index) => (
-                                    <button
-                                      key={index}
-                                      onClick={() => { action.onClick(row); setOpenDropdownId(null); }}
-                                      className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700 first:rounded-t-xl last:rounded-b-xl transition-colors"
-                                    >
-                                      {action.icon}
-                                      {action.label}
-                                    </button>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          )}
                         </div>
                       )}
                     </div>
@@ -244,6 +264,7 @@ function DataTable<T extends { id: string }>({
           )}
         </TableBody>
       </Table>
+    </div>
     </div>
     </>
   );

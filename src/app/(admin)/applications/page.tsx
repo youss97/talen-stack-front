@@ -2,6 +2,7 @@
 import { useState, useCallback } from "react";
 import { Controller, useForm } from "react-hook-form";
 import DataTableWithSelection from "@/components/tables/DataTableWithSelection";
+import ActionsMenu from "@/components/tables/ActionsMenu";
 import BulkActions from "@/components/tables/BulkActions";
 import Pagination from "@/components/tables/Pagination";
 import Button from "@/components/ui/button/Button";
@@ -257,12 +258,12 @@ export default function ApplicationsPage() {
     setAssignResponsibleModal({ isOpen: true, application });
   };
 
-  const handleAssignResponsible = async (responsibleId: string | null) => {
+  const handleAssignResponsible = async (responsibleIds: string[]) => {
     if (!assignResponsibleModal.application) return;
     setIsAssigningResponsible(true);
     try {
-      await assignApplicationResponsible({ id: assignResponsibleModal.application.id, responsible_id: responsibleId }).unwrap();
-      addToast("success", "Succès", responsibleId ? "Responsable affecté avec succès" : "Affectation retirée avec succès");
+      await assignApplicationResponsible({ id: assignResponsibleModal.application.id, responsible_ids: responsibleIds }).unwrap();
+      addToast("success", "Succès", responsibleIds.length > 0 ? "Responsable(s) affecté(s) avec succès" : "Affectation(s) retirée(s) avec succès");
     } catch (error) {
       addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de l'affectation"));
     } finally {
@@ -298,6 +299,7 @@ export default function ApplicationsPage() {
     {
       key: "cv" as keyof Recruiter,
       header: "Candidat",
+      className: "min-w-[200px]",
       render: (value: unknown) => {
         const cv = value as { candidate_first_name: string; candidate_last_name: string; candidate_email: string };
         return (
@@ -314,11 +316,12 @@ export default function ApplicationsPage() {
       id: "request",
       key: "request" as keyof Recruiter,
       header: "Demande",
+      className: "min-w-[180px]",
       render: (value: unknown) => {
         const request = value as { title: string; reference: string };
         return (
           <div>
-            <div className="font-medium text-gray-900 dark:text-white">{request?.title || "-"}</div>
+            <div className="font-medium text-gray-900 dark:text-white truncate max-w-[180px]">{request?.title || "-"}</div>
             <div className="text-xs text-gray-500 dark:text-gray-400">Réf: {request?.reference || "-"}</div>
           </div>
         );
@@ -328,10 +331,11 @@ export default function ApplicationsPage() {
       id: "client",
       key: "request" as keyof Recruiter,
       header: "Client",
+      className: "min-w-[150px]",
       render: (_value: unknown, row: Recruiter) => {
         const request = row.request as { client?: { name: string } } | undefined;
         return (
-          <span className="text-sm text-gray-800 dark:text-gray-200">
+          <span className="text-sm text-gray-800 dark:text-gray-200 truncate block max-w-[150px]">
             {request?.client?.name || "-"}
           </span>
         );
@@ -340,6 +344,7 @@ export default function ApplicationsPage() {
     {
       key: "workflow_status",
       header: "Workflow",
+      className: "min-w-[120px]",
       render: (value: any, row: Recruiter) => {
         const status = (value as string) || 'draft';
         const isActive = status === 'active';
@@ -352,7 +357,7 @@ export default function ApplicationsPage() {
                   e.stopPropagation();
                   handleToggleWorkflowClick(row);
                 }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
                   isActive
                     ? 'bg-success-100 text-success-700 hover:bg-success-200 dark:bg-success-500/10 dark:text-success-400 dark:hover:bg-success-500/20'
                     : 'bg-warning-100 text-warning-700 hover:bg-warning-200 dark:bg-warning-500/10 dark:text-warning-400 dark:hover:bg-warning-500/20'
@@ -373,6 +378,7 @@ export default function ApplicationsPage() {
     {
       key: "status",
       header: "Statut",
+      className: "min-w-[120px]",
       render: (value: any) => (
         <Badge
           color={getStatusColor(value as string) as "success" | "error" | "warning" | "info" | "light"}
@@ -387,11 +393,12 @@ export default function ApplicationsPage() {
       id: "created_by_recruiter",
       key: "recruiter" as keyof Recruiter,
       header: "Créé par",
+      className: "min-w-[130px]",
       render: (_value: unknown, row: Recruiter) => {
         const r = row.recruiter as { first_name?: string; last_name?: string } | undefined;
         const name = r ? `${r.first_name || ""} ${r.last_name || ""}`.trim() : "";
         return (
-          <span className="text-sm text-gray-700 dark:text-gray-300">
+          <span className="text-sm text-gray-700 dark:text-gray-300 truncate block max-w-[130px]">
             {name || "-"}
           </span>
         );
@@ -400,33 +407,13 @@ export default function ApplicationsPage() {
     {
       key: "recruiter_notes",
       header: "Notes",
+      className: "min-w-[150px]",
       render: (value: any) => (
-        <span className="truncate max-w-[200px] block">
+        <span className="truncate max-w-[150px] block text-sm">
           {(value as string) || "-"}
         </span>
       ),
     },
-  ];
-
-  // Actions personnalisées pour chaque ligne
-  const customActions = [
-    {
-      label: "Envoyer email",
-      icon: <EmailIcon />,
-      onClick: handleSendEmail,
-      color: 'primary' as const,
-    },
-    {
-      label: "Planifier entretien",
-      icon: <CalendarIcon />,
-      onClick: handleScheduleInterview,
-      color: 'success' as const,
-    },
-    ...(canAssign ? [{
-      label: "Affecter",
-      icon: <AssignIcon />,
-      onClick: handleAssignResponsibleClick,
-    }] : []),
   ];
 
   const handleRowClick = async (application: Recruiter) => {
@@ -691,18 +678,58 @@ export default function ApplicationsPage() {
           isDeleting={isBulkDeleting}
         />
 
-        <DataTableWithSelection
-          columns={columns}
-          data={data?.data || []}
-          selectedItems={selectedItems}
-          onSelectionChange={handleSelectionChange}
-          isLoading={isLoading || isFetching}
-          onView={handleRowClick}
-          onEdit={canUpdate ? handleEditClick : undefined}
-          onDelete={canDelete ? handleDeleteClick : undefined}
-          customActions={customActions}
-          emptyMessage="Aucune application trouvée"
-          renderRowTooltip={(row: Recruiter) => {
+        <div className="overflow-x-auto">
+          <DataTableWithSelection
+            columns={columns}
+            data={data?.data || []}
+            selectedItems={selectedItems}
+            onSelectionChange={handleSelectionChange}
+            isLoading={isLoading || isFetching}
+            onView={handleRowClick}
+            actions={(row: Recruiter) => (
+              <ActionsMenu
+                actions={[
+                  {
+                    label: "Voir les détails",
+                    icon: <ViewIcon />,
+                    onClick: () => handleRowClick(row),
+                    color: 'default',
+                  },
+                  ...(canUpdate ? [{
+                    label: "Modifier",
+                    icon: <EditIcon />,
+                    onClick: () => handleEditClick(row),
+                    color: 'default' as const,
+                  }] : []),
+                  {
+                    label: "Envoyer email",
+                    icon: <EmailIcon />,
+                    onClick: () => handleSendEmail(row),
+                    color: 'primary' as const,
+                  },
+                  {
+                    label: "Planifier entretien",
+                    icon: <CalendarIcon />,
+                    onClick: () => handleScheduleInterview(row),
+                    color: 'success' as const,
+                  },
+                  ...(canAssign ? [{
+                    label: "Affecter",
+                    icon: <AssignIcon />,
+                    onClick: () => handleAssignResponsibleClick(row),
+                    color: 'default' as const,
+                  }] : []),
+                  ...(canDelete ? [{
+                    label: "Supprimer",
+                    icon: <TrashIcon />,
+                    onClick: () => handleDeleteClick(row),
+                    color: 'error' as const,
+                  }] : []),
+                ]}
+              />
+            )}
+            emptyMessage="Aucune application trouvée"
+            renderRowTooltip={(row: Recruiter) => {
             const cv = row.cv as { candidate_first_name?: string; candidate_last_name?: string; candidate_email?: string } | undefined;
             const request = row.request as { title?: string; reference?: string; client?: { name?: string } } | undefined;
             const recruiter = row.recruiter as { first_name?: string; last_name?: string } | undefined;
@@ -747,6 +774,7 @@ export default function ApplicationsPage() {
             );
           }}
         />
+        </div>
 
         {data && data.pagination && (
           <div className="p-5 border-t border-gray-100 dark:border-gray-800">
@@ -887,6 +915,43 @@ function AssignIcon() {
       <path d="M13.3333 17.5V15.8333C13.3333 14.9493 12.9821 14.1014 12.357 13.4763C11.7319 12.8512 10.884 12.5 10 12.5H4.16667C3.28261 12.5 2.43477 12.8512 1.80964 13.4763C1.18452 14.1014 0.833336 14.9493 0.833336 15.8333V17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M7.08333 9.16667C8.92428 9.16667 10.4167 7.67428 10.4167 5.83333C10.4167 3.99238 8.92428 2.5 7.08333 2.5C5.24238 2.5 3.75 3.99238 3.75 5.83333C3.75 7.67428 5.24238 9.16667 7.08333 9.16667Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M15.8333 6.66667V11.6667M13.3333 9.16667H18.3333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function ViewIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M1.5 9C1.5 9 3.75 3.75 9 3.75C14.25 3.75 16.5 9 16.5 9C16.5 9 14.25 14.25 9 14.25C3.75 14.25 1.5 9 1.5 9Z"
+        stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+      />
+      <path
+        d="M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z"
+        stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function EditIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M13.5 7.5L10.5 4.5M2.25 15.75L4.78312 15.4656C5.07382 15.4328 5.21917 15.4164 5.35519 15.3723C5.47596 15.3331 5.59123 15.2783 5.69827 15.209C5.81894 15.1309 5.92443 15.0254 6.13541 14.8144L15 6C15.8284 5.17157 15.8284 3.82843 15 3C14.1716 2.17157 12.8284 2.17157 12 3L3.13562 11.8644C2.92464 12.0754 2.81915 12.1809 2.74101 12.3015C2.67171 12.4086 2.61692 12.5238 2.57767 12.6446C2.53359 12.7806 2.51719 12.926 2.48438 13.2167L2.25 15.75Z"
+        stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M6.75 2.25H11.25M2.25 4.5H15.75M14.25 4.5L13.724 12.3895C13.6451 13.5732 13.6057 14.165 13.3537 14.6138C13.1317 15.0088 12.794 15.3265 12.3861 15.5241C11.9211 15.75 11.328 15.75 10.1419 15.75H7.85811C6.67198 15.75 6.07892 15.75 5.61387 15.5241C5.20596 15.3265 4.86828 15.0088 4.64631 14.6138C4.39426 14.165 4.35485 13.5732 4.27602 12.3895L3.75 4.5M7.5 7.875V11.625M10.5 7.875V11.625"
+        stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+      />
     </svg>
   );
 }

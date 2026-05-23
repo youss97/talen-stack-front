@@ -10,6 +10,10 @@ import {
 } from "@/lib/services/subscriptionApi";
 import { useGetFeaturesQuery } from "@/lib/services/roleApi";
 import type { SubscriptionPlan } from "@/types/subscription";
+import { useGetSubscriptionsStatsQuery } from "@/lib/services/statsApi";
+import dynamic from "next/dynamic";
+
+const SubscriptionCharts = dynamic(() => import("@/components/dashboard/SubscriptionCharts"), { ssr: false });
 
 const BILLING_LABELS: Record<string, string> = {
   monthly: "Mensuel",
@@ -21,7 +25,7 @@ const FEATURE_ICONS: Record<string, string> = {
   Recrutement: "📋", Candidatures: "👥", Clients: "🏢", Managers: "👤",
   Utilisateurs: "🔑", Intégrations: "🔗", Agenda: "📅", Entretiens: "🗣️",
   "Vivier de talents": "💎", "Offres Publiques": "📢", Emails: "✉️",
-  Logs: "📊", Rôles: "🛡️", Entreprises: "🏭",
+  Logs: "📊", Rôles: "🛡️", Entreprises: "🏭", "Assignment Management": "📌",
 };
 
 export default function SubscriptionsPage() {
@@ -33,6 +37,7 @@ export default function SubscriptionsPage() {
   const { data: plans = [], isLoading } = useGetSubscriptionPlansQuery();
   const { data: allFeatures = [] } = useGetFeaturesQuery();
   const [deletePlan, { isLoading: isDeleting }] = useDeleteSubscriptionPlanMutation();
+  const { data: subStats, isLoading: isLoadingStats } = useGetSubscriptionsStatsQuery();
 
   const addToast = useCallback((variant: "success" | "error", title: string, message?: string) => {
     const id = Date.now().toString();
@@ -56,11 +61,11 @@ export default function SubscriptionsPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 space-y-6">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       {/* Header */}
-      <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
             <span className="text-2xl">📦</span> Abonnements
@@ -74,12 +79,27 @@ export default function SubscriptionsPage() {
         </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-        <StatCard label="Plans actifs" value={plans.filter((p) => p.is_active).length} icon="✅" color="green" />
-        <StatCard label="Plans inactifs" value={plans.filter((p) => !p.is_active).length} icon="⏸️" color="gray" />
-        <StatCard label="Total plans" value={plans.length} icon="📦" color="blue" />
+      {/* ── Dashboard Abonnements ── */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        {[
+          { label: "Plans disponibles", value: subStats?.totalPlans, icon: "📦", color: "bg-brand-50 dark:bg-brand-500/10" },
+          { label: "Sociétés abonnées", value: subStats?.totalSubscribed, icon: "🏢", color: "bg-blue-50 dark:bg-blue-500/10" },
+          { label: "Plans actifs", value: subStats?.plansDistribution.filter(p => p.companyCount > 0).length, icon: "✅", color: "bg-green-50 dark:bg-green-500/10" },
+        ].map((card) => (
+          <div key={card.label} className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-4">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${card.color}`}>{card.icon}</div>
+            <div className="mt-3">
+              <p className="text-xs text-gray-500 dark:text-gray-400">{card.label}</p>
+              <p className="text-2xl font-bold text-gray-800 dark:text-white mt-1">
+                {isLoadingStats ? <span className="inline-block w-10 h-6 bg-gray-200 rounded animate-pulse" /> : (card.value ?? 0)}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
+
+      {/* Charts abonnements + consommation API */}
+      {subStats && <SubscriptionCharts stats={subStats} />}
 
       {/* Plans list */}
       {isLoading ? (
@@ -132,23 +152,6 @@ export default function SubscriptionsPage() {
 }
 
 // ── Sub-components ──────────────────────────────────────────
-
-function StatCard({ label, value, icon, color }: { label: string; value: number; icon: string; color: string }) {
-  const colorMap: Record<string, string> = {
-    green: "bg-green-50 border-green-100 dark:bg-green-900/20 dark:border-green-800",
-    gray: "bg-gray-50 border-gray-100 dark:bg-gray-800/30 dark:border-gray-700",
-    blue: "bg-brand-50 border-brand-100 dark:bg-brand-900/20 dark:border-brand-800",
-  };
-  return (
-    <div className={`rounded-xl border p-4 ${colorMap[color] || colorMap.gray}`}>
-      <div className="flex items-center gap-2 mb-1">
-        <span className="text-lg">{icon}</span>
-        <span className="text-sm text-gray-500 dark:text-gray-400">{label}</span>
-      </div>
-      <p className="text-2xl font-bold text-gray-800 dark:text-white">{value}</p>
-    </div>
-  );
-}
 
 const FEATURE_ICONS_LOCAL = FEATURE_ICONS;
 

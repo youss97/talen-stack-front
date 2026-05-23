@@ -19,6 +19,7 @@ import {
 import { useActions } from "@/hooks/useActions";
 import type { Client, CreateClientRequest, UpdateClientRequest } from "@/types/client";
 import type { CreateClientFormData } from "@/validations/clientValidation";
+import { getImageUrl } from "@/utils/imageHelper";
 
 export default function ClientsPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/clients");
@@ -188,6 +189,28 @@ export default function ClientsPage() {
       key: "name",
       header: "Raison sociale",
       className: "font-medium",
+      render: (value, row) => {
+        const logoSrc = getImageUrl(row.company_logo_path as string | undefined);
+        return (
+          <div className="flex items-center gap-2.5">
+            {logoSrc ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={logoSrc}
+                alt={value as string}
+                className="h-8 w-8 rounded-md object-contain border border-gray-100 bg-white shrink-0"
+              />
+            ) : (
+              <div className="h-8 w-8 rounded-md bg-brand-50 flex items-center justify-center shrink-0">
+                <span className="text-xs font-bold text-brand-600">
+                  {(value as string)?.[0]?.toUpperCase() ?? "?"}
+                </span>
+              </div>
+            )}
+            <span className="font-medium text-gray-800 dark:text-white">{value as string}</span>
+          </div>
+        );
+      },
     },
     {
       key: "company_email",

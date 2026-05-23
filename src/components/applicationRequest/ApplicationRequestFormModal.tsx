@@ -22,6 +22,9 @@ import {
 } from "@/lib/services/clientApi";
 import { useGetContractTypesQuery } from "@/lib/services/contractTypeApi";
 import { getCurrencyByCode, DEFAULT_CURRENCY } from "@/lib/currencies";
+import StarRating from "@/components/form/StarRating";
+import type { SkillWithLevel, SkillItem } from "@/types/applicationRequest";
+import { getSkillName } from "@/types/applicationRequest";
 
 interface ApplicationRequestFormModalProps {
   isOpen: boolean;
@@ -50,6 +53,8 @@ export default function ApplicationRequestFormModal({
 }: ApplicationRequestFormModalProps) {
   const isEditing = !!applicationRequest;
   const [skillInput, setSkillInput] = useState("");
+  const [softSkillInput, setSoftSkillInput] = useState("");
+  const [selectedClients, setSelectedClients] = useState<Client[]>([]);
 
   const {
     register,
@@ -83,6 +88,7 @@ export default function ApplicationRequestFormModal({
       remote_days_per_week: undefined,
       remote_possible: false,
       languages: [],
+      soft_skills: [],
       benefits: "",
       bonuses: "",
       variables: "",
@@ -94,6 +100,7 @@ export default function ApplicationRequestFormModal({
   });
 
   const requiredSkills = watch("required_skills") || [];
+  const softSkills = (watch("soft_skills") || []) as string[];
   const clientId = watch("client_id");
   const managerId = watch("manager_id");
   const contractTypes = watch("contract_types") || [];
@@ -102,6 +109,7 @@ export default function ApplicationRequestFormModal({
 
   const managerQueryArg = useMemo(() => ({ clientId: clientId || "" }), [clientId]);
   const isFreelance = contractTypes.some(v => v?.toLowerCase() === "freelance");
+  const hasSalary = contractTypes.some(v => ["CDI", "CDD", "Stage", "Intérim", "Alternance"].includes(v));
 
   // Devise dynamique — MAD par défaut
   const [currency, setCurrency] = useState(DEFAULT_CURRENCY);
@@ -142,12 +150,20 @@ export default function ApplicationRequestFormModal({
 
   useEffect(() => {
     if (applicationRequest) {
+      // Initialize selected clients from existing request
+      setSelectedClients(
+        applicationRequest.client
+          ? [{ id: applicationRequest.client.id, name: applicationRequest.client.name } as Client]
+          : []
+      );
       reset({
         client_id: applicationRequest.client_id,
         manager_id: applicationRequest.manager_id,
         title: applicationRequest.title,
         description: applicationRequest.description,
-        required_skills: applicationRequest.required_skills || [],
+        required_skills: (applicationRequest.required_skills || []).map((s: SkillItem) =>
+          typeof s === "string" ? { name: s, level: 1 } : s
+        ),
         min_experience: applicationRequest.min_experience,
         max_experience: applicationRequest.max_experience,
         contract_types: applicationRequest.contract_types || (applicationRequest.contract_type ? [applicationRequest.contract_type] : []),
@@ -163,15 +179,17 @@ export default function ApplicationRequestFormModal({
         remote_days_per_week: applicationRequest.remote_days_per_week,
         remote_possible: applicationRequest.remote_possible || false,
         languages: applicationRequest.languages || [],
+        soft_skills: (applicationRequest.soft_skills as string[] | undefined) || [],
         benefits: applicationRequest.benefits || "",
         bonuses: applicationRequest.bonuses || "",
         variables: applicationRequest.variables || "",
         priority: applicationRequest.priority || "normal",
-        status: applicationRequest.status || "in_progress",
+        status: (applicationRequest.status as any) || "in_progress",
         desired_start_date: applicationRequest.desired_start_date?.split("T")[0],
         number_of_profiles: applicationRequest.number_of_profiles || 1,
       });
     } else if (isOpen) {
+      setSelectedClients([]);
       // Réinitialiser le formulaire en mode création
       reset({
         client_id: "",
@@ -194,6 +212,7 @@ export default function ApplicationRequestFormModal({
         remote_days_per_week: undefined,
         remote_possible: false,
         languages: [],
+        soft_skills: [],
         benefits: "",
         bonuses: "",
         variables: "",
@@ -211,23 +230,53 @@ export default function ApplicationRequestFormModal({
   };
 
   const handleAddSkill = () => {
-    if (skillInput.trim() && !requiredSkills.includes(skillInput.trim())) {
-      setValue("required_skills", [...requiredSkills, skillInput.trim()]);
+    const trimmed = skillInput.trim();
+    if (!trimmed) return;
+    const already = (requiredSkills as SkillItem[]).some((s) => getSkillName(s) === trimmed);
+    if (!already) {
+      setValue("required_skills", [...requiredSkills, { name: trimmed, level: 1 } as SkillWithLevel]);
       setSkillInput("");
     }
   };
 
-  const handleRemoveSkill = (skillToRemove: string) => {
+  const handleRemoveSkill = (nameToRemove: string) => {
     setValue(
       "required_skills",
-      requiredSkills.filter((skill) => skill !== skillToRemove)
+      (requiredSkills as SkillItem[]).filter((s) => getSkillName(s) !== nameToRemove)
     );
+  };
+
+  const handleUpdateSkillLevel = (nameToUpdate: string, level: number) => {
+    setValue(
+      "required_skills",
+      (requiredSkills as SkillItem[]).map((s) =>
+        getSkillName(s) === nameToUpdate ? { name: getSkillName(s), level } : s
+      )
+    );
+  };
+
+  const handleAddSoftSkill = () => {
+    const trimmed = softSkillInput.trim();
+    if (!trimmed || softSkills.includes(trimmed)) return;
+    setValue("soft_skills", [...softSkills, trimmed] as any);
+    setSoftSkillInput("");
+  };
+
+  const handleRemoveSoftSkill = (name: string) => {
+    setValue("soft_skills", softSkills.filter((s) => s !== name) as any);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
       handleAddSkill();
+    }
+  };
+
+  const handleSoftSkillKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddSoftSkill();
     }
   };
 
@@ -259,7 +308,7 @@ export default function ApplicationRequestFormModal({
       </div>
 
       <form onSubmit={handleSubmit(
-        (data) => onSubmit({ ...data, currency }),
+        (data) => onSubmit({ ...data, currency, client_ids: selectedClients.map(c => c.id) } as any),
         () => {
           // Scroll to first error when validation fails
           setTimeout(() => {
@@ -283,19 +332,67 @@ export default function ApplicationRequestFormModal({
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
-                  <InfiniteSelect<Client>
-                    label={<>Client <span className="text-error-500">*</span></>}
-                    value={clientId}
-                    onChange={handleClientChange}
-                    useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
-                    itemLabelKey="name"
-                    itemValueKey="id"
-                    placeholder="Sélectionner un client..."
-                    emptyMessage="Aucun client trouvé"
-                    error={!!errors.client_id}
-                    initialSelectedItems={initialClient}
-                  />
-                  {errors.client_id && (
+                  {isEditing ? (
+                    <InfiniteSelect<Client>
+                      label={<>Client <span className="text-error-500">*</span></>}
+                      value={clientId}
+                      onChange={handleClientChange}
+                      useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
+                      itemLabelKey="name"
+                      itemValueKey="id"
+                      placeholder="Sélectionner un client..."
+                      emptyMessage="Aucun client trouvé"
+                      error={!!errors.client_id}
+                      initialSelectedItems={initialClient}
+                    />
+                  ) : (
+                    <>
+                      <InfiniteSelect<Client>
+                        label={<>Client(s) <span className="text-error-500">*</span></>}
+                        value=""
+                        onChange={(id, item) => {
+                          if (!item || selectedClients.some(c => c.id === id)) return;
+                          const updated = [...selectedClients, item as Client];
+                          setSelectedClients(updated);
+                          if (updated.length === 1) {
+                            setValue("client_id", id);
+                            setValue("manager_id", "");
+                          }
+                        }}
+                        useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
+                        itemLabelKey="name"
+                        itemValueKey="id"
+                        placeholder="Ajouter un client..."
+                        emptyMessage="Aucun client trouvé"
+                        error={!!errors.client_id && selectedClients.length === 0}
+                      />
+                      {selectedClients.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {selectedClients.map(c => (
+                            <span
+                              key={c.id}
+                              className="inline-flex items-center gap-1 px-3 py-1 bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400 rounded-full text-sm font-medium border border-brand-200 dark:border-brand-500/30"
+                            >
+                              {c.name}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const filtered = selectedClients.filter(sc => sc.id !== c.id);
+                                  setSelectedClients(filtered);
+                                  setValue("client_id", filtered[0]?.id || "");
+                                  if (filtered.length === 0) setValue("manager_id", "");
+                                }}
+                                className="ml-0.5 text-brand-500 hover:text-brand-900 dark:hover:text-brand-300 text-lg leading-none"
+                              >
+                                ×
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                  {errors.client_id && selectedClients.length === 0 && (
                     <p className="mt-1 text-sm text-error-500">{errors.client_id.message}</p>
                   )}
                 </div>
@@ -312,7 +409,7 @@ export default function ApplicationRequestFormModal({
                     placeholder={clientId ? "Sélectionner un manager..." : "Sélectionner d'abord un client"}
                     emptyMessage="Aucun manager trouvé"
                     error={!!errors.manager_id}
-                    disabled={!clientId}
+                    disabled={isEditing ? !clientId : selectedClients.length === 0}
                     initialSelectedItems={initialManager}
                   />
                   {errors.manager_id && (
@@ -372,17 +469,69 @@ export default function ApplicationRequestFormModal({
                   <p className="mt-1 text-sm text-error-500">{errors.required_skills.message}</p>
                 )}
                 {requiredSkills.length > 0 && (
+                  <div className="mt-3 flex flex-col gap-2">
+                    {(requiredSkills as SkillItem[]).map((skill, index) => {
+                      const name = getSkillName(skill);
+                      const level = typeof skill === "string" ? 1 : skill.level;
+                      return (
+                        <div
+                          key={index}
+                          className="inline-flex items-center justify-between gap-3 px-3 py-2 bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400 rounded-lg text-sm font-medium"
+                        >
+                          <span className="truncate">{name}</span>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <StarRating
+                              value={level}
+                              onChange={(v) => handleUpdateSkillLevel(name, v)}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveSkill(name)}
+                              className="text-brand-500 hover:text-brand-900 dark:hover:text-brand-300 text-base leading-none"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Section Softskills */}
+            <div>
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+                3. Softskills
+              </h3>
+              <div>
+                <Label>Compétences comportementales</Label>
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="Ex: Leadership, Communication, Adaptabilité..."
+                      value={softSkillInput}
+                      onChange={(e) => setSoftSkillInput(e.target.value)}
+                      onKeyDown={handleSoftSkillKeyDown}
+                    />
+                  </div>
+                  <Button type="button" onClick={handleAddSoftSkill}>
+                    Ajouter
+                  </Button>
+                </div>
+                {softSkills.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {requiredSkills.map((skill, index) => (
+                    {softSkills.map((skill, index) => (
                       <span
                         key={index}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400 rounded-lg text-sm font-medium"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400 rounded-full text-sm font-medium border border-purple-200 dark:border-purple-500/30"
                       >
                         {skill}
                         <button
                           type="button"
-                          onClick={() => handleRemoveSkill(skill)}
-                          className="ml-1 hover:text-brand-900 dark:hover:text-brand-300"
+                          onClick={() => handleRemoveSoftSkill(skill)}
+                          className="text-purple-500 hover:text-purple-900 dark:hover:text-purple-300 text-base leading-none"
                         >
                           ×
                         </button>
@@ -393,10 +542,10 @@ export default function ApplicationRequestFormModal({
               </div>
             </div>
 
-            {/* Section 3: Expérience */}
+            {/* Section 4: Expérience */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                3. Expérience
+                4. Expérience
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
@@ -427,7 +576,7 @@ export default function ApplicationRequestFormModal({
               </div>
             </div>
 
-            {/* Section 4: Type de Contrat */}
+            {/* Section 5: Type de Contrat */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
                 4. Type de Contrat
@@ -506,65 +655,95 @@ export default function ApplicationRequestFormModal({
                 </select>
               </div>
 
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                {isFreelance ? (
-                  <>
-                    <div>
-                      <Label>TJM minimum ({currencySymbol})</Label>
-                      <Input
-                        type="number"
-                        placeholder="400"
-                        {...register("daily_rate_min", { valueAsNumber: true })}
-                        error={!!errors.daily_rate_min}
-                      />
-                      {errors.daily_rate_min && (
-                        <p className="mt-1 text-sm text-error-500">{errors.daily_rate_min.message}</p>
-                      )}
-                    </div>
+              {hasSalary && (
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 mb-4">
+                  <div>
+                    <Label>Salaire minimum ({currencySymbol}/an)</Label>
+                    <Input
+                      type="number"
+                      placeholder="45000"
+                      {...register("min_salary", { valueAsNumber: true })}
+                      error={!!errors.min_salary}
+                    />
+                    {errors.min_salary && (
+                      <p className="mt-1 text-sm text-error-500">{errors.min_salary.message}</p>
+                    )}
+                  </div>
 
-                    <div>
-                      <Label>TJM maximum ({currencySymbol})</Label>
-                      <Input
-                        type="number"
-                        placeholder="600"
-                        {...register("daily_rate_max", { valueAsNumber: true })}
-                        error={!!errors.daily_rate_max}
-                      />
-                      {errors.daily_rate_max && (
-                        <p className="mt-1 text-sm text-error-500">{errors.daily_rate_max.message}</p>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <Label>Salaire minimum ({currencySymbol}/an)</Label>
-                      <Input
-                        type="number"
-                        placeholder="45000"
-                        {...register("min_salary", { valueAsNumber: true })}
-                        error={!!errors.min_salary}
-                      />
-                      {errors.min_salary && (
-                        <p className="mt-1 text-sm text-error-500">{errors.min_salary.message}</p>
-                      )}
-                    </div>
+                  <div>
+                    <Label>Salaire maximum ({currencySymbol}/an)</Label>
+                    <Input
+                      type="number"
+                      placeholder="55000"
+                      {...register("max_salary", { valueAsNumber: true })}
+                      error={!!errors.max_salary}
+                    />
+                    {errors.max_salary && (
+                      <p className="mt-1 text-sm text-error-500">{errors.max_salary.message}</p>
+                    )}
+                  </div>
+                </div>
+              )}
 
-                    <div>
-                      <Label>Salaire maximum ({currencySymbol}/an)</Label>
-                      <Input
-                        type="number"
-                        placeholder="55000"
-                        {...register("max_salary", { valueAsNumber: true })}
-                        error={!!errors.max_salary}
-                      />
-                      {errors.max_salary && (
-                        <p className="mt-1 text-sm text-error-500">{errors.max_salary.message}</p>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
+              {isFreelance && (
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <div>
+                    <Label>TJM minimum ({currencySymbol})</Label>
+                    <Input
+                      type="number"
+                      placeholder="400"
+                      {...register("daily_rate_min", { valueAsNumber: true })}
+                      error={!!errors.daily_rate_min}
+                    />
+                    {errors.daily_rate_min && (
+                      <p className="mt-1 text-sm text-error-500">{errors.daily_rate_min.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label>TJM maximum ({currencySymbol})</Label>
+                    <Input
+                      type="number"
+                      placeholder="600"
+                      {...register("daily_rate_max", { valueAsNumber: true })}
+                      error={!!errors.daily_rate_max}
+                    />
+                    {errors.daily_rate_max && (
+                      <p className="mt-1 text-sm text-error-500">{errors.daily_rate_max.message}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {!hasSalary && !isFreelance && (
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <div>
+                    <Label>Salaire minimum ({currencySymbol}/an)</Label>
+                    <Input
+                      type="number"
+                      placeholder="45000"
+                      {...register("min_salary", { valueAsNumber: true })}
+                      error={!!errors.min_salary}
+                    />
+                    {errors.min_salary && (
+                      <p className="mt-1 text-sm text-error-500">{errors.min_salary.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label>Salaire maximum ({currencySymbol}/an)</Label>
+                    <Input
+                      type="number"
+                      placeholder="55000"
+                      {...register("max_salary", { valueAsNumber: true })}
+                      error={!!errors.max_salary}
+                    />
+                    {errors.max_salary && (
+                      <p className="mt-1 text-sm text-error-500">{errors.max_salary.message}</p>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Section 6: Localisation */}
@@ -793,6 +972,33 @@ export default function ApplicationRequestFormModal({
                   {errors.number_of_profiles && (
                     <p className="mt-1 text-sm text-error-500">{errors.number_of_profiles.message}</p>
                   )}
+                </div>
+              </div>
+            </div>
+
+            {/* Notes */}
+            <div className="p-4 sm:p-6 bg-gray-50 dark:bg-gray-800/30 rounded-xl mt-2">
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+                Notes
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <Label>Note client</Label>
+                  <TextArea
+                    placeholder="Note visible par le client et l'équipe RH..."
+                    {...register("note_client" as any)}
+                    rows={3}
+                  />
+                  <p className="mt-1 text-xs text-gray-400">Visible par le client et l'équipe RH</p>
+                </div>
+                <div>
+                  <Label>Note interne</Label>
+                  <TextArea
+                    placeholder="Note interne (non visible par le client)..."
+                    {...register("note_interne" as any)}
+                    rows={3}
+                  />
+                  <p className="mt-1 text-xs text-gray-400">Uniquement visible par l'équipe RH</p>
                 </div>
               </div>
             </div>

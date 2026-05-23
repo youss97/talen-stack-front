@@ -15,7 +15,7 @@ const FEATURE_ICONS: Record<string, string> = {
   Recrutement: "📋", Candidatures: "👥", Clients: "🏢", Managers: "👤",
   Utilisateurs: "🔑", Intégrations: "🔗", Agenda: "📅", Entretiens: "🗣️",
   "Vivier de talents": "💎", "Offres Publiques": "📢", Emails: "✉️",
-  Logs: "📊", Rôles: "🛡️", Entreprises: "🏭",
+  Logs: "📊", Rôles: "🛡️", Entreprises: "🏭", "Assignment Management": "📌",
 };
 
 // Features réservées au super admin — non proposées dans les abonnements

@@ -202,6 +202,8 @@ export interface RecruiterPaginationParams {
   recruiter_id?: string;
   client_id?: string;
   workflow_status?: WorkflowStatus;
+  responsible_id?: string;
+  unassigned?: boolean;
 }
 
 export interface ApplicationStatusHistory {

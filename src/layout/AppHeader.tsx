@@ -6,6 +6,7 @@ import { useSidebar } from "@/context/SidebarContext";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState ,useEffect,useRef} from "react";
+import GlobalSearch from "@/components/header/GlobalSearch";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -84,7 +85,7 @@ const AppHeader: React.FC = () => {
           </button>
 
           {/* Logo supprimé pour mobile */}
-
+          <GlobalSearch />
           <button
             onClick={toggleApplicationMenu}
             className="flex items-center justify-center w-10 h-10 text-gray-700 rounded-lg z-99999 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 lg:hidden"

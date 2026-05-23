@@ -40,6 +40,11 @@ export interface PublicJobOffer {
     id: string;
     name: string;
     industry?: string;
+    company?: {
+      id?: string;
+      name?: string;
+      logo_path?: string;
+    };
   };
   manager?: {
     id: string;

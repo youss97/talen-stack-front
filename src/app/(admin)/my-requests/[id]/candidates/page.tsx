@@ -9,9 +9,10 @@ import Button from "@/components/ui/button/Button";
 import InputField from "@/components/form/input/InputField";
 import FeedbackModal from "@/components/recruiter/FeedbackModal";
 import FeedbackListModal from "@/components/recruiter/FeedbackListModal";
+import CandidateApplicationDetailModal from "@/components/recruiter/CandidateApplicationDetailModal";
 import Pagination from "@/components/tables/Pagination";
 import { useDebounce } from "@/hooks/useDebounce";
-import { formatDate } from "@/utils/dateFormat";
+import { formatDate, formatDateTime } from "@/utils/dateFormat";
 import type { Recruiter } from "@/types/recruiter";
 
 export default function RequestCandidatesPage() {
@@ -25,6 +26,8 @@ export default function RequestCandidatesPage() {
   const [selectedCandidate, setSelectedCandidate] = useState<Recruiter | null>(null);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isFeedbackListModalOpen, setIsFeedbackListModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [detailCandidate, setDetailCandidate] = useState<Recruiter | null>(null);
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -281,68 +284,87 @@ export default function RequestCandidatesPage() {
                     </div>
                   )}
 
-                  {/* Feedbacks Section — client sees only their own feedbacks */}
+                  {/* Feedbacks Section — show all feedbacks */}
                   {(() => {
-                    const clientFeedbacks = (candidate.feedbacks || []).filter((f) =>
-                      f.created_by?.role?.code?.startsWith('CLIENT_MANAGER_')
+                    const allFeedbacks = candidate.feedbacks || [];
+                    if (allFeedbacks.length === 0) return null;
+                    const clientFeedbacks = allFeedbacks.filter((f) =>
+                      !f.created_by?.role?.code || f.created_by.role.code.startsWith('CLIENT_MANAGER_')
                     );
-                    if (clientFeedbacks.length === 0) return null;
+                    const rhFeedbacks = allFeedbacks.filter((f) =>
+                      f.created_by?.role?.code && !f.created_by.role.code.startsWith('CLIENT_MANAGER_')
+                    );
                     return (
-                    <div className="mb-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                          💭 Mes feedbacks ({clientFeedbacks.length})
-                        </p>
-                        {clientFeedbacks.length > 2 && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedCandidate({ ...candidate, feedbacks: clientFeedbacks });
-                              setIsFeedbackListModalOpen(true);
-                            }}
-                          >
-                            Voir tous
-                          </Button>
-                        )}
-                      </div>
-                      <div className="space-y-3">
-                        {clientFeedbacks.slice(0, 2).map((feedback) => (
-                          <div 
-                            key={feedback.id} 
-                            className={`rounded-lg p-3 border-l-4 ${getFeedbackCardColor(feedback)}`}
-                          >
-                            <div className="flex items-start justify-between mb-1">
-                              <h4 className="text-sm font-medium text-gray-900 dark:text-white">
-                                {feedback.title}
-                              </h4>
-                              <span className="text-xs text-gray-500 dark:text-gray-400">
-                                {formatDate(feedback.created_at, {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                })}
-                              </span>
-                            </div>
-                            <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 mb-2">
-                              {feedback.description}
-                            </p>
-                            {feedback.created_by && (
-                              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-                                <span className="font-medium">
-                                  {feedback.created_by.first_name} {feedback.created_by.last_name}
-                                </span>
-                                {feedback.created_by.role && (
-                                  <>
-                                    <span>•</span>
-                                    <span>{feedback.created_by.role.name}</span>
-                                  </>
-                                )}
+                    <div className="mb-4 space-y-3">
+                      {/* RH evaluations */}
+                      {rhFeedbacks.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            📋 Évaluations RH ({rhFeedbacks.length})
+                          </p>
+                          <div className="space-y-2">
+                            {rhFeedbacks.slice(0, 1).map((feedback) => (
+                              <div
+                                key={feedback.id}
+                                className="rounded-lg p-3 border-l-4 bg-blue-50 dark:bg-blue-900/20 border-blue-400 dark:border-blue-600"
+                              >
+                                <div className="flex items-start justify-between mb-1">
+                                  <h4 className="text-sm font-medium text-gray-900 dark:text-white">{feedback.title}</h4>
+                                  <span className="text-xs text-gray-500 dark:text-gray-400">{formatDateTime(feedback.created_at)}</span>
+                                </div>
+                                <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">{feedback.description}</p>
                               </div>
+                            ))}
+                            {rhFeedbacks.length > 1 && (
+                              <p className="text-xs text-gray-500 dark:text-gray-400">+{rhFeedbacks.length - 1} autre(s)</p>
                             )}
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      )}
+                      {/* Client feedbacks */}
+                      {clientFeedbacks.length > 0 && (
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                              💭 Mes feedbacks ({clientFeedbacks.length})
+                            </p>
+                            {clientFeedbacks.length > 2 && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedCandidate({ ...candidate, feedbacks: clientFeedbacks });
+                                  setIsFeedbackListModalOpen(true);
+                                }}
+                              >
+                                Voir tous
+                              </Button>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            {clientFeedbacks.slice(0, 2).map((feedback) => (
+                              <div
+                                key={feedback.id}
+                                className={`rounded-lg p-3 border-l-4 ${getFeedbackCardColor(feedback)}`}
+                              >
+                                <div className="flex items-start justify-between mb-1">
+                                  <h4 className="text-sm font-medium text-gray-900 dark:text-white">{feedback.title}</h4>
+                                  <span className="text-xs text-gray-500 dark:text-gray-400">{formatDateTime(feedback.created_at)}</span>
+                                </div>
+                                <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 mb-2">{feedback.description}</p>
+                                {feedback.created_by && (
+                                  <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                                    <span className="font-medium">{feedback.created_by.first_name} {feedback.created_by.last_name}</span>
+                                    {feedback.created_by.role && (
+                                      <><span>•</span><span>{feedback.created_by.role.name}</span></>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                     );
                   })()}
@@ -350,6 +372,16 @@ export default function RequestCandidatesPage() {
               </div>
 
               <div className="flex justify-end gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setDetailCandidate(candidate);
+                    setIsDetailModalOpen(true);
+                  }}
+                >
+                  👁 Consulter la candidature
+                </Button>
                 {/* Affichage conditionnel du CV selon is_anonymized */}
                 {candidate.is_anonymized ? (
                   // Candidature anonyme: afficher uniquement le CV anonymisé
@@ -487,6 +519,16 @@ export default function RequestCandidatesPage() {
         onCreateFeedback={handleCreateFeedback}
         isCreating={isCreatingFeedback}
         canAddFeedback={true}
+      />
+
+      {/* Candidate Application Detail Modal */}
+      <CandidateApplicationDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => {
+          setIsDetailModalOpen(false);
+          setDetailCandidate(null);
+        }}
+        candidate={detailCandidate}
       />
     </div>
   );

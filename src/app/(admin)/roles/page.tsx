@@ -38,7 +38,6 @@ export default function RolesPage() {
   }>({ isOpen: false, role: null });
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Hook pour forcer le refetch des permissions utilisateur
   const { refetch: refetchUserPermissions } = useVerifyUserQuery();
 
   const addToast = useCallback(

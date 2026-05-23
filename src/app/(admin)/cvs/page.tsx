@@ -159,12 +159,12 @@ export default function CVsPage() {
     setAssignModal({ isOpen: true, cv });
   };
 
-  const handleAssignCV = async (responsibleId: string | null) => {
+  const handleAssignCV = async (responsibleIds: string[]) => {
     if (!assignModal.cv) return;
     setIsAssigning(true);
     try {
-      await assignCV({ id: assignModal.cv.id, responsible_id: responsibleId }).unwrap();
-      addToast("success", "Succès", responsibleId ? "Responsable affecté avec succès" : "Affectation retirée avec succès");
+      await assignCV({ id: assignModal.cv.id, responsible_ids: responsibleIds }).unwrap();
+      addToast("success", "Succès", responsibleIds.length > 0 ? "Responsable(s) affecté(s) avec succès" : "Affectation(s) retirée(s) avec succès");
     } catch (error) {
       addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de l'affectation"));
     } finally {

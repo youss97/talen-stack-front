@@ -1,13 +1,13 @@
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+﻿import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import Badge from "@/components/ui/badge/Badge";
 import { PlusIcon } from "@/icons";
 import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Badge | TailAdmin - Next.js Dashboard Template",
+  title: "Next.js Badge | TalentStack",
   description:
-    "This is Next.js Badge page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+    "This is Next.js Badge page for TalentStack",
   // other metadata
 };
 
@@ -219,3 +219,4 @@ export default function BadgePage() {
     </div>
   );
 }
+

@@ -1,6 +1,12 @@
 "use client";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/lib/store";
 import { useGetFeaturesQuery } from "@/lib/services/roleApi";
 import type { Feature, Page, Action } from "@/types/role";
+
+// Technical page paths and action code patterns hidden from non-superadmins
+const TECHNICAL_PATHS = new Set(["/application-statuses"]);
+const TECHNICAL_ACTION_CODES = new Set(["application.delete", "application.create"]);
 
 interface PermissionsSelectorProps {
   selectedFeatures: string[];
@@ -22,8 +28,28 @@ export default function PermissionsSelector({
   onPagesChange,
   onActionsChange,
 }: PermissionsSelectorProps) {
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isSuperAdmin =
+    user?.role?.code === "super_admin" ||
+    (!user?.company && user?.role?.level != null && (user.role.level as number) >= 999);
+
   const { data: features, isLoading } = useGetFeaturesQuery();
-  const allFeatures: Feature[] = features || [];
+  const rawFeatures: Feature[] = features || [];
+
+  // Filter internal/technical features and pages for non-superadmins
+  const allFeatures: Feature[] = rawFeatures
+    .filter((f) => isSuperAdmin || !f.is_internal)
+    .map((f) => ({
+      ...f,
+      pages: f.pages
+        ?.filter((p) => isSuperAdmin || !TECHNICAL_PATHS.has(p.path || ""))
+        .map((p) => ({
+          ...p,
+          actions: p.actions?.filter(
+            (a) => isSuperAdmin || !TECHNICAL_ACTION_CODES.has(a.code)
+          ),
+        })),
+    }));
 
   // Derive pages from selected features
   const visiblePages: Page[] = [];
@@ -212,6 +238,7 @@ export default function PermissionsSelector({
                   return (
                     <li key={feature.id}>
                       <div
+                        title={feature.description ? `${feature.name} — ${feature.description}` : feature.name}
                         className={`flex items-start gap-2 px-3 py-2.5 transition-colors ${
                           isSelected
                             ? "bg-brand-50 dark:bg-brand-500/10"
@@ -278,6 +305,7 @@ export default function PermissionsSelector({
                   return (
                     <li key={page.id}>
                       <div
+                        title={page.description ? `${page.name} — ${page.description}` : page.name}
                         className={`flex items-start gap-2.5 px-3 py-2.5 cursor-pointer transition-colors ${
                           isSelected
                             ? "bg-brand-50 dark:bg-brand-500/10"
@@ -349,6 +377,9 @@ export default function PermissionsSelector({
                         return (
                           <li key={action.id}>
                             <div
+                              title={action.description
+                                ? `${humanizeAction(action.name, action.code)} — ${action.description}`
+                                : humanizeAction(action.name, action.code)}
                               className={`flex items-start gap-2.5 px-3 py-2 transition-colors ${
                                 isRead
                                   ? "cursor-not-allowed"

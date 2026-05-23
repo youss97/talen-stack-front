@@ -17,6 +17,7 @@ import { publicJobOfferApi } from './services/publicJobOfferApi';
 import { interviewApi } from './services/interviewApi';
 import { integrationApi } from './services/integrationApi';
 import { subscriptionApi } from './services/subscriptionApi';
+import { statsApi } from './services/statsApi';
 import authReducer, { logout } from './slices/authSlice';
 
 const apiMiddlewares = [
@@ -38,6 +39,7 @@ const apiMiddlewares = [
   interviewApi.middleware,
   integrationApi.middleware,
   subscriptionApi.middleware,
+  statsApi.middleware,
 ];
 
 const apiResetters = [
@@ -59,6 +61,7 @@ const apiResetters = [
   interviewApi.util.resetApiState,
   integrationApi.util.resetApiState,
   subscriptionApi.util.resetApiState,
+  statsApi.util.resetApiState,
 ];
 
 const appReducer = combineReducers({
@@ -81,6 +84,7 @@ const appReducer = combineReducers({
   [interviewApi.reducerPath]: interviewApi.reducer,
   [integrationApi.reducerPath]: integrationApi.reducer,
   [subscriptionApi.reducerPath]: subscriptionApi.reducer,
+  [statsApi.reducerPath]: statsApi.reducer,
 });
 
 const baseStore = configureStore({

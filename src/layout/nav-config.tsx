@@ -30,7 +30,7 @@ export const NAV_CONFIG: Record<string, { title: string; icon: React.ReactNode }
     icon: <UserCircleIcon />,
   },
   "/managers": {
-    title: "Managers",
+    title: "Collaborateurs",
     icon: <UserIcon />,
   },
   "/users": {
@@ -84,6 +84,10 @@ export const NAV_CONFIG: Record<string, { title: string; icon: React.ReactNode }
   "/subscriptions": {
     title: "Abonnements",
     icon: <GridIcon />,
+  },
+  "/assignments": {
+    title: "Affectations",
+    icon: <GroupIcon />,
   },
 };
 

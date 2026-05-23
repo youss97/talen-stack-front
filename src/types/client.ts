@@ -118,6 +118,7 @@ export interface Manager {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string | null;
   position?: string | null;
   photo?: string;
   status?: string;

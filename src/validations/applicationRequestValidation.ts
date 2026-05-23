@@ -16,7 +16,6 @@ export const createApplicationRequestSchema = yup.object({
     .required("La description est requise"),
   required_skills: yup
     .array()
-    .of(yup.string().required())
     .min(1, "Au moins une compétence est requise")
     .required("Les compétences sont requises"),
 
@@ -132,6 +131,12 @@ export const createApplicationRequestSchema = yup.object({
     .min(1, "Au moins une langue est requise")
     .required("Les langues sont requises"),
 
+  // Softskills
+  soft_skills: yup
+    .array()
+    .of(yup.string().required())
+    .nullable(),
+
   // Avantages
   benefits: yup
     .string()
@@ -176,9 +181,7 @@ export const updateApplicationRequestSchema = yup.object({
     .string()
     .min(2, "Le titre doit contenir au moins 2 caractères"),
   description: yup.string(),
-  required_skills: yup
-    .array()
-    .of(yup.string().required()),
+  required_skills: yup.array(),
   min_experience: yup
     .number()
     .typeError("Veuillez saisir un nombre d'années valide")

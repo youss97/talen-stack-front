@@ -1,12 +1,12 @@
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+﻿import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import VideosExample from "@/components/ui/video/VideosExample";
 import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Videos | TailAdmin - Next.js Dashboard Template",
+  title: "Next.js Videos | TalentStack",
   description:
-    "This is Next.js Videos page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+    "This is Next.js Videos page for TalentStack",
 };
 
 export default function VideoPage() {
@@ -18,3 +18,4 @@ export default function VideoPage() {
     </div>
   );
 }
+

@@ -116,6 +116,22 @@ export const clientManagerApi = createApi({
       invalidatesTags: [{ type: "ManagerRequest", id: "LIST" }],
     }),
 
+    // PATCH /applications/manager/requests/:id - Update a manager's own request
+    updateManagerOwnRequest: builder.mutation<
+      ApplicationRequest,
+      { id: string; data: Partial<Omit<CreateApplicationRequestRequest, 'client_id' | 'manager_id'>> & { status?: string } }
+    >({
+      query: ({ id, data }) => ({
+        url: `/applications/manager/requests/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: "ManagerRequest", id },
+        { type: "ManagerRequest", id: "LIST" },
+      ],
+    }),
+
     // PATCH /applications/:id/manager-notes - Update manager notes
     updateManagerNotes: builder.mutation<
       Recruiter,
@@ -138,5 +154,6 @@ export const {
   useGetManagerRequestsQuery,
   useGetCandidatesForRequestQuery,
   useCreateManagerRequestMutation,
+  useUpdateManagerOwnRequestMutation,
   useUpdateManagerNotesMutation,
 } = clientManagerApi;

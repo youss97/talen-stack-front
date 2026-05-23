@@ -7,6 +7,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import ActionsMenu from "./ActionsMenu";
 
 export interface Column<T> {
   id?: string;
@@ -35,6 +36,7 @@ export interface DataTableWithSelectionProps<T> {
   isLoading?: boolean;
   emptyMessage?: string;
   renderRowTooltip?: (row: T) => React.ReactNode;
+  useActionsMenu?: boolean; // Nouvelle prop pour forcer l'utilisation du menu
 }
 
 function DataTableWithSelection<T extends { id: string }>({
@@ -51,10 +53,52 @@ function DataTableWithSelection<T extends { id: string }>({
   isLoading = false,
   emptyMessage = "Aucune donnée disponible",
   renderRowTooltip,
+  useActionsMenu = true, // Par défaut, utiliser le menu d'actions
 }: DataTableWithSelectionProps<T>) {
   const hasActionHandlers = onView || onEdit || onDelete || customActions;
   const [tooltip, setTooltip] = useState<{ row: T; x: number; y: number } | null>(null);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Construire les actions pour le menu
+  const buildActionsMenu = useCallback((row: T) => {
+    const menuActions = [];
+
+    if (onView) {
+      menuActions.push({
+        label: "Voir les détails",
+        icon: <ViewIcon />,
+        onClick: () => onView(row),
+        color: 'default' as const,
+      });
+    }
+
+    if (onEdit) {
+      menuActions.push({
+        label: "Modifier",
+        icon: <EditIcon />,
+        onClick: () => onEdit(row),
+        color: 'default' as const,
+      });
+    }
+
+    if (customActions) {
+      menuActions.push(...customActions.map(action => ({
+        ...action,
+        onClick: () => action.onClick(row),
+      })));
+    }
+
+    if (onDelete) {
+      menuActions.push({
+        label: "Supprimer",
+        icon: <TrashIcon />,
+        onClick: () => onDelete(row),
+        color: 'error' as const,
+      });
+    }
+
+    return menuActions;
+  }, [onView, onEdit, onDelete, customActions]);
 
   const handleRowMouseEnter = useCallback((row: T, e: React.MouseEvent) => {
     if (!renderRowTooltip) return;
@@ -127,8 +171,9 @@ function DataTableWithSelection<T extends { id: string }>({
         {renderRowTooltip(tooltip.row)}
       </div>
     )}
-    <div className="overflow-x-auto">
-      <Table className="border-collapse">
+    <div className="w-full overflow-x-auto">
+    <div className="inline-block min-w-full align-middle">
+      <Table className="border-collapse min-w-full">
         <TableHeader className="border-b border-gray-100 dark:border-gray-800">
           <TableRow>
             <TableCell
@@ -149,7 +194,7 @@ function DataTableWithSelection<T extends { id: string }>({
               <TableCell
                 key={column.id ?? String(column.key)}
                 isHeader
-                className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400"
+                className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap"
               >
                 {column.header}
               </TableCell>
@@ -157,7 +202,7 @@ function DataTableWithSelection<T extends { id: string }>({
             {(actions || hasActionHandlers) && (
               <TableCell
                 isHeader
-                className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400"
+                className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap"
               >
                 Actions
               </TableCell>
@@ -218,9 +263,16 @@ function DataTableWithSelection<T extends { id: string }>({
                 })}
                 {(actions || hasActionHandlers) && (
                   <TableCell className="px-5 py-4">
-                    <div onClick={(e) => e.stopPropagation()}>
+                    <div 
+                      onClick={(e) => e.stopPropagation()}
+                      onMouseEnter={(e) => e.stopPropagation()}
+                      onMouseMove={(e) => e.stopPropagation()}
+                      onMouseLeave={(e) => e.stopPropagation()}
+                    >
                       {actions ? (
                         actions(row)
+                      ) : useActionsMenu ? (
+                        <ActionsMenu actions={buildActionsMenu(row)} />
                       ) : (
                         <div className="flex items-center gap-1">
                           {onView && (
@@ -279,6 +331,7 @@ function DataTableWithSelection<T extends { id: string }>({
           )}
         </TableBody>
       </Table>
+    </div>
     </div>
     </>
   );

@@ -75,6 +75,7 @@ export interface CV {
   last_education?: string;
   last_position?: string;
   industry_experience?: string;
+  specialty?: string;
   geographic_mobility?: string[];
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
@@ -130,6 +131,7 @@ export interface CreateCVRequest {
   last_education?: string;
   last_position?: string;
   industry_experience?: string;
+  specialty?: string;
   geographic_mobility?: string[];
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
@@ -149,6 +151,7 @@ export interface UpdateCVRequest {
   last_education?: string;
   last_position?: string;
   industry_experience?: string;
+  specialty?: string;
   geographic_mobility?: string[];
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
@@ -168,4 +171,6 @@ export interface CVPaginationParams {
   industry?: string;
   email?: string;
   contract_type?: string;
+  responsible_id?: string;
+  unassigned?: boolean;
 }

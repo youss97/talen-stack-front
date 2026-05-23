@@ -38,6 +38,8 @@ export const recruiterApi = createApi({
           ...(params.client_id && { client_id: params.client_id }),
           ...(params.request_id && { request_id: params.request_id }),
           ...(params.recruiter_id && { recruiter_id: params.recruiter_id }),
+          ...(params.responsible_id && { responsible_id: params.responsible_id }),
+          ...(params.unassigned && { unassigned: true }),
         },
       }),
       providesTags: (result) =>
@@ -195,12 +197,12 @@ export const recruiterApi = createApi({
       }),
     }),
 
-    // PATCH /applications/:id/assign - Assign responsible_id to an application
-    assignApplicationResponsible: builder.mutation<Recruiter, { id: string; responsible_id: string | null }>({
-      query: ({ id, responsible_id }) => ({
+    // PATCH /applications/:id/assign - Assign responsibles to an application
+    assignApplicationResponsible: builder.mutation<Recruiter, { id: string; responsible_ids: string[] }>({
+      query: ({ id, responsible_ids }) => ({
         url: `/applications/${id}/assign`,
         method: "PATCH",
-        body: { responsible_id },
+        body: { responsible_ids },
       }),
       invalidatesTags: [{ type: "Recruiter", id: "LIST" }],
     }),

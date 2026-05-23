@@ -37,6 +37,8 @@ export interface SendEmailRequest {
   body: string;
   type: BulkEmailType;
   recipients: string[];
+  cc?: string[];
+  bcc?: string[];
 }
 
 export interface EmailPaginationParams {

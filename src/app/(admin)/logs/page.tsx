@@ -15,7 +15,7 @@ export default function LogsPage() {
 
   const currentUser = useSelector((state: RootState) => state.auth.user);
   const roleCode: string = (currentUser as any)?.role?.code || "";
-  const isAdmin = roleCode.includes("ADMIN_") || roleCode === "ADMIN" || roleCode === "SUPER_ADMIN";
+  const isAdmin = roleCode === 'super_admin' || roleCode === 'admin';
 
   const { data, isLoading, isFetching } = useGetLogsQuery({
     page,

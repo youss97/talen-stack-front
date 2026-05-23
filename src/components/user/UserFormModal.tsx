@@ -208,6 +208,7 @@ export default function UserFormModal({
               <Input
                 type="email"
                 placeholder="john.doe@example.com"
+                autoComplete="off"
                 {...register("email")}
                 error={!!errors.email}
                 disabled={readOnly}
@@ -231,9 +232,12 @@ export default function UserFormModal({
                   )}
                 </Label>
                 <div className="relative">
+                  {/* Hidden field to prevent browser auto-fill */}
+                  <input type="password" style={{ display: "none" }} readOnly />
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="SecurePassword123!"
+                    autoComplete="new-password"
                     {...register("password")}
                     error={!!errors.password}
                   />

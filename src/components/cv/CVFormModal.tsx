@@ -52,6 +52,7 @@ export default function CVFormModal({
       total_experience: undefined,
       last_education: "",
       last_position: "",
+      specialty: "",
       industry_experience: "",
       remote_preferred: false,
       status: undefined,
@@ -68,6 +69,7 @@ export default function CVFormModal({
         total_experience: cv.total_experience,
         last_education: cv.last_education || "",
         last_position: cv.last_position || "",
+        specialty: cv.specialty || "",
         industry_experience: cv.industry_experience || "",
         remote_preferred: cv.remote_preferred || false,
         status: cv.status || undefined,
@@ -84,6 +86,7 @@ export default function CVFormModal({
         total_experience: undefined,
         last_education: "",
         last_position: "",
+        specialty: "",
         industry_experience: "",
         remote_preferred: false,
         status: undefined,
@@ -117,6 +120,7 @@ export default function CVFormModal({
     if (data.total_experience !== undefined) formData.append("total_experience", String(data.total_experience));
     if (data.last_education) formData.append("last_education", data.last_education);
     if (data.last_position) formData.append("last_position", data.last_position);
+    if (data.specialty) formData.append("specialty", data.specialty);
     if (data.industry_experience) formData.append("industry_experience", data.industry_experience);
     if (data.remote_preferred !== undefined) formData.append("remote_preferred", String(data.remote_preferred));
     if (data.status) formData.append("status", data.status);
@@ -268,6 +272,16 @@ export default function CVFormModal({
                 error={!!errors.last_education}
                 hint={errors.last_education?.message}
               />
+              <Input
+                label="Spécialité pertinente"
+                placeholder="Ex: Développement web frontend"
+                {...register("specialty")}
+                error={!!errors.specialty}
+                hint={errors.specialty?.message}
+              />
+            </div>
+
+            <div>
               <Input
                 label="Secteur d'activité"
                 placeholder="IT / Tech"

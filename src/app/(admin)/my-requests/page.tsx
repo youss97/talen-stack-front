@@ -2,7 +2,8 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useGetManagerRequestsQuery, useCreateManagerRequestMutation } from "@/lib/services/clientManagerApi";
+import { useGetManagerRequestsQuery, useCreateManagerRequestMutation, useUpdateManagerOwnRequestMutation } from "@/lib/services/clientManagerApi";
+import type { ApplicationRequest } from "@/types/applicationRequest";
 import Button from "@/components/ui/button/Button";
 import InputField from "@/components/form/input/InputField";
 import Pagination from "@/components/tables/Pagination";
@@ -17,6 +18,7 @@ export default function MyRequestsPage() {
   const [statusFilter, setStatusFilter] = useState("");
   const [contractTypeFilter, setContractTypeFilter] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingRequest, setEditingRequest] = useState<ApplicationRequest | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   const addToast = useCallback(
@@ -32,6 +34,7 @@ export default function MyRequestsPage() {
 
   const debouncedSearch = useDebounce(search, 500);
   const [createManagerRequest, { isLoading: isCreating }] = useCreateManagerRequestMutation();
+  const [updateManagerOwnRequest, { isLoading: isUpdating }] = useUpdateManagerOwnRequestMutation();
 
   const { data, isLoading, isFetching } = useGetManagerRequestsQuery({
     page,
@@ -47,6 +50,8 @@ export default function MyRequestsPage() {
       standby: { label: "Standby", className: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" },
       filled: { label: "Comblée", className: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" },
       abandoned: { label: "Abandonnée", className: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300" },
+      archived: { label: "Archivée", className: "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400" },
+      open: { label: "Ouverte", className: "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300" },
     };
 
     const config = statusConfig[status] || { label: status, className: "bg-gray-100 text-gray-800" };
@@ -84,6 +89,29 @@ export default function MyRequestsPage() {
       const msg = error?.data?.message || error?.message || "Erreur lors de la création de l'offre";
       addToast("error", "Erreur", msg);
       throw error;
+    }
+  };
+
+  const handleEditSubmit = async (formData: any) => {
+    if (!editingRequest) return;
+    try {
+      await updateManagerOwnRequest({ id: editingRequest.id, data: formData }).unwrap();
+      addToast("success", "Succès", "Offre modifiée avec succès");
+      setEditingRequest(null);
+    } catch (error: any) {
+      const msg = error?.data?.message || error?.message || "Erreur lors de la modification";
+      addToast("error", "Erreur", msg);
+      throw error;
+    }
+  };
+
+  const handleArchive = async (request: ApplicationRequest) => {
+    try {
+      await updateManagerOwnRequest({ id: request.id, data: { status: "archived" as any } }).unwrap();
+      addToast("success", "Succès", "Offre archivée");
+    } catch (error: any) {
+      const msg = error?.data?.message || error?.message || "Erreur lors de l'archivage";
+      addToast("error", "Erreur", msg);
     }
   };
 
@@ -233,14 +261,17 @@ export default function MyRequestsPage() {
 
                   {request.required_skills && request.required_skills.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {request.required_skills.slice(0, 5).map((skill: string, index: number) => (
-                        <span
-                          key={index}
-                          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"
-                        >
-                          {skill}
-                        </span>
-                      ))}
+                      {request.required_skills.slice(0, 5).map((skill, index: number) => {
+                        const name = typeof skill === "string" ? skill : (skill as { name: string }).name;
+                        return (
+                          <span
+                            key={index}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"
+                          >
+                            {name}
+                          </span>
+                        );
+                      })}
                       {request.required_skills.length > 5 && (
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
                           +{request.required_skills.length - 5}
@@ -261,11 +292,33 @@ export default function MyRequestsPage() {
                   </div>
 
                   <Button
-                    onClick={() => router.push(`/my-requests/${request.id}/candidates`)}
+                    onClick={() => request.candidates_count > 0 && router.push(`/my-requests/${request.id}/candidates`)}
                     size="sm"
+                    disabled={request.candidates_count === 0}
                   >
-                    {request.candidates_count > 0 ? "Voir les candidats" : "Consulter l'offre"}
+                    Voir les candidats
                   </Button>
+
+                  {request.status !== "archived" && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setEditingRequest(request as unknown as ApplicationRequest)}
+                    >
+                      Modifier
+                    </Button>
+                  )}
+
+                  {request.status !== "archived" && (
+                    <button
+                      type="button"
+                      onClick={() => handleArchive(request as unknown as ApplicationRequest)}
+                      disabled={isUpdating}
+                      className="text-xs text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors disabled:opacity-50"
+                    >
+                      Archiver
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -291,6 +344,14 @@ export default function MyRequestsPage() {
         onClose={() => setIsFormOpen(false)}
         onSubmit={handleCreateSubmit}
         isLoading={isCreating}
+      />
+
+      <ManagerRequestFormModal
+        isOpen={!!editingRequest}
+        onClose={() => setEditingRequest(null)}
+        onSubmit={handleEditSubmit}
+        initialData={editingRequest}
+        isLoading={isUpdating}
       />
     </div>
   );

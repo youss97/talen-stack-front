@@ -272,6 +272,16 @@ export default function CVExtractPage() {
       return;
     }
 
+    // Validate required fields
+    const missing: string[] = [];
+    if (!firstName.trim()) missing.push("Prénom");
+    if (!lastName.trim()) missing.push("Nom");
+    if (!email.trim()) missing.push("Email");
+    if (missing.length > 0) {
+      addToast("error", "Champs obligatoires manquants", `Veuillez remplir : ${missing.join(", ")}`);
+      return;
+    }
+
     // Build payload
     const cleanExperiences = experiences.filter((ex) => ex.company || ex.title);
     const cleanFormations = formations.filter((f) => f.institution || f.degree);
@@ -330,9 +340,23 @@ export default function CVExtractPage() {
 
       setTimeout(() => router.push("/cvs"), 1200);
     } catch (err: unknown) {
-      const msg = (err as { data?: { message?: string }; message?: string })?.data?.message ||
-        (err as { message?: string })?.message ||
-        (isEditing ? "Erreur lors de la modification" : "Erreur lors de la création");
+      const errData = (err as { data?: { message?: string | string[]; error?: string; statusCode?: number } })?.data;
+      let msg: string;
+      if (Array.isArray(errData?.message)) {
+        msg = errData.message.join(". ");
+      } else if (errData?.message) {
+        msg = errData.message;
+      } else if (errData?.error) {
+        msg = errData.error === "Conflict"
+          ? "Un profil avec cet email existe déjà."
+          : errData.error === "Bad Request"
+          ? "Certains champs obligatoires sont manquants ou invalides."
+          : errData.error;
+      } else {
+        msg = isEditing
+          ? "Erreur lors de la modification. Vérifiez les champs et réessayez."
+          : "Erreur lors de la création. Vérifiez que tous les champs obligatoires sont remplis.";
+      }
       addToast("error", "Erreur", msg);
     }
   };

@@ -1,3 +1,18 @@
+export interface SkillWithLevel {
+  name: string;
+  level: number;
+}
+
+export type SkillItem = string | SkillWithLevel;
+
+export function getSkillName(skill: SkillItem): string {
+  return typeof skill === "string" ? skill : skill.name;
+}
+
+export function getSkillLevel(skill: SkillItem): number {
+  return typeof skill === "string" ? 0 : skill.level;
+}
+
 export interface ApplicationRequest {
   [key: string]: unknown;
   id: string;
@@ -6,7 +21,7 @@ export interface ApplicationRequest {
   title: string;
   reference: string;
   description: string;
-  required_skills: string[];
+  required_skills: SkillItem[];
   
   // Expérience
   min_experience?: number;
@@ -37,17 +52,24 @@ export interface ApplicationRequest {
   
   // Langues
   languages: string[];
-  
+
+  // Softskills
+  soft_skills?: string[];
+
   // Avantages
   benefits?: string;
   bonuses?: string;
   variables?: string;
-  
+
   // Priorité
   priority: "low" | "normal" | "high" | "urgent";
-  
+
   // Statut
-  status: "in_progress" | "standby" | "abandoned" | "filled" | "open";
+  status: "in_progress" | "standby" | "abandoned" | "filled" | "open" | "archived";
+
+  // Package (pour demandes manager)
+  package_current?: number;
+  package_desired?: number;
   
   // Offres publiques
   is_public?: boolean;
@@ -67,6 +89,10 @@ export interface ApplicationRequest {
   attachment_path?: string;
   attachment_filename?: string;
   
+  // Notes
+  note_client?: string;
+  note_interne?: string;
+
   // Anciens champs (conservés pour compatibilité)
   urgency?: "low" | "medium" | "high" | "critical";
   deadline?: string;
@@ -146,7 +172,7 @@ export interface CreateApplicationRequestRequest {
   manager_id: string;
   title: string;
   description: string;
-  required_skills: string[];
+  required_skills: SkillItem[];
   
   // Expérience
   min_experience?: number;
@@ -169,20 +195,23 @@ export interface CreateApplicationRequestRequest {
   // Localisation
   location: string;
   country: string;
-  
+
   // Type de travail
   work_type: "on_site" | "remote" | "hybrid";
   remote_days_per_week?: number;
   remote_possible?: boolean;
-  
+
   // Langues
   languages: string[];
-  
+
+  // Softskills
+  soft_skills?: string[];
+
   // Avantages
   benefits?: string;
   bonuses?: string;
   variables?: string;
-  
+
   // Priorité
   priority: "low" | "normal" | "high" | "urgent";
   
@@ -226,10 +255,12 @@ export interface UpdateApplicationRequestRequest {
   bonuses?: string;
   variables?: string;
   priority?: "low" | "normal" | "high" | "urgent";
-  status?: "in_progress" | "standby" | "abandoned" | "filled";
+  status?: "in_progress" | "standby" | "abandoned" | "filled" | "archived";
   desired_start_date?: string;
   number_of_profiles?: number;
   currency?: string;
+  package_current?: number;
+  package_desired?: number;
 }
 
 export interface ApplicationRequestPaginationParams {
@@ -241,6 +272,8 @@ export interface ApplicationRequestPaginationParams {
   experience_level?: string;
   contract_type?: string;
   location?: string;
+  responsible_id?: string;
+  unassigned?: boolean;
 }
 
 export interface PaginatedApplicationRequestResponse {

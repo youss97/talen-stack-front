@@ -37,6 +37,8 @@ export const cvApi = createApi({
           ...(params.industry && { industry: params.industry }),
           ...(params.email && { email: params.email }),
           ...(params.contract_type && { contract_type: params.contract_type }),
+          ...(params.responsible_id && { responsible_id: params.responsible_id }),
+          ...(params.unassigned && { unassigned: true }),
         },
       }),
       providesTags: (result) =>
@@ -180,11 +182,11 @@ export const cvApi = createApi({
       ],
     }),
 
-    assignCV: builder.mutation<CV, { id: string; responsible_id: string | null }>({
-      query: ({ id, responsible_id }) => ({
+    assignCV: builder.mutation<CV, { id: string; responsible_ids: string[] }>({
+      query: ({ id, responsible_ids }) => ({
         url: `/cvs/${id}/assign`,
         method: "PATCH",
-        body: { responsible_id },
+        body: { responsible_ids },
       }),
       invalidatesTags: [{ type: "CV", id: "LIST" }],
     }),

@@ -44,6 +44,7 @@ const FEATURE_ICONS: Record<string, string> = {
   Logs: "📊",
   Rôles: "🛡️",
   Entreprises: "🏭",
+  "Assignment Management": "📌",
 };
 
 export default function CompanyFormModal({

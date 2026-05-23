@@ -1,13 +1,13 @@
-import GridShape from "@/components/common/GridShape";
+﻿import GridShape from "@/components/common/GridShape";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Error 404 | TailAdmin - Next.js Dashboard Template",
+  title: "Next.js Error 404 | TalentStack",
   description:
-    "This is Next.js Error 404 page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+    "This is Next.js Error 404 page for TalentStack",
 };
 
 export default function Error404() {
@@ -47,7 +47,7 @@ export default function Error404() {
       </div>
       {/* <!-- Footer --> */}
       <p className="absolute text-sm text-center text-gray-500 -translate-x-1/2 bottom-6 left-1/2 dark:text-gray-400">
-        &copy; {new Date().getFullYear()} - TailAdmin
+        &copy; {new Date().getFullYear()} - TalentStack
       </p>
     </div>
   );

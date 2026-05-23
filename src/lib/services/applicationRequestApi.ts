@@ -36,6 +36,8 @@ export const applicationRequestApi = createApi({
           ...(params.experience_level && { experience_level: params.experience_level }),
           ...(params.contract_type && { contract_type: params.contract_type }),
           ...(params.location && { location: params.location }),
+          ...(params.responsible_id && { responsible_id: params.responsible_id }),
+          ...(params.unassigned && { unassigned: true }),
         },
       }),
       providesTags: (result) =>
@@ -110,7 +112,10 @@ export const applicationRequestApi = createApi({
         method: "POST",
         body,
       }),
-      invalidatesTags: [{ type: "ApplicationRequest", id: "LIST" }],
+      invalidatesTags: [
+        { type: "ApplicationRequest", id: "LIST" },
+        { type: "ApplicationRequest", id: "INFINITE_LIST" },
+      ],
     }),
 
     // PATCH /applications/requests/:id - Update an application request
@@ -132,17 +137,23 @@ export const applicationRequestApi = createApi({
         url: `/applications/requests/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: [{ type: "ApplicationRequest", id: "LIST" }],
+      invalidatesTags: [
+        { type: "ApplicationRequest", id: "LIST" },
+        { type: "ApplicationRequest", id: "INFINITE_LIST" },
+      ],
     }),
 
-    // PATCH /applications/requests/:id/assign - Assign responsible to request
-    assignApplicationRequest: builder.mutation<ApplicationRequest, { id: string; responsible_id: string | null }>({
-      query: ({ id, responsible_id }) => ({
+    // PATCH /applications/requests/:id/assign - Assign responsibles to request
+    assignApplicationRequest: builder.mutation<ApplicationRequest, { id: string; responsible_ids: string[] }>({
+      query: ({ id, responsible_ids }) => ({
         url: `/applications/requests/${id}/assign`,
         method: "PATCH",
-        body: { responsible_id },
+        body: { responsible_ids },
       }),
-      invalidatesTags: [{ type: "ApplicationRequest", id: "LIST" }],
+      invalidatesTags: [
+        { type: "ApplicationRequest", id: "LIST" },
+        { type: "ApplicationRequest", id: "INFINITE_LIST" },
+      ],
     }),
   }),
 });

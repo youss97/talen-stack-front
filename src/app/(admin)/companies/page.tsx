@@ -15,14 +15,25 @@ import {
   useUpdateCompanyMutation,
   useDeleteCompanyMutation,
 } from "@/lib/services/companyApi";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/lib/store";
 import { useSetCompanyFeaturesMutation } from "@/lib/services/roleApi";
 import { useAssignPlanToCompanyMutation, useRemoveCompanyPlanMutation } from "@/lib/services/subscriptionApi";
 import { useActions } from "@/hooks/useActions";
 import type { Company } from "@/types/company";
 import type { CreateCompanyFormData } from "@/validations/companyValidation";
 
+function RefreshIcon() {
+  return (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+    </svg>
+  );
+}
+
 export default function CompaniesPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/companies");
+  const currentUser = useSelector((state: RootState) => state.auth.user);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
@@ -60,6 +71,8 @@ export default function CompaniesPage() {
   const [createCompany, { isLoading: isCreating }] = useCreateCompanyMutation();
   const [updateCompany, { isLoading: isUpdating }] = useUpdateCompanyMutation();
   const [deleteCompany] = useDeleteCompanyMutation();
+  const [isReactivating, setIsReactivating] = useState(false);
+  const [quickTogglingId, setQuickTogglingId] = useState<string | null>(null);
   const [setCompanyFeatures] = useSetCompanyFeaturesMutation();
   const [assignPlanToCompany] = useAssignPlanToCompanyMutation();
   const [removeCompanyPlan] = useRemoveCompanyPlanMutation();
@@ -72,6 +85,38 @@ export default function CompaniesPage() {
     return defaultMessage;
   };
 
+  const toggleCompanyStatus = async (company: Company) => {
+    setQuickTogglingId(company.id);
+    try {
+      const formData = new FormData();
+      const newStatus = company.status === "active" ? "inactive" : "active";
+      formData.append("status", newStatus);
+      await updateCompany({ id: company.id, data: formData }).unwrap();
+      const msg = newStatus === "active"
+        ? `"${company.name}" et ses comptes ont été réactivés`
+        : `"${company.name}" et ses comptes ont été désactivés`;
+      addToast("success", newStatus === "active" ? "Entreprise activée" : "Entreprise désactivée", msg);
+    } catch (error) {
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la modification du statut"));
+    } finally {
+      setQuickTogglingId(null);
+    }
+  };
+
+  const handleReactivate = async (company: Company) => {
+    setIsReactivating(true);
+    try {
+      const formData = new FormData();
+      formData.append("status", "active");
+      await updateCompany({ id: company.id, data: formData }).unwrap();
+      addToast("success", "Entreprise réactivée", `"${company.name}" et ses comptes ont été réactivés`);
+    } catch (error) {
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la réactivation"));
+    } finally {
+      setIsReactivating(false);
+    }
+  };
+
   const columns: Column<Company>[] = [
     { key: "name", header: "Nom", className: "font-medium" },
     { key: "siret", header: "SIRET" },
@@ -81,11 +126,15 @@ export default function CompaniesPage() {
     {
       key: "status",
       header: "Statut",
-      render: (value) => (
-        <Badge color={value === "active" ? "success" : "error"} variant="light" size="sm">
-          {value === "active" ? "Actif" : "Inactif"}
-        </Badge>
-      ),
+      render: (value) => {
+        const statusMap: Record<string, { label: string; color: "success" | "error" | "warning" }> = {
+          active: { label: "Actif", color: "success" },
+          inactive: { label: "Inactif", color: "error" },
+          deleted: { label: "Supprimée", color: "error" },
+        };
+        const { label, color } = statusMap[value as string] ?? { label: String(value), color: "error" };
+        return <Badge color={color} variant="light" size="sm">{label}</Badge>;
+      },
     },
   ];
 
@@ -155,7 +204,7 @@ export default function CompaniesPage() {
         const formData = new FormData();
         Object.keys(companyData).forEach((key) => {
           const value = (companyData as Record<string, unknown>)[key];
-          if (value !== undefined && value !== null) {
+          if (value !== undefined && value !== null && value !== "") {
             if (key === "logo" && value instanceof File) {
               formData.append(key, value);
             } else if (typeof value === "string" && key === "logo" && value.startsWith("http")) {
@@ -268,6 +317,7 @@ export default function CompaniesPage() {
               <option value="">Tous les statuts</option>
               <option value="active">Actif</option>
               <option value="inactive">Inactif</option>
+              <option value="deleted">Supprimée</option>
             </select>
           </div>
         </div>
@@ -279,6 +329,23 @@ export default function CompaniesPage() {
           onView={handleViewClick}
           onEdit={canUpdate ? handleEditClick : undefined}
           onDelete={canDelete ? handleDeleteClick : undefined}
+          canDeleteRow={(row) => row.status === "active"}
+          customActions={[
+            {
+              label: "Désactiver",
+              icon: <LockIcon />,
+              color: "warning",
+              onClick: (row) => toggleCompanyStatus(row),
+              hidden: (row) => row.status !== "active",
+            },
+            {
+              label: "Activer",
+              icon: <UnlockIcon />,
+              color: "success",
+              onClick: (row) => toggleCompanyStatus(row),
+              hidden: (row) => row.status === "active",
+            },
+          ]}
           emptyMessage="Aucune entreprise trouvée"
         />
 
@@ -314,9 +381,9 @@ export default function CompaniesPage() {
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false, company: null })}
         onConfirm={handleConfirmDelete}
-        title="Supprimer l'entreprise"
-        message={`Êtes-vous sûr de vouloir supprimer l'entreprise "${confirmModal.company?.name}" ? Cette action est irréversible.`}
-        confirmText="Supprimer"
+        title="Désactiver l'entreprise"
+        message={`Êtes-vous sûr de vouloir désactiver l'entreprise "${confirmModal.company?.name}" ? Tous ses comptes seront désactivés. Vous pourrez la réactiver depuis le tableau.`}
+        confirmText="Désactiver"
         cancelText="Annuler"
         variant="danger"
         isLoading={isDeleting}
@@ -329,6 +396,22 @@ function PlusIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M10 4.16667V15.8333M4.16667 10H15.8333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+    </svg>
+  );
+}
+
+function UnlockIcon() {
+  return (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 018 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
     </svg>
   );
 }

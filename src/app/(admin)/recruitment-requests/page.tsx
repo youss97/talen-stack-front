@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -147,12 +147,12 @@ export default function RecruitmentPage() {
     setAssignModal({ isOpen: true, request });
   };
 
-  const handleAssignRequest = async (responsibleId: string | null) => {
+  const handleAssignRequest = async (responsibleIds: string[]) => {
     if (!assignModal.request) return;
     setIsAssigning(true);
     try {
-      await assignRequest({ id: assignModal.request.id, responsible_id: responsibleId }).unwrap();
-      addToast("success", "Succès", responsibleId ? "Responsable affecté avec succès" : "Affectation retirée avec succès");
+      await assignRequest({ id: assignModal.request.id, responsible_ids: responsibleIds }).unwrap();
+      addToast("success", "Succès", responsibleIds.length > 0 ? "Responsable(s) affecté(s) avec succès" : "Affectation(s) retirée(s) avec succès");
     } catch (error) {
       addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de l'affectation"));
     } finally {
@@ -297,10 +297,21 @@ export default function RecruitmentPage() {
         // Devise (MAD par défaut)
         createData.currency = (formData as any).currency || 'MAD';
 
-        console.log('Sending data to backend:', createData);
+        const clientIds: string[] = (formData as any).client_ids?.length
+          ? (formData as any).client_ids
+          : [formData.client_id];
 
-        await createRequest(createData).unwrap();
-        addToast("success", "Succès", "Demande créée avec succès");
+        for (const cId of clientIds) {
+          await createRequest({ ...createData, client_id: cId }).unwrap();
+        }
+
+        addToast(
+          "success",
+          "Succès",
+          clientIds.length > 1
+            ? `${clientIds.length} demandes créées avec succès`
+            : "Demande créée avec succès"
+        );
       }
       setIsFormModalOpen(false);
       setEditingRequest(null);
@@ -435,10 +446,11 @@ export default function RecruitmentPage() {
     {
       key: "title" as keyof ApplicationRequest,
       header: "Demande",
+      className: "min-w-[200px]",
       render: (value: unknown, row?: ApplicationRequest) => {
         return (
           <div>
-            <div className="font-medium text-gray-900 dark:text-white">{value as string || "-"}</div>
+            <div className="font-medium text-gray-900 dark:text-white truncate max-w-[200px]">{value as string || "-"}</div>
             <div className="text-xs text-gray-500 dark:text-gray-400">Réf: {row?.reference || "-"}</div>
           </div>
         );
@@ -447,34 +459,40 @@ export default function RecruitmentPage() {
     {
       key: "id" as keyof ApplicationRequest,
       header: "Client",
+      className: "min-w-[150px]",
       render: (_value: unknown, row?: ApplicationRequest) => {
-        return row?.client?.name || "-";
+        return <span className="truncate block max-w-[150px]">{row?.client?.name || "-"}</span>;
       },
     },
     {
       key: "contract_types" as keyof ApplicationRequest,
       header: "Contrat",
+      className: "min-w-[100px]",
       render: (value: unknown, row: ApplicationRequest) => {
         const types = (value as string[]) || (row.contract_type ? [row.contract_type] : []);
-        return types.length > 0 ? types.join(", ") : "-";
+        return <span className="text-sm">{types.length > 0 ? types.join(", ") : "-"}</span>;
       },
     },
     {
       key: "min_experience" as keyof ApplicationRequest,
-      header: "Expérience",
-      render: (value: unknown) => `${value} ans`,
+      header: "Exp.",
+      className: "min-w-[80px]",
+      render: (value: unknown) => <span className="text-sm">{value as React.ReactNode} ans</span>,
     },
     {
       key: "responsible" as keyof ApplicationRequest,
       header: "Responsable",
+      className: "min-w-[130px]",
       render: (value: unknown) => {
         const r = value as { first_name?: string; last_name?: string } | null;
-        return r ? `${r.first_name || ''} ${r.last_name || ''}`.trim() || "-" : "-";
+        const name = r ? `${r.first_name || ''} ${r.last_name || ''}`.trim() || "-" : "-";
+        return <span className="text-sm truncate block max-w-[130px]">{name}</span>;
       },
     },
     {
       key: "status" as keyof ApplicationRequest,
       header: "Statut",
+      className: "min-w-[110px]",
       render: (value: unknown) => (
         <Badge
           variant="light"
@@ -487,7 +505,8 @@ export default function RecruitmentPage() {
     },
     {
       key: "is_public" as keyof ApplicationRequest,
-      header: "Statut Publication",
+      header: "Publication",
+      className: "min-w-[120px]",
       render: (_value: unknown, row?: ApplicationRequest) => {
         if (!row) return null;
         return (
@@ -502,10 +521,12 @@ export default function RecruitmentPage() {
     {
       key: "urgency" as keyof ApplicationRequest,
       header: "Urgence",
+      className: "min-w-[100px]",
       render: (value: unknown) => (
         <Badge
           variant="light"
           color={getUrgencyColor(value as string)}
+          size="sm"
         >
           {getUrgencyLabel(value as string)}
         </Badge>
@@ -513,20 +534,22 @@ export default function RecruitmentPage() {
     },
     {
       key: "desired_start_date" as keyof ApplicationRequest,
-      header: "Date de début",
+      header: "Début",
+      className: "min-w-[100px]",
       render: (value: unknown) => {
-        return <span className="text-gray-400">{formatDate(value as string)}</span>;
+        return <span className="text-gray-400 text-sm">{formatDate(value as string)}</span>;
       },
     },
     {
       id: "created_by_manager",
       key: "manager" as keyof ApplicationRequest,
       header: "Créé par",
+      className: "min-w-[130px]",
       render: (_value: unknown, row?: ApplicationRequest) => {
         const m = row?.manager;
         const name = m ? `${m.first_name || ""} ${m.last_name || ""}`.trim() : "";
         return (
-          <span className="text-sm text-gray-700 dark:text-gray-300">
+          <span className="text-sm text-gray-700 dark:text-gray-300 truncate block max-w-[130px]">
             {name || "-"}
           </span>
         );
@@ -652,19 +675,20 @@ export default function RecruitmentPage() {
           </div>
         </div>
 
-        <DataTable<ApplicationRequest>
-          key={`datatable-${Object.keys(optimisticPublicStates).join('-')}`}
-          columns={columns}
-          data={requests}
-          isLoading={isLoading || isFetching}
-          onView={handleRowClick}
-          onEdit={canUpdate ? handleEditClick : undefined}
-          onDelete={canDelete ? handleDeleteClick : undefined}
-          customActions={canAssign ? [{ label: "Affecter", icon: <AssignIcon />, onClick: handleAssignClick }] : undefined}
-          emptyMessage="Aucune demande trouvée"
-          renderRowTooltip={(row: ApplicationRequest) => {
+        <div className="overflow-x-auto">
+          <DataTable<ApplicationRequest>
+            key={`datatable-${Object.keys(optimisticPublicStates).join('-')}`}
+            columns={columns}
+            data={requests}
+            isLoading={isLoading || isFetching}
+            onView={handleRowClick}
+            onEdit={canUpdate ? handleEditClick : undefined}
+            onDelete={canDelete ? handleDeleteClick : undefined}
+            customActions={canAssign ? [{ label: "Affecter", icon: <AssignIcon />, onClick: handleAssignClick }] : undefined}
+            emptyMessage="Aucune demande trouvée"
+            renderRowTooltip={(row: ApplicationRequest) => {
             const managerName = row.manager ? `${row.manager.first_name || ""} ${row.manager.last_name || ""}`.trim() : null;
-            const skills = Array.isArray(row.required_skills) ? row.required_skills.slice(0, 3) : [];
+            const skills = Array.isArray(row.required_skills) ? row.required_skills.slice(0, 3).map((s) => typeof s === "string" ? s : (s as { name: string }).name) : [];
             const priorityColors: Record<string, string> = {
               low: "text-gray-500", normal: "text-blue-500",
               high: "text-orange-500", urgent: "text-red-500",
@@ -715,6 +739,7 @@ export default function RecruitmentPage() {
             );
           }}
         />
+        </div>
 
         {data && data.pagination && (
           <div className="p-5 border-t border-gray-100 dark:border-gray-800">
