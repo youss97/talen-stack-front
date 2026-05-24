@@ -4,8 +4,6 @@ import GridShape from "@/components/common/GridShape";
 import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 import GuestGuard from "@/components/auth/GuestGuard";
 import { ThemeProvider } from "@/context/ThemeContext";
-import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
@@ -49,23 +47,6 @@ export default function AuthLayout({
 
               {/* Content */}
               <div className="relative z-10 flex flex-col items-center px-12 max-w-md w-full">
-                {/* Logo */}
-                <motion.div
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, ease: "easeOut" }}
-                  className="mb-10"
-                >
-                  <Link href="/">
-                    <Image
-                      src="/images/logo/logo-dark.svg"
-                      alt="TalentStack"
-                      width={200}
-                      height={70}
-                    />
-                  </Link>
-                </motion.div>
-
                 {/* Tagline */}
                 <motion.h2
                   initial={{ opacity: 0, y: 20 }}
