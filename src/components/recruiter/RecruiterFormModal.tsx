@@ -79,6 +79,10 @@ export default function RecruiterFormModal({
       current_salary: undefined,
       daily_rate: undefined,
       package_rate: undefined,
+      salary_expectation: undefined,
+      daily_rate_expectation: undefined,
+      package_current: "",
+      package_desired: "",
       currency: "MAD",
       offer_contract_types: [],
       availability_type: "one_month",
@@ -103,6 +107,10 @@ export default function RecruiterFormModal({
   const currentContractType = watch("current_contract_type");
   const availabilityType = watch("availability_type");
   const availabilityNegotiable = watch("availability_negotiable");
+  // Prétentions : salaire si contrat non-freelance souhaité (ou aucun) ; TJM si Freelance souhaité
+  const offerTypesArr = (watch("offer_contract_types") || []).filter(Boolean) as string[];
+  const wantsTjmExpectation = offerTypesArr.some((t) => t?.toLowerCase() === "freelance");
+  const wantsSalaryExpectation = offerTypesArr.length === 0 || offerTypesArr.some((t) => t?.toLowerCase() !== "freelance");
   const isAnonymized = watch("is_anonymized");
 
   // Préparer les objets initiaux pour les selects
@@ -166,6 +174,10 @@ export default function RecruiterFormModal({
         current_salary: recruiter.current_salary,
         daily_rate: recruiter.daily_rate,
         package_rate: recruiter.package_rate,
+        salary_expectation: recruiter.salary_expectation,
+        daily_rate_expectation: recruiter.daily_rate_expectation,
+        package_current: recruiter.package_current || "",
+        package_desired: recruiter.package_desired || "",
         currency: recruiter.currency || "MAD",
         offer_contract_types: recruiter.offer_contract_types || [],
         availability_type: recruiter.availability_type || "one_month",
@@ -477,7 +489,7 @@ export default function RecruiterFormModal({
                   </div>
                 ) : (
                   <div>
-                    <Label>Salaire annuel</Label>
+                    <Label>Salaire mensuel</Label>
                     <input
                       type="number"
                       {...register("current_salary")}
@@ -498,6 +510,17 @@ export default function RecruiterFormModal({
                     showRegions={true}
                   />
                 </div>
+              </div>
+
+              {/* Package actuel (texte libre) */}
+              <div>
+                <Label>Package actuel</Label>
+                <input
+                  type="text"
+                  {...register("package_current")}
+                  placeholder="Ex: 13e mois, carte carburant, mutuelle..."
+                  className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                />
               </div>
             </div>
 
@@ -523,6 +546,49 @@ export default function RecruiterFormModal({
                     Chargement des types de contrats...
                   </p>
                 )}
+              </div>
+            </div>
+
+            {/* Section 4bis: Prétentions salariales / souhaitées */}
+            <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+                Prétentions salariales / souhaitées
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {wantsSalaryExpectation && (
+                  <div>
+                    <Label>Salaire mensuel souhaité</Label>
+                    <input
+                      type="number"
+                      {...register("salary_expectation")}
+                      placeholder="50000"
+                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                    />
+                  </div>
+                )}
+                {wantsTjmExpectation && (
+                  <div>
+                    <Label>TJM souhaité</Label>
+                    <input
+                      type="number"
+                      {...register("daily_rate_expectation")}
+                      placeholder="600"
+                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Package souhaité (texte libre) */}
+              <div>
+                <Label>Package souhaité</Label>
+                <input
+                  type="text"
+                  {...register("package_desired")}
+                  placeholder="Ex: primes aïd, prime scolarité enfants, bonus annuel..."
+                  className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                />
               </div>
             </div>
 

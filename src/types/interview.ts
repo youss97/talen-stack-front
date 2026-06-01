@@ -40,6 +40,10 @@ export interface Interview {
     request: {
       title: string;
       reference: string;
+      client?: {
+        id: string;
+        name: string;
+      };
     };
   };
 }

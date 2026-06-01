@@ -64,6 +64,7 @@ export default function CVExtractPage() {
   const [position, setPosition] = useState("");
   const [totalExperience, setTotalExperience] = useState<string>("");
   const [industry, setIndustry] = useState("");
+  const [specialty, setSpecialty] = useState("");
   const [summary, setSummary] = useState("");
   const [status, setStatus] = useState("new");
   const [remotePreferred, setRemotePreferred] = useState(false);
@@ -111,6 +112,7 @@ export default function CVExtractPage() {
         setPosition(cv.last_position || "");
         setTotalExperience(cv.total_experience != null ? String(cv.total_experience) : "");
         setIndustry(cv.industry_experience || "");
+        setSpecialty(cv.specialty || "");
         setSummary((cv.full_information as any)?.summary || "");
         setStatus(cv.status || "new");
         setRemotePreferred(cv.remote_preferred || false);
@@ -297,6 +299,7 @@ export default function CVExtractPage() {
           last_position: position,
           total_experience: totalExperience ? Number(totalExperience) : undefined,
           industry_experience: industry,
+          specialty: specialty || undefined,
           additional_skills: skills,
           languages: langStrings,
           geographic_mobility: mobility,
@@ -319,6 +322,7 @@ export default function CVExtractPage() {
         formData.append("last_position", position);
         if (totalExperience) formData.append("total_experience", totalExperience);
         formData.append("industry_experience", industry);
+        if (specialty) formData.append("specialty", specialty);
         formData.append("remote_preferred", String(remotePreferred));
         formData.append("status", status);
 
@@ -471,6 +475,10 @@ export default function CVExtractPage() {
             <div>
               <Label>Années d'expérience</Label>
               <input className={inputClass} type="number" min={0} placeholder="5" value={totalExperience} onChange={(e) => setTotalExperience(e.target.value)} />
+            </div>
+            <div>
+              <Label>Spécialité pertinente</Label>
+              <input className={inputClass} placeholder="Ex: Java, React, Comptabilité" value={specialty} onChange={(e) => setSpecialty(e.target.value)} />
             </div>
             <div>
               <Label>Secteur d'activité</Label>

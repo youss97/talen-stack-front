@@ -127,6 +127,7 @@ export default function CVDetailModal({
             </div>
 
             <div className="grid grid-cols-2 gap-4">
+              {cv.specialty && <DetailItem label="Spécialité pertinente" value={cv.specialty} />}
               <DetailItem label="Secteur" value={cv.industry_experience || "-"} />
               <DetailItem label="Télétravail" value={cv.remote_preferred ? "Oui" : "Non"} />
             </div>

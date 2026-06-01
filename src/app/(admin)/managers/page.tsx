@@ -20,6 +20,7 @@ import {
   useGetClientsForSelectInfiniteQuery,
   useGetClientByIdQuery,
 } from "@/lib/services/clientApi";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 export default function ManagersPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/managers");
@@ -82,13 +83,8 @@ export default function ManagersPage() {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (error && typeof error === "object") {
-      const err = error as { data?: { message?: string }; message?: string };
-      return err.data?.message || err.message || defaultMessage;
-    }
-    return defaultMessage;
-  };
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
 
   const handleViewClick = (manager: Manager) => {
     setViewManager(manager);

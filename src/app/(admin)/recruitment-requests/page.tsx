@@ -26,6 +26,7 @@ import { exportApplicationRequestsToExcel } from "@/utils/excelExport";
 import { formatDate } from "@/utils/dateFormat";
 import type { ApplicationRequest, UpdateApplicationRequestRequest } from "@/types/applicationRequest";
 import type { CreateApplicationRequestFormData } from "@/validations/applicationRequestValidation";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 export default function RecruitmentPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/recruitment-requests");
@@ -40,6 +41,7 @@ export default function RecruitmentPage() {
   const [locationFilter, setLocationFilter] = useState<string>("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<ApplicationRequest | null>(null);
   const [editingRequest, setEditingRequest] = useState<ApplicationRequest | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -91,13 +93,8 @@ export default function RecruitmentPage() {
   const [deleteRequest] = useDeleteApplicationRequestMutation();
   const [assignRequest] = useAssignApplicationRequestMutation();
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (error && typeof error === "object") {
-      const err = error as { data?: { message?: string }; message?: string };
-      return err.data?.message || err.message || defaultMessage;
-    }
-    return defaultMessage;
-  };
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
 
   const handleAddClick = () => {
     setEditingRequest(null);
@@ -134,9 +131,18 @@ export default function RecruitmentPage() {
     }
   };
 
-  const handleRowClick = (request: ApplicationRequest) => {
-    setSelectedRequest(request);
+  const handleRowClick = async (request: ApplicationRequest) => {
     setIsDetailModalOpen(true);
+    setIsLoadingDetail(true);
+    setSelectedRequest(null);
+    try {
+      const fullData = await getRequestById(request.id).unwrap();
+      setSelectedRequest(fullData);
+    } catch {
+      setSelectedRequest(request); // fallback to list data
+    } finally {
+      setIsLoadingDetail(false);
+    }
   };
 
   const handleDeleteClick = (request: ApplicationRequest) => {
@@ -225,6 +231,9 @@ export default function RecruitmentPage() {
         if (formData.desired_start_date) updateData.desired_start_date = formData.desired_start_date;
         if (formData.number_of_profiles !== undefined) updateData.number_of_profiles = formData.number_of_profiles;
         if ((formData as any).currency) updateData.currency = (formData as any).currency;
+        if ((formData as any).soft_skills) updateData.soft_skills = (formData as any).soft_skills;
+        if ((formData as any).note_client !== undefined) updateData.note_client = (formData as any).note_client;
+        if ((formData as any).note_interne !== undefined) updateData.note_interne = (formData as any).note_interne;
 
         await updateRequest({
           id: editingRequest.id,
@@ -296,22 +305,21 @@ export default function RecruitmentPage() {
         }
         // Devise (MAD par défaut)
         createData.currency = (formData as any).currency || 'MAD';
+        // Soft skills et notes
+        if ((formData as any).soft_skills?.length) createData.soft_skills = (formData as any).soft_skills;
+        if ((formData as any).note_client) createData.note_client = (formData as any).note_client;
+        if ((formData as any).note_interne) createData.note_interne = (formData as any).note_interne;
 
-        const clientIds: string[] = (formData as any).client_ids?.length
-          ? (formData as any).client_ids
-          : [formData.client_id];
-
-        for (const cId of clientIds) {
-          await createRequest({ ...createData, client_id: cId }).unwrap();
+        // Filtrer les skills invalides (tableaux vides, null, etc.)
+        if (Array.isArray(createData.required_skills)) {
+          createData.required_skills = createData.required_skills.filter(
+            (s: any) => s && !Array.isArray(s) && (typeof s === 'string' ? s.trim() : s?.name?.trim())
+          );
         }
 
-        addToast(
-          "success",
-          "Succès",
-          clientIds.length > 1
-            ? `${clientIds.length} demandes créées avec succès`
-            : "Demande créée avec succès"
-        );
+        await createRequest({ ...createData, client_id: formData.client_id }).unwrap();
+
+        addToast("success", "Succès", "Demande créée avec succès");
       }
       setIsFormModalOpen(false);
       setEditingRequest(null);
@@ -772,7 +780,7 @@ export default function RecruitmentPage() {
           setSelectedRequest(null);
         }}
         applicationRequest={selectedRequest}
-        isLoading={false}
+        isLoading={isLoadingDetail}
         onStatusUpdate={canUpdate ? handleStatusUpdate : undefined}
       />
 

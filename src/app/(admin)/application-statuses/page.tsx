@@ -18,6 +18,7 @@ import {
 import { useActions } from "@/hooks/useActions";
 import type { ApplicationStatus } from "@/types/applicationStatus";
 import type { ApplicationStatusFormData } from "@/validations/applicationStatusValidation";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 export default function ApplicationStatusesPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/application-statuses");
@@ -62,13 +63,8 @@ export default function ApplicationStatusesPage() {
   const [updateApplicationStatus, { isLoading: isUpdating }] = useUpdateApplicationStatusMutation();
   const [deleteApplicationStatus] = useDeleteApplicationStatusMutation();
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (error && typeof error === "object") {
-      const err = error as { data?: { message?: string }; message?: string };
-      return err.data?.message || err.message || defaultMessage;
-    }
-    return defaultMessage;
-  };
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
 
   const columns: Column<ApplicationStatus>[] = [
     {

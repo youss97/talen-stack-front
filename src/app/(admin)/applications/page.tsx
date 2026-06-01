@@ -1,5 +1,6 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import DataTableWithSelection from "@/components/tables/DataTableWithSelection";
 import ActionsMenu from "@/components/tables/ActionsMenu";
@@ -38,6 +39,7 @@ import { EmailIcon, CalendarIcon } from "@/components/tables/DataTableWithSelect
 import type { Recruiter } from "@/types/recruiter";
 import type { CreateRecruiterRequest, UpdateRecruiterRequest, WorkflowStatus } from "@/types/recruiter";
 import type { CreateInterviewRequest } from "@/types/interview";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 export default function ApplicationsPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/applications");
@@ -130,13 +132,8 @@ export default function ApplicationsPage() {
   const [createInterview, { isLoading: isCreatingInterview }] = useCreateInterviewMutation();
   const [getApplicationById, { isLoading: isLoadingApplication }] = useLazyGetRecruiterByIdQuery();
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (error && typeof error === "object") {
-      const err = error as { data?: { message?: string }; message?: string };
-      return err.data?.message || err.message || defaultMessage;
-    }
-    return defaultMessage;
-  };
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
 
   const applicationStatuses = applicationStatusesData?.data || [];
 
@@ -420,6 +417,16 @@ export default function ApplicationsPage() {
     setDetailApplicationId(application.id);
     setIsDetailModalOpen(true);
   };
+
+  // Ouvrir directement le détail si on arrive avec ?applicationId=... (ex: depuis l'agenda/entretien)
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const appId = searchParams.get("applicationId");
+    if (appId) {
+      setDetailApplicationId(appId);
+      setIsDetailModalOpen(true);
+    }
+  }, [searchParams]);
 
   const handleAddClick = () => {
     setSelectedApplication(null);

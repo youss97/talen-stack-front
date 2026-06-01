@@ -21,6 +21,7 @@ import { useActions } from "@/hooks/useActions";
 import { formatDate } from "@/utils/dateFormat";
 import type { Role, RoleWithFeatures } from "@/types/role";
 import type { CreateRoleFormData } from "@/validations/roleValidation";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 export default function RolesPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/roles");
@@ -78,13 +79,8 @@ export default function RolesPage() {
   const [deleteRole] = useDeleteRoleMutation();
   const [assignActions] = useAssignActionsToRoleMutation();
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (error && typeof error === "object") {
-      const err = error as { data?: { message?: string }; message?: string };
-      return err.data?.message || err.message || defaultMessage;
-    }
-    return defaultMessage;
-  };
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
 
   const columns: Column<Role>[] = [
     {

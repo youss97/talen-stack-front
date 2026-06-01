@@ -37,6 +37,7 @@ export const cvApi = createApi({
           ...(params.industry && { industry: params.industry }),
           ...(params.email && { email: params.email }),
           ...(params.contract_type && { contract_type: params.contract_type }),
+          ...(params.specialty && { specialty: params.specialty }),
           ...(params.responsible_id && { responsible_id: params.responsible_id }),
           ...(params.unassigned && { unassigned: true }),
         },

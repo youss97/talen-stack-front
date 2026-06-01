@@ -17,6 +17,7 @@ import {
 import { useActions } from "@/hooks/useActions";
 import type { ContractType } from "@/types/contractType";
 import type { ContractTypeFormData } from "@/validations/contractTypeValidation";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 export default function ContractTypesPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/contract-types");
@@ -61,13 +62,8 @@ export default function ContractTypesPage() {
   const [updateContractType, { isLoading: isUpdating }] = useUpdateContractTypeMutation();
   const [deleteContractType] = useDeleteContractTypeMutation();
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (error && typeof error === "object") {
-      const err = error as { data?: { message?: string }; message?: string };
-      return err.data?.message || err.message || defaultMessage;
-    }
-    return defaultMessage;
-  };
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
 
   const columns: Column<ContractType>[] = [
     {

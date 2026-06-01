@@ -20,6 +20,7 @@ import { useActions } from "@/hooks/useActions";
 import type { Client, CreateClientRequest, UpdateClientRequest } from "@/types/client";
 import type { CreateClientFormData } from "@/validations/clientValidation";
 import { getImageUrl } from "@/utils/imageHelper";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 export default function ClientsPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/clients");
@@ -100,13 +101,8 @@ export default function ClientsPage() {
     setConfirmModal({ isOpen: true, client });
   };
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (error && typeof error === "object") {
-      const err = error as { data?: { message?: string }; message?: string };
-      return err.data?.message || err.message || defaultMessage;
-    }
-    return defaultMessage;
-  };
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
 
   const handleConfirmDelete = async () => {
     if (!confirmModal.client) return;

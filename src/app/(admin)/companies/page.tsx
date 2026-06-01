@@ -22,6 +22,7 @@ import { useAssignPlanToCompanyMutation, useRemoveCompanyPlanMutation } from "@/
 import { useActions } from "@/hooks/useActions";
 import type { Company } from "@/types/company";
 import type { CreateCompanyFormData } from "@/validations/companyValidation";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 function RefreshIcon() {
   return (
@@ -77,13 +78,8 @@ export default function CompaniesPage() {
   const [assignPlanToCompany] = useAssignPlanToCompanyMutation();
   const [removeCompanyPlan] = useRemoveCompanyPlanMutation();
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (error && typeof error === "object") {
-      const err = error as { data?: { message?: string }; message?: string };
-      return err.data?.message || err.message || defaultMessage;
-    }
-    return defaultMessage;
-  };
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
 
   const toggleCompanyStatus = async (company: Company) => {
     setQuickTogglingId(company.id);

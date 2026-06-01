@@ -171,6 +171,7 @@ export interface CVPaginationParams {
   industry?: string;
   email?: string;
   contract_type?: string;
+  specialty?: string;
   responsible_id?: string;
   unassigned?: boolean;
 }

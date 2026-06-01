@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { StoreProvider } from '@/lib/StoreProvider';
 import AuthInitializer from '@/components/auth/AuthInitializer';
 import PermissionsRefresher from '@/components/auth/PermissionsRefresher';
+import GlobalToaster from '@/components/common/GlobalToaster';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -38,6 +39,7 @@ export default function RootLayout({
         <StoreProvider>
           <AuthInitializer />
           <PermissionsRefresher />
+          <GlobalToaster />
           <ThemeProvider>
             <SidebarProvider>{children}</SidebarProvider>
           </ThemeProvider>

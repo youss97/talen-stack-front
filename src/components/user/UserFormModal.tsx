@@ -232,8 +232,9 @@ export default function UserFormModal({
                   )}
                 </Label>
                 <div className="relative">
-                  {/* Hidden field to prevent browser auto-fill */}
-                  <input type="password" style={{ display: "none" }} readOnly />
+                  {/* Decoys hors-écran : Chrome ignore display:none mais respecte offscreen + readonly */}
+                  <input type="text" name="username" tabIndex={-1} autoComplete="username" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 0, height: 0, opacity: 0 }} />
+                  <input type="password" name="password" tabIndex={-1} autoComplete="new-password" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 0, height: 0, opacity: 0 }} />
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="SecurePassword123!"

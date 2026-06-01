@@ -10,7 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar, Doughnut } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import type { SubscriptionsStats } from "@/lib/services/statsApi";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
@@ -24,22 +24,13 @@ const BILLING_LABELS: Record<string, string> = {
   one_time: "Unique",
 };
 
-function formatMonth(iso: string) {
-  const [y, m] = iso.split("-");
-  return new Date(Number(y), Number(m) - 1).toLocaleDateString("fr-FR", {
-    month: "short",
-    year: "numeric",
-  });
-}
-
 export default function SubscriptionCharts({ stats }: { stats: SubscriptionsStats }) {
   const hasDistrib = stats.plansDistribution.length > 0;
-  const hasApi = stats.apiConsumption.length > 0;
 
-  if (!hasDistrib && !hasApi) return null;
+  if (!hasDistrib) return null;
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-6">
       {/* Distribution des plans */}
       {hasDistrib && (
         <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5">
@@ -104,62 +95,6 @@ export default function SubscriptionCharts({ stats }: { stats: SubscriptionsStat
                 </div>
               );
             })}
-          </div>
-        </div>
-      )}
-
-      {/* Consommation API / Intégrations */}
-      {hasApi && (
-        <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5">
-          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
-            Consommation API — Intégrations / mois
-          </h3>
-          <Bar
-            data={{
-              labels: stats.apiConsumption.map((r) => formatMonth(r.month)),
-              datasets: [
-                {
-                  label: "Actives",
-                  data: stats.apiConsumption.map((r) => r.active),
-                  backgroundColor: BRAND + "cc",
-                  borderColor: BRAND,
-                  borderWidth: 1,
-                  borderRadius: 5,
-                },
-                {
-                  label: "Inactives",
-                  data: stats.apiConsumption.map((r) => r.inactive),
-                  backgroundColor: "#94a3b8aa",
-                  borderColor: "#94a3b8",
-                  borderWidth: 1,
-                  borderRadius: 5,
-                },
-              ],
-            }}
-            options={{
-              responsive: true,
-              plugins: {
-                legend: { position: "bottom", labels: { padding: 12, font: { size: 11 } } },
-              },
-              scales: {
-                x: { stacked: true },
-                y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } },
-              },
-            }}
-          />
-
-          {/* Totaux rapides */}
-          <div className="mt-4 grid grid-cols-3 gap-3">
-            {[
-              { label: "Total intégrations", value: stats.apiConsumption.reduce((s, r) => s + r.total, 0), color: "text-gray-800 dark:text-white" },
-              { label: "Actives", value: stats.apiConsumption.reduce((s, r) => s + r.active, 0), color: "text-brand-600" },
-              { label: "Inactives", value: stats.apiConsumption.reduce((s, r) => s + r.inactive, 0), color: "text-gray-400" },
-            ].map((item) => (
-              <div key={item.label} className="text-center">
-                <p className={`text-xl font-bold ${item.color}`}>{item.value}</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">{item.label}</p>
-              </div>
-            ))}
           </div>
         </div>
       )}

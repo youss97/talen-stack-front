@@ -22,12 +22,22 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store";
 import type { User, CreateUserRequest, UpdateUserRequest } from "@/types/user";
 import type { CreateUserFormData } from "@/validations/userValidation";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 export default function UsersPage() {
   const { canCreate, canUpdate, canDelete, actions, actionCodes } = useActions("/users");
   const { canAccessPath } = usePermissions();
   const currentUser = useSelector((state: RootState) => state.auth.user);
-  
+  // Robust self-detection — l'auth peut exposer id, userId ou sub selon la source du token
+  const isSelf = (row: { id?: string | number; email?: string }) => {
+    const cu = currentUser as any;
+    if (!cu) return false;
+    const cuId = cu.id ?? cu.userId ?? cu.sub;
+    if (cuId != null && row.id != null && String(row.id) === String(cuId)) return true;
+    if (cu.email && row.email && cu.email.toLowerCase() === row.email.toLowerCase()) return true;
+    return false;
+  };
+
   // Debug des permissions
   console.log("🔍 Debug permissions /users:", {
     canCreate,
@@ -89,16 +99,11 @@ export default function UsersPage() {
   const [deleteUser] = useDeleteUserMutation();
   const [toggleStatus] = useToggleUserStatusMutation();
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (error && typeof error === "object") {
-      const err = error as { data?: { message?: string }; message?: string };
-      return err.data?.message || err.message || defaultMessage;
-    }
-    return defaultMessage;
-  };
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
 
   const handleQuickToggle = async (user: User) => {
-    if (user.id === currentUser?.id) return;
+    if (isSelf(user)) return;
     setQuickTogglingId(user.id);
     try {
       await toggleStatus(user.id).unwrap();
@@ -188,7 +193,7 @@ export default function UsersPage() {
   };
 
   const handleDeleteClick = (user: User) => {
-    if (user.id === currentUser?.id) {
+    if (isSelf(user)) {
       addToast("warning", "Action non autorisée", "Vous ne pouvez pas modifier le statut de votre propre compte.");
       return;
     }
@@ -329,21 +334,21 @@ export default function UsersPage() {
           onView={handleRowClick}
           onEdit={handleEditClick}
           onDelete={handleDeleteClick}
-          canDeleteRow={(row) => row.id !== currentUser?.id}
+          canDeleteRow={(row) => !isSelf(row)}
           customActions={[
             {
               label: "Bloquer",
               icon: <LockIcon />,
               color: "warning",
               onClick: (row) => handleQuickToggle(row),
-              hidden: (row) => row.status !== "active" || row.id === currentUser?.id,
+              hidden: (row) => row.status !== "active" || isSelf(row),
             },
             {
               label: "Activer",
               icon: <UnlockIcon />,
               color: "success",
               onClick: (row) => handleQuickToggle(row),
-              hidden: (row) => row.status === "active" || row.id === currentUser?.id,
+              hidden: (row) => row.status === "active" || isSelf(row),
             },
           ]}
           emptyMessage="Aucun utilisateur trouvé"

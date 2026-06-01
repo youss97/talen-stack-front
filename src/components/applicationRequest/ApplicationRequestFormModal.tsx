@@ -34,6 +34,26 @@ interface ApplicationRequestFormModalProps {
   isLoading?: boolean;
 }
 
+const COUNTRIES = [
+  "Maroc", "France", "Algérie", "Tunisie", "Sénégal", "Côte d'Ivoire",
+  "Cameroun", "Belgique", "Suisse", "Canada", "Espagne", "Italie",
+  "Allemagne", "Portugal", "Pays-Bas", "Émirats arabes unis", "Qatar", "Arabie Saoudite",
+];
+
+const CITIES_BY_COUNTRY: Record<string, string[]> = {
+  Maroc: ["Casablanca", "Rabat", "Marrakech", "Fès", "Tanger", "Agadir", "Meknès", "Oujda", "Kénitra", "Tétouan", "Safi", "Mohammedia", "El Jadida", "Beni Mellal", "Nador"],
+  France: ["Paris", "Lyon", "Marseille", "Toulouse", "Nice", "Nantes", "Bordeaux", "Lille", "Strasbourg", "Rennes", "Reims", "Grenoble", "Montpellier", "Dijon", "Angers"],
+  Algérie: ["Alger", "Oran", "Constantine", "Annaba", "Blida", "Batna", "Djelfa", "Sétif"],
+  Tunisie: ["Tunis", "Sfax", "Sousse", "Monastir", "Bizerte", "Gabès", "Ariana", "Gafsa"],
+  Belgique: ["Bruxelles", "Anvers", "Gand", "Liège", "Bruges", "Namur"],
+  Suisse: ["Genève", "Zurich", "Bâle", "Lausanne", "Berne"],
+  Canada: ["Montréal", "Toronto", "Vancouver", "Calgary", "Ottawa", "Québec"],
+  Espagne: ["Madrid", "Barcelone", "Valence", "Séville", "Bilbao", "Malaga"],
+  Italie: ["Rome", "Milan", "Naples", "Turin", "Florence", "Bologne"],
+  Allemagne: ["Berlin", "Munich", "Hambourg", "Francfort", "Cologne", "Stuttgart"],
+  Portugal: ["Lisbonne", "Porto", "Braga", "Coimbra", "Faro"],
+};
+
 const LANGUAGES = [
   { value: "FR", label: "Français" },
   { value: "EN", label: "Anglais" },
@@ -54,7 +74,10 @@ export default function ApplicationRequestFormModal({
   const isEditing = !!applicationRequest;
   const [skillInput, setSkillInput] = useState("");
   const [softSkillInput, setSoftSkillInput] = useState("");
-  const [selectedClients, setSelectedClients] = useState<Client[]>([]);
+  // Use useState for skills — more reliable than watch()+setValue() for form submission
+  const [skillsState, setSkillsState] = useState<SkillWithLevel[]>([]);
+  const [softSkillsState, setSoftSkillsState] = useState<string[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState("France");
 
   const {
     register,
@@ -99,8 +122,8 @@ export default function ApplicationRequestFormModal({
     },
   });
 
-  const requiredSkills = watch("required_skills") || [];
-  const softSkills = (watch("soft_skills") || []) as string[];
+  const requiredSkills = skillsState; // kept for backward-compat JSX references
+  const softSkills = softSkillsState;
   const clientId = watch("client_id");
   const managerId = watch("manager_id");
   const contractTypes = watch("contract_types") || [];
@@ -150,20 +173,18 @@ export default function ApplicationRequestFormModal({
 
   useEffect(() => {
     if (applicationRequest) {
-      // Initialize selected clients from existing request
-      setSelectedClients(
-        applicationRequest.client
-          ? [{ id: applicationRequest.client.id, name: applicationRequest.client.name } as Client]
-          : []
-      );
+      const parsedSkills = (applicationRequest.required_skills || [])
+        .filter((s: any) => s && !Array.isArray(s))
+        .map((s: SkillItem) => typeof s === "string" ? { name: s, level: 1 } : s) as SkillWithLevel[];
+      setSkillsState(parsedSkills);
+      setSoftSkillsState((applicationRequest.soft_skills as string[] | undefined) || []);
+      setSelectedCountry(applicationRequest.country || "France");
       reset({
         client_id: applicationRequest.client_id,
         manager_id: applicationRequest.manager_id,
         title: applicationRequest.title,
         description: applicationRequest.description,
-        required_skills: (applicationRequest.required_skills || []).map((s: SkillItem) =>
-          typeof s === "string" ? { name: s, level: 1 } : s
-        ),
+        required_skills: parsedSkills,
         min_experience: applicationRequest.min_experience,
         max_experience: applicationRequest.max_experience,
         contract_types: applicationRequest.contract_types || (applicationRequest.contract_type ? [applicationRequest.contract_type] : []),
@@ -189,7 +210,9 @@ export default function ApplicationRequestFormModal({
         number_of_profiles: applicationRequest.number_of_profiles || 1,
       });
     } else if (isOpen) {
-      setSelectedClients([]);
+      setSkillsState([]);
+      setSoftSkillsState([]);
+      setSelectedCountry("France");
       // Réinitialiser le formulaire en mode création
       reset({
         client_id: "",
@@ -232,38 +255,40 @@ export default function ApplicationRequestFormModal({
   const handleAddSkill = () => {
     const trimmed = skillInput.trim();
     if (!trimmed) return;
-    const already = (requiredSkills as SkillItem[]).some((s) => getSkillName(s) === trimmed);
+    const already = skillsState.some((s) => s.name === trimmed);
     if (!already) {
-      setValue("required_skills", [...requiredSkills, { name: trimmed, level: 1 } as SkillWithLevel]);
+      const updated = [...skillsState, { name: trimmed, level: 1 }];
+      setSkillsState(updated);
+      setValue("required_skills", updated as any);
       setSkillInput("");
     }
   };
 
   const handleRemoveSkill = (nameToRemove: string) => {
-    setValue(
-      "required_skills",
-      (requiredSkills as SkillItem[]).filter((s) => getSkillName(s) !== nameToRemove)
-    );
+    const updated = skillsState.filter((s) => s.name !== nameToRemove);
+    setSkillsState(updated);
+    setValue("required_skills", updated as any);
   };
 
   const handleUpdateSkillLevel = (nameToUpdate: string, level: number) => {
-    setValue(
-      "required_skills",
-      (requiredSkills as SkillItem[]).map((s) =>
-        getSkillName(s) === nameToUpdate ? { name: getSkillName(s), level } : s
-      )
-    );
+    const updated = skillsState.map((s) => s.name === nameToUpdate ? { ...s, level } : s);
+    setSkillsState(updated);
+    setValue("required_skills", updated as any);
   };
 
   const handleAddSoftSkill = () => {
     const trimmed = softSkillInput.trim();
-    if (!trimmed || softSkills.includes(trimmed)) return;
-    setValue("soft_skills", [...softSkills, trimmed] as any);
+    if (!trimmed || softSkillsState.includes(trimmed)) return;
+    const updated = [...softSkillsState, trimmed];
+    setSoftSkillsState(updated);
+    setValue("soft_skills", updated as any);
     setSoftSkillInput("");
   };
 
   const handleRemoveSoftSkill = (name: string) => {
-    setValue("soft_skills", softSkills.filter((s) => s !== name) as any);
+    const updated = softSkillsState.filter((s) => s !== name);
+    setSoftSkillsState(updated);
+    setValue("soft_skills", updated as any);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -308,7 +333,12 @@ export default function ApplicationRequestFormModal({
       </div>
 
       <form onSubmit={handleSubmit(
-        (data) => onSubmit({ ...data, currency, client_ids: selectedClients.map(c => c.id) } as any),
+        (data) => onSubmit({
+          ...data,
+          currency,
+          required_skills: skillsState,
+          soft_skills: softSkillsState,
+        } as any),
         () => {
           // Scroll to first error when validation fails
           setTimeout(() => {
@@ -332,67 +362,19 @@ export default function ApplicationRequestFormModal({
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
-                  {isEditing ? (
-                    <InfiniteSelect<Client>
-                      label={<>Client <span className="text-error-500">*</span></>}
-                      value={clientId}
-                      onChange={handleClientChange}
-                      useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
-                      itemLabelKey="name"
-                      itemValueKey="id"
-                      placeholder="Sélectionner un client..."
-                      emptyMessage="Aucun client trouvé"
-                      error={!!errors.client_id}
-                      initialSelectedItems={initialClient}
-                    />
-                  ) : (
-                    <>
-                      <InfiniteSelect<Client>
-                        label={<>Client(s) <span className="text-error-500">*</span></>}
-                        value=""
-                        onChange={(id, item) => {
-                          if (!item || selectedClients.some(c => c.id === id)) return;
-                          const updated = [...selectedClients, item as Client];
-                          setSelectedClients(updated);
-                          if (updated.length === 1) {
-                            setValue("client_id", id);
-                            setValue("manager_id", "");
-                          }
-                        }}
-                        useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
-                        itemLabelKey="name"
-                        itemValueKey="id"
-                        placeholder="Ajouter un client..."
-                        emptyMessage="Aucun client trouvé"
-                        error={!!errors.client_id && selectedClients.length === 0}
-                      />
-                      {selectedClients.length > 0 && (
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {selectedClients.map(c => (
-                            <span
-                              key={c.id}
-                              className="inline-flex items-center gap-1 px-3 py-1 bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400 rounded-full text-sm font-medium border border-brand-200 dark:border-brand-500/30"
-                            >
-                              {c.name}
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const filtered = selectedClients.filter(sc => sc.id !== c.id);
-                                  setSelectedClients(filtered);
-                                  setValue("client_id", filtered[0]?.id || "");
-                                  if (filtered.length === 0) setValue("manager_id", "");
-                                }}
-                                className="ml-0.5 text-brand-500 hover:text-brand-900 dark:hover:text-brand-300 text-lg leading-none"
-                              >
-                                ×
-                              </button>
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  )}
-                  {errors.client_id && selectedClients.length === 0 && (
+                  <InfiniteSelect<Client>
+                    label={<>Client <span className="text-error-500">*</span></>}
+                    value={clientId}
+                    onChange={handleClientChange}
+                    useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
+                    itemLabelKey="name"
+                    itemValueKey="id"
+                    placeholder="Sélectionner un client..."
+                    emptyMessage="Aucun client trouvé"
+                    error={!!errors.client_id}
+                    initialSelectedItems={initialClient}
+                  />
+                  {errors.client_id && (
                     <p className="mt-1 text-sm text-error-500">{errors.client_id.message}</p>
                   )}
                 </div>
@@ -409,7 +391,7 @@ export default function ApplicationRequestFormModal({
                     placeholder={clientId ? "Sélectionner un manager..." : "Sélectionner d'abord un client"}
                     emptyMessage="Aucun manager trouvé"
                     error={!!errors.manager_id}
-                    disabled={isEditing ? !clientId : selectedClients.length === 0}
+                    disabled={!clientId}
                     initialSelectedItems={initialManager}
                   />
                   {errors.manager_id && (
@@ -657,8 +639,9 @@ export default function ApplicationRequestFormModal({
 
               {hasSalary && (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 mb-4">
+                  {isFreelance && <div className="sm:col-span-2 text-xs font-semibold text-green-700 dark:text-green-400 uppercase tracking-wide border-b border-green-200 dark:border-green-800 pb-1">Rémunération CDI / Salarié</div>}
                   <div>
-                    <Label>Salaire minimum ({currencySymbol}/an)</Label>
+                    <Label>Salaire minimum ({currencySymbol}/mois)</Label>
                     <Input
                       type="number"
                       placeholder="45000"
@@ -671,7 +654,7 @@ export default function ApplicationRequestFormModal({
                   </div>
 
                   <div>
-                    <Label>Salaire maximum ({currencySymbol}/an)</Label>
+                    <Label>Salaire maximum ({currencySymbol}/mois)</Label>
                     <Input
                       type="number"
                       placeholder="55000"
@@ -687,6 +670,7 @@ export default function ApplicationRequestFormModal({
 
               {isFreelance && (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  {hasSalary && <div className="sm:col-span-2 text-xs font-semibold text-purple-700 dark:text-purple-400 uppercase tracking-wide border-b border-purple-200 dark:border-purple-800 pb-1">Rémunération Freelance / TJM</div>}
                   <div>
                     <Label>TJM minimum ({currencySymbol})</Label>
                     <Input
@@ -718,7 +702,7 @@ export default function ApplicationRequestFormModal({
               {!hasSalary && !isFreelance && (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div>
-                    <Label>Salaire minimum ({currencySymbol}/an)</Label>
+                    <Label>Salaire minimum ({currencySymbol}/mois)</Label>
                     <Input
                       type="number"
                       placeholder="45000"
@@ -731,7 +715,7 @@ export default function ApplicationRequestFormModal({
                   </div>
 
                   <div>
-                    <Label>Salaire maximum ({currencySymbol}/an)</Label>
+                    <Label>Salaire maximum ({currencySymbol}/mois)</Label>
                     <Input
                       type="number"
                       placeholder="55000"
@@ -751,29 +735,40 @@ export default function ApplicationRequestFormModal({
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
                 6. Localisation
               </h3>
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5">
                 <div>
-                  <Label>Ville <span className="text-error-500">*</span></Label>
-                  <Input
-                    placeholder="Paris"
-                    {...register("location")}
-                    error={!!errors.location}
+                  <Label>Pays <span className="text-error-500">*</span></Label>
+                  <input
+                    list="countries-datalist"
+                    placeholder="Tapez pour rechercher un pays..."
+                    autoComplete="off"
+                    {...register("country", {
+                      onChange: (e) => {
+                        setSelectedCountry(e.target.value);
+                        setValue("location", "");
+                      },
+                    })}
+                    className={`h-11 w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-none focus:ring-3 bg-white dark:bg-gray-900 dark:text-white/90 ${errors.country ? "border-error-500 focus:ring-error-500/10" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
                   />
-                  {errors.location && (
-                    <p className="mt-1 text-sm text-error-500">{errors.location.message}</p>
-                  )}
+                  <datalist id="countries-datalist">
+                    {COUNTRIES.map(c => <option key={c} value={c} />)}
+                  </datalist>
+                  {errors.country && <p className="mt-1 text-sm text-error-500">{errors.country.message}</p>}
                 </div>
 
                 <div>
-                  <Label>Pays <span className="text-error-500">*</span></Label>
-                  <Input
-                    placeholder="France"
-                    {...register("country")}
-                    error={!!errors.country}
+                  <Label>Ville <span className="text-error-500">*</span></Label>
+                  <input
+                    list="cities-datalist"
+                    placeholder="Tapez pour rechercher une ville..."
+                    autoComplete="off"
+                    {...register("location")}
+                    className={`h-11 w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-none focus:ring-3 bg-white dark:bg-gray-900 dark:text-white/90 ${errors.location ? "border-error-500 focus:ring-error-500/10" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
                   />
-                  {errors.country && (
-                    <p className="mt-1 text-sm text-error-500">{errors.country.message}</p>
-                  )}
+                  <datalist id="cities-datalist">
+                    {(CITIES_BY_COUNTRY[selectedCountry] || []).map(c => <option key={c} value={c} />)}
+                  </datalist>
+                  {errors.location && <p className="mt-1 text-sm text-error-500">{errors.location.message}</p>}
                 </div>
               </div>
             </div>

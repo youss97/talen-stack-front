@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
@@ -23,8 +24,15 @@ export default function InterviewDetailModal({
   onReschedule,
   onDelete,
 }: InterviewDetailModalProps) {
+  const router = useRouter();
   const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
   const [isRescheduling, setIsRescheduling] = useState(false);
+
+  const goToApplication = () => {
+    if (!interview.application?.id) return;
+    onClose();
+    router.push(`/applications?applicationId=${interview.application.id}`);
+  };
   
   const interviewDateRaw = interview.scheduled_date ? new Date(interview.scheduled_date) : null;
   const interviewDate = interviewDateRaw && !isNaN(interviewDateRaw.getTime()) ? interviewDateRaw : null;
@@ -209,6 +217,51 @@ export default function InterviewDetailModal({
             )}
           </div>
         </div>
+
+        {/* Offre / Poste */}
+        {interview.application?.request && (
+          <div>
+            <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Offre concernée
+            </h3>
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4 space-y-2">
+              {/* Client */}
+              {interview.application.request.client?.name && (
+                <div className="text-xs sm:text-sm">
+                  <span className="font-medium text-gray-600 dark:text-gray-400">Client : </span>
+                  <span className="text-gray-900 dark:text-white">{interview.application.request.client.name}</span>
+                </div>
+              )}
+              {/* Titre du poste — cliquable vers la candidature */}
+              <div className="text-xs sm:text-sm">
+                <span className="font-medium text-gray-600 dark:text-gray-400">Poste : </span>
+                <button
+                  type="button"
+                  onClick={goToApplication}
+                  className="text-brand-600 dark:text-brand-400 hover:underline font-medium text-left"
+                  title="Voir la candidature"
+                >
+                  {interview.application.request.title}
+                </button>
+              </div>
+              {interview.application.request.reference && (
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  Réf. {interview.application.request.reference}
+                </div>
+              )}
+              <div className="pt-1">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={goToApplication}
+                  className="text-xs"
+                >
+                  👁 Voir la candidature
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Candidat */}
         {interview.application && (

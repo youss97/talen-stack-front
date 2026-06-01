@@ -13,9 +13,15 @@ const Pagination: React.FC<PaginationProps> = ({
   totalItems,
   itemsPerPage = 10,
 }) => {
+  // Fenêtre de pages bornée à [1, totalPages] — évite d'afficher des pages vides
+  const windowSize = Math.min(3, totalPages);
+  let windowStart = Math.max(currentPage - 1, 1);
+  if (windowStart + windowSize - 1 > totalPages) {
+    windowStart = Math.max(totalPages - windowSize + 1, 1);
+  }
   const pagesAroundCurrent = Array.from(
-    { length: Math.min(3, totalPages) },
-    (_, i) => i + Math.max(currentPage - 1, 1)
+    { length: windowSize },
+    (_, i) => windowStart + i
   );
 
   const startItem = (currentPage - 1) * itemsPerPage + 1;
@@ -37,7 +43,7 @@ const Pagination: React.FC<PaginationProps> = ({
           Précédent
         </button>
         <div className="flex items-center gap-2">
-          {currentPage > 3 && <span className="px-2">...</span>}
+          {windowStart > 1 && <span className="px-2">...</span>}
           {pagesAroundCurrent.map((page) => (
             <button
               key={page}
@@ -51,7 +57,7 @@ const Pagination: React.FC<PaginationProps> = ({
               {page}
             </button>
           ))}
-          {currentPage < totalPages - 2 && <span className="px-2">...</span>}
+          {windowStart + windowSize - 1 < totalPages && <span className="px-2">...</span>}
         </div>
         <button
           onClick={() => onPageChange(currentPage + 1)}

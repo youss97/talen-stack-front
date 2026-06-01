@@ -9,11 +9,12 @@ import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import EmailFormModal from "@/components/email/EmailFormModal";
 import EmailDetailModal from "@/components/email/EmailDetailModal";
-import { useGetEmailsQuery, useDeleteEmailMutation } from "@/lib/services/emailApi";
+import { useGetEmailsQuery, useDeleteEmailMutation, useSendEmailNowMutation, useCancelEmailScheduleMutation } from "@/lib/services/emailApi";
 import { formatDateTime } from "@/utils/dateFormat";
 import type { Email } from "@/types/email";
 import { useModal } from "@/hooks/useModal";
 import { useActions } from "@/hooks/useActions";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 const EmailsPage = () => {
   const { canCreate, canDelete } = useActions("/emails");
@@ -52,6 +53,8 @@ const EmailsPage = () => {
   });
 
   const [deleteEmail] = useDeleteEmailMutation();
+  const [sendEmailNow] = useSendEmailNowMutation();
+  const [cancelEmailSchedule] = useCancelEmailScheduleMutation();
 
   const {
     isOpen: isFormOpen,
@@ -67,13 +70,8 @@ const EmailsPage = () => {
 
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (error && typeof error === "object") {
-      const err = error as { data?: { message?: string }; message?: string };
-      return err.data?.message || err.message || defaultMessage;
-    }
-    return defaultMessage;
-  };
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
 
   const handleDelete = (email: Email) => {
     setConfirmModal({ isOpen: true, email });
@@ -98,6 +96,26 @@ const EmailsPage = () => {
   const handleViewEmail = (email: Email) => {
     setSelectedEmail(email);
     openDetail();
+  };
+
+  const handleSendNow = async (email: Email) => {
+    try {
+      await sendEmailNow(email.id).unwrap();
+      addToast("success", "Succès", "Email envoyé avec succès");
+      refetch();
+    } catch (error) {
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de l'envoi de l'email"));
+    }
+  };
+
+  const handleCancelSchedule = async (email: Email) => {
+    try {
+      await cancelEmailSchedule(email.id).unwrap();
+      addToast("success", "Succès", "Programmation annulée — email repassé en brouillon");
+      refetch();
+    } catch (error) {
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de l'annulation"));
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -143,11 +161,19 @@ const EmailsPage = () => {
     {
       key: "sent_at",
       header: "Date d'envoi",
-      render: (_, email) => (
-        <span className="text-sm">
-          {formatDateTime(email.sent_at)}
-        </span>
-      ),
+      render: (_, email) => {
+        if (email.status === "scheduled" && email.scheduled_at) {
+          return (
+            <span className="text-sm text-yellow-600 dark:text-yellow-400">
+              📅 Programmé : {formatDateTime(email.scheduled_at)}
+            </span>
+          );
+        }
+        if (email.status === "draft") {
+          return <span className="text-sm text-gray-400">—</span>;
+        }
+        return <span className="text-sm">{formatDateTime(email.sent_at)}</span>;
+      },
     },
     {
       key: "created_at",
@@ -218,6 +244,22 @@ const EmailsPage = () => {
           isLoading={isLoading}
           onView={handleViewEmail}
           onDelete={canDelete ? handleDelete : undefined}
+          customActions={[
+            {
+              label: "Envoyer maintenant",
+              icon: <span>📤</span>,
+              color: "success",
+              onClick: handleSendNow,
+              hidden: (email) => email.status !== "draft" && email.status !== "scheduled",
+            },
+            {
+              label: "Annuler la programmation",
+              icon: <span>🚫</span>,
+              color: "warning",
+              onClick: handleCancelSchedule,
+              hidden: (email) => email.status !== "scheduled",
+            },
+          ]}
           emptyMessage="Aucun email trouvé"
         />
 

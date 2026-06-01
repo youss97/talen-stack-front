@@ -4,6 +4,11 @@ import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import type { RoleWithFeatures } from "@/types/role";
 import { formatDate } from "@/utils/dateFormat";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/lib/store";
+
+const HIDDEN_PATHS = new Set(["/application-statuses", "/applications"]);
+const HIDDEN_ACTION_CODES = new Set(["application.delete", "application.create"]);
 
 interface RoleDetailModalProps {
   isOpen: boolean;
@@ -18,6 +23,9 @@ export default function RoleDetailModal({
   role,
   isLoading = false,
 }: RoleDetailModalProps) {
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isSuperAdmin = user?.role?.code === "super_admin";
+
   if (!isOpen) return null;
 
   return (
@@ -67,37 +75,43 @@ export default function RoleDetailModal({
 
                       {feature.pages && feature.pages.length > 0 && (
                         <div className="p-4 space-y-3">
-                          {feature.pages.map((page) => (
-                            <div key={page.id}>
-                              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {page.name}
-                                {page.path && (
-                                  <span className="text-xs text-gray-400 ml-2 font-normal">
-                                    ({page.path})
-                                  </span>
-                                )}
-                              </p>
-                              {page.description && (
-                                <p className="text-xs text-gray-400 dark:text-gray-500 mb-2 mt-0.5">
-                                  {page.description}
-                                </p>
-                              )}
-
-                              {page.actions && page.actions.length > 0 && (
-                                <div className="flex flex-wrap gap-1.5 ml-4 mt-1.5">
-                                  {page.actions.map((action) => (
-                                    <span
-                                      key={action.id}
-                                      title={action.description || undefined}
-                                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 cursor-default"
-                                    >
-                                      {action.name}
-                                    </span>
-                                  ))}
+                          {feature.pages
+                            .filter((page) => isSuperAdmin || !HIDDEN_PATHS.has(page.path || ""))
+                            .map((page) => {
+                              const visibleActions = (page.actions || []).filter(
+                                (a) => isSuperAdmin || !HIDDEN_ACTION_CODES.has(a.code)
+                              );
+                              return (
+                                <div key={page.id}>
+                                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300" title={page.description || undefined}>
+                                    {page.name}
+                                    {isSuperAdmin && page.path && (
+                                      <span className="text-xs text-gray-400 ml-2 font-normal">
+                                        ({page.path})
+                                      </span>
+                                    )}
+                                  </p>
+                                  {page.description && (
+                                    <p className="text-xs text-gray-400 dark:text-gray-500 mb-2 mt-0.5">
+                                      {page.description}
+                                    </p>
+                                  )}
+                                  {visibleActions.length > 0 && (
+                                    <div className="flex flex-wrap gap-1.5 ml-4 mt-1.5">
+                                      {visibleActions.map((action) => (
+                                        <span
+                                          key={action.id}
+                                          title={action.description || undefined}
+                                          className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 cursor-default"
+                                        >
+                                          {action.name}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
-                              )}
-                            </div>
-                          ))}
+                              );
+                            })}
                         </div>
                       )}
                     </div>

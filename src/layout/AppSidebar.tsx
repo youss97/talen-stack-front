@@ -38,6 +38,7 @@ const AppSidebar: React.FC = () => {
   const companyName: string | null = user?.company?.name ?? null;
   // Afficher le branding entreprise pour tous les non-super_admin qui ont une company
   const useCompanyBrand = user?.role?.code !== 'super_admin' && !!(user?.company);
+  const isSuperAdmin = user?.role?.code === 'super_admin';
 
   const renderMenuItems = (items: NavItem[]) => (
     <motion.ul
@@ -142,11 +143,11 @@ const AppSidebar: React.FC = () => {
                       {companyName ?? "Mon espace"}
                     </p>
                     <p className="text-[10px] text-brand-500 font-medium tracking-wide uppercase leading-tight">
-                      Espace recruteur
+                      {user?.company?.parent_company_id ? "Espace client" : "Espace recruteur"}
                     </p>
                   </div>
                 </div>
-              ) : (
+              ) : isSuperAdmin ? null : (
                 <>
                   <Image
                     src="/images/logo/logo.svg"
@@ -188,7 +189,7 @@ const AppSidebar: React.FC = () => {
                     </span>
                   </div>
                 )
-              ) : (
+              ) : isSuperAdmin ? null : (
                 <Image
                   src="/images/logo/logo-icon.svg"
                   alt="TalentStack"

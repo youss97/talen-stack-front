@@ -193,6 +193,9 @@ export default function ManagerRequestFormModal({
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["Français"]);
   const [selectedCountry, setSelectedCountry] = useState("Maroc");
   const [selectedContractTypes, setSelectedContractTypes] = useState<string[]>(["CDI"]);
+  const [currency, setCurrency] = useState("MAD");
+  const CURRENCY_SYMBOLS: Record<string, string> = { MAD: "MAD", EUR: "€", USD: "$", GBP: "£", TND: "DT", DZD: "DA", AED: "AED", SAR: "SAR" };
+  const currencySymbol = CURRENCY_SYMBOLS[currency] || currency;
 
   const {
     register,
@@ -253,6 +256,7 @@ export default function ManagerRequestFormModal({
       setSelectedLanguages(initialData.languages?.length ? initialData.languages : ["Français"]);
       setSelectedCountry(initialData.country || "Maroc");
       setSelectedContractTypes(initContractTypes);
+      setCurrency((initialData as any).currency || "MAD");
     } else if (isOpen && !initialData) {
       reset({
         contract_type: "CDI",
@@ -269,6 +273,7 @@ export default function ManagerRequestFormModal({
       setSelectedLanguages(["Français"]);
       setSelectedCountry("Maroc");
       setSelectedContractTypes(["CDI"]);
+      setCurrency("MAD");
     }
   }, [isOpen, initialData]);
 
@@ -332,6 +337,7 @@ export default function ManagerRequestFormModal({
       required_skills: skills as any,
       soft_skills: softSkills,
       languages: selectedLanguages.length > 0 ? selectedLanguages : ["Français"],
+      currency,
     } as any);
     handleClose();
   };
@@ -456,10 +462,27 @@ export default function ManagerRequestFormModal({
             </div>
           </div>
 
+          {/* Devise */}
+          {(showSalary || showTJM) && (
+            <div>
+              <Label>Devise</Label>
+              <select value={currency} onChange={(e) => setCurrency(e.target.value)} className={selectClass}>
+                <option value="MAD">MAD — Dirham marocain</option>
+                <option value="EUR">EUR — Euro (€)</option>
+                <option value="USD">USD — Dollar ($)</option>
+                <option value="GBP">GBP — Livre (£)</option>
+                <option value="TND">TND — Dinar tunisien</option>
+                <option value="DZD">DZD — Dinar algérien</option>
+                <option value="AED">AED — Dirham des EAU</option>
+                <option value="SAR">SAR — Riyal saoudien</option>
+              </select>
+            </div>
+          )}
+
           {/* Budget conditionnel */}
           {showSalary && (
             <div className="rounded-lg border border-green-200 dark:border-green-800 p-4 space-y-3">
-              <p className="text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wide">Prétentions salariales (MAD/mois)</p>
+              <p className="text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wide">Prétentions salariales ({currencySymbol}/mois)</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Salaire min</Label>
@@ -470,11 +493,11 @@ export default function ManagerRequestFormModal({
                   <Input type="number" placeholder="0" {...register("max_salary", { valueAsNumber: true, min: 0 })} />
                 </div>
                 <div>
-                  <Label>Package actuel (MAD)</Label>
+                  <Label>Package actuel ({currencySymbol})</Label>
                   <Input type="number" placeholder="0" {...register("package_current", { valueAsNumber: true, min: 0 })} />
                 </div>
                 <div>
-                  <Label>Package souhaité (MAD)</Label>
+                  <Label>Package souhaité ({currencySymbol})</Label>
                   <Input type="number" placeholder="0" {...register("package_desired", { valueAsNumber: true, min: 0 })} />
                 </div>
               </div>
@@ -483,7 +506,7 @@ export default function ManagerRequestFormModal({
 
           {showTJM && (
             <div className="rounded-lg border border-purple-200 dark:border-purple-800 p-4 space-y-3">
-              <p className="text-xs font-medium text-purple-700 dark:text-purple-400 uppercase tracking-wide">TJM souhaité (MAD/jour)</p>
+              <p className="text-xs font-medium text-purple-700 dark:text-purple-400 uppercase tracking-wide">TJM souhaité ({currencySymbol}/jour)</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>TJM min</Label>

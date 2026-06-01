@@ -269,7 +269,7 @@ export default function IntegrationDetailModal({
               <div className="space-y-2 sm:space-y-3">
                 {integration.salary && (
                   <div>
-                    <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Salaire annuel:</span>
+                    <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Salaire mensuel:</span>
                     <p className="text-sm sm:text-base text-gray-900 dark:text-white font-medium">
                       {formatCurrency(integration.salary, integration.currency)}
                     </p>

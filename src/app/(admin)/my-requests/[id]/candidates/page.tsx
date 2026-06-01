@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useGetCandidatesForRequestQuery } from "@/lib/services/clientManagerApi";
+import { useGetCandidatesForRequestQuery, useGetManagerRequestByIdQuery, useUpdateManagerOwnRequestMutation } from "@/lib/services/clientManagerApi";
 import { useCreateFeedbackMutation } from "@/lib/services/recruiterApi";
 import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
 import Button from "@/components/ui/button/Button";
@@ -10,10 +10,13 @@ import InputField from "@/components/form/input/InputField";
 import FeedbackModal from "@/components/recruiter/FeedbackModal";
 import FeedbackListModal from "@/components/recruiter/FeedbackListModal";
 import CandidateApplicationDetailModal from "@/components/recruiter/CandidateApplicationDetailModal";
+import ApplicationRequestDetailModal from "@/components/applicationRequest/ApplicationRequestDetailModal";
+import ManagerRequestFormModal from "@/components/applicationRequest/ManagerRequestFormModal";
 import Pagination from "@/components/tables/Pagination";
 import { useDebounce } from "@/hooks/useDebounce";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
 import type { Recruiter } from "@/types/recruiter";
+import type { ApplicationRequest } from "@/types/applicationRequest";
 
 export default function RequestCandidatesPage() {
   const params = useParams();
@@ -28,8 +31,14 @@ export default function RequestCandidatesPage() {
   const [isFeedbackListModalOpen, setIsFeedbackListModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailCandidate, setDetailCandidate] = useState<Recruiter | null>(null);
+  const [isOfferDetailOpen, setIsOfferDetailOpen] = useState(false);
+  const [isOfferEditOpen, setIsOfferEditOpen] = useState(false);
 
   const debouncedSearch = useDebounce(search, 500);
+
+  // Détail de l'offre (pour le bouton "Détails de l'offre")
+  const { data: offer } = useGetManagerRequestByIdQuery(requestId, { skip: !requestId });
+  const [updateOwnRequest, { isLoading: isUpdatingOffer }] = useUpdateManagerOwnRequestMutation();
 
   // Récupérer les statuts de candidature
   const { data: applicationStatusesData } = useGetApplicationStatusesQuery({
@@ -53,6 +62,17 @@ export default function RequestCandidatesPage() {
   const handleOpenFeedbackListModal = (candidate: Recruiter) => {
     setSelectedCandidate(candidate);
     setIsFeedbackListModalOpen(true);
+  };
+
+  const handleEditOffer = async (formData: any) => {
+    if (!offer) return;
+    try {
+      await updateOwnRequest({ id: offer.id, data: formData }).unwrap();
+      setIsOfferEditOpen(false);
+    } catch (error) {
+      console.error("Erreur lors de la modification de l'offre:", error);
+      throw error;
+    }
   };
 
   const handleCreateFeedback = async (title: string, description: string) => {
@@ -160,14 +180,31 @@ export default function RequestCandidatesPage() {
             Consultez les candidats et ajoutez vos commentaires
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => refetch()}
-          disabled={isFetching}
-        >
-          {isFetching ? "..." : "↻ Actualiser"}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsOfferDetailOpen(true)}
+          >
+            📋 Détails de l&apos;offre
+          </Button>
+          {offer?.is_owner && (
+            <Button
+              size="sm"
+              onClick={() => setIsOfferEditOpen(true)}
+            >
+              ✏️ Modifier l&apos;offre
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refetch()}
+            disabled={isFetching}
+          >
+            {isFetching ? "..." : "↻ Actualiser"}
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -530,6 +567,25 @@ export default function RequestCandidatesPage() {
         }}
         candidate={detailCandidate}
       />
+
+      {/* Détails de l'offre */}
+      <ApplicationRequestDetailModal
+        isOpen={isOfferDetailOpen}
+        onClose={() => setIsOfferDetailOpen(false)}
+        applicationRequest={offer as ApplicationRequest | null}
+        isLoading={false}
+      />
+
+      {/* Modification de l'offre (si le client en est le créateur) */}
+      {offer?.is_owner && (
+        <ManagerRequestFormModal
+          isOpen={isOfferEditOpen}
+          onClose={() => setIsOfferEditOpen(false)}
+          onSubmit={handleEditOffer}
+          initialData={offer as any}
+          isLoading={isUpdatingOffer}
+        />
+      )}
     </div>
   );
 }

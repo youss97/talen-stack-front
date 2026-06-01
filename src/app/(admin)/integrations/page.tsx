@@ -12,8 +12,13 @@ import { IntegrationStatus, TrialPeriodStatus, Integration } from '@/types/integ
 import CreateIntegrationModal from '@/components/integrations/CreateIntegrationModal';
 import IntegrationDetailModal from '@/components/integrations/IntegrationDetailModal';
 import EditIntegrationModal from '@/components/integrations/EditIntegrationModal';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/lib/store';
 
 export default function IntegrationsPage() {
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  // Le manager d'une société liée (client) consulte ses intégrations en lecture seule
+  const isClientUser = !!currentUser?.company?.parent_company_id;
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
   const [statusFilter, setStatusFilter] = useState<IntegrationStatus | ''>('');
@@ -194,9 +199,11 @@ export default function IntegrationsPage() {
               Suivez les intégrations des candidats embauchés et leur période d'essai
             </p>
           </div>
-          <Button onClick={() => setIsCreateModalOpen(true)} startIcon={<PlusIcon />}>
-            Nouvelle intégration
-          </Button>
+          {!isClientUser && (
+            <Button onClick={() => setIsCreateModalOpen(true)} startIcon={<PlusIcon />}>
+              Nouvelle intégration
+            </Button>
+          )}
         </div>
 
         {/* Statistiques */}
@@ -315,7 +322,7 @@ export default function IntegrationsPage() {
             setSelectedIntegrationId(integration.id);
             setIsDetailModalOpen(true);
           }}
-          onEdit={(integration) => {
+          onEdit={isClientUser ? undefined : (integration) => {
             setSelectedIntegrationId(integration.id);
             setIsEditModalOpen(true);
           }}

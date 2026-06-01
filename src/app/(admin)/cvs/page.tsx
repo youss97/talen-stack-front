@@ -16,6 +16,7 @@ import {
 import { useActions } from "@/hooks/useActions";
 import { useRouter } from "next/navigation";
 import type { CV } from "@/types/cv";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 export default function CVsPage() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function CVsPage() {
   const [minExperience, setMinExperience] = useState<string>("");
   const [maxExperience, setMaxExperience] = useState<string>("");
   const [industryFilter, setIndustryFilter] = useState<string>("");
-  const [profileTypeFilter, setProfileTypeFilter] = useState<string>("");
+  const [specialtyFilter, setSpecialtyFilter] = useState<string>("");
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailCV, setDetailCV] = useState<CV | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -66,20 +67,15 @@ export default function CVsPage() {
     min_experience: minExperience ? parseInt(minExperience) : undefined,
     max_experience: maxExperience ? parseInt(maxExperience) : undefined,
     industry: industryFilter || undefined,
-    contract_type: profileTypeFilter || undefined,
+    specialty: specialtyFilter || undefined,
   });
 
   const [getCVById, { isLoading: isLoadingDetail }] = useLazyGetCVByIdQuery();
   const [deleteCV] = useDeleteCVMutation();
   const [assignCV] = useAssignCVMutation();
 
-  const getErrorMessage = (error: unknown, defaultMessage: string): string => {
-    if (error && typeof error === "object") {
-      const err = error as { data?: { message?: string }; message?: string };
-      return err.data?.message || err.message || defaultMessage;
-    }
-    return defaultMessage;
-  };
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
 
   const columns: Column<CV>[] = [
     {
@@ -101,6 +97,18 @@ export default function CVsPage() {
       key: "last_position",
       header: "Poste",
       render: (value) => <span>{(value as string) || "-"}</span>,
+    },
+    {
+      key: "specialty",
+      header: "Spécialité pertinente",
+      render: (value) =>
+        value ? (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400">
+            {value as string}
+          </span>
+        ) : (
+          <span className="text-gray-400">-</span>
+        ),
     },
     {
       key: "total_experience",
@@ -176,14 +184,17 @@ export default function CVsPage() {
     if (!confirmModal.cv) return;
 
     setIsDeleting(true);
+    let deleted = false;
     try {
       await deleteCV(confirmModal.cv.id).unwrap();
+      deleted = true;
       addToast("success", "Succès", "CV supprimé avec succès");
-      setConfirmModal({ isOpen: false, cv: null });
     } catch (error) {
       addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la suppression du CV"));
     } finally {
       setIsDeleting(false);
+      // Always close the modal — if deletion actually succeeded the CV is gone anyway
+      if (deleted) setConfirmModal({ isOpen: false, cv: null });
     }
   };
 
@@ -271,23 +282,16 @@ export default function CVsPage() {
               />
             </div>
             <div>
-              <select
-                value={profileTypeFilter}
+              <input
+                type="text"
+                placeholder="Filtrer par spécialité pertinente..."
+                value={specialtyFilter}
                 onChange={(e) => {
-                  setProfileTypeFilter(e.target.value);
+                  setSpecialtyFilter(e.target.value);
                   setPage(1);
                 }}
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
-              >
-                <option value="">Tous les types de profil</option>
-                <option value="CDI">CDI</option>
-                <option value="CDD">CDD</option>
-                <option value="Freelance">Freelance</option>
-                <option value="Stage">Stage</option>
-                <option value="Alternance">Alternance</option>
-                <option value="Intérim">Intérim</option>
-                <option value="Portage salarial">Portage salarial</option>
-              </select>
+              />
             </div>
           </div>
         </div>

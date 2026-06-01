@@ -4,6 +4,42 @@ import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import type { ApplicationRequest } from "@/types/applicationRequest";
+import { getSkillName, getSkillLevel } from "@/types/applicationRequest";
+
+const StarIcon = ({ filled }: { filled: boolean }) => (
+  <svg viewBox="0 0 20 20" className={`w-4 h-4 ${filled ? "text-amber-400" : "text-gray-200 dark:text-gray-600"}`} fill="currentColor">
+    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+  </svg>
+);
+
+const SkillsList = ({ skills }: { skills: unknown[] | null | undefined }) => {
+  const validSkills = (skills || []).filter(
+    (s: any) => s && !Array.isArray(s) && (typeof s === 'string' ? s.trim() : s?.name?.trim())
+  );
+  return (
+    <div>
+      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Compétences requises</h4>
+      {validSkills.length === 0 ? (
+        <p className="text-sm text-gray-400 dark:text-gray-500 italic">Aucune compétence renseignée</p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {validSkills.map((skill: any, index: number) => {
+            const name = getSkillName(skill);
+            const level = getSkillLevel(skill);
+            return (
+              <div key={index} className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{name || "—"}</span>
+                <span className="flex gap-0.5">
+                  {[1, 2, 3, 4, 5].map(s => <StarIcon key={s} filled={s <= level} />)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
 
 interface ApplicationRequestDetailModalProps {
   isOpen: boolean;
@@ -209,34 +245,26 @@ export default function ApplicationRequestDetailModal({
             </div>
 
             {/* Compétences requises */}
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Compétences requises
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {applicationRequest.required_skills.map((skill, index) => {
-                  const name = typeof skill === "string" ? skill : (skill as { name: string; level: number }).name;
-                  const level = typeof skill === "string" ? 0 : (skill as { name: string; level: number }).level;
-                  return (
+            <SkillsList skills={applicationRequest.required_skills} />
+
+            {/* Softskills */}
+            {applicationRequest.soft_skills && (applicationRequest.soft_skills as string[]).length > 0 && (
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Softskills
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {(applicationRequest.soft_skills as string[]).map((skill, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center gap-2 px-3 py-1 bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 rounded-full text-sm"
+                      className="px-3 py-1 bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-300 rounded-full text-sm font-medium border border-purple-200 dark:border-purple-500/30"
                     >
-                      {name}
-                      {level > 0 && (
-                        <span className="flex gap-0.5">
-                          {[1,2,3,4,5].map(s => (
-                            <svg key={s} viewBox="0 0 20 20" className={`w-3 h-3 ${s <= level ? "text-amber-400 fill-current" : "text-gray-300 dark:text-gray-600"}`} stroke="currentColor" strokeWidth={1.5} fill={s <= level ? "currentColor" : "none"}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                          ))}
-                        </span>
-                      )}
+                      {skill}
                     </span>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Langues */}
             {applicationRequest.languages && applicationRequest.languages.length > 0 && (

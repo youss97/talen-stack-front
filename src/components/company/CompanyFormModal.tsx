@@ -407,7 +407,7 @@ export default function CompanyFormModal({
 
                   <div>
                     <Label>Email {!isEditing && !readOnly && <span className="text-error-500">*</span>}</Label>
-                    <Input type="email" placeholder="admin@example.com" {...register("adminEmail")} error={!!errors.adminEmail} disabled={readOnly || isEditing} />
+                    <Input type="email" autoComplete="off" placeholder="admin@example.com" {...register("adminEmail")} error={!!errors.adminEmail} disabled={readOnly || isEditing} />
                     {errors.adminEmail && !readOnly && <p className="mt-1 text-sm text-error-500">{errors.adminEmail.message}</p>}
                     {isEditing && !readOnly && <p className="mt-1 text-xs text-gray-400">Non modifiable</p>}
                   </div>
@@ -418,6 +418,7 @@ export default function CompanyFormModal({
                       <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
+                          autoComplete="new-password"
                           placeholder="StrongPassword123"
                           {...register("adminPassword")}
                           error={!!errors.adminPassword}

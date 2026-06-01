@@ -5,8 +5,8 @@ import { useGetFeaturesQuery } from "@/lib/services/roleApi";
 import type { Feature, Page, Action } from "@/types/role";
 
 // Technical page paths and action code patterns hidden from non-superadmins
-const TECHNICAL_PATHS = new Set(["/application-statuses"]);
-const TECHNICAL_ACTION_CODES = new Set(["application.delete", "application.create"]);
+const TECHNICAL_PATHS = new Set(["/application-statuses", "/applications"]);
+const TECHNICAL_ACTION_CODES = new Set(["application.delete", "application.create", "application.delete", "application.create"]);
 
 interface PermissionsSelectorProps {
   selectedFeatures: string[];

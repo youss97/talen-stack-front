@@ -19,6 +19,7 @@ import { integrationApi } from './services/integrationApi';
 import { subscriptionApi } from './services/subscriptionApi';
 import { statsApi } from './services/statsApi';
 import authReducer, { logout } from './slices/authSlice';
+import { errorToastMiddleware } from './errorToastMiddleware';
 
 const apiMiddlewares = [
   applicationApi.middleware,
@@ -90,7 +91,7 @@ const appReducer = combineReducers({
 const baseStore = configureStore({
   reducer: appReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(...apiMiddlewares),
+    getDefaultMiddleware().concat(...apiMiddlewares, errorToastMiddleware),
 });
 
 export type AppDispatch = typeof baseStore.dispatch;

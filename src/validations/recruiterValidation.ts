@@ -27,6 +27,16 @@ export const createRecruiterSchema = yup.object({
     .number()
     .typeError('Veuillez saisir un montant valide')
     .nullable(),
+  salary_expectation: yup
+    .number()
+    .typeError('Veuillez saisir un montant valide')
+    .nullable(),
+  daily_rate_expectation: yup
+    .number()
+    .typeError('Veuillez saisir un montant valide')
+    .nullable(),
+  package_current: yup.string().nullable(),
+  package_desired: yup.string().nullable(),
   currency: yup.string().oneOf(VALID_CURRENCY_CODES, 'Devise non valide'),
 
   // Type de contrat de l'offre
@@ -79,7 +89,8 @@ export const createRecruiterSchema = yup.object({
   qualification_report: yup.string().required('Le compte rendu de qualification est requis'),
   recruiter_notes: yup.string().nullable(),
   recruiter_interview_date: yup.string().nullable(),
-  status: yup.string().required('Le statut est requis'),
+  // Statut non requis : une candidature enregistrée en brouillon prend "brouillon" par défaut côté backend
+  status: yup.string().nullable(),
 
   // Anonymisation et ajustements
   is_anonymized: yup.boolean(),

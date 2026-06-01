@@ -177,8 +177,6 @@ export const clientApi = createApi({
         },
       }),
       transformResponse: (response: any) => {
-        // The API returns data with nested manager object
-        // Transform to extract manager details and add displayName
         const transformedData = response.data.map((item: any) => {
           const mgr = item.manager;
           return {
@@ -186,7 +184,8 @@ export const clientApi = createApi({
             firstName: mgr.first_name,
             lastName: mgr.last_name,
             email: mgr.email,
-            phone: mgr.phone,
+            // Fallback to company phone if user has no personal phone saved
+            phone: mgr.phone || mgr.company?.phone || null,
             position: mgr.position,
             status: mgr.status,
             displayName: `${mgr.first_name} ${mgr.last_name}${mgr.position ? ` - ${mgr.position}` : ''}`,
@@ -242,8 +241,6 @@ export const clientApi = createApi({
         },
       }),
       transformResponse: (response: any) => {
-        // The API returns data with nested manager object
-        // Transform to extract manager details and add displayName
         const transformedData = response.data.map((item: any) => {
           const mgr = item.manager;
           return {
@@ -251,7 +248,7 @@ export const clientApi = createApi({
             firstName: mgr.first_name,
             lastName: mgr.last_name,
             email: mgr.email,
-            phone: mgr.phone,
+            phone: mgr.phone || mgr.company?.phone || null,
             position: mgr.position,
             displayName: `${mgr.first_name} ${mgr.last_name}${mgr.position ? ` - ${mgr.position}` : ''}`,
           };

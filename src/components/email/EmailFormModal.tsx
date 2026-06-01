@@ -65,6 +65,12 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
   const [showCC, setShowCC] = useState(false);
   const [showBCC, setShowBCC] = useState(false);
 
+  // Programmation de l'envoi
+  const [showSchedule, setShowSchedule] = useState(false);
+  const [scheduledAt, setScheduledAt] = useState(""); // valeur datetime-local
+  // Mode de soumission choisi par le bouton cliqué
+  const submitModeRef = React.useRef<"send" | "schedule" | "draft">("send");
+
   const { control, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       subject: "",
@@ -128,9 +134,24 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
       ccEmailList.push(...data.ccManagerEmails);
       const uniqueCC = [...new Set(ccEmailList)];
 
-      if (uniqueRecipients.length === 0 && uniqueCC.length === 0 && bccRecipients.length === 0) {
+      const mode = submitModeRef.current;
+
+      // Un brouillon peut être enregistré sans destinataire ; pas un envoi/programmation
+      if (mode !== "draft" && uniqueRecipients.length === 0 && uniqueCC.length === 0 && bccRecipients.length === 0) {
         setSubmitError("Veuillez sélectionner au moins un destinataire.");
         return;
+      }
+
+      // En mode programmation : exiger une date future
+      if (mode === "schedule") {
+        if (!scheduledAt) {
+          setSubmitError("Veuillez choisir une date et heure d'envoi.");
+          return;
+        }
+        if (new Date(scheduledAt).getTime() <= Date.now()) {
+          setSubmitError("La date d'envoi doit être dans le futur.");
+          return;
+        }
       }
       setSubmitError(null);
 
@@ -141,6 +162,8 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
         recipients: uniqueRecipients,
         ...(uniqueCC.length > 0 && { cc: uniqueCC }),
         ...(bccRecipients.length > 0 && { bcc: bccRecipients }),
+        ...(mode === "schedule" && { scheduled_at: new Date(scheduledAt).toISOString() }),
+        ...(mode === "draft" && { is_draft: true }),
       };
 
       await sendEmail(payload).unwrap();
@@ -174,6 +197,9 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
     setSubmitSuccess(false);
     setShowCC(false);
     setShowBCC(false);
+    setShowSchedule(false);
+    setScheduledAt("");
+    submitModeRef.current = "send";
     onClose();
   };
 
@@ -583,14 +609,61 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
               </span>
             )}
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Toggle programmation */}
+            <button
+              type="button"
+              onClick={() => setShowSchedule(v => !v)}
+              className={`flex items-center gap-1.5 text-sm px-3 py-2 rounded-lg border transition-colors ${
+                showSchedule
+                  ? "border-brand-400 bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-300"
+                  : "border-gray-300 text-gray-600 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+              }`}
+            >
+              🕐 {showSchedule ? "Programmation activée" : "Programmer l'envoi"}
+            </button>
+            {showSchedule && (
+              <input
+                type="datetime-local"
+                value={scheduledAt}
+                onChange={(e) => setScheduledAt(e.target.value)}
+                min={new Date(Date.now() + 60000).toISOString().slice(0, 16)}
+                className="h-10 rounded-lg border border-gray-300 px-3 text-sm dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+              />
+            )}
+
+            <div className="flex-1" />
+
             <Button variant="outline" onClick={handleClose}>Annuler</Button>
+
+            {/* Brouillon */}
             <Button
               type="submit"
-              disabled={isSending || (totalTo === 0 && totalCC === 0 && bccRecipients.length === 0)}
+              variant="outline"
+              disabled={isSending}
+              onClick={() => { submitModeRef.current = "draft"; }}
             >
-              {isSending ? "Envoi en cours..." : "Envoyer"}
+              💾 Brouillon
             </Button>
+
+            {/* Programmer (si toggle activé) sinon Envoyer */}
+            {showSchedule ? (
+              <Button
+                type="submit"
+                disabled={isSending || (totalTo === 0 && totalCC === 0 && bccRecipients.length === 0)}
+                onClick={() => { submitModeRef.current = "schedule"; }}
+              >
+                {isSending ? "..." : "📅 Programmer"}
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                disabled={isSending || (totalTo === 0 && totalCC === 0 && bccRecipients.length === 0)}
+                onClick={() => { submitModeRef.current = "send"; }}
+              >
+                {isSending ? "Envoi en cours..." : "Envoyer"}
+              </Button>
+            )}
           </div>
         </div>
       </form>

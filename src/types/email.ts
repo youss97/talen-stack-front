@@ -28,6 +28,7 @@ export interface Email {
   failed_count: number;
   error_message: string | null;
   sent_at: string | null;
+  scheduled_at: string | null;
   created_at: string;
   sender: EmailSender;
 }
@@ -39,6 +40,8 @@ export interface SendEmailRequest {
   recipients: string[];
   cc?: string[];
   bcc?: string[];
+  scheduled_at?: string; // ISO — envoi programmé
+  is_draft?: boolean;    // enregistrer en brouillon
 }
 
 export interface EmailPaginationParams {

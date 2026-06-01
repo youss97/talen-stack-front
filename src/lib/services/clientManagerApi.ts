@@ -103,6 +103,15 @@ export const clientManagerApi = createApi({
           : [{ type: "ManagerCandidate", id: `REQUEST-${requestId}` }],
     }),
 
+    // GET /applications/manager/request/:id - Get a single offer detail (manager client)
+    getManagerRequestById: builder.query<ApplicationRequest & { is_owner?: boolean }, string>({
+      query: (id) => ({
+        url: `/applications/manager/request/${id}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "ManagerRequest", id }],
+    }),
+
     // POST /applications/manager/requests - Create a recruitment request as a client manager
     createManagerRequest: builder.mutation<
       ApplicationRequest,
@@ -152,6 +161,8 @@ export const clientManagerApi = createApi({
 
 export const {
   useGetManagerRequestsQuery,
+  useGetManagerRequestByIdQuery,
+  useLazyGetManagerRequestByIdQuery,
   useGetCandidatesForRequestQuery,
   useCreateManagerRequestMutation,
   useUpdateManagerOwnRequestMutation,

@@ -31,6 +31,10 @@ export interface Recruiter {
   current_salary?: number;
   daily_rate?: number;
   package_rate?: number;
+  salary_expectation?: number;
+  daily_rate_expectation?: number;
+  package_current?: string;
+  package_desired?: string;
   currency?: Currency;
   
   // Type de contrat de l'offre

@@ -227,6 +227,10 @@ export interface CreateApplicationRequestRequest {
   // Devise
   currency?: string;
 
+  // Notes
+  note_client?: string;
+  note_interne?: string;
+
   // Pièce jointe
   attachment?: File;
 }

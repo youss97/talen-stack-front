@@ -65,6 +65,24 @@ export const emailApi = createApi({
       invalidatesTags: [{ type: "Email", id: "LIST" }],
     }),
 
+    // POST /emails/:id/send-now - Envoyer un brouillon / email programmé maintenant
+    sendEmailNow: builder.mutation<Email, string>({
+      query: (id) => ({
+        url: `/emails/${id}/send-now`,
+        method: "POST",
+      }),
+      invalidatesTags: [{ type: "Email", id: "LIST" }],
+    }),
+
+    // PATCH /emails/:id/cancel-schedule - Annuler la programmation (repasse en brouillon)
+    cancelEmailSchedule: builder.mutation<Email, string>({
+      query: (id) => ({
+        url: `/emails/${id}/cancel-schedule`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [{ type: "Email", id: "LIST" }],
+    }),
+
     // DELETE /emails/:id - Delete an email
     deleteEmail: builder.mutation<void, string>({
       query: (id) => ({
@@ -80,5 +98,7 @@ export const {
   useGetEmailsQuery,
   useGetEmailByIdQuery,
   useSendEmailMutation,
+  useSendEmailNowMutation,
+  useCancelEmailScheduleMutation,
   useDeleteEmailMutation,
 } = emailApi;
