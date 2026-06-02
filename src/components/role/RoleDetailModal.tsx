@@ -55,6 +55,37 @@ export default function RoleDetailModal({
           <div className="space-y-4">
             <div>
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                Portée des données
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { key: "scope_applications_company", label: "Candidatures" },
+                  { key: "scope_requests_company", label: "Demandes de recrutement" },
+                  { key: "scope_cvs_company", label: "Vivier de talents (CVs)" },
+                  { key: "scope_clients_company", label: "Clients" },
+                  { key: "scope_emails_company", label: "Emails" },
+                  { key: "scope_integrations_company", label: "Intégrations" },
+                ].map((res) => {
+                  const company = (role as unknown as Record<string, unknown>)[res.key] === true;
+                  return (
+                    <span
+                      key={res.key}
+                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${
+                        company
+                          ? "bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300"
+                          : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                      }`}
+                      title={company ? "Voit toute l'entreprise" : "Voit seulement ses propres éléments"}
+                    >
+                      {res.label}: {company ? "Entreprise" : "Les siennes"}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Permissions attribuées
               </h3>
 

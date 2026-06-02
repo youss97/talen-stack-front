@@ -26,7 +26,17 @@ export interface Feature {
   pages?: Page[];
 }
 
-export interface Role {
+// Portée des données par ressource (true = toute l'entreprise, false/absent = ses propres éléments)
+export interface RoleScopes {
+  scope_applications_company?: boolean;
+  scope_requests_company?: boolean;
+  scope_cvs_company?: boolean;
+  scope_clients_company?: boolean;
+  scope_emails_company?: boolean;
+  scope_integrations_company?: boolean;
+}
+
+export interface Role extends RoleScopes {
   [key: string]: unknown;
   id: string;
   name: string;
@@ -38,7 +48,7 @@ export interface Role {
   updatedAt?: string;
 }
 
-export interface RoleWithFeatures {
+export interface RoleWithFeatures extends RoleScopes {
   id: string;
   name: string;
   code?: string;
@@ -52,13 +62,13 @@ export interface RoleWithFeatures {
   features: Feature[];
 }
 
-export interface CreateRoleRequest {
+export interface CreateRoleRequest extends RoleScopes {
   name: string;
   description: string;
   code?: string;
 }
 
-export interface UpdateRoleRequest {
+export interface UpdateRoleRequest extends RoleScopes {
   name?: string;
   description?: string;
   actionIds?: string[];

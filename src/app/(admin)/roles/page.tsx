@@ -185,13 +185,19 @@ export default function RolesPage() {
         // Mise à jour du rôle et des actions en parallèle pour éviter les problèmes de séquence
         const promises = [];
         
-        // Toujours mettre à jour le rôle (nom/description)
+        // Toujours mettre à jour le rôle (nom/description + portée des données)
         promises.push(
           updateRole({
             id: selectedRole.id,
             data: {
               name: data.name,
               description: data.description,
+              scope_applications_company: (data as any).scope_applications_company,
+              scope_requests_company: (data as any).scope_requests_company,
+              scope_cvs_company: (data as any).scope_cvs_company,
+              scope_clients_company: (data as any).scope_clients_company,
+              scope_emails_company: (data as any).scope_emails_company,
+              scope_integrations_company: (data as any).scope_integrations_company,
             },
           }).unwrap()
         );
@@ -220,11 +226,17 @@ export default function RolesPage() {
       } else {
         console.log('📝 Creating new role');
         
-        // Création d'un nouveau rôle
+        // Création d'un nouveau rôle (avec portée des données)
         const newRole = await createRole({
           name: data.name,
           description: data.description,
-        }).unwrap();
+          scope_applications_company: (data as any).scope_applications_company,
+          scope_requests_company: (data as any).scope_requests_company,
+          scope_cvs_company: (data as any).scope_cvs_company,
+          scope_clients_company: (data as any).scope_clients_company,
+          scope_emails_company: (data as any).scope_emails_company,
+          scope_integrations_company: (data as any).scope_integrations_company,
+        } as any).unwrap();
 
         console.log('✅ Role created:', newRole.id);
 

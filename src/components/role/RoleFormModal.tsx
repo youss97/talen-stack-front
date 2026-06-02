@@ -34,6 +34,16 @@ export default function RoleFormModal({
   const [selectedPages, setSelectedPages] = useState<string[]>([]);
   const [selectedActions, setSelectedActions] = useState<string[]>([]);
 
+  // Portée des données par ressource (true = toute l'entreprise, false = ses propres éléments)
+  const [scopes, setScopes] = useState({
+    applications: false,
+    requests: false,
+    cvs: false,
+    clients: false,
+    emails: false,
+    integrations: false,
+  });
+
   const {
     register,
     handleSubmit,
@@ -72,6 +82,14 @@ export default function RoleFormModal({
       setSelectedFeatures(features);
       setSelectedPages(pages);
       setSelectedActions(actions);
+      setScopes({
+        applications: role.scope_applications_company === true,
+        requests: role.scope_requests_company === true,
+        cvs: role.scope_cvs_company === true,
+        clients: role.scope_clients_company === true,
+        emails: role.scope_emails_company === true,
+        integrations: role.scope_integrations_company === true,
+      });
     } else {
       reset({
         name: "",
@@ -80,12 +98,34 @@ export default function RoleFormModal({
       setSelectedFeatures([]);
       setSelectedPages([]);
       setSelectedActions([]);
+      setScopes({ applications: false, requests: false, cvs: false, clients: false, emails: false, integrations: false });
     }
   }, [role, reset]);
 
   const handleFormSubmit = (data: CreateRoleFormData) => {
-    onSubmit(data, selectedActions);
+    onSubmit(
+      {
+        ...data,
+        scope_applications_company: scopes.applications,
+        scope_requests_company: scopes.requests,
+        scope_cvs_company: scopes.cvs,
+        scope_clients_company: scopes.clients,
+        scope_emails_company: scopes.emails,
+        scope_integrations_company: scopes.integrations,
+      } as CreateRoleFormData,
+      selectedActions,
+    );
   };
+
+  // Lignes de la section "Portée des données"
+  const scopeRows: { key: keyof typeof scopes; label: string; note?: string }[] = [
+    { key: "applications", label: "Candidatures" },
+    { key: "requests", label: "Demandes de recrutement" },
+    { key: "cvs", label: "Vivier de talents (CVs)" },
+    { key: "clients", label: "Clients" },
+    { key: "emails", label: "Emails" },
+    { key: "integrations", label: "Intégrations" },
+  ];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-5xl mx-4 my-2 h-[96vh] flex flex-col modal-responsive">
@@ -153,6 +193,54 @@ export default function RoleFormModal({
                 onPagesChange={setSelectedPages}
                 onActionsChange={setSelectedActions}
               />
+            </div>
+
+            {/* Portée des données */}
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-5">
+              <Label>Portée des données</Label>
+              <p className="text-sm text-gray-500 mb-4">
+                Pour chaque ressource, choisissez si l&apos;utilisateur voit uniquement <strong>ses propres éléments</strong>{" "}
+                (ceux qu&apos;il a créés ou qui lui sont affectés) ou <strong>toute l&apos;entreprise</strong>.
+              </p>
+              <div className="space-y-2">
+                {scopeRows.map((row) => (
+                  <div
+                    key={row.key}
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-lg border border-gray-200 dark:border-gray-700 px-4 py-3"
+                  >
+                    <div>
+                      <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{row.label}</span>
+                      {row.note && (
+                        <span className="block text-xs text-gray-400 mt-0.5">{row.note}</span>
+                      )}
+                    </div>
+                    <div className="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden self-start sm:self-auto">
+                      <button
+                        type="button"
+                        onClick={() => setScopes((s) => ({ ...s, [row.key]: false }))}
+                        className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                          !scopes[row.key]
+                            ? "bg-brand-500 text-white"
+                            : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        }`}
+                      >
+                        Les siennes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setScopes((s) => ({ ...s, [row.key]: true }))}
+                        className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                          scopes[row.key]
+                            ? "bg-brand-500 text-white"
+                            : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                        }`}
+                      >
+                        Toute l&apos;entreprise
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

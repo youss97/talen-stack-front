@@ -8,6 +8,7 @@ import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import UserFormModal from "@/components/user/UserFormModal";
 import UserDetailModal from "@/components/user/UserDetailModal";
+import RoleChangeModal from "@/components/user/RoleChangeModal";
 import {
   useGetUsersQuery,
   useLazyGetUserByIdQuery,
@@ -36,6 +37,12 @@ export default function UsersPage() {
     if (cuId != null && row.id != null && String(row.id) === String(cuId)) return true;
     if (cu.email && row.email && cu.email.toLowerCase() === row.email.toLowerCase()) return true;
     return false;
+  };
+
+  // Le rôle admin est attribué par le super admin → non modifiable depuis la gestion des utilisateurs
+  const isAdminRole = (row: User) => {
+    const code = (row.role?.code || "").toUpperCase();
+    return code.includes("ADMIN_") || code === "ADMIN" || code === "SUPER_ADMIN";
   };
 
   // Debug des permissions
@@ -68,6 +75,11 @@ export default function UsersPage() {
   }>({ isOpen: false, user: null });
   const [isDeleting, setIsDeleting] = useState(false);
   const [quickTogglingId, setQuickTogglingId] = useState<string | null>(null);
+  const [roleModal, setRoleModal] = useState<{ isOpen: boolean; user: User | null }>({
+    isOpen: false,
+    user: null,
+  });
+  const [isChangingRole, setIsChangingRole] = useState(false);
 
   const addToast = useCallback(
     (
@@ -189,6 +201,31 @@ export default function UsersPage() {
       console.error("Error fetching user details:", error);
       addToast("error", "Erreur", "Erreur lors du chargement des détails de l'utilisateur");
       setIsFormModalOpen(false);
+    }
+  };
+
+  const handleChangeRoleClick = (user: User) => {
+    if (isAdminRole(user)) {
+      addToast("warning", "Action non autorisée", "Le rôle admin est attribué par le super admin et ne peut pas être modifié ici.");
+      return;
+    }
+    setRoleModal({ isOpen: true, user });
+  };
+
+  const handleRoleSubmit = async (roleId: string) => {
+    if (!roleModal.user) return;
+    setIsChangingRole(true);
+    try {
+      await updateUser({
+        id: roleModal.user.id,
+        data: { role_id: roleId } as UpdateUserRequest,
+      }).unwrap();
+      addToast("success", "Succès", "Rôle modifié avec succès");
+      setRoleModal({ isOpen: false, user: null });
+    } catch (error) {
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la modification du rôle"));
+    } finally {
+      setIsChangingRole(false);
     }
   };
 
@@ -337,6 +374,13 @@ export default function UsersPage() {
           canDeleteRow={(row) => !isSelf(row)}
           customActions={[
             {
+              label: "Modifier le rôle",
+              icon: <RoleIcon />,
+              color: "primary",
+              onClick: (row) => handleChangeRoleClick(row),
+              hidden: (row) => isAdminRole(row),
+            },
+            {
               label: "Bloquer",
               icon: <LockIcon />,
               color: "warning",
@@ -388,6 +432,14 @@ export default function UsersPage() {
         isLoading={isLoadingDetail}
       />
 
+      <RoleChangeModal
+        isOpen={roleModal.isOpen}
+        onClose={() => setRoleModal({ isOpen: false, user: null })}
+        user={roleModal.user}
+        onSubmit={handleRoleSubmit}
+        isLoading={isChangingRole}
+      />
+
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false, user: null })}
@@ -411,6 +463,14 @@ function PlusIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M10 4.16667V15.8333M4.16667 10H15.8333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function RoleIcon() {
+  return (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
   );
 }

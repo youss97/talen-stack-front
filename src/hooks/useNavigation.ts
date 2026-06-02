@@ -13,6 +13,18 @@ export function useNavigation() {
   const user = useSelector((state: RootState) => state.auth.user);
   const isSuperAdmin = user?.role?.code === "super_admin";
 
+  // Espace client : société rattachée à une société mère (parent_company_id),
+  // rôle Client Manager, ou utilisateur lié à un client.
+  const u = user as unknown as {
+    company?: { parent_company_id?: string | null };
+    client_id?: string | null;
+    role?: { code?: string };
+  } | null;
+  const isClientSpace =
+    !!u?.company?.parent_company_id ||
+    !!u?.client_id ||
+    (u?.role?.code || "").toUpperCase().startsWith("CLIENT_MANAGER");
+
   const navItems: NavItem[] = useMemo(() => {
     if (!features || features.length === 0) {
       return [];
@@ -28,6 +40,8 @@ export function useNavigation() {
     const items: NavItem[] = [];
 
     allowedPaths.forEach((path) => {
+      // "Mes Offres" (/my-requests) est réservé à l'espace client uniquement
+      if (path === "/my-requests" && !isClientSpace) return;
       if (canAccessPath(path)) {
         const config = NAV_CONFIG[path];
         if (config) items.push({ title: config.title, path, icon: config.icon });
@@ -41,7 +55,7 @@ export function useNavigation() {
     }
 
     return items;
-  }, [features, canAccessPath, isSuperAdmin]);
+  }, [features, canAccessPath, isSuperAdmin, isClientSpace]);
 
   return navItems;
 }
