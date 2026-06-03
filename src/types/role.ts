@@ -44,6 +44,7 @@ export interface Role extends RoleScopes {
   code?: string;
   level?: number;
   is_protected?: boolean;
+  users_count?: number;
   createdAt?: string;
   updatedAt?: string;
 }

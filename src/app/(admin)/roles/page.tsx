@@ -117,6 +117,18 @@ export default function RolesPage() {
       },
     },
     {
+      key: "users_count",
+      header: "Utilisateurs",
+      render: (value) => {
+        const count = (value as number) ?? 0;
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+            {count}
+          </span>
+        );
+      },
+    },
+    {
       key: "createdAt",
       header: "Date de création",
       render: (value, row) => {
@@ -147,6 +159,10 @@ export default function RolesPage() {
   };
 
   const handleEditClick = async (role: Role) => {
+    if (role.is_protected) {
+      addToast("warning", "Action non autorisée", "Ce rôle est protégé et ne peut pas être modifié.");
+      return;
+    }
     try {
       const result = await getRoleById(role.id).unwrap();
       setSelectedRole(result);
@@ -156,7 +172,23 @@ export default function RolesPage() {
     }
   };
 
+  // Un rôle ne peut être supprimé que s'il n'est ni protégé ni affecté à un utilisateur
+  const canDeleteRole = (role: Role) =>
+    !role.is_protected && (role.users_count ?? 0) === 0;
+
   const handleDeleteClick = (role: Role) => {
+    if (role.is_protected) {
+      addToast("warning", "Action non autorisée", "Ce rôle est protégé et ne peut pas être supprimé.");
+      return;
+    }
+    if ((role.users_count ?? 0) > 0) {
+      addToast(
+        "warning",
+        "Suppression impossible",
+        `Ce rôle est affecté à ${role.users_count} utilisateur(s). Retirez-le d'abord de ces utilisateurs.`,
+      );
+      return;
+    }
     setConfirmModal({ isOpen: true, role });
   };
 
@@ -317,6 +349,9 @@ export default function RolesPage() {
           data={data?.data && Array.isArray(data.data) ? data.data : []}
           isLoading={isLoading || isFetching}
           onView={handleViewClick}
+          onEdit={canUpdate ? handleEditClick : undefined}
+          onDelete={canDelete ? handleDeleteClick : undefined}
+          canDeleteRow={canDeleteRole}
           emptyMessage="Aucun rôle trouvé"
         />
 
