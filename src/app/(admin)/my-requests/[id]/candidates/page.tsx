@@ -566,6 +566,8 @@ export default function RequestCandidatesPage() {
           setDetailCandidate(null);
         }}
         candidate={detailCandidate}
+        canEditStep
+        onUpdated={() => refetch()}
       />
 
       {/* Détails de l'offre */}

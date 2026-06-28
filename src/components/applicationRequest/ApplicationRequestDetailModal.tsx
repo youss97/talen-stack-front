@@ -273,14 +273,39 @@ export default function ApplicationRequestDetailModal({
                   Langues requises
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  {applicationRequest.languages.map((lang, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 rounded-full text-sm"
-                    >
-                      {lang}
-                    </span>
-                  ))}
+                  {applicationRequest.languages.map((lang, index) => {
+                    const name = typeof lang === "string" ? lang : lang?.language;
+                    const level = typeof lang === "string" ? undefined : lang?.level;
+                    return (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 rounded-full text-sm"
+                      >
+                        {name}{level ? ` — ${level}/5` : ""}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Workflow / étapes (1.2) */}
+            {applicationRequest.workflow_steps && applicationRequest.workflow_steps.length > 0 && (
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Workflow du recrutement
+                </h4>
+                <div className="flex flex-wrap items-center gap-2">
+                  {[...applicationRequest.workflow_steps]
+                    .sort((a, b) => a.order - b.order)
+                    .map((step, index) => (
+                      <span key={index} className="flex items-center gap-2">
+                        {index > 0 && <span className="text-gray-400">→</span>}
+                        <span className="px-3 py-1 bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 rounded-full text-sm">
+                          {step.name}
+                        </span>
+                      </span>
+                    ))}
                 </div>
               </div>
             )}

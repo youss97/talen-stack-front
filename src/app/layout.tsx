@@ -1,4 +1,4 @@
-import { Outfit } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import "flatpickr/dist/flatpickr.css";
 import { SidebarProvider } from '@/context/SidebarContext';
@@ -8,8 +8,9 @@ import AuthInitializer from '@/components/auth/AuthInitializer';
 import PermissionsRefresher from '@/components/auth/PermissionsRefresher';
 import GlobalToaster from '@/components/common/GlobalToaster';
 
-const outfit = Outfit({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata = {
@@ -35,7 +36,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
       </head>
-      <body className={`${outfit.className} dark:bg-gray-900`}>
+      <body className={`${jakarta.className} dark:bg-gray-900`}>
         <StoreProvider>
           <AuthInitializer />
           <PermissionsRefresher />

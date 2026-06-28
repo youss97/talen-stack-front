@@ -74,7 +74,7 @@ export default function RecruiterFormModal({
       request_id: "",
       cv_id: "",
       workflow_status: "draft", // Toujours créer en brouillon
-      currently_employed: false,
+      currently_employed: true, // Coché par défaut (2.1)
       current_contract_type: "",
       current_salary: undefined,
       daily_rate: undefined,
@@ -144,12 +144,17 @@ export default function RecruiterFormModal({
         if (request.contract_type) {
           setValue("offer_contract_types", [request.contract_type]);
         }
-        // Initialize languages from request
+        // Hériter de la devise de la demande (2.3) — reste modifiable par l'utilisateur
+        if (request.currency) {
+          setValue("currency", request.currency as CreateRecruiterFormData["currency"]);
+        }
+        // Initialize languages from request — accepte string[] (ancien) ou {language, level}[] (1.3)
         if (request.languages && request.languages.length > 0) {
-          const initialLanguages = request.languages.map(lang => ({
-            language: lang,
-            level: 3
-          }));
+          const initialLanguages = (request.languages as Array<string | { language: string; level?: number }>).map((lang) =>
+            typeof lang === "string"
+              ? { language: lang, level: 3 }
+              : { language: lang.language, level: lang.level ?? 3 },
+          );
           setLanguages(initialLanguages);
           setValue("languages", initialLanguages);
         }
@@ -738,7 +743,7 @@ export default function RecruiterFormModal({
                   <div className="flex-1">
                     <input
                       type="text"
-                      value={lang.language}
+                      value={lang.language ?? ""}
                       onChange={(e) => handleLanguageChange(index, 'language', e.target.value)}
                       placeholder="Ex: Français"
                       className="h-10 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"

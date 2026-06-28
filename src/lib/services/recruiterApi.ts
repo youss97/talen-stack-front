@@ -162,18 +162,34 @@ export const recruiterApi = createApi({
       ],
     }),
 
-    // POST /applications/:id/feedbacks - Create feedback
+    // POST /applications/:id/feedbacks - Create feedback (avec step optionnel — 3.3)
     createFeedback: builder.mutation<
       ApplicationFeedback,
-      { id: string; title: string; description: string }
+      { id: string; title: string; description: string; step?: string }
     >({
-      query: ({ id, title, description }) => ({
+      query: ({ id, title, description, step }) => ({
         url: `/applications/${id}/feedbacks`,
         method: "POST",
-        body: { title, description },
+        body: { title, description, step },
       }),
       invalidatesTags: (result, error, { id }) => [
         { type: "Recruiter", id },
+      ],
+    }),
+
+    // PATCH /applications/:id/step - Changer l'étape (workflow) + feedback optionnel (3.2/3.3, 4.3)
+    changeApplicationStep: builder.mutation<
+      Recruiter,
+      { id: string; step: string; feedback_title?: string; feedback_description?: string; status?: string }
+    >({
+      query: ({ id, step, feedback_title, feedback_description, status }) => ({
+        url: `/applications/${id}/step`,
+        method: "PATCH",
+        body: { step, feedback_title, feedback_description, status },
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: "Recruiter", id },
+        { type: "Recruiter", id: "LIST" },
       ],
     }),
 
@@ -223,6 +239,7 @@ export const {
   useAssignApplicationMutation,
   useAssignApplicationResponsibleMutation,
   useCreateFeedbackMutation,
+  useChangeApplicationStepMutation,
   useGetApplicationFeedbacksQuery,
   useLazyGetApplicationFeedbacksQuery,
   useSendApplicationEmailMutation,

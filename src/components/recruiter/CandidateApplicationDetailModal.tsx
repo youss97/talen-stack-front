@@ -4,11 +4,16 @@ import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
 import type { Recruiter } from "@/types/recruiter";
+import WorkflowStepper from "./WorkflowStepper";
+import { useChangeApplicationStepMutation, useCreateFeedbackMutation } from "@/lib/services/recruiterApi";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   candidate: Recruiter | null;
+  /** Permet au client de piloter l'étape (§4.1) */
+  canEditStep?: boolean;
+  onUpdated?: () => void;
 }
 
 const availabilityLabels: Record<string, string> = {
@@ -28,8 +33,36 @@ const Row = ({ label, value }: { label: string; value?: React.ReactNode }) =>
     </div>
   ) : null;
 
-export default function CandidateApplicationDetailModal({ isOpen, onClose, candidate }: Props) {
+export default function CandidateApplicationDetailModal({ isOpen, onClose, candidate, canEditStep = false, onUpdated }: Props) {
+  const [changeStep, { isLoading: isChangingStep }] = useChangeApplicationStepMutation();
+  const [createFeedback, { isLoading: isAddingFeedback }] = useCreateFeedbackMutation();
+
   if (!candidate) return null;
+
+  const handleAddStepFeedback = async (step: string, description: string) => {
+    try {
+      await createFeedback({ id: candidate.id, title: `Feedback — ${step}`, description, step }).unwrap();
+      onUpdated?.();
+    } catch {
+      // erreur affichée globalement via le middleware
+    }
+  };
+
+  const handleChangeStep = async (step: string, feedbackDescription?: string) => {
+    const terminal = ["Accepté", "KO", "Désistement"].includes(step);
+    try {
+      await changeStep({
+        id: candidate.id,
+        step,
+        feedback_description: feedbackDescription,
+        ...(terminal ? { status: step } : {}),
+      }).unwrap();
+      onUpdated?.();
+      onClose();
+    } catch {
+      // erreur affichée globalement via le middleware
+    }
+  };
 
   const cv = candidate.cv;
   const fullName = `${cv?.candidate_first_name || ""} ${cv?.candidate_last_name || ""}`.trim() || "Candidat";
@@ -63,7 +96,7 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
             <Row label="Téléphone" value={cv?.candidate_phone} />
             <Row label="Expérience" value={
               candidate.adjusted_experience != null
-                ? `${candidate.adjusted_experience} ans (ajustée)`
+                ? `${candidate.adjusted_experience} ans`
                 : cv?.total_experience != null
                 ? `${cv.total_experience} ans`
                 : undefined
@@ -72,6 +105,22 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
             <Row label="Soumis le" value={candidate.proposed_at ? formatDate(candidate.proposed_at) : undefined} />
             <Row label="Date entretien" value={candidate.recruiter_interview_date ? formatDateTime(candidate.recruiter_interview_date) : undefined} />
           </div>
+        </section>
+
+        {/* Workflow / étapes (3.2 + 4.1) — toujours affiché */}
+        <section>
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
+            Workflow
+          </h3>
+          <WorkflowStepper
+            steps={candidate.request?.workflow_steps || []}
+            currentStep={candidate.current_step}
+            canEdit={canEditStep}
+            isSaving={isChangingStep}
+            onChangeStep={handleChangeStep}
+            onAddFeedback={handleAddStepFeedback}
+            isAddingFeedback={isAddingFeedback}
+          />
         </section>
 
         {/* Compétences */}
@@ -125,7 +174,7 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
             Contrat & Disponibilité
           </h3>
           <div className="space-y-2">
-            <Row label="Types de contrat" value={
+            <Row label="Type de contrat souhaité" value={
               candidate.offer_contract_types?.length
                 ? candidate.offer_contract_types.join(", ")
                 : undefined
@@ -182,17 +231,7 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
           </section>
         )}
 
-        {/* Notes du recruteur */}
-        {candidate.recruiter_notes && (
-          <section>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
-              Notes du recruteur
-            </h3>
-            <div className="rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-              {candidate.recruiter_notes}
-            </div>
-          </section>
-        )}
+        {/* Notes du recruteur : internes — JAMAIS affichées côté client (3.7) */}
 
         {/* Notes manager */}
         {candidate.manager_notes && (

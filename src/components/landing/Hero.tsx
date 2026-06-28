@@ -12,18 +12,18 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.6, delay, ease: "easeOut" } as Transition,
 });
 
-export default function Hero() {
+export default function Hero({ title, subtitle, brand = "var(--color-brand-500)" }: { title?: string; subtitle?: string; brand?: string } = {}) {
   return (
-    <section className="relative pt-20 pb-16 bg-gradient-to-br from-[#f5fae8] via-white to-[#edf5d2] overflow-hidden">
-      <ThreeParticles color="#8AB925" count={50} opacity={0.35} />
+    <section className="relative pt-20 pb-16 bg-gradient-to-br from-[var(--color-brand-25)] via-white to-[var(--color-brand-50)] overflow-hidden">
+      <ThreeParticles color={brand} count={50} opacity={0.35} />
       <div className="relative z-10 landing-container">
         <div className="text-center">
           {/* Badge */}
           <motion.div
             {...fadeUp(0)}
-            className="inline-flex items-center px-4 py-2 rounded-full bg-[#edf5d2] text-[#344a0c] text-sm font-medium mb-8"
+            className="inline-flex items-center px-4 py-2 rounded-full bg-[var(--color-brand-50)] text-[var(--color-brand-900)] text-sm font-medium mb-8"
           >
-            <span className="w-2 h-2 bg-[#8AB925] rounded-full mr-2 animate-pulse"></span>
+            <span className="w-2 h-2 rounded-full mr-2 animate-pulse" style={{ background: brand }}></span>
             Nouvelle génération de recrutement
           </motion.div>
 
@@ -32,10 +32,16 @@ export default function Hero() {
             {...fadeUp(0.1)}
             className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight"
           >
-            Révolutionnez votre
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8AB925] to-[#5c7d17]">
-              {" "}processus de recrutement
-            </span>
+            {title ? (
+              title
+            ) : (
+              <>
+                Révolutionnez votre
+                <span style={{ color: brand }}>
+                  {" "}processus de recrutement
+                </span>
+              </>
+            )}
           </motion.h1>
 
           {/* Sous-titre */}
@@ -43,8 +49,8 @@ export default function Hero() {
             {...fadeUp(0.2)}
             className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed"
           >
-            Talent Stack simplifie la gestion des candidatures, optimise les entretiens et
-            accélère les intégrations. Une plateforme complète pour les équipes RH modernes.
+            {subtitle ||
+              "Talent Stack simplifie la gestion des candidatures, optimise les entretiens et accélère les intégrations. Une plateforme complète pour les équipes RH modernes."}
           </motion.p>
 
           {/* CTA Buttons */}
@@ -65,9 +71,9 @@ export default function Hero() {
           {/* Stats rapides */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {[
-              { value: "95%", label: "Temps de recrutement réduit", color: "#8AB925" },
-              { value: "500+", label: "Entreprises nous font confiance", color: "#739c1e" },
-              { value: "24h", label: "Mise en place moyenne", color: "#5c7d17" },
+              { value: "95%", label: "Temps de recrutement réduit", color: "var(--color-brand-500)" },
+              { value: "500+", label: "Entreprises nous font confiance", color: "var(--color-brand-600)" },
+              { value: "24h", label: "Mise en place moyenne", color: "var(--color-brand-700)" },
             ].map((stat, i) => (
               <motion.div
                 key={i}
@@ -95,30 +101,30 @@ export default function Hero() {
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-red-400 rounded-full"></div>
                 <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                <div className="w-3 h-3 bg-[#8AB925] rounded-full"></div>
+                <div className="w-3 h-3 bg-[var(--color-brand-500)] rounded-full"></div>
                 <div className="ml-4 text-sm text-gray-600">talent-stack.com/dashboard</div>
               </div>
             </div>
             <div className="p-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-[#f5fae8] p-6 rounded-xl">
-                  <div className="text-2xl font-bold text-[#8AB925] mb-2">127</div>
+                <div className="bg-[var(--color-brand-25)] p-6 rounded-xl">
+                  <div className="text-2xl font-bold text-[var(--color-brand-500)] mb-2">127</div>
                   <div className="text-gray-600 text-sm">Candidatures actives</div>
                 </div>
-                <div className="bg-[#edf5d2] p-6 rounded-xl">
-                  <div className="text-2xl font-bold text-[#739c1e] mb-2">23</div>
+                <div className="bg-[var(--color-brand-50)] p-6 rounded-xl">
+                  <div className="text-2xl font-bold text-[var(--color-brand-600)] mb-2">23</div>
                   <div className="text-gray-600 text-sm">Entretiens planifiés</div>
                 </div>
-                <div className="bg-[#d8ecaa] p-6 rounded-xl">
-                  <div className="text-2xl font-bold text-[#5c7d17] mb-2">8</div>
+                <div className="bg-[var(--color-brand-100)] p-6 rounded-xl">
+                  <div className="text-2xl font-bold text-[var(--color-brand-700)] mb-2">8</div>
                   <div className="text-gray-600 text-sm">Intégrations en cours</div>
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-[#edf5d2] rounded-full flex items-center justify-center">
-                      <span className="text-[#8AB925] font-semibold">JD</span>
+                    <div className="w-10 h-10 bg-[var(--color-brand-50)] rounded-full flex items-center justify-center">
+                      <span className="text-[var(--color-brand-500)] font-semibold">JD</span>
                     </div>
                     <div>
                       <div className="font-medium">John Doe</div>
@@ -126,15 +132,15 @@ export default function Hero() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-[#edf5d2] text-[#344a0c] rounded-full text-sm">Entretien</span>
+                    <span className="px-3 py-1 bg-[var(--color-brand-50)] text-[var(--color-brand-900)] rounded-full text-sm">Entretien</span>
                     <span className="text-gray-400">•</span>
                     <span className="text-sm text-gray-500">Aujourd'hui 14h</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-[#d8ecaa] rounded-full flex items-center justify-center">
-                      <span className="text-[#5c7d17] font-semibold">SM</span>
+                    <div className="w-10 h-10 bg-[var(--color-brand-100)] rounded-full flex items-center justify-center">
+                      <span className="text-[var(--color-brand-700)] font-semibold">SM</span>
                     </div>
                     <div>
                       <div className="font-medium">Sarah Martin</div>
@@ -142,7 +148,7 @@ export default function Hero() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-[#f5fae8] text-[#476211] rounded-full text-sm">Nouvelle</span>
+                    <span className="px-3 py-1 bg-[var(--color-brand-25)] text-[var(--color-brand-800)] rounded-full text-sm">Nouvelle</span>
                     <span className="text-gray-400">•</span>
                     <span className="text-sm text-gray-500">Il y a 2h</span>
                   </div>
@@ -155,12 +161,12 @@ export default function Hero() {
           <motion.div
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-4 -right-4 w-20 h-20 bg-[#edf5d2] rounded-full opacity-60"
+            className="absolute -top-4 -right-4 w-20 h-20 bg-[var(--color-brand-50)] rounded-full opacity-60"
           />
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-4 -left-4 w-16 h-16 bg-[#d8ecaa] rounded-full opacity-60"
+            className="absolute -bottom-4 -left-4 w-16 h-16 bg-[var(--color-brand-100)] rounded-full opacity-60"
           />
         </div>
       </motion.div>

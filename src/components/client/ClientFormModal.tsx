@@ -26,6 +26,7 @@ interface ClientFormModalProps {
   client?: Client | null;
   isLoading?: boolean;
   readOnly?: boolean;
+  hiddenFields?: string[]; // 8.5 — champs masqués dans la fiche (lecture seule)
 }
 
 export default function ClientFormModal({
@@ -35,8 +36,11 @@ export default function ClientFormModal({
   client,
   isLoading = false,
   readOnly = false,
+  hiddenFields = [],
 }: ClientFormModalProps) {
   const isEditing = !!client && !readOnly;
+  // 8.5 — masquer un champ uniquement en consultation (jamais en édition)
+  const isHidden = (key: string) => readOnly && hiddenFields.includes(key);
   const [showPassword, setShowPassword] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -242,6 +246,7 @@ export default function ClientFormModal({
               </div>
 
               {/* ICE */}
+              {!isHidden("ice") && (
               <div>
                 <Label>
                   ICE {!readOnly && <span className="text-error-500">*</span>}
@@ -258,8 +263,10 @@ export default function ClientFormModal({
                   <p className="mt-1 text-xs text-gray-400">Identifiant Commun de l'Entreprise · 15 chiffres</p>
                 )}
               </div>
+              )}
 
               {/* Pays */}
+              {!isHidden("country") && (
               <div>
                 <Label>
                   Pays {!readOnly && <span className="text-error-500">*</span>}
@@ -275,8 +282,10 @@ export default function ClientFormModal({
                 )}
                 {errors.country && <p className="mt-1 text-sm text-error-500">{errors.country.message}</p>}
               </div>
+              )}
 
               {/* Adresse */}
+              {!isHidden("address") && (
               <div className="sm:col-span-2">
                 <Label>
                   Adresse {!readOnly && <span className="text-error-500">*</span>}
@@ -289,8 +298,10 @@ export default function ClientFormModal({
                 />
                 {errors.address && <p className="mt-1 text-sm text-error-500">{errors.address.message}</p>}
               </div>
+              )}
 
               {/* Ville */}
+              {!isHidden("city") && (
               <div>
                 <Label>
                   Ville {!readOnly && <span className="text-error-500">*</span>}
@@ -303,8 +314,10 @@ export default function ClientFormModal({
                 />
                 {errors.city && <p className="mt-1 text-sm text-error-500">{errors.city.message}</p>}
               </div>
+              )}
 
               {/* Code postal */}
+              {!isHidden("postal_code") && (
               <div>
                 <Label>Code postal</Label>
                 <Input
@@ -314,6 +327,7 @@ export default function ClientFormModal({
                   disabled={readOnly}
                 />
               </div>
+              )}
 
               {/* Statut */}
               <div>
@@ -344,6 +358,7 @@ export default function ClientFormModal({
             </h3>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               {/* Téléphone */}
+              {!isHidden("phone") && (
               <div>
                 <Label>
                   Téléphone {!readOnly && <span className="text-error-500">*</span>}
@@ -357,8 +372,10 @@ export default function ClientFormModal({
                 />
                 {errors.phone && <p className="mt-1 text-sm text-error-500">{errors.phone.message}</p>}
               </div>
+              )}
 
               {/* Email */}
+              {!isHidden("email") && (
               <div>
                 <Label>
                   Email {!readOnly && <span className="text-error-500">*</span>}
@@ -372,6 +389,7 @@ export default function ClientFormModal({
                 />
                 {errors.email && <p className="mt-1 text-sm text-error-500">{errors.email.message}</p>}
               </div>
+              )}
             </div>
           </section>
 

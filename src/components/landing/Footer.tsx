@@ -10,7 +10,7 @@ export default function Footer() {
             {/* Company Info */}
             <div className="lg:col-span-2">
               <div className="flex items-center space-x-2 mb-6">
-                <div className="w-8 h-8 bg-[#8AB925] rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-[var(--color-brand-500)] rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">TS</span>
                 </div>
                 <span className="text-xl font-bold">Talent Stack</span>
@@ -20,13 +20,13 @@ export default function Footer() {
                 votre processus RH et accélère vos embauches.
               </p>
               <div className="flex space-x-4">
-                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[#8AB925] transition-colors">
+                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[var(--color-brand-500)] transition-colors">
                   <span className="text-sm">📧</span>
                 </a>
-                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[#8AB925] transition-colors">
+                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[var(--color-brand-500)] transition-colors">
                   <span className="text-sm">💼</span>
                 </a>
-                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[#8AB925] transition-colors">
+                <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[var(--color-brand-500)] transition-colors">
                   <span className="text-sm">🐦</span>
                 </a>
               </div>
@@ -111,9 +111,9 @@ export default function Footer() {
               <input
                 type="email"
                 placeholder="Votre adresse email"
-                className="flex-1 md:w-64 px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-[#8AB925] text-white placeholder-gray-400"
+                className="flex-1 md:w-64 px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-[var(--color-brand-500)] text-white placeholder-gray-400"
               />
-              <button className="px-6 py-3 bg-[#8AB925] text-white rounded-r-lg hover:bg-[#739c1e] transition-colors font-medium">
+              <button className="px-6 py-3 bg-[var(--color-brand-500)] text-white rounded-r-lg hover:bg-[var(--color-brand-600)] transition-colors font-medium">
                 S'abonner
               </button>
             </div>

@@ -18,6 +18,9 @@ import { interviewApi } from './services/interviewApi';
 import { integrationApi } from './services/integrationApi';
 import { subscriptionApi } from './services/subscriptionApi';
 import { statsApi } from './services/statsApi';
+import { businessCardApi } from './services/businessCardApi';
+import { notificationApi } from './services/notificationApi';
+import { landingApi } from './services/landingApi';
 import authReducer, { logout } from './slices/authSlice';
 import { errorToastMiddleware } from './errorToastMiddleware';
 
@@ -41,6 +44,9 @@ const apiMiddlewares = [
   integrationApi.middleware,
   subscriptionApi.middleware,
   statsApi.middleware,
+  businessCardApi.middleware,
+  notificationApi.middleware,
+  landingApi.middleware,
 ];
 
 const apiResetters = [
@@ -63,6 +69,9 @@ const apiResetters = [
   integrationApi.util.resetApiState,
   subscriptionApi.util.resetApiState,
   statsApi.util.resetApiState,
+  businessCardApi.util.resetApiState,
+  notificationApi.util.resetApiState,
+  landingApi.util.resetApiState,
 ];
 
 const appReducer = combineReducers({
@@ -86,6 +95,9 @@ const appReducer = combineReducers({
   [integrationApi.reducerPath]: integrationApi.reducer,
   [subscriptionApi.reducerPath]: subscriptionApi.reducer,
   [statsApi.reducerPath]: statsApi.reducer,
+  [businessCardApi.reducerPath]: businessCardApi.reducer,
+  [notificationApi.reducerPath]: notificationApi.reducer,
+  [landingApi.reducerPath]: landingApi.reducer,
 });
 
 const baseStore = configureStore({

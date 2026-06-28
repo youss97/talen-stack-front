@@ -9,6 +9,8 @@ export default function SettingsPage() {
   const router = useRouter();
   const user = useSelector((state: RootState) => state.auth.user);
   const [isAuthorized, setIsAuthorized] = useState(false);
+  // Strict : seul le super admin (rôle dédié) voit le paramétrage du site vitrine
+  const isSuperAdmin = user?.role?.code === "super_admin";
 
   useEffect(() => {
     // Vérifier si l'utilisateur est SuperAdmin OU appartient à une société créée par le superadmin
@@ -79,6 +81,67 @@ export default function SettingsPage() {
       href: "/settings/contract-types",
       color: "green",
     },
+    {
+      id: "sidebar-order",
+      title: "Ordre de la sidebar",
+      description: "Définir l'ordre d'affichage des modules (features) dans le menu latéral",
+      icon: (
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      ),
+      href: "/settings/sidebar-order",
+      color: "purple",
+    },
+    {
+      id: "public-site",
+      title: "Site public & branding",
+      description: "Personnaliser la page publique de l'entreprise (slug, présentation, couleur, « Powered by »)",
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 010 18M12 3a15 15 0 000 18" />
+        </svg>
+      ),
+      href: "/settings/public-site",
+      color: "blue",
+    },
+    {
+      id: "landing",
+      title: "Landing page",
+      description: "Gérer la page publique : textes, tarifs, témoignages, formulaire de contact (super admin)",
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 9h16M8 13h8M8 16h5" />
+        </svg>
+      ),
+      href: "/settings/landing",
+      color: "purple",
+    },
+    {
+      id: "business-cards",
+      title: "Cartes de visite",
+      description: "Créer et gérer les cartes de visite QR (RH, Client, Employé)",
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h4M7 12h4M15 8h2M15 12h2M7 16h10" />
+        </svg>
+      ),
+      href: "/business-cards",
+      color: "green",
+    },
   ];
 
   const getColorClasses = (color: string) => {
@@ -94,6 +157,12 @@ export default function SettingsPage() {
         border: "border-green-200 dark:border-green-800",
         icon: "text-green-600 dark:text-green-400",
         hover: "hover:bg-green-100 dark:hover:bg-green-900/30",
+      },
+      purple: {
+        bg: "bg-purple-50 dark:bg-purple-900/20",
+        border: "border-purple-200 dark:border-purple-800",
+        icon: "text-purple-600 dark:text-purple-400",
+        hover: "hover:bg-purple-100 dark:hover:bg-purple-900/30",
       },
     };
     return colors[color as keyof typeof colors] || colors.blue;
@@ -111,7 +180,7 @@ export default function SettingsPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {settingsCategories.map((category) => {
+        {settingsCategories.filter((c) => c.id !== "landing" || isSuperAdmin).map((category) => {
           const colors = getColorClasses(category.color);
           return (
             <Link

@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
@@ -17,6 +18,8 @@ export default function CVDetailModal({
   cv,
   isLoading = false,
 }: CVDetailModalProps) {
+  // 5.5 — Visualisation du CV directement dans la plateforme
+  const [showViewer, setShowViewer] = useState(false);
   if (!cv && !isLoading) return null;
 
   const getStatusLabel = (status?: string) => {
@@ -100,9 +103,14 @@ export default function CVDetailModal({
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
             {fullName}
           </h2>
-          {cv?.last_position && (
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {cv.last_position}
+          {(cv?.profile_title || cv?.last_position) && (
+            <p className="mt-1 text-sm font-medium text-brand-600 dark:text-brand-400">
+              {cv?.profile_title || cv?.last_position}
+            </p>
+          )}
+          {cv?.profile_title && cv?.last_position && cv.profile_title !== cv.last_position && (
+            <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+              Poste : {cv.last_position}
             </p>
           )}
         </div>
@@ -354,12 +362,19 @@ export default function CVDetailModal({
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   📄 Document CV
                 </h3>
-                <div className="flex items-center gap-3">
-                  <div className="flex-1">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex-1 min-w-[120px]">
                     <p className="text-sm text-gray-800 dark:text-gray-200">
                       {cv.file_name || "CV.pdf"}
                     </p>
                   </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowViewer((v) => !v)}
+                  >
+                    {showViewer ? "Masquer" : "Visualiser"}
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
@@ -392,6 +407,30 @@ export default function CVDetailModal({
                     Télécharger le CV
                   </Button>
                 </div>
+
+                {showViewer && (() => {
+                  const fileUrl = cv.cloudinary_url || cv.file_path || "";
+                  const isPdf = /\.pdf(\?|$)/i.test(fileUrl) || (!/\.(docx?|odt)(\?|$)/i.test(fileUrl));
+                  const viewerSrc = isPdf
+                    ? fileUrl
+                    : `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+                  return (
+                    <div className="mt-3">
+                      <iframe
+                        src={viewerSrc}
+                        title="Aperçu du CV"
+                        className="w-full h-[600px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white"
+                      />
+                      <p className="mt-2 text-xs text-gray-400">
+                        Si l&apos;aperçu ne s&apos;affiche pas,{" "}
+                        <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-brand-500 underline">
+                          ouvrir dans un nouvel onglet
+                        </a>
+                        .
+                      </p>
+                    </div>
+                  );
+                })()}
               </div>
             )}
 

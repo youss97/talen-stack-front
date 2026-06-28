@@ -284,6 +284,16 @@ export const roleApi = createApi({
       providesTags: [{ type: "Feature", id: "ALL" }],
     }),
 
+    // PATCH /roles/features/order - Update sidebar display order of features
+    updateFeaturesOrder: builder.mutation<Feature[], { orders: Array<{ id: string; display_order: number }> }>({
+      query: (body) => ({
+        url: "/roles/features/order",
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: [{ type: "Feature", id: "ALL" }],
+    }),
+
     // GET /roles/companies/:companyId/features - Get features assigned to a company
     getCompanyFeatures: builder.query<Feature[], string>({
       query: (companyId) => ({
@@ -361,6 +371,7 @@ export const {
   useUpdateRoleMutation,
   useDeleteRoleMutation,
   useGetFeaturesQuery,
+  useUpdateFeaturesOrderMutation,
   useGetCompanyFeaturesQuery,
   useSetCompanyFeaturesMutation,
   useAssignActionsToRoleMutation,

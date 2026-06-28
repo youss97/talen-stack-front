@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useGetIntegrationByIdQuery } from '@/lib/services/integrationApi';
+import { useGetIntegrationByIdQuery, useUpdateIntegrationMutation } from '@/lib/services/integrationApi';
 import { ContractType, IntegrationStatus, TrialPeriodStatus } from '@/types/integration';
 import { Modal } from '@/components/ui/modal';
+import Button from '@/components/ui/button/Button';
 import Badge from '@/components/ui/badge/Badge';
+import { getApiErrorMessage } from '@/utils/errorMessages';
 
 interface IntegrationAgendaModalProps {
   integrationId: string;
@@ -20,6 +22,10 @@ export default function IntegrationAgendaModal({
   onSuccess,
 }: IntegrationAgendaModalProps) {
   const [error, setError] = useState<string | null>(null);
+  // 6.3 — Marquer l'intégration Réussie/Échouée avec un motif
+  const [outcomeMode, setOutcomeMode] = useState<null | 'completed' | 'failed'>(null);
+  const [motif, setMotif] = useState('');
+  const [updateIntegration, { isLoading: isSaving }] = useUpdateIntegrationMutation();
 
   const { data: integration, isLoading } = useGetIntegrationByIdQuery(integrationId, {
     skip: !integrationId || !isOpen,
@@ -31,6 +37,36 @@ export default function IntegrationAgendaModal({
       setError(null);
     }
   }, [integration]);
+
+  // Réinitialiser le panneau d'action à la fermeture / changement
+  useEffect(() => {
+    if (!isOpen) {
+      setOutcomeMode(null);
+      setMotif('');
+    }
+  }, [isOpen]);
+
+  const submitOutcome = async () => {
+    if (!outcomeMode || !integration) return;
+    if (!motif.trim()) {
+      setError('Veuillez saisir un motif.');
+      return;
+    }
+    setError(null);
+    try {
+      const data =
+        outcomeMode === 'completed'
+          ? { status: IntegrationStatus.COMPLETED, final_evaluation: motif.trim() }
+          : { status: IntegrationStatus.FAILED, departure_reason: motif.trim() };
+      await updateIntegration({ id: integration.id, data }).unwrap();
+      setOutcomeMode(null);
+      setMotif('');
+      onSuccess?.();
+      onClose();
+    } catch (err) {
+      setError(getApiErrorMessage(err, "Erreur lors de la mise à jour de l'intégration"));
+    }
+  };
 
   const getStatusBadge = (status: IntegrationStatus) => {
     const styles = {
@@ -285,7 +321,45 @@ export default function IntegrationAgendaModal({
         </div>
       </div>
       
-      {/* Modal de consultation uniquement - pas d'actions dans l'agenda */}
+      {/* 6.3 — Actions : marquer Réussie / Échouée avec motif */}
+      <div className="flex-shrink-0 border-t border-gray-100 dark:border-gray-800 p-4 sm:p-6">
+        {outcomeMode ? (
+          <div className="space-y-3">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Motif {outcomeMode === 'completed' ? '(intégration réussie)' : '(intégration échouée)'}
+              <span className="text-error-500"> *</span>
+            </label>
+            <textarea
+              value={motif}
+              onChange={(e) => setMotif(e.target.value)}
+              rows={3}
+              placeholder="Saisissez le motif..."
+              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+            />
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" onClick={() => { setOutcomeMode(null); setMotif(''); setError(null); }} disabled={isSaving}>
+                Annuler
+              </Button>
+              <Button onClick={submitOutcome} disabled={isSaving}>
+                {isSaving ? 'Enregistrement...' : 'Confirmer'}
+              </Button>
+            </div>
+          </div>
+        ) : integration.status === IntegrationStatus.IN_PROGRESS ? (
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
+            <Button variant="outline" onClick={() => { setOutcomeMode('failed'); setError(null); }}>
+              ❌ Marquer échouée
+            </Button>
+            <Button onClick={() => { setOutcomeMode('completed'); setError(null); }}>
+              ✓ Marquer réussie
+            </Button>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-right">
+            Intégration {integration.status === IntegrationStatus.COMPLETED ? 'réussie' : 'échouée'} — clôturée.
+          </p>
+        )}
+      </div>
     </Modal>
   );
 }

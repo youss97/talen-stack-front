@@ -22,6 +22,7 @@ export interface Feature {
   name: string;
   description?: string;
   is_internal?: boolean;
+  display_order?: number;
   selected?: boolean;
   pages?: Page[];
 }

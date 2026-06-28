@@ -55,9 +55,17 @@ export function usePermissions(): UsePermissionsReturn {
       return true;
     }
 
+    // Notifications + Statistiques : accessibles à tout utilisateur authentifié
+    if (normalizedPath === "/notifications" || normalizedPath === "/statistics") return true;
+
     if (!features || features.length === 0) return false;
 
-    if (normalizedPath === "/settings" || normalizedPath.startsWith("/settings/")) {
+    if (
+      normalizedPath === "/settings" ||
+      normalizedPath.startsWith("/settings/") ||
+      normalizedPath === "/business-cards" ||
+      normalizedPath.startsWith("/business-cards/")
+    ) {
       const isMainCompany = user?.company?.parent_company_id === null;
       return isMainCompany;
     }

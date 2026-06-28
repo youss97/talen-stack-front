@@ -36,6 +36,7 @@ export interface Integration {
   trial_period_validation_date?: string;
   trial_period_notes?: string;
   status: IntegrationStatus;
+  is_draft?: boolean;
   notes?: string;
   departure_date?: string;
   departure_reason?: string;
@@ -118,6 +119,9 @@ export interface UpdateIntegrationDto {
   status?: IntegrationStatus;
   notes?: string;
   hr_manager_id?: string;
+  departure_reason?: string;
+  final_evaluation?: string;
+  is_draft?: boolean;
 }
 
 export interface IntegrationStatistics {

@@ -51,7 +51,13 @@ export interface ApplicationRequest {
   remote_possible?: boolean;
   
   // Langues
-  languages: string[];
+  languages: Array<string | { language: string; level?: number }>;
+
+  // Workflow / étapes (1.2)
+  workflow_steps?: Array<{ name: string; order: number }>;
+
+  // Champs visibles sur l'offre publique (vide = tout)
+  public_visible_fields?: string[];
 
   // Softskills
   soft_skills?: string[];
@@ -202,7 +208,13 @@ export interface CreateApplicationRequestRequest {
   remote_possible?: boolean;
 
   // Langues
-  languages: string[];
+  languages: Array<string | { language: string; level?: number }>;
+
+  // Workflow / étapes (1.2)
+  workflow_steps?: Array<{ name: string; order: number }>;
+
+  // Champs visibles sur l'offre publique (vide = tout)
+  public_visible_fields?: string[];
 
   // Softskills
   soft_skills?: string[];
@@ -254,7 +266,7 @@ export interface UpdateApplicationRequestRequest {
   work_type?: "on_site" | "remote" | "hybrid";
   remote_days_per_week?: number;
   remote_possible?: boolean;
-  languages?: string[];
+  languages?: Array<string | { language: string; level?: number }>;
   benefits?: string;
   bonuses?: string;
   variables?: string;

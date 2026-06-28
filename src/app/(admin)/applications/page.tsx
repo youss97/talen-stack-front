@@ -1,6 +1,6 @@
 "use client";
 import { useState, useCallback, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import DataTableWithSelection from "@/components/tables/DataTableWithSelection";
 import ActionsMenu from "@/components/tables/ActionsMenu";
@@ -45,6 +45,7 @@ export default function ApplicationsPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/applications");
   const canAssign = canUpdate;
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [workflowStatusFilter, setWorkflowStatusFilter] = useState<WorkflowStatus | "">("");
@@ -107,7 +108,7 @@ export default function ApplicationsPage() {
 
   const { data, isLoading, isFetching, refetch } = useGetRecruitersQuery({
     page,
-    limit: 5,
+    limit,
     search: search || undefined,
     status: statusFilter || undefined,
     workflow_status: workflowStatusFilter || undefined,
@@ -413,20 +414,20 @@ export default function ApplicationsPage() {
     },
   ];
 
+  const router = useRouter();
+  // 3.1 — Le détail est désormais une page dédiée
   const handleRowClick = async (application: Recruiter) => {
-    setDetailApplicationId(application.id);
-    setIsDetailModalOpen(true);
+    router.push(`/applications/${application.id}`);
   };
 
-  // Ouvrir directement le détail si on arrive avec ?applicationId=... (ex: depuis l'agenda/entretien)
+  // Deep-link ?applicationId=... (ex: depuis l'agenda/entretien) → rediriger vers la page dédiée
   const searchParams = useSearchParams();
   useEffect(() => {
     const appId = searchParams.get("applicationId");
     if (appId) {
-      setDetailApplicationId(appId);
-      setIsDetailModalOpen(true);
+      router.push(`/applications/${appId}`);
     }
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   const handleAddClick = () => {
     setSelectedApplication(null);
@@ -559,13 +560,13 @@ export default function ApplicationsPage() {
     <div className="p-6">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 border-b border-gray-100 dark:border-gray-800">
+      <div className="w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-lg font-semibold text-gray-800 dark:text-white">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Candidatures
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               Gérez les candidatures
             </p>
           </div>
@@ -585,12 +586,12 @@ export default function ApplicationsPage() {
           </div>
         </div>
 
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800">
+        <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <div>
               <input
                 type="text"
-                placeholder="Rechercher dans les notes..."
+                placeholder="Rechercher par nom, poste ou code CV (CV-00001)..."
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -736,61 +737,18 @@ export default function ApplicationsPage() {
               />
             )}
             emptyMessage="Aucune application trouvée"
-            renderRowTooltip={(row: Recruiter) => {
-            const cv = row.cv as { candidate_first_name?: string; candidate_last_name?: string; candidate_email?: string } | undefined;
-            const request = row.request as { title?: string; reference?: string; client?: { name?: string } } | undefined;
-            const recruiter = row.recruiter as { first_name?: string; last_name?: string } | undefined;
-            const candidateName = cv ? `${cv.candidate_first_name || ""} ${cv.candidate_last_name || ""}`.trim() : "-";
-            const recruiterName = recruiter ? `${recruiter.first_name || ""} ${recruiter.last_name || ""}`.trim() : null;
-            return (
-              <div className="w-72 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 text-sm">
-                <div className="font-semibold text-gray-900 dark:text-white mb-1">{candidateName}</div>
-                {cv?.candidate_email && (
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">{cv.candidate_email}</div>
-                )}
-                <div className="space-y-1.5">
-                  {request?.title && (
-                    <div className="flex gap-2">
-                      <span className="text-gray-400 shrink-0">Demande</span>
-                      <span className="text-gray-700 dark:text-gray-300 truncate">{request.title}</span>
-                    </div>
-                  )}
-                  {request?.client?.name && (
-                    <div className="flex gap-2">
-                      <span className="text-gray-400 shrink-0">Client</span>
-                      <span className="text-gray-700 dark:text-gray-300">{request.client.name}</span>
-                    </div>
-                  )}
-                  <div className="flex gap-2 items-center">
-                    <span className="text-gray-400 shrink-0">Statut</span>
-                    <span className="text-gray-700 dark:text-gray-300">{row.status || "-"}</span>
-                  </div>
-                  {recruiterName && (
-                    <div className="flex gap-2">
-                      <span className="text-gray-400 shrink-0">Créé par</span>
-                      <span className="text-gray-700 dark:text-gray-300">{recruiterName}</span>
-                    </div>
-                  )}
-                  {row.recruiter_notes && (
-                    <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
-                      {row.recruiter_notes}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          }}
         />
         </div>
 
         {data && data.pagination && (
-          <div className="p-5 border-t border-gray-100 dark:border-gray-800">
+          <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
             <Pagination
               currentPage={page}
               totalPages={data.pagination.totalPages}
               totalItems={data.pagination.total}
               itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
+              onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
             />
           </div>
         )}

@@ -1,7 +1,6 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import QRCode from "qrcode";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -11,31 +10,13 @@ export default function PublicOfferDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
-  const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
 
   const { data: offer, isLoading } = useGetPublicJobOfferByIdQuery(id);
 
-  const publicUrl = offer?.public_slug 
-    ? `${window.location.origin}/apply/${offer.public_slug}` 
+  const publicUrl = offer?.public_slug && typeof window !== "undefined"
+    ? `${window.location.origin}/apply/${offer.public_slug}`
     : "";
-
-  useEffect(() => {
-    if (offer?.public_slug && canvasRef.current) {
-      const url = `${window.location.origin}/apply/${offer.public_slug}`;
-      setQrCodeUrl(url);
-      
-      QRCode.toCanvas(canvasRef.current, url, {
-        width: 300,
-        margin: 2,
-        color: {
-          dark: offer.public_brand_color || "#3B82F6",
-          light: "#FFFFFF",
-        },
-      });
-    }
-  }, [offer]);
 
   const addToast = (
     variant: "success" | "error" | "warning" | "info",
@@ -53,16 +34,6 @@ export default function PublicOfferDetailPage() {
   const copyLink = () => {
     navigator.clipboard.writeText(publicUrl);
     addToast("success", "Lien copié", "Le lien a été copié dans le presse-papier");
-  };
-
-  const downloadQRCode = () => {
-    if (!canvasRef.current) return;
-    
-    const link = document.createElement("a");
-    link.download = `qr-code-${offer?.public_slug}.png`;
-    link.href = canvasRef.current.toDataURL();
-    link.click();
-    addToast("success", "QR Code téléchargé", "Le QR code a été téléchargé");
   };
 
   if (isLoading) {
@@ -166,14 +137,18 @@ export default function PublicOfferDetailPage() {
                     Compétences requises
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {offer.required_skills.map((skill, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 rounded-full text-sm"
-                      >
-                        {skill}
-                      </span>
-                    ))}
+                    {offer.required_skills.map((skill: unknown, index: number) => {
+                      const label = typeof skill === "string" ? skill : (skill as { name?: string })?.name;
+                      if (!label) return null;
+                      return (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 rounded-full text-sm"
+                        >
+                          {label}
+                        </span>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -227,29 +202,8 @@ export default function PublicOfferDetailPage() {
           </div>
         </div>
 
-        {/* Colonne QR Code */}
+        {/* Colonne latérale */}
         <div className="space-y-6">
-          {/* QR Code */}
-          <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              QR Code
-            </h2>
-            
-            <div className="flex flex-col items-center">
-              <div className="bg-white p-4 rounded-lg border-2 border-gray-200 mb-4">
-                <canvas ref={canvasRef} />
-              </div>
-              
-              <Button onClick={downloadQRCode} className="w-full mb-3">
-                Télécharger QR Code
-              </Button>
-              
-              <p className="text-xs text-center text-gray-500 dark:text-gray-400">
-                Utilisez ce QR code sur vos affiches, salons, LinkedIn, etc.
-              </p>
-            </div>
-          </div>
-
           {/* Lien public */}
           <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">

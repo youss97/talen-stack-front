@@ -62,6 +62,7 @@ export default function CVExtractPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [position, setPosition] = useState("");
+  const [profileTitle, setProfileTitle] = useState(""); // Intitulé du CV (métier/titre)
   const [totalExperience, setTotalExperience] = useState<string>("");
   const [industry, setIndustry] = useState("");
   const [specialty, setSpecialty] = useState("");
@@ -110,6 +111,7 @@ export default function CVExtractPage() {
         setEmail(cv.candidate_email || "");
         setPhone(cv.candidate_phone || "");
         setPosition(cv.last_position || "");
+        setProfileTitle(cv.profile_title || cv.last_position || "");
         setTotalExperience(cv.total_experience != null ? String(cv.total_experience) : "");
         setIndustry(cv.industry_experience || "");
         setSpecialty(cv.specialty || "");
@@ -167,7 +169,11 @@ export default function CVExtractPage() {
       }
       if (data.email) setEmail(data.email);
       if (data.phone) setPhone(data.phone);
-      if (data.current_position && data.current_position !== "Non spécifié") setPosition(data.current_position);
+      if (data.current_position && data.current_position !== "Non spécifié") {
+        const cp = data.current_position;
+        setPosition(cp);
+        setProfileTitle((prev) => prev || cp);
+      }
       if (data.experience_years) setTotalExperience(String(data.experience_years));
       if (data.industry && data.industry !== "Non spécifié") setIndustry(data.industry);
       if (data.summary && data.summary !== "Non spécifié" && data.summary !== "Aucun résumé disponible") setSummary(data.summary);
@@ -297,6 +303,7 @@ export default function CVExtractPage() {
           candidate_email: email,
           candidate_phone: phone,
           last_position: position,
+          profile_title: profileTitle || position,
           total_experience: totalExperience ? Number(totalExperience) : undefined,
           industry_experience: industry,
           specialty: specialty || undefined,
@@ -320,6 +327,7 @@ export default function CVExtractPage() {
         formData.append("candidate_email", email);
         formData.append("candidate_phone", phone);
         formData.append("last_position", position);
+        formData.append("profile_title", profileTitle || position);
         if (totalExperience) formData.append("total_experience", totalExperience);
         formData.append("industry_experience", industry);
         if (specialty) formData.append("specialty", specialty);
@@ -469,8 +477,12 @@ export default function CVExtractPage() {
               <input className={inputClass} placeholder="+33 6 12 34 56 78" value={phone} onChange={(e) => setPhone(e.target.value)} />
             </div>
             <div>
-              <Label>Poste actuel / Titre</Label>
+              <Label>Intitulé du poste</Label>
               <input className={inputClass} placeholder="Développeur Full Stack" value={position} onChange={(e) => setPosition(e.target.value)} />
+            </div>
+            <div>
+              <Label>Intitulé du CV <span className="text-gray-400 font-normal">(métier affiché en tête du CV)</span></Label>
+              <input className={inputClass} placeholder="Ingénieur développeur Angular" value={profileTitle} onChange={(e) => setProfileTitle(e.target.value)} />
             </div>
             <div>
               <Label>Années d'expérience</Label>

@@ -11,10 +11,21 @@ import { formatDate } from "@/utils/dateFormat";
 
 const ThreeParticles = dynamic(() => import("@/components/common/ThreeParticles"), { ssr: false });
 
-const BRAND    = "#8AB925";
-const BRAND_DK = "#1c2906";
-const BRAND_LT = "#f5fae8";
-const BRAND_TX = "#5c7d17";
+// Thème par défaut (surchargé par les couleurs de l'offre publique)
+let BRAND    = "#8AB925";
+let BRAND_DK = "#1c2906";
+let BRAND_LT = "#f5fae8";
+let BRAND_TX = "#5c7d17";
+
+function shadeHex(hex: string, percent: number): string {
+  const h = (hex || "").replace("#", "");
+  if (h.length !== 6) return hex;
+  const num = parseInt(h, 16);
+  const r = Math.min(255, Math.max(0, (num >> 16) + Math.round(255 * percent)));
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0xff) + Math.round(255 * percent)));
+  const b = Math.min(255, Math.max(0, (num & 0xff) + Math.round(255 * percent)));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+}
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -238,6 +249,16 @@ export default function PublicApplyPage() {
   const [modalOpen,  setModalOpen]  = useState(false);
   const [submitted,  setSubmitted]  = useState(false);
 
+  // Couleurs paramétrables par l'offre (boutons/accent + fond d'animation 3D)
+  const offerBrand = (offer as unknown as { public_brand_color?: string })?.public_brand_color;
+  const offerBg = (offer as unknown as { public_bg_color?: string })?.public_bg_color;
+  if (offerBrand) {
+    BRAND = offerBrand;
+    BRAND_LT = shadeHex(offerBrand, 0.8);
+    BRAND_TX = shadeHex(offerBrand, -0.3);
+  }
+  BRAND_DK = offerBg || BRAND_DK;
+
   // Société RH = offer.client?.company (la firme de recrutement)
   const rhCompany  = offer?.client?.company;
   const rhName = rhCompany?.name ?? offer?.company?.name ?? offer?.company_name ?? "";
@@ -269,26 +290,30 @@ export default function PublicApplyPage() {
     </div>
   );
 
+  // Champs visibles configurés (vide = tout afficher)
+  const visibleFields: string[] | undefined = (offer as { public_visible_fields?: string[] }).public_visible_fields;
+  const vis = (k: string) => !visibleFields || visibleFields.length === 0 || visibleFields.includes(k);
+
   const infoGrid = [
-    offer.reference         && { icon:"🔖", label:"Référence",       value: offer.reference },
-    offer.contract_type     && { icon:"📋", label:"Contrat",         value: offer.contract_type },
-    offer.location          && { icon:"📍", label:"Lieu",            value: offer.location },
-    offer.min_experience    && { icon:"🎯", label:"Expérience",      value: `${offer.min_experience} an(s) min.` },
-    (offer.min_salary || offer.max_salary) && {
+    vis("reference") && offer.reference         && { icon:"🔖", label:"Référence",       value: offer.reference },
+    vis("contract_type") && offer.contract_type && { icon:"📋", label:"Contrat",         value: offer.contract_type },
+    vis("location") && offer.location           && { icon:"📍", label:"Lieu",            value: offer.location },
+    vis("min_experience") && offer.min_experience && { icon:"🎯", label:"Expérience",    value: `${offer.min_experience} an(s) min.` },
+    vis("salary") && (offer.min_salary || offer.max_salary) && {
       icon:"💰", label:"Salaire",
       value: offer.min_salary && offer.max_salary
         ? `${offer.min_salary} – ${offer.max_salary}`
         : offer.min_salary ? `À partir de ${offer.min_salary}` : `Jusqu'à ${offer.max_salary}`,
     },
-    offer.contract_duration && { icon:"⏱",  label:"Durée",          value: offer.contract_duration },
-    offer.remote_possible !== undefined && {
+    vis("contract_duration") && offer.contract_duration && { icon:"⏱",  label:"Durée",  value: offer.contract_duration },
+    vis("remote_possible") && offer.remote_possible !== undefined && {
       icon:"🏠", label:"Télétravail", value: offer.remote_possible ? "Possible" : "Non",
     },
-    offer.deadline && { icon:"⏳", label:"Date limite",
+    vis("deadline") && offer.deadline && { icon:"⏳", label:"Date limite",
       value: formatDate(offer.deadline, { day:"numeric", month:"long", year:"numeric" }) },
-    offer.desired_start_date && { icon:"🚀", label:"Début souhaité",
+    vis("desired_start_date") && offer.desired_start_date && { icon:"🚀", label:"Début souhaité",
       value: formatDate(offer.desired_start_date, { day:"numeric", month:"long", year:"numeric" }) },
-    offer.client?.industry  && { icon:"🏭", label:"Secteur",         value: offer.client.industry },
+    vis("industry") && offer.client?.industry  && { icon:"🏭", label:"Secteur",         value: offer.client.industry },
   ].filter(Boolean) as { icon:string; label:string; value:string }[];
 
   return (
@@ -341,17 +366,17 @@ export default function PublicApplyPage() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-wrap items-center justify-center gap-3 mb-8"
           >
-            {offer.location && (
+            {vis("location") && offer.location && (
               <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-white/80 bg-white/10 border border-white/10 backdrop-blur-sm">
                 📍 {offer.location}
               </span>
             )}
-            {offer.contract_type && (
+            {vis("contract_type") && offer.contract_type && (
               <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-white/80 bg-white/10 border border-white/10 backdrop-blur-sm">
                 📋 {offer.contract_type}
               </span>
             )}
-            {offer.min_experience && (
+            {vis("min_experience") && offer.min_experience && (
               <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-white/80 bg-white/10 border border-white/10 backdrop-blur-sm">
                 🎯 {offer.min_experience} an(s) exp.
               </span>
@@ -406,6 +431,7 @@ export default function PublicApplyPage() {
           <div className="lg:col-span-2 space-y-6">
 
             {/* Description */}
+            {vis("description") && offer.description && (
             <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0}
               className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
               <h2 className="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2">
@@ -416,9 +442,10 @@ export default function PublicApplyPage() {
                 {offer.description}
               </p>
             </motion.div>
+            )}
 
             {/* Compétences */}
-            {offer.required_skills && offer.required_skills.length > 0 && (
+            {vis("required_skills") && offer.required_skills && offer.required_skills.length > 0 && (
               <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={1}
                 className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
                 <h2 className="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2">
@@ -426,16 +453,20 @@ export default function PublicApplyPage() {
                   Compétences requises
                 </h2>
                 <div className="flex flex-wrap gap-2">
-                  {offer.required_skills.map((skill: string, i: number) => (
-                    <motion.span key={i}
-                      initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.15 + i * 0.05 }}
-                      className="px-4 py-2 rounded-xl text-sm font-semibold"
-                      style={{ background: BRAND_LT, color: BRAND_TX }}
-                    >
-                      {skill}
-                    </motion.span>
-                  ))}
+                  {offer.required_skills.map((skill: unknown, i: number) => {
+                    const label = typeof skill === "string" ? skill : (skill as { name?: string })?.name;
+                    if (!label) return null;
+                    return (
+                      <motion.span key={i}
+                        initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.15 + i * 0.05 }}
+                        className="px-4 py-2 rounded-xl text-sm font-semibold"
+                        style={{ background: BRAND_LT, color: BRAND_TX }}
+                      >
+                        {label}
+                      </motion.span>
+                    );
+                  })}
                 </div>
               </motion.div>
             )}
@@ -497,12 +528,13 @@ export default function PublicApplyPage() {
 
       {/* ── Footer ── */}
       <footer className="border-t border-gray-100 bg-white mt-8">
-        <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-center text-sm text-gray-400">
+        <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col items-center justify-center gap-1 text-sm text-gray-400">
           {rhName ? (
             <p>© {new Date().getFullYear()} {rhName}. Tous droits réservés.</p>
           ) : (
             <p>© {new Date().getFullYear()}. Tous droits réservés.</p>
           )}
+          <p className="text-xs text-gray-400">Powered by TalentStack</p>
         </div>
       </footer>
     </div>

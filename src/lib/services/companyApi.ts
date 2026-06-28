@@ -108,6 +108,19 @@ export const companyApi = createApi({
       ],
     }),
 
+    // PATCH /company/:id/client-card-fields - Configurer les champs masqués de la fiche client (8.5)
+    updateClientCardFields: builder.mutation<
+      { client_card_hidden_fields: string[] },
+      { id: string; client_card_hidden_fields: string[] }
+    >({
+      query: ({ id, client_card_hidden_fields }) => ({
+        url: `/company/${id}/client-card-fields`,
+        method: "PATCH",
+        body: { client_card_hidden_fields },
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: "Company", id }],
+    }),
+
     // DELETE /company/:id - Delete a company
     deleteCompany: builder.mutation<void, string>({
       query: (id) => ({
@@ -126,5 +139,6 @@ export const {
   useLazyGetCompanyByIdQuery,
   useCreateCompanyMutation,
   useUpdateCompanyMutation,
+  useUpdateClientCardFieldsMutation,
   useDeleteCompanyMutation,
 } = companyApi;

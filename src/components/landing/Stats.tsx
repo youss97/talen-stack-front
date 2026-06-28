@@ -36,7 +36,7 @@ const stats = [
 
 export default function Stats() {
   return (
-    <section id="stats" className="py-20 bg-gradient-to-br from-[#8AB925] to-[#476211]">
+    <section id="stats" className="py-20 bg-gradient-to-br from-[var(--color-brand-500)] to-[var(--color-brand-800)]">
       <div className="landing-container">
         {/* Header */}
         <motion.div
@@ -49,7 +49,7 @@ export default function Stats() {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Des résultats qui parlent d'eux-mêmes
           </h2>
-          <p className="text-xl text-[#d8ecaa] max-w-3xl mx-auto">
+          <p className="text-xl text-[var(--color-brand-100)] max-w-3xl mx-auto">
             Rejoignez des centaines d'entreprises qui ont transformé leur processus de recrutement avec Talent Stack.
           </p>
         </motion.div>
@@ -68,10 +68,10 @@ export default function Stats() {
               <div className="text-4xl md:text-5xl font-bold text-white mb-2">
                 {stat.number}
               </div>
-              <h3 className="text-lg font-semibold text-[#edf5d2] mb-3">
+              <h3 className="text-lg font-semibold text-[var(--color-brand-50)] mb-3">
                 {stat.label}
               </h3>
-              <p className="text-[#d8ecaa] text-sm leading-relaxed">
+              <p className="text-[var(--color-brand-100)] text-sm leading-relaxed">
                 {stat.description}
               </p>
             </motion.div>
@@ -99,7 +99,7 @@ export default function Stats() {
                 </div>
                 <div className="text-left">
                   <div className="text-white font-semibold">{item.title}</div>
-                  <div className="text-[#d8ecaa] text-sm">{item.sub}</div>
+                  <div className="text-[var(--color-brand-100)] text-sm">{item.sub}</div>
                 </div>
               </div>
             ))}

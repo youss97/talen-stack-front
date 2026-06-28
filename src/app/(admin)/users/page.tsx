@@ -62,6 +62,7 @@ export default function UsersPage() {
   });
   
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
@@ -99,7 +100,7 @@ export default function UsersPage() {
 
   const { data, isLoading, isFetching } = useGetUsersQuery({
     page,
-    limit: 5,
+    limit,
     search: search || undefined,
     status: statusFilter || undefined,
   });
@@ -310,13 +311,13 @@ export default function UsersPage() {
     <div className="p-6">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 border-b border-gray-100 dark:border-gray-800">
+      <div className="w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-lg font-semibold text-gray-800 dark:text-white">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Utilisateurs
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               Gérez les utilisateurs de la plateforme
             </p>
           </div>
@@ -333,7 +334,7 @@ export default function UsersPage() {
           )}
         </div>
 
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800">
+        <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <input
@@ -399,13 +400,14 @@ export default function UsersPage() {
         />
 
         {data && data.pagination && (
-          <div className="p-5 border-t border-gray-100 dark:border-gray-800">
+          <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
             <Pagination
               currentPage={page}
               totalPages={data.pagination.totalPages}
               totalItems={data.pagination.total}
               itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
+              onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
             />
           </div>
         )}

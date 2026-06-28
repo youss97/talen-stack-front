@@ -20,9 +20,11 @@ import {
   useChangeApplicationStatusMutation,
   useLazyGetApplicationStatusHistoryQuery,
   useCreateFeedbackMutation,
+  useChangeApplicationStepMutation,
   useSendApplicationEmailMutation,
   useGetRecruiterByIdQuery,
 } from "@/lib/services/recruiterApi";
+import WorkflowStepper from "./WorkflowStepper";
 import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
 import { useCreateInterviewMutation, useGetApplicationInterviewsQuery, useUpdateInterviewNotesMutation, useCancelInterviewMutation } from "@/lib/services/interviewApi";
 import { formatDateTime } from "@/utils/dateFormat";
@@ -34,6 +36,7 @@ interface RecruiterDetailModalProps {
   isLoading?: boolean;
   onStatusUpdate?: (recruiterId: string, newStatus: string) => Promise<void>;
   canAddFeedback?: boolean;
+  asPage?: boolean; // 3.1 — rendu en page dédiée (sans overlay)
 }
 
 export default function RecruiterDetailModal({
@@ -43,6 +46,7 @@ export default function RecruiterDetailModal({
   isLoading: externalLoading = false,
   onStatusUpdate,
   canAddFeedback = true,
+  asPage = false,
 }: RecruiterDetailModalProps) {
   // Utiliser la query pour récupérer les données en temps réel
   const { data: recruiter, isLoading: isLoadingRecruiter } = useGetRecruiterByIdQuery(
@@ -111,6 +115,34 @@ export default function RecruiterDetailModal({
   const [getHistory, { data: statusHistory, isLoading: isLoadingHistory }] = 
     useLazyGetApplicationStatusHistoryQuery();
   const [createFeedback, { isLoading: isCreatingFeedback }] = useCreateFeedbackMutation();
+  const [changeStep, { isLoading: isChangingStep }] = useChangeApplicationStepMutation();
+
+  const handleChangeStep = async (step: string, feedbackDescription?: string) => {
+    if (!recruiter) return;
+    const terminal = ["Accepté", "KO", "Désistement"].includes(step);
+    try {
+      await changeStep({
+        id: recruiter.id,
+        step,
+        feedback_description: feedbackDescription,
+        ...(terminal ? { status: step } : {}),
+      }).unwrap();
+      success("Étape mise à jour", `La candidature est passée à « ${step} »`);
+    } catch {
+      showError("Erreur", "Impossible de changer l'étape");
+    }
+  };
+
+  // Ajouter un feedback à une étape SANS changer l'étape courante
+  const handleAddStepFeedback = async (step: string, description: string) => {
+    if (!recruiter) return;
+    try {
+      await createFeedback({ id: recruiter.id, title: `Feedback — ${step}`, description, step }).unwrap();
+      success("Feedback ajouté", `Feedback enregistré pour l'étape « ${step} »`);
+    } catch {
+      showError("Erreur", "Impossible d'ajouter le feedback");
+    }
+  };
   const [sendEmail, { isLoading: isSendingEmail }] = useSendApplicationEmailMutation();
   const [createInterview, { isLoading: isCreatingInterview }] = useCreateInterviewMutation();
   const [updateInterviewNotes, { isLoading: isUpdatingNotes }] = useUpdateInterviewNotesMutation();
@@ -325,7 +357,13 @@ export default function RecruiterDetailModal({
     <>
     <ToastContainer toasts={toasts} onRemove={removeToast} />
     
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      inline={asPage}
+      showCloseButton={!asPage}
+      className={asPage ? "max-w-4xl mx-auto flex flex-col" : "max-w-3xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive"}
+    >
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
           Détails de la candidature
@@ -622,6 +660,43 @@ export default function RecruiterDetailModal({
                       )}
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Workflow / étapes (3.2/3.3) — toujours affiché (fallback si la demande n'a pas d'étapes) */}
+            <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                Workflow du recrutement
+              </h3>
+              <WorkflowStepper
+                steps={recruiter.request?.workflow_steps || []}
+                currentStep={recruiter.current_step}
+                canEdit={canAddFeedback}
+                isSaving={isChangingStep}
+                onChangeStep={handleChangeStep}
+                onAddFeedback={handleAddStepFeedback}
+                isAddingFeedback={isCreatingFeedback}
+              />
+            </div>
+
+            {/* Langues */}
+            {recruiter.languages && recruiter.languages.filter(l => l && l.language).length > 0 && (
+              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Langues
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {recruiter.languages
+                    .filter(l => l && l.language)
+                    .map((l, i) => (
+                      <span
+                        key={i}
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                      >
+                        {l.language} — {l.level}/5
+                      </span>
+                    ))}
                 </div>
               </div>
             )}

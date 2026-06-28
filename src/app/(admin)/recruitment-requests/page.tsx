@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -29,6 +30,7 @@ import type { CreateApplicationRequestFormData } from "@/validations/application
 import { getApiErrorMessage } from "@/utils/errorMessages";
 
 export default function RecruitmentPage() {
+  const router = useRouter();
   const { canCreate, canUpdate, canDelete } = useActions("/recruitment-requests");
   const canAssign = canUpdate;
   const dispatch = useAppDispatch();
@@ -74,7 +76,7 @@ export default function RecruitmentPage() {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
-  const limit = 5;
+  const [limit, setLimit] = useState(5);
 
   const { data, isLoading, isFetching, refetch } = useGetApplicationRequestsQuery({
     page,
@@ -223,6 +225,7 @@ export default function RecruitmentPage() {
         if (formData.remote_days_per_week !== undefined) updateData.remote_days_per_week = formData.remote_days_per_week;
         if (formData.remote_possible !== undefined) updateData.remote_possible = formData.remote_possible;
         if (formData.languages) updateData.languages = formData.languages;
+        if ((formData as any).workflow_steps) updateData.workflow_steps = (formData as any).workflow_steps;
         if (formData.benefits) updateData.benefits = formData.benefits;
         if (formData.bonuses) updateData.bonuses = formData.bonuses;
         if (formData.variables) updateData.variables = formData.variables;
@@ -253,6 +256,7 @@ export default function RecruitmentPage() {
           country: formData.country,
           work_type: formData.work_type,
           languages: formData.languages,
+          workflow_steps: (formData as any).workflow_steps,
           priority: formData.priority,
           number_of_profiles: formData.number_of_profiles,
         };
@@ -571,12 +575,12 @@ export default function RecruitmentPage() {
     <div>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="px-5 py-4 sm:px-6 sm:py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="w-full">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/95">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Demandes de recrutement
-            </h3>
+            </h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Gérez les demandes de recrutement de vos clients
             </p>
@@ -595,7 +599,7 @@ export default function RecruitmentPage() {
           </div>
         </div>
 
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800">
+        <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <input
@@ -692,71 +696,23 @@ export default function RecruitmentPage() {
             onView={handleRowClick}
             onEdit={canUpdate ? handleEditClick : undefined}
             onDelete={canDelete ? handleDeleteClick : undefined}
-            customActions={canAssign ? [{ label: "Affecter", icon: <AssignIcon />, onClick: handleAssignClick }] : undefined}
+            customActions={[
+              { label: "Kanban", icon: <KanbanIcon />, onClick: (row: ApplicationRequest) => router.push(`/recruitment-requests/${row.id}/kanban`) },
+              ...(canAssign ? [{ label: "Affecter", icon: <AssignIcon />, onClick: handleAssignClick }] : []),
+            ]}
             emptyMessage="Aucune demande trouvée"
-            renderRowTooltip={(row: ApplicationRequest) => {
-            const managerName = row.manager ? `${row.manager.first_name || ""} ${row.manager.last_name || ""}`.trim() : null;
-            const skills = Array.isArray(row.required_skills) ? row.required_skills.slice(0, 3).map((s) => typeof s === "string" ? s : (s as { name: string }).name) : [];
-            const priorityColors: Record<string, string> = {
-              low: "text-gray-500", normal: "text-blue-500",
-              high: "text-orange-500", urgent: "text-red-500",
-            };
-            return (
-              <div className="w-72 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 text-sm">
-                <div className="font-semibold text-gray-900 dark:text-white mb-0.5 truncate">{row.title || "-"}</div>
-                <div className="text-xs text-gray-400 mb-2">Réf: {row.reference || "-"}</div>
-                <div className="space-y-1.5">
-                  {row.client?.name && (
-                    <div className="flex gap-2">
-                      <span className="text-gray-400 shrink-0">Client</span>
-                      <span className="text-gray-700 dark:text-gray-300">{row.client.name}</span>
-                    </div>
-                  )}
-                  <div className="flex gap-2">
-                    <span className="text-gray-400 shrink-0">Contrat</span>
-                    <span className="text-gray-700 dark:text-gray-300">{(row.contract_types && row.contract_types.length > 0 ? row.contract_types.join(", ") : row.contract_type) || "-"}</span>
-                  </div>
-                  <div className="flex gap-2 items-center">
-                    <span className="text-gray-400 shrink-0">Priorité</span>
-                    <span className={`font-medium ${priorityColors[row.priority] || ""}`}>{row.priority || "-"}</span>
-                  </div>
-                  {managerName && (
-                    <div className="flex gap-2">
-                      <span className="text-gray-400 shrink-0">Créé par</span>
-                      <span className="text-gray-700 dark:text-gray-300">{managerName}</span>
-                    </div>
-                  )}
-                  {skills.length > 0 && (
-                    <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
-                      <div className="flex flex-wrap gap-1">
-                        {skills.map((s, i) => (
-                          <span key={i} className="px-2 py-0.5 text-xs rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">
-                            {s}
-                          </span>
-                        ))}
-                        {row.required_skills.length > 3 && (
-                          <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800">
-                            +{row.required_skills.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          }}
         />
         </div>
 
         {data && data.pagination && (
-          <div className="p-5 border-t border-gray-100 dark:border-gray-800">
+          <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
             <Pagination
               currentPage={page}
               totalPages={data.pagination.totalPages}
               totalItems={data.pagination.total}
               itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
+              onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
             />
           </div>
         )}
@@ -823,6 +779,14 @@ function PlusIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+}
+
+function KanbanIcon() {
+  return (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5h4v14H4zM10 5h4v9h-4zM16 5h4v6h-4z" />
     </svg>
   );
 }

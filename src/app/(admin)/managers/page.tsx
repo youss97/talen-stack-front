@@ -25,6 +25,7 @@ import { getApiErrorMessage } from "@/utils/errorMessages";
 export default function ManagersPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/managers");
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [selectedClientId, setSelectedClientId] = useState<string>("");
@@ -50,7 +51,7 @@ export default function ManagersPage() {
     {
       clientId: selectedClientId,
       page,
-      limit: 5,
+      limit,
       search: search || undefined,
       status: statusFilter || undefined,
     },
@@ -301,10 +302,9 @@ export default function ManagersPage() {
 
       {selectedClientId ? (
         <>
-          {/* Table Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            {selectedClient?.status === 'inactive' && (
-              <div className="p-4 bg-warning-50 dark:bg-warning-900/20 border-b border-warning-200 dark:border-warning-800">
+          {/* Table */}
+          {selectedClient?.status === 'inactive' && (
+              <div className="mb-4 rounded-xl p-4 bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800">
                 <div className="flex items-center gap-2 text-warning-800 dark:text-warning-200">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -324,17 +324,17 @@ export default function ManagersPage() {
               onEdit={canUpdate && canToggleManagerStatus ? handleEditClick : undefined}
               onDelete={canDelete && canToggleManagerStatus ? handleDeleteClick : undefined}
             />
-          </div>
 
           {/* Pagination */}
           {data && data.pagination && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+            <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
               <Pagination
                 currentPage={page}
                 totalPages={data.pagination.totalPages}
                 totalItems={data.pagination.total}
                 itemsPerPage={data.pagination.limit}
                 onPageChange={setPage}
+                onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
               />
             </div>
           )}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -7,6 +7,7 @@ import { useSidebar } from "../context/SidebarContext";
 import { useNavigation } from "@/hooks/useNavigation";
 import { HorizontaLDots } from "../icons/index";
 import type { NavItem } from "./nav-config";
+import { getSidebarGroupOrder, SIDEBAR_GROUP_EVENT } from "@/lib/sidebarOrder";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store";
@@ -34,6 +35,37 @@ const AppSidebar: React.FC = () => {
   const isActive = useCallback((path: string) => path === pathname, [pathname]);
   const showFull = isExpanded || isHovered || isMobileOpen;
 
+  // Ordre des MODULES (groupes) configuré par l'utilisateur (page « Ordre de la sidebar »)
+  const [groupOrder, setGroupOrder] = useState<string[]>([]);
+  useEffect(() => {
+    const read = () => setGroupOrder(getSidebarGroupOrder());
+    read();
+    window.addEventListener(SIDEBAR_GROUP_EVENT, read);
+    window.addEventListener("storage", read);
+    return () => {
+      window.removeEventListener(SIDEBAR_GROUP_EVENT, read);
+      window.removeEventListener("storage", read);
+    };
+  }, []);
+
+  // Regrouper les items par groupe, puis ordonner les groupes selon la préférence
+  // (fallback : ordre d'apparition piloté par display_order).
+  const groupedNav = useMemo(() => {
+    const map: Record<string, NavItem[]> = {};
+    const appearance: string[] = [];
+    navItems.forEach((it) => {
+      const g = it.group || "Pilotage";
+      if (!map[g]) { map[g] = []; appearance.push(g); }
+      map[g].push(it);
+    });
+    const present = appearance;
+    const ordered = [
+      ...groupOrder.filter((g) => present.includes(g)),
+      ...present.filter((g) => !groupOrder.includes(g)),
+    ];
+    return ordered.map((g) => ({ group: g, items: map[g] }));
+  }, [navItems, groupOrder]);
+
   const companyLogoSrc = getImageUrl(user?.company?.logo_path ?? null);
   const companyName: string | null = user?.company?.name ?? null;
   // Afficher le branding entreprise pour tous les non-super_admin qui ont une company
@@ -42,7 +74,7 @@ const AppSidebar: React.FC = () => {
 
   const renderMenuItems = (items: NavItem[]) => (
     <motion.ul
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-1"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -205,23 +237,25 @@ const AppSidebar: React.FC = () => {
       {/* Nav items */}
       <div className="flex flex-col flex-1 overflow-y-auto no-scrollbar duration-300 ease-linear">
         <nav className="mb-6">
-          <div className="flex flex-col gap-4">
-            <div>
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !showFull ? "lg:justify-center" : "justify-start"
-                }`}
-              >
-                {showFull ? (
-                  <span className="text-[10px] font-semibold tracking-widest text-gray-400/80">
-                    Navigation
-                  </span>
-                ) : (
-                  <HorizontaLDots />
-                )}
-              </h2>
-              {renderMenuItems(navItems)}
-            </div>
+          <div className="flex flex-col gap-7">
+            {groupedNav.map((section) => (
+              <div key={section.group}>
+                <h2
+                  className={`mb-3 flex text-xs uppercase leading-[20px] text-gray-400 ${
+                    !showFull ? "lg:justify-center" : "justify-start"
+                  }`}
+                >
+                  {showFull ? (
+                    <span className="text-[10px] font-bold tracking-widest text-gray-400/70">
+                      {section.group}
+                    </span>
+                  ) : (
+                    <HorizontaLDots />
+                  )}
+                </h2>
+                {renderMenuItems(section.items)}
+              </div>
+            ))}
           </div>
         </nav>
       </div>

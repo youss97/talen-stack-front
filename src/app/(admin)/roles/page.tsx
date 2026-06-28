@@ -26,6 +26,7 @@ import { getApiErrorMessage } from "@/utils/errorMessages";
 export default function RolesPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/roles");
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
@@ -69,7 +70,7 @@ export default function RolesPage() {
 
   const { data, isLoading, isFetching } = useGetRolesQuery({
     page,
-    limit: 5, // Standardisé à 5 pour toutes les pages
+    limit,
     search: debouncedSearch || undefined,
   });
 
@@ -317,10 +318,10 @@ export default function RolesPage() {
     <div className="p-6">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 border-b border-gray-100 dark:border-gray-800">
+      <div className="w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-lg font-semibold text-gray-800 dark:text-white">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Rôles et permissions
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -334,7 +335,7 @@ export default function RolesPage() {
           )}
         </div>
 
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800">
+        <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
           <input
             type="text"
             placeholder="Rechercher un rôle..."
@@ -356,13 +357,14 @@ export default function RolesPage() {
         />
 
         {data && data.pagination && data.pagination.total >= 0 && (
-          <div className="p-5 border-t border-gray-100 dark:border-gray-800">
+          <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
             <Pagination
               currentPage={page}
               totalPages={data.pagination.totalPages}
               totalItems={data.pagination.total}
               itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
+              onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
             />
           </div>
         )}

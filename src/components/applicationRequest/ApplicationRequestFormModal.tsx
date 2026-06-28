@@ -23,6 +23,7 @@ import {
 import { useGetContractTypesQuery } from "@/lib/services/contractTypeApi";
 import { getCurrencyByCode, DEFAULT_CURRENCY } from "@/lib/currencies";
 import StarRating from "@/components/form/StarRating";
+import WorkflowStepsEditor, { type WorkflowStep } from "@/components/applicationRequest/WorkflowStepsEditor";
 import type { SkillWithLevel, SkillItem } from "@/types/applicationRequest";
 import { getSkillName } from "@/types/applicationRequest";
 
@@ -77,6 +78,10 @@ export default function ApplicationRequestFormModal({
   // Use useState for skills — more reliable than watch()+setValue() for form submission
   const [skillsState, setSkillsState] = useState<SkillWithLevel[]>([]);
   const [softSkillsState, setSoftSkillsState] = useState<string[]>([]);
+  // 1.3 — Niveau (étoiles) par langue
+  const [languageLevels, setLanguageLevels] = useState<Record<string, number>>({});
+  // 1.2 — Étapes du workflow
+  const [workflowSteps, setWorkflowSteps] = useState<WorkflowStep[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("France");
 
   const {
@@ -179,6 +184,14 @@ export default function ApplicationRequestFormModal({
       setSkillsState(parsedSkills);
       setSoftSkillsState((applicationRequest.soft_skills as string[] | undefined) || []);
       setSelectedCountry(applicationRequest.country || "France");
+      // 1.3 — niveaux des langues (gère string[] ou {language, level}[])
+      const langLevels: Record<string, number> = {};
+      ((applicationRequest.languages || []) as Array<string | { language: string; level?: number }>).forEach((l) => {
+        if (typeof l === "string") langLevels[l] = 3;
+        else if (l && l.language) langLevels[l.language] = l.level ?? 3;
+      });
+      setLanguageLevels(langLevels);
+      setWorkflowSteps(((applicationRequest as any).workflow_steps as WorkflowStep[]) || []);
       reset({
         client_id: applicationRequest.client_id,
         manager_id: applicationRequest.manager_id,
@@ -199,7 +212,9 @@ export default function ApplicationRequestFormModal({
         work_type: applicationRequest.work_type || "on_site",
         remote_days_per_week: applicationRequest.remote_days_per_week,
         remote_possible: applicationRequest.remote_possible || false,
-        languages: applicationRequest.languages || [],
+        languages: ((applicationRequest.languages || []) as Array<string | { language: string; level?: number }>).map(
+          (l) => (typeof l === "string" ? l : l.language),
+        ),
         soft_skills: (applicationRequest.soft_skills as string[] | undefined) || [],
         benefits: applicationRequest.benefits || "",
         bonuses: applicationRequest.bonuses || "",
@@ -212,6 +227,8 @@ export default function ApplicationRequestFormModal({
     } else if (isOpen) {
       setSkillsState([]);
       setSoftSkillsState([]);
+      setLanguageLevels({});
+      setWorkflowSteps([]);
       setSelectedCountry("France");
       // Réinitialiser le formulaire en mode création
       reset({
@@ -310,6 +327,7 @@ export default function ApplicationRequestFormModal({
       setValue("languages", selectedLanguages.filter(l => l !== lang));
     } else {
       setValue("languages", [...selectedLanguages, lang]);
+      setLanguageLevels((prev) => (prev[lang] ? prev : { ...prev, [lang]: 3 }));
     }
   };
 
@@ -338,6 +356,10 @@ export default function ApplicationRequestFormModal({
           currency,
           required_skills: skillsState,
           soft_skills: softSkillsState,
+          // 1.3 — langues avec niveau (étoiles)
+          languages: ((data.languages as string[]) || []).map((l) => ({ language: l, level: languageLevels[l] ?? 3 })),
+          // 1.2 — étapes du workflow
+          workflow_steps: workflowSteps.filter((s) => s.name.trim()).map((s, i) => ({ name: s.name.trim(), order: i })),
         } as any),
         () => {
           // Scroll to first error when validation fails
@@ -840,10 +862,35 @@ export default function ApplicationRequestFormModal({
                     </button>
                   ))}
                 </div>
+                {/* 1.3 — Niveau requis par langue (étoiles) */}
+                {selectedLanguages.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {selectedLanguages.map((langValue) => {
+                      const label = LANGUAGES.find((l) => l.value === langValue)?.label || langValue;
+                      return (
+                        <div key={langValue} className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2">
+                          <span className="text-sm text-gray-700 dark:text-gray-300">{label}</span>
+                          <StarRating
+                            value={languageLevels[langValue] ?? 3}
+                            onChange={(v) => setLanguageLevels((prev) => ({ ...prev, [langValue]: v }))}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
                 {errors.languages && (
                   <p className="mt-1 text-sm text-error-500">{errors.languages.message}</p>
                 )}
               </div>
+            </div>
+
+            {/* Section 8b: Workflow / étapes (1.2) */}
+            <div>
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+                Workflow du recrutement
+              </h3>
+              <WorkflowStepsEditor value={workflowSteps} onChange={setWorkflowSteps} />
             </div>
 
             {/* Section 9: Avantages */}

@@ -66,9 +66,12 @@ export interface Recruiter {
   // Visibilité
   hide_current_salary_for_recruiters?: boolean;
   
+  // Workflow (3.2)
+  current_step?: string | null;
+
   // Feedbacks
   feedbacks?: ApplicationFeedback[];
-  
+
   cv?: {
     id: string;
     candidate_first_name?: string;
@@ -88,6 +91,7 @@ export interface Recruiter {
     status?: string;
     contract_type?: string;
     languages?: string[];
+    workflow_steps?: Array<{ name: string; order: number }>;
     client?: {
       id: string;
       name: string;
@@ -235,6 +239,7 @@ export interface ApplicationFeedback {
   application_id: string;
   title: string;
   description: string;
+  step?: string | null;
   created_at: string;
   created_by: {
     id: string;

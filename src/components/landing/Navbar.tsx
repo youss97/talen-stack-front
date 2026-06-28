@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Button from '@/components/ui/button/Button';
 import { motion } from 'framer-motion';
 
-export default function Navbar() {
+export default function Navbar({ logoUrl, siteName = "Talent Stack" }: { logoUrl?: string; siteName?: string } = {}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -19,10 +19,17 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-[#8AB925] rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">TS</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">Talent Stack</span>
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoUrl} alt={siteName} className="h-9 max-w-[160px] object-contain" />
+              ) : (
+                <>
+                  <div className="w-8 h-8 bg-[var(--color-brand-500)] rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">TS</span>
+                  </div>
+                  <span className="text-xl font-bold text-gray-900">{siteName}</span>
+                </>
+              )}
             </Link>
           </div>
 
@@ -37,7 +44,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-gray-600 hover:text-[#8AB925] transition-colors"
+                className="text-gray-600 hover:text-[var(--color-brand-500)] transition-colors"
               >
                 {link.label}
               </Link>
@@ -58,7 +65,7 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-600 hover:text-[#8AB925] focus:outline-none"
+              className="text-gray-600 hover:text-[var(--color-brand-500)] focus:outline-none"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isMenuOpen ? (
@@ -89,7 +96,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block px-3 py-2 text-gray-600 hover:text-[#8AB925]"
+                  className="block px-3 py-2 text-gray-600 hover:text-[var(--color-brand-500)]"
                 >
                   {link.label}
                 </Link>

@@ -46,19 +46,8 @@ export default function PublicStatusCell({ row, optimisticState, onToggle }: Pub
           <span className="text-xs text-gray-600 dark:text-gray-400">
             👁️ {row.public_views_count || 0} vues
           </span>
-          {row.public_slug && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                window.open(`/public-offers/${row.id}`, '_blank');
-              }}
-              className="text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 font-medium hover:underline"
-            >
-              📱 QR Code
-            </button>
-          )}
         </div>
-        
+
         {/* Bouton désactiver */}
         <button
           onClick={handleToggle}

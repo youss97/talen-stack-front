@@ -70,7 +70,7 @@ export default function Features() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group p-8 rounded-2xl border border-gray-100 hover:border-[#8AB925]/40 hover:shadow-lg transition-all duration-300"
+              className="group p-8 rounded-2xl border border-gray-100 hover:border-[var(--color-brand-500)]/40 hover:shadow-lg transition-all duration-300"
             >
               {/* Icon */}
               <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
@@ -91,7 +91,7 @@ export default function Features() {
               <ul className="space-y-2">
                 {feature.benefits.map((benefit, idx) => (
                   <li key={idx} className="flex items-center text-sm text-gray-500">
-                    <svg className="w-4 h-4 text-[#8AB925] mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4 text-[var(--color-brand-500)] mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                     {benefit}
@@ -110,8 +110,8 @@ export default function Features() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="text-center mt-16"
         >
-          <div className="inline-flex items-center px-6 py-3 rounded-full bg-[#edf5d2] text-[#344a0c] text-sm font-medium">
-            <span className="w-2 h-2 bg-[#8AB925] rounded-full mr-2 animate-pulse"></span>
+          <div className="inline-flex items-center px-6 py-3 rounded-full bg-[var(--color-brand-50)] text-[var(--color-brand-900)] text-sm font-medium">
+            <span className="w-2 h-2 bg-[var(--color-brand-500)] rounded-full mr-2 animate-pulse"></span>
             Et bien plus encore à découvrir...
           </div>
         </motion.div>

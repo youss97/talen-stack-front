@@ -12,14 +12,16 @@ import {
   useTogglePublicJobOfferActiveMutation,
 } from "@/lib/services/publicJobOfferApi";
 import type { PublicJobOffer } from "@/types/publicJobOffer";
+import PublicOfferConfigModal from "@/components/public-offers/PublicOfferConfigModal";
 
 export default function PublicOffersPage() {
   const router = useRouter();
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [configOffer, setConfigOffer] = useState<PublicJobOffer | null>(null);
 
-  const { data, isLoading, isFetching } = useGetPublicJobOffersQuery({
+  const { data, isLoading, isFetching, refetch } = useGetPublicJobOffersQuery({
     page,
     limit: 5,
     search: search || undefined,
@@ -149,19 +151,14 @@ export default function PublicOffersPage() {
       },
     },
     {
-      label: "QR Code",
+      label: "Configurer l'offre publique",
       icon: (
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
       ),
-      onClick: (offer: PublicJobOffer) => {
-        if (offer.is_public && offer.public_slug) {
-          router.push(`/public-offers/${offer.id}`);
-        } else {
-          addToast("warning", "Attention", "Cette offre n'est pas publique ou n'a pas de slug");
-        }
-      },
+      onClick: (offer: PublicJobOffer) => setConfigOffer(offer),
     },
     {
       label: "Basculer statut",
@@ -178,14 +175,14 @@ export default function PublicOffersPage() {
     <div className="p-6">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 border-b border-gray-100 dark:border-gray-800">
+      <div className="w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-lg font-semibold text-gray-800 dark:text-white">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Offres Publiques
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Gérez vos offres d'emploi publiques avec QR code
+              Gérez vos offres d'emploi publiques
             </p>
           </div>
           <Button
@@ -196,7 +193,7 @@ export default function PublicOffersPage() {
           </Button>
         </div>
 
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800">
+        <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
           <div className="grid grid-cols-1 gap-4">
             <div>
               <input
@@ -222,7 +219,7 @@ export default function PublicOffersPage() {
         />
 
         {data && data.pagination && (
-          <div className="p-5 border-t border-gray-100 dark:border-gray-800">
+          <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
             <Pagination
               currentPage={page}
               totalPages={data.pagination.totalPages}
@@ -233,6 +230,16 @@ export default function PublicOffersPage() {
           </div>
         )}
       </div>
+
+      <PublicOfferConfigModal
+        isOpen={!!configOffer}
+        onClose={() => setConfigOffer(null)}
+        offerId={configOffer?.id ?? null}
+        initialVisibleFields={configOffer?.public_visible_fields}
+        initialBrandColor={(configOffer as unknown as { public_brand_color?: string })?.public_brand_color}
+        initialBgColor={(configOffer as unknown as { public_bg_color?: string })?.public_bg_color}
+        onSaved={() => { addToast("success", "Succès", "Configuration de l'offre publique enregistrée"); refetch(); }}
+      />
     </div>
   );
 }

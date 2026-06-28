@@ -7,6 +7,7 @@ import Input from "@/components/form/input/InputField";
 import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
 import StarRating from "@/components/form/StarRating";
+import WorkflowStepsEditor, { type WorkflowStep } from "@/components/applicationRequest/WorkflowStepsEditor";
 
 interface SkillWithLevel { name: string; level: number; }
 
@@ -53,7 +54,7 @@ interface ManagerRequestFormModalProps {
     max_experience?: number;
     number_of_profiles?: number;
     required_skills?: (string | { name: string; level?: number })[];
-    languages?: string[];
+    languages?: Array<string | { language: string; level?: number }>;
     min_salary?: number;
     max_salary?: number;
     daily_rate_min?: number;
@@ -191,6 +192,10 @@ export default function ManagerRequestFormModal({
   const [softSkillInput, setSoftSkillInput] = useState("");
   const [softSkills, setSoftSkills] = useState<string[]>([]);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["Français"]);
+  // 1.3 — Niveau (étoiles) par langue sélectionnée
+  const [languageLevels, setLanguageLevels] = useState<Record<string, number>>({ "Français": 3 });
+  // 1.2 — Étapes du workflow
+  const [workflowSteps, setWorkflowSteps] = useState<WorkflowStep[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("Maroc");
   const [selectedContractTypes, setSelectedContractTypes] = useState<string[]>(["CDI"]);
   const [currency, setCurrency] = useState("MAD");
@@ -253,10 +258,25 @@ export default function ManagerRequestFormModal({
       );
       setSkills(rawSkills);
       setSoftSkills([]);
-      setSelectedLanguages(initialData.languages?.length ? initialData.languages : ["Français"]);
+      // Langues : accepte string[] (ancien format) ou {language, level}[] (1.3)
+      const rawLangs = (initialData.languages as Array<string | { language: string; level?: number }> | undefined) || [];
+      if (rawLangs.length) {
+        const names: string[] = [];
+        const levels: Record<string, number> = {};
+        rawLangs.forEach((l) => {
+          if (typeof l === "string") { names.push(l); levels[l] = 3; }
+          else if (l && l.language) { names.push(l.language); levels[l.language] = l.level ?? 3; }
+        });
+        setSelectedLanguages(names.length ? names : ["Français"]);
+        setLanguageLevels(Object.keys(levels).length ? levels : { "Français": 3 });
+      } else {
+        setSelectedLanguages(["Français"]);
+        setLanguageLevels({ "Français": 3 });
+      }
       setSelectedCountry(initialData.country || "Maroc");
       setSelectedContractTypes(initContractTypes);
       setCurrency((initialData as any).currency || "MAD");
+      setWorkflowSteps(((initialData as any).workflow_steps as WorkflowStep[]) || []);
     } else if (isOpen && !initialData) {
       reset({
         contract_type: "CDI",
@@ -274,6 +294,7 @@ export default function ManagerRequestFormModal({
       setSelectedCountry("Maroc");
       setSelectedContractTypes(["CDI"]);
       setCurrency("MAD");
+      setWorkflowSteps([]);
     }
   }, [isOpen, initialData]);
 
@@ -315,6 +336,8 @@ export default function ManagerRequestFormModal({
     setSelectedLanguages((prev) =>
       prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
     );
+    // Initialiser le niveau par défaut à l'ajout
+    setLanguageLevels((prev) => (prev[lang] ? prev : { ...prev, [lang]: 3 }));
   };
 
   const toggleContractType = (type: string) => {
@@ -336,7 +359,12 @@ export default function ManagerRequestFormModal({
       contract_types: selectedContractTypes,
       required_skills: skills as any,
       soft_skills: softSkills,
-      languages: selectedLanguages.length > 0 ? selectedLanguages : ["Français"],
+      // 1.3 — langues avec niveau (étoiles)
+      languages: (selectedLanguages.length > 0 ? selectedLanguages : ["Français"]).map(
+        (l) => ({ language: l, level: languageLevels[l] ?? 3 }),
+      ),
+      // 1.2 — étapes du workflow (sans les étapes vides)
+      workflow_steps: workflowSteps.filter((s) => s.name.trim()).map((s, i) => ({ name: s.name.trim(), order: i })),
       currency,
     } as any);
     handleClose();
@@ -628,6 +656,25 @@ export default function ManagerRequestFormModal({
                 </button>
               ))}
             </div>
+            {/* 1.3 — Niveau requis par langue (étoiles) */}
+            {selectedLanguages.length > 0 && (
+              <div className="mt-3 space-y-2">
+                {selectedLanguages.map((lang) => (
+                  <div key={lang} className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2">
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{lang}</span>
+                    <StarRating
+                      value={languageLevels[lang] ?? 3}
+                      onChange={(v) => setLanguageLevels((prev) => ({ ...prev, [lang]: v }))}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Workflow / étapes (1.2) */}
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <WorkflowStepsEditor value={workflowSteps} onChange={setWorkflowSteps} />
           </div>
 
           {/* Date de début souhaitée */}

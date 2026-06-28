@@ -20,7 +20,7 @@ export default function IntegrationsPage() {
   // Le manager d'une société liée (client) consulte ses intégrations en lecture seule
   const isClientUser = !!currentUser?.company?.parent_company_id;
   const [page, setPage] = useState(1);
-  const [limit] = useState(5);
+  const [limit, setLimit] = useState(5);
   const [statusFilter, setStatusFilter] = useState<IntegrationStatus | ''>('');
   const [trialFilter, setTrialFilter] = useState<TrialPeriodStatus | ''>('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -179,7 +179,16 @@ export default function IntegrationsPage() {
     {
       key: "status" as keyof Integration,
       header: "Statut",
-      render: (value: unknown) => getStatusBadge(value as IntegrationStatus),
+      render: (value: unknown, row?: Integration) => (
+        <div className="flex items-center gap-1.5">
+          {getStatusBadge(value as IntegrationStatus)}
+          {row?.is_draft && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+              Brouillon
+            </span>
+          )}
+        </div>
+      ),
     },
   ];
 
@@ -189,12 +198,12 @@ export default function IntegrationsPage() {
     <div>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="px-5 py-4 sm:px-6 sm:py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="w-full">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/95">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Gestion des Intégrations
-            </h3>
+            </h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Suivez les intégrations des candidats embauchés et leur période d'essai
             </p>
@@ -267,7 +276,7 @@ export default function IntegrationsPage() {
         )}
 
         {/* Filtres */}
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800">
+        <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <select
@@ -330,13 +339,14 @@ export default function IntegrationsPage() {
         />
 
         {data && data.pagination && (
-          <div className="p-5 border-t border-gray-100 dark:border-gray-800">
+          <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
             <Pagination
               currentPage={page}
               totalPages={data.pagination.totalPages}
               totalItems={data.pagination.total}
               itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
+              onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
             />
           </div>
         )}

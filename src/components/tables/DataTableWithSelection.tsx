@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Table,
   TableHeader,
@@ -8,6 +8,8 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import ActionsMenu from "./ActionsMenu";
+import TableSkeleton from "@/components/common/TableSkeleton";
+import EmptyState from "@/components/common/EmptyState";
 
 export interface Column<T> {
   id?: string;
@@ -35,8 +37,9 @@ export interface DataTableWithSelectionProps<T> {
   actions?: (row: T) => React.ReactNode;
   isLoading?: boolean;
   emptyMessage?: string;
-  renderRowTooltip?: (row: T) => React.ReactNode;
   useActionsMenu?: boolean; // Nouvelle prop pour forcer l'utilisation du menu
+  enableViewToggle?: boolean;
+  defaultView?: "table" | "cards";
 }
 
 function DataTableWithSelection<T extends { id: string }>({
@@ -52,12 +55,12 @@ function DataTableWithSelection<T extends { id: string }>({
   actions,
   isLoading = false,
   emptyMessage = "Aucune donnée disponible",
-  renderRowTooltip,
   useActionsMenu = true, // Par défaut, utiliser le menu d'actions
+  enableViewToggle = true,
+  defaultView = "table",
 }: DataTableWithSelectionProps<T>) {
   const hasActionHandlers = onView || onEdit || onDelete || customActions;
-  const [tooltip, setTooltip] = useState<{ row: T; x: number; y: number } | null>(null);
-  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [view, setView] = useState<"table" | "cards">(defaultView);
 
   // Construire les actions pour le menu
   const buildActionsMenu = useCallback((row: T) => {
@@ -100,22 +103,6 @@ function DataTableWithSelection<T extends { id: string }>({
     return menuActions;
   }, [onView, onEdit, onDelete, customActions]);
 
-  const handleRowMouseEnter = useCallback((row: T, e: React.MouseEvent) => {
-    if (!renderRowTooltip) return;
-    if (hideTimer.current) clearTimeout(hideTimer.current);
-    setTooltip({ row, x: e.clientX, y: e.clientY });
-  }, [renderRowTooltip]);
-
-  const handleRowMouseMove = useCallback((row: T, e: React.MouseEvent) => {
-    if (!renderRowTooltip) return;
-    setTooltip(prev => prev ? { ...prev, x: e.clientX, y: e.clientY } : null);
-  }, [renderRowTooltip]);
-
-  const handleRowMouseLeave = useCallback(() => {
-    if (!renderRowTooltip) return;
-    hideTimer.current = setTimeout(() => setTooltip(null), 100);
-  }, [renderRowTooltip]);
-  
   const getValue = (row: T, key: string): T[keyof T] => {
     const keys = key.split(".");
     let value: unknown = row;
@@ -143,42 +130,99 @@ function DataTableWithSelection<T extends { id: string }>({
   const isAllSelected = data.length > 0 && selectedItems.length === data.length;
   const isIndeterminate = selectedItems.length > 0 && selectedItems.length < data.length;
 
+  const renderActions = (row: T) => (
+    <div onClick={(e) => e.stopPropagation()}>
+      {actions ? (
+        actions(row)
+      ) : useActionsMenu ? (
+        <ActionsMenu actions={buildActionsMenu(row)} />
+      ) : (
+        <div className="flex items-center gap-1">
+          {onView && (
+            <button onClick={() => onView(row)} className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title="Voir les détails"><ViewIcon /></button>
+          )}
+          {onEdit && (
+            <button onClick={() => onEdit(row)} className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title="Modifier"><EditIcon /></button>
+          )}
+          {onDelete && (
+            <button onClick={() => onDelete(row)} className="p-2 text-gray-500 hover:text-error-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title="Supprimer"><TrashIcon /></button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  const ViewToggle = enableViewToggle ? (
+    <div className="mb-3 flex justify-end">
+      <div className="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 p-0.5 bg-gray-50 dark:bg-gray-800">
+        <button onClick={() => setView("table")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "table" ? "bg-white dark:bg-gray-900 text-brand-600 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>Tableau</button>
+        <button onClick={() => setView("cards")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "cards" ? "bg-white dark:bg-gray-900 text-brand-600 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>Cartes</button>
+      </div>
+    </div>
+  ) : null;
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-10">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-gray-200 border-t-brand-500 rounded-full animate-spin"></div>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Chargement...
-          </p>
-        </div>
-      </div>
+      <>
+        {ViewToggle}
+        <TableSkeleton columns={Math.min((columns.length || 5) + 1, 6)} />
+      </>
     );
   }
 
-  const tooltipLeft = tooltip ? Math.min(tooltip.x + 16, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 320) : 0;
-  const tooltipTop = tooltip ? tooltip.y + 16 : 0;
-
   return (
     <>
-    {tooltip && renderRowTooltip && (
-      <div
-        className="fixed z-50 pointer-events-none"
-        style={{ left: tooltipLeft, top: tooltipTop }}
-        onMouseEnter={() => hideTimer.current && clearTimeout(hideTimer.current)}
-        onMouseLeave={() => setTooltip(null)}
-      >
-        {renderRowTooltip(tooltip.row)}
-      </div>
-    )}
-    <div className="w-full overflow-x-auto">
+    {ViewToggle}
+    {view === "cards" ? (
+      data.length === 0 ? (
+        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+          <EmptyState title={emptyMessage} />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+          {data.map((row) => {
+            const [first, ...rest] = columns;
+            const selected = selectedItems.includes(row.id);
+            return (
+              <div
+                key={row.id}
+                onClick={() => onRowClick?.(row)}
+                className={`relative flex flex-col items-center rounded-2xl border p-5 shadow-sm transition-all hover:shadow-lg hover:-translate-y-0.5 ${selected ? "border-brand-300 bg-brand-50 dark:bg-brand-900/10" : "border-gray-100 dark:border-gray-800 bg-white dark:bg-white/[0.03]"} ${onRowClick ? "cursor-pointer" : ""}`}
+              >
+                <div className="absolute left-3 top-3" onClick={(e) => e.stopPropagation()}>
+                  <input type="checkbox" checked={selected} onChange={(e) => handleSelectItem(row.id, e.target.checked)} className="w-4 h-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" />
+                </div>
+                {(actions || hasActionHandlers) && <div className="absolute right-3 top-3">{renderActions(row)}</div>}
+                <div className="flex flex-col items-center text-center text-sm text-gray-800 dark:text-gray-200">
+                  {first && (first.render ? first.render(getValue(row, String(first.key)), row) : String(getValue(row, String(first.key)) ?? ""))}
+                </div>
+                <dl className="mt-4 w-full space-y-2 border-t border-gray-100 dark:border-gray-800 pt-4">
+                  {rest.map((column) => {
+                    const value = getValue(row, String(column.key));
+                    return (
+                      <div key={(column as { id?: string }).id ?? String(column.key)} className="flex items-start justify-between gap-3 text-sm">
+                        <dt className="text-gray-400 dark:text-gray-500 shrink-0">{column.header}</dt>
+                        <dd className="text-right text-gray-700 dark:text-gray-200 min-w-0">
+                          {column.render ? column.render(value, row) : String(value ?? "")}
+                        </dd>
+                      </div>
+                    );
+                  })}
+                </dl>
+              </div>
+            );
+          })}
+        </div>
+      )
+    ) : (
+    <div className="w-full overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
     <div className="inline-block min-w-full align-middle">
       <Table className="border-collapse min-w-full">
-        <TableHeader className="border-b border-gray-100 dark:border-gray-800">
+        <TableHeader className="border-b border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-white/[0.02]">
           <TableRow>
             <TableCell
               isHeader
-              className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400 w-12"
+              className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 w-12"
             >
               <input
                 type="checkbox"
@@ -194,7 +238,7 @@ function DataTableWithSelection<T extends { id: string }>({
               <TableCell
                 key={column.id ?? String(column.key)}
                 isHeader
-                className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap"
+                className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 whitespace-nowrap"
               >
                 {column.header}
               </TableCell>
@@ -202,7 +246,7 @@ function DataTableWithSelection<T extends { id: string }>({
             {(actions || hasActionHandlers) && (
               <TableCell
                 isHeader
-                className="px-5 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap"
+                className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 whitespace-nowrap"
               >
                 Actions
               </TableCell>
@@ -213,10 +257,10 @@ function DataTableWithSelection<T extends { id: string }>({
           {data.length === 0 ? (
             <TableRow>
               <TableCell
-                className="px-5 py-8 text-center text-gray-500 dark:text-gray-400"
+                className="px-5 py-4"
                 colSpan={columns.length + 2}
               >
-                {emptyMessage}
+                <EmptyState title={emptyMessage} />
               </TableCell>
             </TableRow>
           ) : (
@@ -233,9 +277,6 @@ function DataTableWithSelection<T extends { id: string }>({
                     : ""
                 }`}
                 onClick={() => onRowClick?.(row)}
-                onMouseEnter={(e) => handleRowMouseEnter(row, e)}
-                onMouseMove={(e) => handleRowMouseMove(row, e)}
-                onMouseLeave={handleRowMouseLeave}
               >
                 <TableCell className="px-5 py-4 w-12">
                   <div onClick={(e) => e.stopPropagation()}>
@@ -263,67 +304,7 @@ function DataTableWithSelection<T extends { id: string }>({
                 })}
                 {(actions || hasActionHandlers) && (
                   <TableCell className="px-5 py-4">
-                    <div 
-                      onClick={(e) => e.stopPropagation()}
-                      onMouseEnter={(e) => e.stopPropagation()}
-                      onMouseMove={(e) => e.stopPropagation()}
-                      onMouseLeave={(e) => e.stopPropagation()}
-                    >
-                      {actions ? (
-                        actions(row)
-                      ) : useActionsMenu ? (
-                        <ActionsMenu actions={buildActionsMenu(row)} />
-                      ) : (
-                        <div className="flex items-center gap-1">
-                          {onView && (
-                            <button
-                              onClick={() => onView(row)}
-                              className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                              title="Voir les détails"
-                            >
-                              <ViewIcon />
-                            </button>
-                          )}
-                          {onEdit && (
-                            <button
-                              onClick={() => onEdit(row)}
-                              className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                              title="Modifier"
-                            >
-                              <EditIcon />
-                            </button>
-                          )}
-                          {customActions && customActions.map((action, index) => {
-                            const colorClasses = {
-                              default: "text-gray-500 hover:text-brand-500",
-                              primary: "text-blue-500 hover:text-blue-600",
-                              success: "text-green-500 hover:text-green-600",
-                              warning: "text-orange-500 hover:text-orange-600",
-                              error: "text-red-500 hover:text-red-600",
-                            };
-                            return (
-                              <button
-                                key={index}
-                                onClick={() => action.onClick(row)}
-                                className={`p-2 ${colorClasses[action.color || 'default']} hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors`}
-                                title={action.label}
-                              >
-                                {action.icon}
-                              </button>
-                            );
-                          })}
-                          {onDelete && (
-                            <button
-                              onClick={() => onDelete(row)}
-                              className="p-2 text-gray-500 hover:text-error-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                              title="Supprimer"
-                            >
-                              <TrashIcon />
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                    {renderActions(row)}
                   </TableCell>
                 )}
               </TableRow>
@@ -333,6 +314,7 @@ function DataTableWithSelection<T extends { id: string }>({
       </Table>
     </div>
     </div>
+    )}
     </>
   );
 }

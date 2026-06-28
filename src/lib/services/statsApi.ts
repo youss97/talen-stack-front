@@ -36,6 +36,10 @@ export interface DashboardStats {
   integrationsByStatus?: StatusCount[];
   topCompanies?: TopItem[];
   topClients?: TopItem[];
+  // Vue super admin centrée entreprises
+  monthlyCompanies?: MonthCount[];
+  companiesByStatus?: StatusCount[];
+  topCompaniesTraffic?: { name: string; value: number }[];
 }
 
 export interface SearchResult {
@@ -87,8 +91,14 @@ export const statsApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ['Stats'],
   endpoints: (builder) => ({
-    getDashboardStats: builder.query<DashboardStats, void>({
-      query: () => '/stats',
+    getDashboardStats: builder.query<DashboardStats, { startDate?: string; endDate?: string } | void>({
+      query: (params) => ({
+        url: '/stats',
+        params: {
+          ...(params && params.startDate ? { startDate: params.startDate } : {}),
+          ...(params && params.endDate ? { endDate: params.endDate } : {}),
+        },
+      }),
       providesTags: ['Stats'],
     }),
     globalSearch: builder.query<{ results: SearchResult[] }, string>({

@@ -19,6 +19,7 @@ export interface PublicJobOffer {
   // Champs publics
   is_public: boolean;
   public_slug?: string;
+  public_visible_fields?: string[]; // champs affichés sur l'offre publique (vide = tout)
   public_views_count?: number;
   public_background_image?: string;
   public_brand_color?: string;

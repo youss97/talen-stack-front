@@ -77,6 +77,7 @@ export default function AssignmentsPage() {
     id: string;
     type: Tab;
     responsible?: ResponsibleUser | null;
+    responsibles?: ResponsibleUser[];
   } | null>(null);
 
   // Bulk assign modal (multiple selected rows)
@@ -336,12 +337,12 @@ export default function AssignmentsPage() {
     <div className="p-6">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="w-full">
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 border-b border-gray-100 dark:border-gray-800">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-lg font-semibold text-gray-800 dark:text-white">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Gestion des Affectations
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -368,37 +369,35 @@ export default function AssignmentsPage() {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800 space-y-4">
-          <div className="flex gap-1 border-b border-gray-100 dark:border-gray-800 -mb-5 pb-0">
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => handleTabChange(tab.key)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
+        {/* Tabs — segmented control */}
+        <div className="mb-5 inline-flex flex-wrap gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1 dark:border-gray-800 dark:bg-gray-800/40">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => handleTabChange(tab.key)}
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                activeTab === tab.key
+                  ? "bg-white text-brand-600 shadow-sm dark:bg-gray-900 dark:text-brand-400"
+                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              }`}
+            >
+              {tab.label}
+              {tab.count !== undefined && (
+                <span className={`rounded-full px-1.5 py-0.5 text-xs font-semibold ${
                   activeTab === tab.key
-                    ? "border-brand-500 text-brand-600 dark:text-brand-400"
-                    : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                }`}
-              >
-                {tab.label}
-                {tab.count !== undefined && (
-                  <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${
-                    activeTab === tab.key
-                      ? "bg-brand-100 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300"
-                      : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
-                  }`}>
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
+                    ? "bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300"
+                    : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                }`}>
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          ))}
         </div>
 
         {/* Filters */}
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800">
+        <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1">
               <input
@@ -479,7 +478,7 @@ export default function AssignmentsPage() {
             customActions={[{
               label: "Affecter",
               icon: <AssignIcon />,
-              onClick: (row) => setAssignTarget({ id: row.id, type: "cvs", responsible: (row as any).responsible ?? null }),
+              onClick: (row) => setAssignTarget({ id: row.id, type: "cvs", responsibles: (row as any).responsibles ?? ((row as any).responsible ? [(row as any).responsible] : []) }),
             }]}
           />
         )}
@@ -495,7 +494,7 @@ export default function AssignmentsPage() {
             customActions={[{
               label: "Affecter",
               icon: <AssignIcon />,
-              onClick: (row) => setAssignTarget({ id: row.id, type: "applications", responsible: (row as any).responsible ?? null }),
+              onClick: (row) => setAssignTarget({ id: row.id, type: "applications", responsibles: (row as any).responsibles ?? ((row as any).responsible ? [(row as any).responsible] : []) }),
             }]}
           />
         )}
@@ -511,14 +510,14 @@ export default function AssignmentsPage() {
             customActions={[{
               label: "Affecter",
               icon: <AssignIcon />,
-              onClick: (row) => setAssignTarget({ id: row.id, type: "requests", responsible: (row as any).responsible ?? null }),
+              onClick: (row) => setAssignTarget({ id: row.id, type: "requests", responsibles: (row as any).responsibles ?? ((row as any).responsible ? [(row as any).responsible] : []) }),
             }]}
           />
         )}
 
         {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
-          <div className="p-5 border-t border-gray-100 dark:border-gray-800">
+          <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
             <Pagination
               currentPage={page}
               totalPages={pagination.totalPages}
@@ -535,7 +534,7 @@ export default function AssignmentsPage() {
         isOpen={!!assignTarget}
         onClose={() => setAssignTarget(null)}
         onAssign={handleSingleAssign}
-        currentResponsibles={assignTarget?.responsible ? [assignTarget.responsible] : []}
+        currentResponsibles={assignTarget?.responsibles ?? []}
         isLoading={false}
         entityLabel={
           assignTarget?.type === "cvs" ? "ce talent" :

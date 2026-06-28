@@ -35,11 +35,16 @@ export default function ApplicationsList({ applications }: ApplicationsListProps
     return colors[source] || "light";
   };
 
-  const downloadCV = (cvPath: string, candidateName: string) => {
+  const downloadCV = (cvPath: string, firstName: string, lastName: string) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    const year = new Date().getFullYear();
+    const f = (firstName || "Prenom").replace(/\s+/g, "");
+    const l = (lastName || "Nom").replace(/\s+/g, "").toUpperCase();
+    const ext = cvPath.split(".").pop()?.split("?")[0]?.toLowerCase() || "pdf";
     const link = document.createElement("a");
     link.href = `${apiUrl}/${cvPath}`;
-    link.download = `CV-${candidateName}.pdf`;
+    // Format standard : CV_Prénom_NOM_Année (poste non disponible pour une candidature publique)
+    link.download = `CV_${f}_${l}_${year}.${ext}`;
     link.target = "_blank";
     link.click();
   };
@@ -137,7 +142,8 @@ export default function ApplicationsList({ applications }: ApplicationsListProps
                       onClick={() =>
                         downloadCV(
                           application.cv_path!,
-                          `${application.first_name}-${application.last_name}`
+                          application.first_name,
+                          application.last_name
                         )
                       }
                       startIcon={<DownloadIcon />}

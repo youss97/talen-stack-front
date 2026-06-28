@@ -23,12 +23,14 @@ export default function CVsPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/cvs");
   const canAssign = canUpdate;
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState("");
   const [skillsFilter, setSkillsFilter] = useState<string>("");
   const [minExperience, setMinExperience] = useState<string>("");
   const [maxExperience, setMaxExperience] = useState<string>("");
   const [industryFilter, setIndustryFilter] = useState<string>("");
   const [specialtyFilter, setSpecialtyFilter] = useState<string>("");
+  const [anonymousFilter, setAnonymousFilter] = useState<string>(""); // "", "true", "false"
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailCV, setDetailCV] = useState<CV | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -61,13 +63,14 @@ export default function CVsPage() {
 
   const { data, isLoading, isFetching } = useGetCVsQuery({
     page,
-    limit: 5,
+    limit,
     search: search || undefined,
     skills: skillsFilter || undefined,
     min_experience: minExperience ? parseInt(minExperience) : undefined,
     max_experience: maxExperience ? parseInt(maxExperience) : undefined,
     industry: industryFilter || undefined,
     specialty: specialtyFilter || undefined,
+    is_anonymous: anonymousFilter || undefined,
   });
 
   const [getCVById, { isLoading: isLoadingDetail }] = useLazyGetCVByIdQuery();
@@ -202,13 +205,13 @@ export default function CVsPage() {
     <div className="p-6">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 border-b border-gray-100 dark:border-gray-800">
+      <div className="w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-lg font-semibold text-gray-800 dark:text-white">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Vivier de talents
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               Gérez les talents et candidats
             </p>
           </div>
@@ -219,12 +222,12 @@ export default function CVsPage() {
           )}
         </div>
 
-        <div className="p-5 border-b border-gray-100 dark:border-gray-800">
+        <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <input
                 type="text"
-                placeholder="Rechercher par nom, prénom, poste ou email..."
+                placeholder="Rechercher par nom, poste, email ou code CV (CV-00001)..."
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -293,6 +296,17 @@ export default function CVsPage() {
                 className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
               />
             </div>
+            <div>
+              <select
+                value={anonymousFilter}
+                onChange={(e) => { setAnonymousFilter(e.target.value); setPage(1); }}
+                className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+              >
+                <option value="">CV anonymisé : Tous</option>
+                <option value="true">Anonymisé : Oui</option>
+                <option value="false">Anonymisé : Non</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -305,66 +319,17 @@ export default function CVsPage() {
           onDelete={canDelete ? handleDeleteClick : undefined}
           customActions={canAssign ? [{ label: "Affecter", icon: <AssignIcon />, onClick: handleAssignClick }] : undefined}
           emptyMessage="Aucun CV trouvé"
-          renderRowTooltip={(row: CV) => {
-            const name = `${row.candidate_first_name || ""} ${row.candidate_last_name || ""}`.trim();
-            const skills = Array.isArray(row.skills) ? row.skills.slice(0, 4) : [];
-            const position = row.last_position || row.profile_title;
-            const experience = row.total_experience;
-            return (
-              <div className="w-72 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 text-sm">
-                <div className="font-semibold text-gray-900 dark:text-white mb-1">{name || "-"}</div>
-                {row.candidate_email && (
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">{row.candidate_email}</div>
-                )}
-                <div className="space-y-1.5">
-                  {position && (
-                    <div className="flex gap-2">
-                      <span className="text-gray-400 shrink-0">Poste</span>
-                      <span className="text-gray-700 dark:text-gray-300 truncate">{position}</span>
-                    </div>
-                  )}
-                  {experience != null && (
-                    <div className="flex gap-2">
-                      <span className="text-gray-400 shrink-0">Expérience</span>
-                      <span className="text-gray-700 dark:text-gray-300">{experience} an(s)</span>
-                    </div>
-                  )}
-                  {row.created_by_name && (
-                    <div className="flex gap-2">
-                      <span className="text-gray-400 shrink-0">Créé par</span>
-                      <span className="text-gray-700 dark:text-gray-300">{row.created_by_name}</span>
-                    </div>
-                  )}
-                  {skills.length > 0 && (
-                    <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
-                      <div className="flex flex-wrap gap-1">
-                        {skills.map((s, i) => (
-                          <span key={i} className="px-2 py-0.5 text-xs rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">
-                            {s}
-                          </span>
-                        ))}
-                        {row.skills && row.skills.length > 4 && (
-                          <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
-                            +{row.skills.length - 4}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          }}
         />
 
         {data && data.pagination && (
-          <div className="p-5 border-t border-gray-100 dark:border-gray-800">
+          <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
             <Pagination
               currentPage={page}
               totalPages={data.pagination.totalPages}
               totalItems={data.pagination.total}
               itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
+              onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
             />
           </div>
         )}

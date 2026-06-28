@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface Action {
   label: string;
@@ -89,29 +90,31 @@ export default function ActionsMenu({ actions }: ActionsMenuProps) {
         </svg>
       </button>
 
-      {isOpen && menuPos && (
-        <div
-          ref={menuRef}
-          style={{ position: "fixed", top: menuPos.top, right: menuPos.right }}
-          className="z-[9999] w-48 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-lg overflow-hidden"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="max-h-64 overflow-y-auto custom-scrollbar">
-            {visibleActions.map((action, index) => (
-              <button
-                key={index}
-                onClick={() => handleActionClick(action)}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
-                  colorClasses[action.color || 'default']
-                }`}
-              >
-                <span className="flex-shrink-0">{action.icon}</span>
-                <span className="flex-1 text-left">{action.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {isOpen && menuPos && typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={menuRef}
+            style={{ position: "fixed", top: menuPos.top, right: menuPos.right }}
+            className="z-[9999] w-48 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-lg overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="max-h-64 overflow-y-auto custom-scrollbar">
+              {visibleActions.map((action, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleActionClick(action)}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                    colorClasses[action.color || 'default']
+                  }`}
+                >
+                  <span className="flex-shrink-0">{action.icon}</span>
+                  <span className="flex-1 text-left">{action.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

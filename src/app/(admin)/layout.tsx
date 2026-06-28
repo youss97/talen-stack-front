@@ -8,6 +8,7 @@ import Backdrop from "@/layout/Backdrop";
 import AuthGuard from "@/components/auth/AuthGuard";
 import PermissionGuard from "@/components/auth/PermissionGuard";
 import InstallPWA from "@/components/pwa/InstallPWA";
+import NotificationsSocket from "@/components/notifications/NotificationsSocket";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import React from "react";
 
@@ -31,6 +32,7 @@ export default function AdminLayout({
 
   return (
     <AuthGuard>
+      <NotificationsSocket />
       <div className="min-h-screen xl:flex">
         {/* Sidebar and Backdrop */}
         <AppSidebar />
@@ -42,7 +44,7 @@ export default function AdminLayout({
           {/* Header */}
           <AppHeader />
           {/* Page Content */}
-          <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+          <div className="w-full p-4 md:p-6 lg:p-8">
             <ErrorBoundary>
               {isRootPath ? (
                 children

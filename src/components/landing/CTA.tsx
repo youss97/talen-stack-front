@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export default function CTA() {
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-[#f5fae8]">
+    <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-[var(--color-brand-25)]">
       <div className="landing-container">
         <div className="text-center">
           <motion.h2
@@ -15,7 +15,7 @@ export default function CTA() {
             className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
           >
             Prêt à transformer{' '}
-            <span className="text-[#8AB925]">votre recrutement ?</span>
+            <span className="text-[var(--color-brand-500)]">votre recrutement ?</span>
           </motion.h2>
 
           <motion.p
@@ -37,12 +37,12 @@ export default function CTA() {
             className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
           >
             <Link href="/signin">
-              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl bg-[#8AB925] text-white hover:bg-[#739c1e] transition-colors shadow-lg shadow-[#8AB925]/30">
+              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl bg-[var(--color-brand-500)] text-white hover:bg-[var(--color-brand-600)] transition-colors shadow-lg shadow-[var(--color-brand-500)]/30">
                 🚀 Commencer l&apos;essai gratuit
               </button>
             </Link>
             <a href="tel:+212500000000">
-              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl bg-[#8AB925] text-white hover:bg-[#739c1e] transition-colors shadow-lg shadow-[#8AB925]/30">
+              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl bg-[var(--color-brand-500)] text-white hover:bg-[var(--color-brand-600)] transition-colors shadow-lg shadow-[var(--color-brand-500)]/30">
                 📞 Parler à un expert
               </button>
             </a>
@@ -57,8 +57,8 @@ export default function CTA() {
           >
             {["14 jours d'essai gratuit", "Configuration en 24h", "Support dédié inclus"].map((item, i) => (
               <div key={i} className="flex items-center justify-center space-x-3">
-                <div className="w-8 h-8 bg-[#8AB925]/15 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-[#8AB925]" fill="currentColor" viewBox="0 0 20 20">
+                <div className="w-8 h-8 bg-[var(--color-brand-500)]/15 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-[var(--color-brand-500)]" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 </div>
@@ -76,10 +76,10 @@ export default function CTA() {
           >
             <a
               href="mailto:contact@talentstack.ma"
-              className="flex items-center gap-3 bg-white border border-[#8AB925]/30 hover:border-[#8AB925] hover:bg-[#f5fae8] transition-colors px-5 py-3 rounded-xl"
+              className="flex items-center gap-3 bg-white border border-[var(--color-brand-500)]/30 hover:border-[var(--color-brand-500)] hover:bg-[var(--color-brand-25)] transition-colors px-5 py-3 rounded-xl"
             >
-              <div className="w-9 h-9 bg-[#8AB925]/10 rounded-full flex items-center justify-center">
-                <svg className="w-5 h-5 text-[#8AB925]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-9 h-9 bg-[var(--color-brand-500)]/10 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-[var(--color-brand-500)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
@@ -87,10 +87,10 @@ export default function CTA() {
             </a>
             <a
               href="tel:+212500000000"
-              className="flex items-center gap-3 bg-white border border-[#8AB925]/30 hover:border-[#8AB925] hover:bg-[#f5fae8] transition-colors px-5 py-3 rounded-xl"
+              className="flex items-center gap-3 bg-white border border-[var(--color-brand-500)]/30 hover:border-[var(--color-brand-500)] hover:bg-[var(--color-brand-25)] transition-colors px-5 py-3 rounded-xl"
             >
-              <div className="w-9 h-9 bg-[#8AB925]/10 rounded-full flex items-center justify-center">
-                <svg className="w-5 h-5 text-[#8AB925]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-9 h-9 bg-[var(--color-brand-500)]/10 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-[var(--color-brand-500)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
               </div>
