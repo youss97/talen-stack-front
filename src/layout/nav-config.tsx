@@ -125,7 +125,7 @@ export const NAV_CONFIG: Record<string, { title: string; icon: React.ReactNode; 
   "/assignments": {
     title: "Affectations",
     icon: <GroupIcon />,
-    group: "Talents",
+    group: "Administration",
   },
   "/business-cards": {
     title: "Cartes de visite",
