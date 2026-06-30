@@ -191,7 +191,23 @@ export default function ApplicationRequestFormModal({
         else if (l && l.language) langLevels[l.language] = l.level ?? 3;
       });
       setLanguageLevels(langLevels);
-      setWorkflowSteps(((applicationRequest as any).workflow_steps as WorkflowStep[]) || []);
+      {
+        const rawSteps = ((applicationRequest as any).workflow_steps as WorkflowStep[]) || [];
+        // Ne garder que les étapes valides (ignore l'ancien format cassé [[],[]...] sans nom)
+        const validSteps = rawSteps
+          .filter((s) => s && typeof s.name === "string" && s.name.trim())
+          .map((s, i) => ({ name: s.name.trim(), order: i }));
+        setWorkflowSteps(
+          validSteps.length > 0
+            ? validSteps
+            : [
+                { name: "Proposé", order: 0 },
+                { name: "Entretien RH", order: 1 },
+                { name: "Entretien client", order: 2 },
+                { name: "Offre", order: 3 },
+              ],
+        );
+      }
       reset({
         client_id: applicationRequest.client_id,
         manager_id: applicationRequest.manager_id,
@@ -228,7 +244,13 @@ export default function ApplicationRequestFormModal({
       setSkillsState([]);
       setSoftSkillsState([]);
       setLanguageLevels({});
-      setWorkflowSteps([]);
+      // Étapes par défaut : une nouvelle demande a toujours un workflow concret (personnalisable)
+      setWorkflowSteps([
+        { name: "Proposé", order: 0 },
+        { name: "Entretien RH", order: 1 },
+        { name: "Entretien client", order: 2 },
+        { name: "Offre", order: 3 },
+      ]);
       setSelectedCountry("France");
       // Réinitialiser le formulaire en mode création
       reset({

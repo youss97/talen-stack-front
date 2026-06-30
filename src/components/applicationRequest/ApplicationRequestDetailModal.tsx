@@ -289,16 +289,30 @@ export default function ApplicationRequestDetailModal({
               </div>
             )}
 
-            {/* Workflow / étapes (1.2) */}
-            {applicationRequest.workflow_steps && applicationRequest.workflow_steps.length > 0 && (
-              <div>
-                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Workflow du recrutement
-                </h4>
-                <div className="flex flex-wrap items-center gap-2">
-                  {[...applicationRequest.workflow_steps]
-                    .sort((a, b) => a.order - b.order)
-                    .map((step, index) => (
+            {/* Workflow / étapes (1.2) — toujours affiché (étapes définies, sinon défaut) */}
+            {(() => {
+              const customSteps = [...(applicationRequest.workflow_steps || [])]
+                .filter((s) => s && s.name)
+                .sort((a, b) => a.order - b.order);
+              const hasCustom = customSteps.length > 0;
+              const steps = hasCustom
+                ? customSteps
+                : [
+                    { name: "Proposé", order: 0 },
+                    { name: "Entretien RH", order: 1 },
+                    { name: "Entretien client", order: 2 },
+                    { name: "Offre", order: 3 },
+                  ];
+              return (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    Workflow du recrutement
+                    {!hasCustom && (
+                      <span className="ml-2 text-xs font-normal text-gray-400">(étapes par défaut)</span>
+                    )}
+                  </h4>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {steps.map((step, index) => (
                       <span key={index} className="flex items-center gap-2">
                         {index > 0 && <span className="text-gray-400">→</span>}
                         <span className="px-3 py-1 bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 rounded-full text-sm">
@@ -306,9 +320,10 @@ export default function ApplicationRequestDetailModal({
                         </span>
                       </span>
                     ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             {/* Informations du poste */}
             <div>

@@ -13,6 +13,7 @@ import {
   type CreateCompanyFormData,
 } from "@/validations/companyValidation";
 import type { Company } from "@/types/company";
+import { featureIcon, featureLabel } from "@/utils/featureLabels";
 import { EyeIcon, EyeCloseIcon } from "@/icons";
 import { getImageUrl } from "@/utils/imageHelper";
 import { useGetFeaturesQuery, useGetCompanyFeaturesQuery } from "@/lib/services/roleApi";
@@ -27,25 +28,9 @@ interface CompanyFormModalProps {
   company?: Company | null;
   isLoading?: boolean;
   readOnly?: boolean;
+  serverError?: string | null;
 }
 
-const FEATURE_ICONS: Record<string, string> = {
-  Recrutement: "📋",
-  Candidatures: "👥",
-  Clients: "🏢",
-  Managers: "👤",
-  Utilisateurs: "🔑",
-  Intégrations: "🔗",
-  Agenda: "📅",
-  Entretiens: "🗣️",
-  "Vivier de talents": "💎",
-  "Offres Publiques": "📢",
-  Emails: "✉️",
-  Logs: "📊",
-  Rôles: "🛡️",
-  Entreprises: "🏭",
-  "Assignment Management": "📌",
-};
 
 export default function CompanyFormModal({
   isOpen,
@@ -54,6 +39,7 @@ export default function CompanyFormModal({
   company,
   isLoading = false,
   readOnly = false,
+  serverError = null,
 }: CompanyFormModalProps) {
   const isEditing = !!company && !readOnly;
   const [showPassword, setShowPassword] = useState(false);
@@ -504,7 +490,7 @@ export default function CompanyFormModal({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {allFeatures.map((feature) => {
                       const checked = selectedFeatureIds.has(feature.id);
-                      const icon = FEATURE_ICONS[feature.name] || "⚙️";
+                      const icon = featureIcon(feature.name);
                       return (
                         <label
                           key={feature.id}
@@ -524,7 +510,7 @@ export default function CompanyFormModal({
                             <div className="flex items-center gap-1">
                               <span className="text-sm">{icon}</span>
                               <span className={`text-xs font-medium ${checked ? "text-brand-700 dark:text-brand-300" : "text-gray-700 dark:text-gray-300"}`}>
-                                {feature.name}
+                                {featureLabel(feature)}
                               </span>
                             </div>
                             {feature.description && (
@@ -563,9 +549,9 @@ export default function CompanyFormModal({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {companyFeatures.map((f: Feature) => (
                       <div key={f.id} className="flex items-start gap-2 rounded-xl border border-brand-200 dark:border-brand-800 bg-brand-50 dark:bg-brand-900/20 px-3 py-2.5">
-                        <span className="text-base mt-0.5 shrink-0">{FEATURE_ICONS[f.name] || "⚙️"}</span>
+                        <span className="text-base mt-0.5 shrink-0">{featureIcon(f.name)}</span>
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold text-brand-700 dark:text-brand-300">{f.name}</p>
+                          <p className="text-xs font-semibold text-brand-700 dark:text-brand-300">{featureLabel(f)}</p>
                           {f.description && (
                             <p className="mt-0.5 text-xs leading-tight text-brand-500/80 dark:text-brand-400/70 line-clamp-2">
                               {f.description}
@@ -579,6 +565,13 @@ export default function CompanyFormModal({
               </div>
             )}
           </div>
+
+          {/* Erreur serveur exacte */}
+          {!readOnly && serverError && (
+            <div className="mx-6 sm:mx-8 mb-2 rounded-lg border border-error-200 bg-error-50 px-4 py-3 text-sm text-error-600 dark:border-error-500/30 dark:bg-error-500/10 dark:text-error-400">
+              {serverError}
+            </div>
+          )}
 
           {/* Footer */}
           <div className="flex justify-between items-center gap-3 px-6 sm:px-8 py-4 border-t border-gray-100 dark:border-gray-800">

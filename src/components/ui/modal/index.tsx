@@ -10,6 +10,7 @@ interface ModalProps {
   isFullscreen?: boolean; // Default to false for backwards compatibility
   closeOnOutsideClick?: boolean; // 8.2 — par défaut false : la popup ne se ferme que via l'icône
   inline?: boolean; // 3.1 — rend le contenu en page (sans overlay/backdrop)
+  bare?: boolean; // rend le contenu en pleine page SANS carte (ni fond blanc, ni arrondi)
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -21,6 +22,7 @@ export const Modal: React.FC<ModalProps> = ({
   isFullscreen = false,
   closeOnOutsideClick = false,
   inline = false,
+  bare = false,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -61,7 +63,7 @@ export const Modal: React.FC<ModalProps> = ({
   // 3.1 — Mode "page" : rendu inline sans overlay ni backdrop
   if (inline) {
     return (
-      <div className={`relative w-full rounded-2xl bg-white dark:bg-gray-900 ${className || ""}`}>
+      <div className={`relative w-full ${bare ? "" : "rounded-2xl bg-white dark:bg-gray-900"} ${className || ""}`}>
         {showCloseButton && (
           <button
             onClick={onClose}

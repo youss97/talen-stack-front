@@ -65,6 +65,7 @@ export interface Recruiter {
   
   // Visibilité
   hide_current_salary_for_recruiters?: boolean;
+  salary_confidential?: boolean;
   
   // Workflow (3.2)
   current_step?: string | null;

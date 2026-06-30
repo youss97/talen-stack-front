@@ -374,6 +374,35 @@ export default function ApplicationsPage() {
       },
     },
     {
+      key: "current_step",
+      header: "Étape",
+      className: "min-w-[140px]",
+      render: (value: any, row: Recruiter) => {
+        const step = (value as string) || null;
+        const steps = (row.request as { workflow_steps?: Array<{ name: string; order: number }> } | undefined)?.workflow_steps || [];
+        const terminalColors: Record<string, "success" | "error" | "warning"> = {
+          "Accepté": "success",
+          "KO": "error",
+          "Désistement": "warning",
+        };
+        const total = steps.length;
+        const idx = step ? steps.findIndex((s) => s.name === step) : -1;
+        const color = step ? (terminalColors[step] || "info") : "light";
+        return (
+          <div className="flex flex-col gap-0.5">
+            <Badge color={color} variant="light" size="sm">
+              {step || "Non démarré"}
+            </Badge>
+            {idx >= 0 && total > 0 && (
+              <span className="text-[10px] text-gray-400 dark:text-gray-500">
+                Étape {idx + 1}/{total}
+              </span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       key: "status",
       header: "Statut",
       className: "min-w-[120px]",

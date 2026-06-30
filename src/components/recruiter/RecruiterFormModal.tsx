@@ -42,6 +42,7 @@ export default function RecruiterFormModal({
   const [selectedCV, setSelectedCV] = useState<CV | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<ApplicationRequest | null>(null);
   const [languages, setLanguages] = useState<LanguageSkill[]>([]);
+  const [missingFields, setMissingFields] = useState<string[]>([]);
 
   const [getCVById] = useLazyGetCVByIdQuery();
   const [getRequestById] = useLazyGetApplicationRequestByIdQuery();
@@ -97,6 +98,7 @@ export default function RecruiterFormModal({
       recruiter_interview_date: undefined,
       status: "proposed",
       is_anonymized: false,
+      salary_confidential: false,
       adjusted_experience: undefined,
     },
   });
@@ -112,6 +114,7 @@ export default function RecruiterFormModal({
   const wantsTjmExpectation = offerTypesArr.some((t) => t?.toLowerCase() === "freelance");
   const wantsSalaryExpectation = offerTypesArr.length === 0 || offerTypesArr.some((t) => t?.toLowerCase() !== "freelance");
   const isAnonymized = watch("is_anonymized");
+  const salaryConfidential = watch("salary_confidential");
 
   // Préparer les objets initiaux pour les selects
   const initialRequest = recruiter?.request ? [{
@@ -197,6 +200,7 @@ export default function RecruiterFormModal({
         recruiter_interview_date: recruiter.recruiter_interview_date,
         status: recruiter.status || "proposed",
         is_anonymized: recruiter.is_anonymized || false,
+        salary_confidential: recruiter.salary_confidential || false,
         adjusted_experience: recruiter.adjusted_experience,
       });
       setLanguages(validLanguages);
@@ -227,6 +231,7 @@ export default function RecruiterFormModal({
         recruiter_interview_date: undefined,
         status: "proposed",
         is_anonymized: false,
+        salary_confidential: false,
         adjusted_experience: undefined,
       });
       setLanguages([]);
@@ -257,10 +262,32 @@ export default function RecruiterFormModal({
     setValue("languages", newLanguages);
   };
 
+  // Libellés FR des champs (pour le bandeau "champs manquants")
+  const FIELD_LABELS: Record<string, string> = {
+    request_id: "Offre",
+    cv_id: "CV du candidat",
+    currently_employed: "Situation professionnelle",
+    current_contract_type: "Type de contrat actuel",
+    current_salary: "Salaire actuel",
+    daily_rate: "TJM actuel",
+    salary_expectation: "Prétention salariale",
+    daily_rate_expectation: "TJM souhaité",
+    currency: "Devise",
+    offer_contract_types: "Types de contrat souhaités",
+    availability_type: "Disponibilité",
+    availability_reason: "Motif de disponibilité",
+    availability_days: "Délai de disponibilité",
+    availability_custom_value: "Valeur de disponibilité",
+    availability_custom_unit: "Unité de disponibilité",
+    adjusted_experience: "Expérience ajustée",
+    qualification_report: "Rapport de qualification",
+    recruiter_interview_date: "Date d'entretien recruteur",
+    status: "Statut",
+    languages: "Langues",
+  };
+
   const handleFormSubmit = (data: CreateRecruiterFormData) => {
-    console.log("handleFormSubmit called with data:", data);
-    console.log("isEditing:", isEditing);
-    console.log("Form errors:", errors);
+    setMissingFields([]);
     // Auto-clean: appeler onSubmit puis reset le formulaire
     onSubmit(data);
     if (!isEditing) {
@@ -311,8 +338,13 @@ export default function RecruiterFormModal({
           <div className="w-8 h-8 border-4 border-gray-200 border-t-brand-500 rounded-full animate-spin" />
         </div>
       ) : (
-        <form onSubmit={handleSubmit(handleFormSubmit, (errors) => {
-          console.log("Form validation errors:", errors);
+        <form onSubmit={handleSubmit(handleFormSubmit, (formErrors) => {
+          // Lister les champs en erreur pour informer l'utilisateur (sinon le bouton "paraît" bloqué)
+          const labels = Object.keys(formErrors).map((k) => FIELD_LABELS[k] || k);
+          setMissingFields(labels);
+          // Remonter en haut du formulaire pour voir les erreurs
+          const el = document.querySelector(".custom-scrollbar");
+          if (el) el.scrollTo({ top: 0, behavior: "smooth" });
         })}>
           <div className="max-h-[60vh] overflow-y-auto px-6 sm:px-8 py-6 custom-scrollbar">
             <div className="grid grid-cols-1 gap-6">
@@ -478,8 +510,9 @@ export default function RecruiterFormModal({
                     <input
                       type="number"
                       {...register("daily_rate")}
-                      placeholder="500"
-                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                      disabled={salaryConfidential}
+                      placeholder={salaryConfidential ? "Confidentiel" : "500"}
+                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:disabled:bg-gray-800"
                     />
                   </div>
                 ) : currentContractType === "Forfait" ? (
@@ -488,8 +521,9 @@ export default function RecruiterFormModal({
                     <input
                       type="number"
                       {...register("package_rate")}
-                      placeholder="50000"
-                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                      disabled={salaryConfidential}
+                      placeholder={salaryConfidential ? "Confidentiel" : "50000"}
+                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:disabled:bg-gray-800"
                     />
                   </div>
                 ) : (
@@ -498,8 +532,9 @@ export default function RecruiterFormModal({
                     <input
                       type="number"
                       {...register("current_salary")}
-                      placeholder="45000"
-                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                      disabled={salaryConfidential}
+                      placeholder={salaryConfidential ? "Confidentiel" : "45000"}
+                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:disabled:bg-gray-800"
                     />
                   </div>
                 )}
@@ -516,6 +551,28 @@ export default function RecruiterFormModal({
                   />
                 </div>
               </div>
+
+              {/* Salaire confidentiel */}
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={!!salaryConfidential}
+                  onChange={(e) => {
+                    const v = e.target.checked;
+                    setValue("salary_confidential", v);
+                    if (v) {
+                      // Effacer les montants : le candidat ne souhaite pas les communiquer
+                      setValue("current_salary", undefined);
+                      setValue("daily_rate", undefined);
+                      setValue("package_rate", undefined);
+                    }
+                  }}
+                  className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  🔒 Salaire confidentiel (le candidat ne souhaite pas le communiquer)
+                </span>
+              </label>
 
               {/* Package actuel (texte libre) */}
               <div>
@@ -901,6 +958,19 @@ export default function RecruiterFormModal({
             </div>
           </div>
           </div>
+
+          {missingFields.length > 0 && (
+            <div className="mx-6 sm:mx-8 mb-3 rounded-lg border border-error-200 bg-error-50 px-4 py-3 dark:border-error-500/30 dark:bg-error-500/10">
+              <p className="text-sm font-medium text-error-600 dark:text-error-400">
+                Veuillez compléter ou corriger les champs suivants avant de publier :
+              </p>
+              <ul className="mt-1 list-disc pl-5 text-sm text-error-600 dark:text-error-400">
+                {missingFields.map((f) => (
+                  <li key={f}>{f}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="flex justify-end gap-3 p-6 sm:p-8 pt-0 border-t border-gray-100 dark:border-gray-800">
             <Button variant="outline" onClick={onClose} disabled={isLoading}>

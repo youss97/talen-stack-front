@@ -8,6 +8,7 @@ import {
 } from "@/lib/services/roleApi";
 import type { Company } from "@/types/company";
 import type { Feature } from "@/types/role";
+import { featureIcon, featureLabel, pageLabel } from "@/utils/featureLabels";
 
 interface CompanyFeaturesModalProps {
   isOpen: boolean;
@@ -15,23 +16,6 @@ interface CompanyFeaturesModalProps {
   company: Company | null;
   onSaved?: () => void;
 }
-
-const FEATURE_ICONS: Record<string, string> = {
-  Recrutement: "📋",
-  Candidatures: "👥",
-  Clients: "🏢",
-  Managers: "👤",
-  Utilisateurs: "🔑",
-  Intégrations: "🔗",
-  Agenda: "📅",
-  Entretiens: "🗣️",
-  "Vivier de talents": "💎",
-  "Offres Publiques": "📢",
-  Emails: "✉️",
-  Logs: "📊",
-  Rôles: "🛡️",
-  Entreprises: "🏭",
-};
 
 export default function CompanyFeaturesModal({
   isOpen,
@@ -160,7 +144,7 @@ export default function CompanyFeaturesModal({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {allFeatures.map((feature) => {
                 const checked = selectedIds.has(feature.id);
-                const icon = FEATURE_ICONS[feature.name] || "⚙️";
+                const icon = featureIcon(feature.name);
                 return (
                   <label
                     key={feature.id}
@@ -196,7 +180,7 @@ export default function CompanyFeaturesModal({
                         <span className={`text-sm font-semibold ${
                           checked ? "text-brand-700 dark:text-brand-300" : "text-gray-700 dark:text-gray-200"
                         }`}>
-                          {feature.name}
+                          {featureLabel(feature)}
                         </span>
                       </div>
                       {feature.description && (
@@ -208,7 +192,7 @@ export default function CompanyFeaturesModal({
                         <div className="mt-2 flex flex-wrap gap-1">
                           {feature.pages.slice(0, 3).map((p) => (
                             <span key={p.id} className="inline-block rounded-full bg-gray-100 dark:bg-gray-700 px-2 py-0.5 text-xs text-gray-500 dark:text-gray-400">
-                              {p.name}
+                              {pageLabel(p.name)}
                             </span>
                           ))}
                           {feature.pages.length > 3 && (

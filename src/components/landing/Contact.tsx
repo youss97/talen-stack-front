@@ -7,7 +7,7 @@ const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 interface ContactInfo { email?: string; phone?: string; address?: string; linkedin?: string; instagram?: string }
 
 export default function Contact({ contact, brand = "var(--color-brand-500)" }: { contact?: ContactInfo; brand?: string }) {
-  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const c = contact || {};
@@ -23,7 +23,7 @@ export default function Contact({ contact, brand = "var(--color-brand-500)" }: {
       });
       if (!r.ok) throw new Error();
       setSent(true);
-      setForm({ name: "", email: "", subject: "", message: "" });
+      setForm({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch { /* */ } finally { setSending(false); }
   };
 
@@ -43,7 +43,10 @@ export default function Contact({ contact, brand = "var(--color-brand-500)" }: {
               <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Nom" className="h-11 rounded-xl border border-gray-200 px-4 text-sm" />
               <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="Email" className="h-11 rounded-xl border border-gray-200 px-4 text-sm" />
             </div>
-            <input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} placeholder="Sujet" className="h-11 w-full rounded-xl border border-gray-200 px-4 text-sm" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Téléphone" className="h-11 rounded-xl border border-gray-200 px-4 text-sm" />
+              <input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} placeholder="Sujet" className="h-11 rounded-xl border border-gray-200 px-4 text-sm" />
+            </div>
             <textarea required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Votre message" rows={4} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
             <button type="submit" disabled={sending} className="w-full rounded-xl py-3 text-sm font-semibold text-white disabled:opacity-50" style={{ background: brand }}>
               {sending ? "Envoi…" : "Envoyer"}

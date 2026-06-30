@@ -91,12 +91,13 @@ export const statsApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ['Stats'],
   endpoints: (builder) => ({
-    getDashboardStats: builder.query<DashboardStats, { startDate?: string; endDate?: string } | void>({
+    getDashboardStats: builder.query<DashboardStats, { startDate?: string; endDate?: string; companyId?: string } | void>({
       query: (params) => ({
         url: '/stats',
         params: {
           ...(params && params.startDate ? { startDate: params.startDate } : {}),
           ...(params && params.endDate ? { endDate: params.endDate } : {}),
+          ...(params && params.companyId ? { companyId: params.companyId } : {}),
         },
       }),
       providesTags: ['Stats'],

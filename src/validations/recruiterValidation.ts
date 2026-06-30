@@ -73,17 +73,25 @@ export const createRecruiterSchema = yup.object({
   availability_negotiable: yup.boolean(),
 
   // Langues
-  languages: yup.array().of(
-    yup.object({
-      language: yup.string().required(),
-      level: yup
-        .number()
-        .typeError('Veuillez saisir un niveau valide')
-        .min(1)
-        .max(5)
-        .required(),
-    })
-  ),
+  languages: yup
+    .array()
+    // Ignore les lignes vides (langue non saisie) au lieu de bloquer la soumission
+    .transform((value) =>
+      Array.isArray(value)
+        ? value.filter((l) => l && l.language && String(l.language).trim() !== "")
+        : value
+    )
+    .of(
+      yup.object({
+        language: yup.string().required(),
+        level: yup
+          .number()
+          .typeError('Veuillez saisir un niveau valide')
+          .min(1)
+          .max(5)
+          .default(3),
+      })
+    ),
 
   // Qualification
   qualification_report: yup.string().required('Le compte rendu de qualification est requis'),
@@ -94,6 +102,7 @@ export const createRecruiterSchema = yup.object({
 
   // Anonymisation et ajustements
   is_anonymized: yup.boolean(),
+  salary_confidential: yup.boolean(),
   adjusted_experience: yup
     .number()
     .typeError('Veuillez saisir un nombre d\'années valide')

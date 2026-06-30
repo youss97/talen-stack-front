@@ -143,26 +143,32 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
         )}
 
         {/* Rémunération */}
-        {(candidate.current_salary != null || candidate.daily_rate != null || candidate.package_rate != null) && (
+        {((candidate as { salary_confidential?: boolean }).salary_confidential || candidate.current_salary != null || candidate.daily_rate != null || candidate.package_rate != null) && (
           <section>
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
               Rémunération
             </h3>
             <div className="space-y-2">
-              {candidate.current_salary != null && (
-                <Row label="Salaire actuel" value={
-                  `${candidate.current_salary.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}`
-                } />
-              )}
-              {candidate.daily_rate != null && (
-                <Row label="Taux journalier" value={
-                  `${candidate.daily_rate.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}/jour`
-                } />
-              )}
-              {candidate.package_rate != null && (
-                <Row label="Package annuel" value={
-                  `${candidate.package_rate.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}`
-                } />
+              {(candidate as { salary_confidential?: boolean }).salary_confidential ? (
+                <Row label="Salaire" value="🔒 Confidentiel" />
+              ) : (
+                <>
+                  {candidate.current_salary != null && (
+                    <Row label="Salaire actuel" value={
+                      `${candidate.current_salary.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}`
+                    } />
+                  )}
+                  {candidate.daily_rate != null && (
+                    <Row label="Taux journalier" value={
+                      `${candidate.daily_rate.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}/jour`
+                    } />
+                  )}
+                  {candidate.package_rate != null && (
+                    <Row label="Package annuel" value={
+                      `${candidate.package_rate.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}`
+                    } />
+                  )}
+                </>
               )}
             </div>
           </section>

@@ -4,6 +4,7 @@ import { baseQueryWithReauth } from "./baseQueryWithReauth";
 export interface PricingPlan { name: string; price: string; currency?: string; cycle?: string; period?: string; features: string[]; highlighted?: boolean; ctaText?: string }
 export interface Testimonial { name: string; role?: string; company?: string; text: string; rating?: number; avatar?: string }
 export interface FeatureItem { title: string; text?: string }
+export interface Partner { name?: string; logoUrl: string }
 export interface LandingData {
   logoUrl?: string;
   siteName?: string;
@@ -12,6 +13,7 @@ export interface LandingData {
   features?: FeatureItem[];
   pricing?: PricingPlan[];
   testimonials?: Testimonial[];
+  partners?: Partner[];
   contact?: { email?: string; phone?: string; address?: string; linkedin?: string; instagram?: string };
   brandColor?: string;
 }
@@ -19,6 +21,7 @@ export interface ContactMessage {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   subject?: string;
   message: string;
   is_read: boolean;

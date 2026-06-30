@@ -20,6 +20,7 @@ export interface Page {
 export interface Feature {
   id: string;
   name: string;
+  display_name?: string;
   description?: string;
   is_internal?: boolean;
   display_order?: number;

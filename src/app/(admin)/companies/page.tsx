@@ -40,6 +40,7 @@ export default function CompaniesPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [viewCompany, setViewCompany] = useState<Company | null>(null);
@@ -148,10 +149,12 @@ export default function CompaniesPage() {
 
   const handleAddClick = () => {
     setSelectedCompany(null);
+    setFormError(null);
     setIsFormModalOpen(true);
   };
 
   const handleEditClick = async (company: Company) => {
+    setFormError(null);
     setIsFormModalOpen(true);
     setSelectedCompany(null);
     try {
@@ -272,7 +275,9 @@ export default function CompaniesPage() {
       const defaultMsg = selectedCompany
         ? "Erreur lors de la modification de l'entreprise"
         : "Erreur lors de la création de l'entreprise";
-      addToast("error", "Erreur", getErrorMessage(error, defaultMsg));
+      const msg = getErrorMessage(error, defaultMsg);
+      setFormError(msg);
+      addToast("error", "Erreur", msg);
     }
   };
 
@@ -362,10 +367,11 @@ export default function CompaniesPage() {
 
       <CompanyFormModal
         isOpen={isFormModalOpen}
-        onClose={() => { setIsFormModalOpen(false); setSelectedCompany(null); }}
+        onClose={() => { setIsFormModalOpen(false); setSelectedCompany(null); setFormError(null); }}
         onSubmit={handleFormSubmit}
         company={selectedCompany}
         isLoading={isCreating || isUpdating || isLoadingDetail}
+        serverError={formError}
       />
 
       <CompanyDetailModal

@@ -8,6 +8,7 @@ import Hero from '@/components/landing/Hero';
 import Features from '@/components/landing/Features';
 import Stats from '@/components/landing/Stats';
 import Testimonials from '@/components/landing/Testimonials';
+import Partners from '@/components/landing/Partners';
 import Pricing from '@/components/landing/Pricing';
 import Contact from '@/components/landing/Contact';
 import CTA from '@/components/landing/CTA';
@@ -131,6 +132,7 @@ export default function LandingPageClient() {
       <Stats />
       <Pricing plans={c.pricing} brand={brand} />
       <Testimonials items={c.testimonials} brand={brand} />
+      <Partners items={c.partners} />
       <Contact contact={c.contact} brand={brand} />
       <CTA />
       <Footer />

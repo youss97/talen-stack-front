@@ -361,22 +361,29 @@ export default function RecruiterDetailModal({
       isOpen={isOpen}
       onClose={onClose}
       inline={asPage}
+      bare={asPage}
       showCloseButton={!asPage}
-      className={asPage ? "max-w-4xl mx-auto flex flex-col" : "max-w-3xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive"}
+      className={asPage ? "w-full flex flex-col" : "max-w-3xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive"}
     >
-      <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+      <div className={asPage ? "mb-6" : "flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800"}>
+        <h2 className={asPage ? "text-2xl font-bold text-gray-900 dark:text-white" : "text-xl font-semibold text-gray-800 dark:text-white"}>
           Détails de la candidature
         </h2>
+        {asPage && (
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Informations complètes, workflow et historique de la candidature
+          </p>
+        )}
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar">
+      <div className={asPage ? "" : "flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar"}>
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="w-8 h-8 border-4 border-gray-200 border-t-brand-500 rounded-full animate-spin" />
           </div>
         ) : recruiter ? (
-          <div className="space-y-6">
+          <div className={asPage ? "grid grid-cols-1 lg:grid-cols-2 gap-6 items-start" : "space-y-6"}>
+            <div className="space-y-6">{/* colonne gauche */}
             {/* Informations du CV */}
             {recruiter.cv && (
               <div>
@@ -664,8 +671,11 @@ export default function RecruiterDetailModal({
               </div>
             )}
 
+            </div>{/* fin colonne gauche */}
+            <div className="space-y-6">{/* colonne droite */}
+
             {/* Workflow / étapes (3.2/3.3) — toujours affiché (fallback si la demande n'a pas d'étapes) */}
-            <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+            <div className="border-t border-gray-100 dark:border-gray-800 pt-4 lg:border-t-0 lg:pt-0">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Workflow du recrutement
               </h3>
@@ -842,6 +852,7 @@ export default function RecruiterDetailModal({
                 </p>
               </div>
             )}
+            </div>{/* fin colonne droite */}
           </div>
         ) : null}
       </div>

@@ -1,7 +1,11 @@
 "use client";
 import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/lib/store";
 import { useGetDashboardStatsQuery } from "@/lib/services/statsApi";
+import { useGetCompaniesInfiniteInfiniteQuery } from "@/lib/services/companyApi";
+import InfiniteSelect from "@/components/form/InfiniteSelect";
 import PageHeader from "@/components/common/PageHeader";
 import DatePicker from "@/components/form/date-picker";
 
@@ -114,11 +118,18 @@ function BarChart({ title, items }: { title: string; items?: { name: string; val
 }
 
 export default function StatisticsPage() {
+  const currentUser = useSelector((s: RootState) => s.auth.user);
+  const isSuperAdminUser = currentUser?.role?.code === "super_admin";
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [companyFilter, setCompanyFilter] = useState("");
   const [activePreset, setActivePreset] = useState<string>("Tout");
   const [pickerKey, setPickerKey] = useState(0); // force le remount du picker sur preset
-  const { data, isLoading } = useGetDashboardStatsQuery({ startDate: startDate || undefined, endDate: endDate || undefined });
+  const { data, isLoading } = useGetDashboardStatsQuery({
+    startDate: startDate || undefined,
+    endDate: endDate || undefined,
+    companyId: companyFilter || undefined,
+  });
 
   const handleRangeChange = useCallback((dates: Date[]) => {
     if (dates.length === 2) {
@@ -162,6 +173,20 @@ export default function StatisticsPage() {
         ))}
       </div>
       <div className="ml-auto flex flex-wrap items-center gap-2">
+        {isSuperAdminUser && (
+          <div className="w-[240px]">
+            <InfiniteSelect
+              label=""
+              value={companyFilter}
+              onChange={(value) => setCompanyFilter(value)}
+              useInfiniteQuery={useGetCompaniesInfiniteInfiniteQuery}
+              itemLabelKey="name"
+              itemValueKey="id"
+              placeholder="Toutes les entreprises"
+              emptyMessage="Aucune entreprise trouvée"
+            />
+          </div>
+        )}
         <div className="w-[260px]">
           <DatePicker
             key={pickerKey}
@@ -172,8 +197,8 @@ export default function StatisticsPage() {
             onChange={handleRangeChange}
           />
         </div>
-        {(startDate || endDate) && (
-          <button onClick={() => applyPreset({ label: "Tout", days: null })} className="text-xs font-medium text-gray-500 hover:text-gray-700">Réinitialiser</button>
+        {(startDate || endDate || companyFilter) && (
+          <button onClick={() => { applyPreset({ label: "Tout", days: null }); setCompanyFilter(""); }} className="text-xs font-medium text-gray-500 hover:text-gray-700">Réinitialiser</button>
         )}
       </div>
     </div>

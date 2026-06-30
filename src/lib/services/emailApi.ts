@@ -83,6 +83,19 @@ export const emailApi = createApi({
       invalidatesTags: [{ type: "Email", id: "LIST" }],
     }),
 
+    // PATCH /emails/:id - Modifier un brouillon (objet/contenu/destinataires)
+    updateEmail: builder.mutation<Email, { id: string; subject?: string; body?: string; recipients?: string[] }>({
+      query: ({ id, ...body }) => ({
+        url: `/emails/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Email", id },
+        { type: "Email", id: "LIST" },
+      ],
+    }),
+
     // DELETE /emails/:id - Delete an email
     deleteEmail: builder.mutation<void, string>({
       query: (id) => ({
@@ -100,5 +113,6 @@ export const {
   useSendEmailMutation,
   useSendEmailNowMutation,
   useCancelEmailScheduleMutation,
+  useUpdateEmailMutation,
   useDeleteEmailMutation,
 } = emailApi;

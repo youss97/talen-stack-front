@@ -49,6 +49,7 @@ export default function LandingEditorPage() {
   const [form, setForm] = useState<LandingData>({});
   const [tab, setTab] = useState<"content" | "messages">("content");
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
+  const [partnerUploadingIdx, setPartnerUploadingIdx] = useState<number | null>(null);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const addToast = (variant: ToastItem["variant"], title: string, message?: string) =>
@@ -74,6 +75,7 @@ export default function LandingEditorPage() {
   const features = form.features || [];
   const pricing = form.pricing || [];
   const testimonials = form.testimonials || [];
+  const partners = form.partners || [];
 
   if (isLoading) return <div className="flex justify-center py-12"><div className="w-8 h-8 border-4 border-gray-200 border-t-brand-500 rounded-full animate-spin" /></div>;
 
@@ -298,6 +300,57 @@ export default function LandingEditorPage() {
             </div>
           </div>
 
+          {/* Partenaires */}
+          <div className={card}>
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="font-semibold text-gray-800 dark:text-white">Logos partenaires</h2>
+              <button onClick={() => setForm((f) => ({ ...f, partners: [...(f.partners || []), { name: "", logoUrl: "" }] }))} className="text-xs px-2 py-1 rounded border border-gray-200 dark:border-gray-700">+ Ajouter</button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {partners.map((p, i) => (
+                <div key={i} className="rounded-xl border border-gray-200 dark:border-gray-700 p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    {p.logoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={p.logoUrl} alt="" className="h-10 w-20 rounded object-contain border bg-white" />
+                    ) : (
+                      <div className="h-10 w-20 rounded bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs text-gray-400">Logo</div>
+                    )}
+                    <label className={`shrink-0 cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 dark:border-gray-700 ${partnerUploadingIdx === i ? "opacity-50" : ""}`}>
+                      {partnerUploadingIdx === i ? "Upload…" : "Uploader"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={partnerUploadingIdx === i}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          setPartnerUploadingIdx(i);
+                          try {
+                            const url = await uploadImage(file);
+                            setForm((f) => ({ ...f, partners: (f.partners || []).map((x, j) => (j === i ? { ...x, logoUrl: url } : x)) }));
+                            addToast("success", "Logo ajouté");
+                          } catch {
+                            addToast("error", "Erreur", "Échec de l'upload du logo");
+                          } finally {
+                            setPartnerUploadingIdx(null);
+                            e.target.value = "";
+                          }
+                        }}
+                      />
+                    </label>
+                    <button onClick={() => setForm((f) => ({ ...f, partners: (f.partners || []).filter((_, j) => j !== i) }))} className="ml-auto h-9 px-3 rounded-lg border border-error-300 text-error-500 text-xs">✕</button>
+                  </div>
+                  <input className={input} placeholder="Nom du partenaire (optionnel)" value={p.name || ""} onChange={(e) => setForm((f) => ({ ...f, partners: (f.partners || []).map((x, j) => j === i ? { ...x, name: e.target.value } : x) }))} />
+                </div>
+              ))}
+              {partners.length === 0 && (
+                <p className="text-sm text-gray-400 italic col-span-full">Aucun partenaire. Cliquez sur « + Ajouter » pour insérer un logo.</p>
+              )}
+            </div>
+          </div>
+
           {/* Contact */}
           <div className={card}>
             <h2 className="mb-3 font-semibold text-gray-800 dark:text-white">Coordonnées & réseaux</h2>
@@ -327,6 +380,7 @@ export default function LandingEditorPage() {
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-gray-800 dark:text-white">
                         {m.name} <span className="font-normal text-gray-400">· {m.email}</span>
+                        {m.phone && <span className="font-normal text-gray-400"> · ☎ {m.phone}</span>}
                         {!m.is_read && <span className="ml-2 rounded-full bg-brand-100 px-2 py-0.5 text-[10px] font-semibold text-brand-700">Nouveau</span>}
                       </p>
                       {m.subject && <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{m.subject}</p>}

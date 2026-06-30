@@ -294,7 +294,13 @@ export default function ManagerRequestFormModal({
       setSelectedCountry("Maroc");
       setSelectedContractTypes(["CDI"]);
       setCurrency("MAD");
-      setWorkflowSteps([]);
+      // Étapes par défaut : une nouvelle demande a toujours un workflow concret (personnalisable)
+      setWorkflowSteps([
+        { name: "Proposé", order: 0 },
+        { name: "Entretien RH", order: 1 },
+        { name: "Entretien client", order: 2 },
+        { name: "Offre", order: 3 },
+      ]);
     }
   }, [isOpen, initialData]);
 

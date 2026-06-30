@@ -10,6 +10,7 @@ import type { Log } from "@/types/log";
 
 export default function LogsPage() {
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [actionFilter, setActionFilter] = useState<string>("");
   const [tableNameFilter, setTableNameFilter] = useState<string>("");
 
@@ -19,7 +20,7 @@ export default function LogsPage() {
 
   const { data, isLoading, isFetching } = useGetLogsQuery({
     page,
-    limit: 5,
+    limit,
     action: actionFilter || undefined,
     tableName: tableNameFilter || undefined,
     userId: isAdmin ? undefined : (currentUser?.id || undefined),
@@ -214,6 +215,7 @@ export default function LogsPage() {
               totalItems={data.pagination.total}
               itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
+              onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
             />
           </div>
         )}

@@ -69,6 +69,7 @@ const EmailsPage = () => {
   } = useModal();
 
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
+  const [editEmail, setEditEmail] = useState<Email | null>(null);
 
   const getErrorMessage = (error: unknown, defaultMessage: string): string =>
     getApiErrorMessage(error, defaultMessage);
@@ -96,6 +97,11 @@ const EmailsPage = () => {
   const handleViewEmail = (email: Email) => {
     setSelectedEmail(email);
     openDetail();
+  };
+
+  const handleEditEmail = (email: Email) => {
+    setEditEmail(email);
+    openForm();
   };
 
   const handleSendNow = async (email: Email) => {
@@ -201,7 +207,7 @@ const EmailsPage = () => {
             </p>
           </div>
           {canCreate && (
-            <Button onClick={openForm} startIcon={<PlusIcon />}>Nouvel Email</Button>
+            <Button onClick={() => { setEditEmail(null); openForm(); }} startIcon={<PlusIcon />}>Nouvel Email</Button>
           )}
         </div>
 
@@ -246,6 +252,13 @@ const EmailsPage = () => {
           onDelete={canDelete ? handleDelete : undefined}
           customActions={[
             {
+              label: "Modifier",
+              icon: <span>✏️</span>,
+              color: "primary",
+              onClick: handleEditEmail,
+              hidden: (email) => email.status !== "draft",
+            },
+            {
               label: "Envoyer maintenant",
               icon: <span>📤</span>,
               color: "success",
@@ -279,10 +292,12 @@ const EmailsPage = () => {
 
       <EmailFormModal
         isOpen={isFormOpen}
-        onClose={closeForm}
+        editingEmail={editEmail}
+        onClose={() => { closeForm(); setEditEmail(null); }}
         onSuccess={() => {
           refetch();
           closeForm();
+          setEditEmail(null);
         }}
       />
 
@@ -291,6 +306,7 @@ const EmailsPage = () => {
         onClose={closeDetail}
         email={selectedEmail}
       />
+
 
       <ConfirmModal
         isOpen={confirmModal.isOpen}

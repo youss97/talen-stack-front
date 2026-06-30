@@ -9,18 +9,20 @@ import TextArea from "@/components/form/input/TextArea";
 import Label from "@/components/form/Label";
 import CVInfiniteSelect from "@/components/form/CVInfiniteSelect";
 import MultiInfiniteSelect from "@/components/form/MultiInfiniteSelect";
-import { useSendEmailMutation } from "@/lib/services/emailApi";
+import { useSendEmailMutation, useUpdateEmailMutation } from "@/lib/services/emailApi";
 import { useGetCVsForSelectInfiniteQuery } from "@/lib/services/cvApi";
 import { useGetClientsForSelectInfiniteQuery } from "@/lib/services/clientApi";
 import { useGetUsersForSelectInfiniteQuery } from "@/lib/services/userApi";
 import { useGetClientManagersForSelectInfiniteQuery } from "@/lib/services/clientApi";
-import { BulkEmailType, type SendEmailRequest } from "@/types/email";
+import { BulkEmailType, type SendEmailRequest, type Email } from "@/types/email";
 import type { CV } from "@/types/cv";
 
 interface EmailFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  /** Si fourni : mode édition d'un brouillon (même UI que l'ajout) */
+  editingEmail?: Email | null;
 }
 
 interface FormData {
@@ -42,8 +44,10 @@ interface FormData {
 const isValidEmail = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
-const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSuccess }) => {
+const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSuccess, editingEmail }) => {
   const [sendEmail, { isLoading: isSending }] = useSendEmailMutation();
+  const [updateEmail, { isLoading: isUpdating }] = useUpdateEmailMutation();
+  const isEditing = !!editingEmail;
 
   // À (To)
   const [selectedCVs, setSelectedCVs] = useState<CV[]>([]);
@@ -97,6 +101,19 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
   const ccManagerEmails           = watch("ccManagerEmails");
   const ccSelectedClientForManagers = watch("ccSelectedClientForManagers");
 
+  // Mode édition : pré-remplir objet, contenu et destinataires (chips)
+  React.useEffect(() => {
+    if (editingEmail && isOpen) {
+      setValue("subject", editingEmail.subject || "");
+      setValue("body", editingEmail.body || "");
+      const recips = Array.isArray(editingEmail.recipients)
+        ? editingEmail.recipients
+        : String(editingEmail.recipients || "").split(",").map((s) => s.trim()).filter(Boolean);
+      setManualRecipients(recips);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingEmail, isOpen]);
+
   const addChip = (
     input: string,
     setInput: (v: string) => void,
@@ -115,6 +132,28 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
 
   const onSubmit = async (data: FormData) => {
     try {
+      // Mode édition : on met simplement à jour le brouillon (même UI)
+      if (isEditing && editingEmail) {
+        const editTo: string[] = [
+          ...manualRecipients,
+          ...selectedCVs.filter((cv) => cv.candidate_email).map((cv) => cv.candidate_email as string),
+          ...data.clientEmails.filter((v) => v && !v.startsWith("no-email-")),
+          ...data.userEmails,
+          ...data.managerEmails,
+        ];
+        setSubmitError(null);
+        await updateEmail({
+          id: editingEmail.id,
+          subject: data.subject,
+          body: data.body,
+          recipients: [...new Set(editTo)],
+        }).unwrap();
+        setSubmitSuccess(true);
+        handleClose();
+        setTimeout(() => { setSubmitSuccess(false); onSuccess?.(); }, 500);
+        return;
+      }
+
       // Build To list
       const toRecipients: string[] = [...manualRecipients];
       if (data.candidateIds.length > 0) {
@@ -265,7 +304,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
   return (
     <Modal isOpen={isOpen} onClose={handleClose} className="max-w-2xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-4 border-b border-gray-100 dark:border-gray-800">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Envoyer un email</h2>
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{isEditing ? "Modifier le brouillon" : "Envoyer un email"}</h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           Sélectionnez les destinataires et composez votre message
         </p>
@@ -636,33 +675,42 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
 
             <Button variant="outline" onClick={handleClose}>Annuler</Button>
 
-            {/* Brouillon */}
-            <Button
-              type="submit"
-              variant="outline"
-              disabled={isSending}
-              onClick={() => { submitModeRef.current = "draft"; }}
-            >
-              💾 Brouillon
-            </Button>
-
-            {/* Programmer (si toggle activé) sinon Envoyer */}
-            {showSchedule ? (
-              <Button
-                type="submit"
-                disabled={isSending || (totalTo === 0 && totalCC === 0 && bccRecipients.length === 0)}
-                onClick={() => { submitModeRef.current = "schedule"; }}
-              >
-                {isSending ? "..." : "📅 Programmer"}
+            {isEditing ? (
+              /* Mode édition : un seul bouton d'enregistrement */
+              <Button type="submit" disabled={isUpdating}>
+                {isUpdating ? "Enregistrement..." : "💾 Enregistrer les modifications"}
               </Button>
             ) : (
-              <Button
-                type="submit"
-                disabled={isSending || (totalTo === 0 && totalCC === 0 && bccRecipients.length === 0)}
-                onClick={() => { submitModeRef.current = "send"; }}
-              >
-                {isSending ? "Envoi en cours..." : "Envoyer"}
-              </Button>
+              <>
+                {/* Brouillon */}
+                <Button
+                  type="submit"
+                  variant="outline"
+                  disabled={isSending}
+                  onClick={() => { submitModeRef.current = "draft"; }}
+                >
+                  💾 Brouillon
+                </Button>
+
+                {/* Programmer (si toggle activé) sinon Envoyer */}
+                {showSchedule ? (
+                  <Button
+                    type="submit"
+                    disabled={isSending || (totalTo === 0 && totalCC === 0 && bccRecipients.length === 0)}
+                    onClick={() => { submitModeRef.current = "schedule"; }}
+                  >
+                    {isSending ? "..." : "📅 Programmer"}
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    disabled={isSending || (totalTo === 0 && totalCC === 0 && bccRecipients.length === 0)}
+                    onClick={() => { submitModeRef.current = "send"; }}
+                  >
+                    {isSending ? "Envoi en cours..." : "Envoyer"}
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </div>
