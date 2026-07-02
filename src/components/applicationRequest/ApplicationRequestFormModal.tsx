@@ -33,6 +33,7 @@ interface ApplicationRequestFormModalProps {
   onSubmit: (data: CreateApplicationRequestFormData) => void;
   applicationRequest?: ApplicationRequest | null;
   isLoading?: boolean;
+  serverError?: string | null;
 }
 
 const COUNTRIES = [
@@ -71,6 +72,7 @@ export default function ApplicationRequestFormModal({
   onSubmit,
   applicationRequest,
   isLoading = false,
+  serverError = null,
 }: ApplicationRequestFormModalProps) {
   const isEditing = !!applicationRequest;
   const [skillInput, setSkillInput] = useState("");
@@ -228,9 +230,11 @@ export default function ApplicationRequestFormModal({
         work_type: applicationRequest.work_type || "on_site",
         remote_days_per_week: applicationRequest.remote_days_per_week,
         remote_possible: applicationRequest.remote_possible || false,
-        languages: ((applicationRequest.languages || []) as Array<string | { language: string; level?: number }>).map(
-          (l) => (typeof l === "string" ? l : l.language),
-        ),
+        languages: Array.from(new Set(
+          ((applicationRequest.languages || []) as Array<string | { language?: string }>)
+            .map((l) => (typeof l === "string" ? l : l?.language))
+            .filter((x): x is string => typeof x === "string" && x.trim() !== ""),
+        )),
         soft_skills: (applicationRequest.soft_skills as string[] | undefined) || [],
         benefits: applicationRequest.benefits || "",
         bonuses: applicationRequest.bonuses || "",
@@ -392,6 +396,11 @@ export default function ApplicationRequestFormModal({
         }
       )} className="flex flex-col flex-1 min-h-0">
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar">
+          {serverError && (
+            <div className="mb-4 p-3 rounded-lg bg-error-50 border border-error-200 dark:bg-error-500/10 dark:border-error-500/30 text-error-600 dark:text-error-400 text-sm">
+              <span className="mr-1">⚠️</span>{serverError}
+            </div>
+          )}
           {Object.keys(errors).length > 0 && (
             <div className="mb-4 p-3 rounded-lg bg-error-50 border border-error-200 dark:bg-error-500/10 dark:border-error-500/30 text-error-700 dark:text-error-400 text-sm">
               Veuillez corriger les {Object.keys(errors).length} erreur(s) avant de soumettre le formulaire.

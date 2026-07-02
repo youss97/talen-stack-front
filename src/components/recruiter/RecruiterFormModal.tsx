@@ -29,6 +29,7 @@ interface RecruiterFormModalProps {
   onSubmit: (data: CreateRecruiterFormData) => void;
   recruiter?: Recruiter | null;
   isLoading?: boolean;
+  serverError?: string | null;
 }
 
 export default function RecruiterFormModal({
@@ -37,6 +38,7 @@ export default function RecruiterFormModal({
   onSubmit,
   recruiter,
   isLoading = false,
+  serverError = null,
 }: RecruiterFormModalProps) {
   const isEditing = !!recruiter;
   const [selectedCV, setSelectedCV] = useState<CV | null>(null);
@@ -959,6 +961,11 @@ export default function RecruiterFormModal({
           </div>
           </div>
 
+          {serverError && (
+            <div className="mx-6 sm:mx-8 mb-3 rounded-lg border border-error-200 bg-error-50 px-4 py-3 text-sm text-error-600 dark:border-error-500/30 dark:bg-error-500/10 dark:text-error-400">
+              <span className="mr-1">⚠️</span>{serverError}
+            </div>
+          )}
           {missingFields.length > 0 && (
             <div className="mx-6 sm:mx-8 mb-3 rounded-lg border border-error-200 bg-error-50 px-4 py-3 dark:border-error-500/30 dark:bg-error-500/10">
               <p className="text-sm font-medium text-error-600 dark:text-error-400">

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Modal } from "@/components/ui/modal";
+import FormErrorBanner from "@/components/common/FormErrorBanner";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
@@ -27,6 +28,7 @@ interface ClientFormModalProps {
   isLoading?: boolean;
   readOnly?: boolean;
   hiddenFields?: string[]; // 8.5 — champs masqués dans la fiche (lecture seule)
+  serverError?: string | null;
 }
 
 export default function ClientFormModal({
@@ -37,6 +39,7 @@ export default function ClientFormModal({
   isLoading = false,
   readOnly = false,
   hiddenFields = [],
+  serverError = null,
 }: ClientFormModalProps) {
   const isEditing = !!client && !readOnly;
   // 8.5 — masquer un champ uniquement en consultation (jamais en édition)
@@ -542,6 +545,10 @@ export default function ClientFormModal({
             </section>
           )}
         </div>
+
+        {!readOnly && serverError && (
+          <div className="px-4 sm:px-6 pb-1"><FormErrorBanner message={serverError} /></div>
+        )}
 
         {/* Footer */}
         <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">

@@ -40,6 +40,7 @@ export default function AdminLayout({
         {/* Main Content Area */}
         <div
           className={`flex-1 min-w-0 transition-all duration-300 ease-in-out ${mainContentMargin}`}
+          style={{ background: "var(--bg)", minHeight: "100vh" }}
         >
           {/* Header */}
           <AppHeader />

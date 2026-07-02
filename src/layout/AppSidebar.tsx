@@ -84,14 +84,16 @@ const AppSidebar: React.FC = () => {
           <Link
             href={nav.path}
             className={`menu-item group ${
-              isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
+              isActive(nav.path)
+                ? "font-semibold bg-[var(--brand-soft)] text-[var(--brand-deep)] dark:bg-[var(--brand)] dark:text-[var(--brand-ink)]"
+                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white"
             }`}
           >
             <motion.span
               className={`${
                 isActive(nav.path)
-                  ? "menu-item-icon-active"
-                  : "menu-item-icon-inactive"
+                  ? "text-[var(--brand-deep)] dark:text-[var(--brand-ink)]"
+                  : "text-gray-500 group-hover:text-gray-700 dark:text-white/55 dark:group-hover:text-white"
               }`}
               whileHover={{ scale: 1.15 }}
               transition={{ duration: 0.2 }}
@@ -111,7 +113,7 @@ const AppSidebar: React.FC = () => {
             {isActive(nav.path) && (
               <motion.span
                 layoutId="activeIndicator"
-                className="absolute right-3 w-1.5 h-1.5 rounded-full bg-brand-500"
+                className="absolute right-3 w-1.5 h-1.5 rounded-full bg-[var(--brand-deep)] dark:bg-[var(--brand-ink)]"
                 transition={{ type: "spring", stiffness: 350, damping: 25 }}
               />
             )}
@@ -123,7 +125,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white text-gray-900 border-gray-200 dark:bg-[#19210E] dark:text-white/90 dark:border-white/10 h-screen transition-all duration-300 ease-in-out z-50 border-r
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -138,7 +140,7 @@ const AppSidebar: React.FC = () => {
     >
       {/* Logo section */}
       <div
-        className={`flex items-center border-b border-gray-100 dark:border-gray-800 py-5 mb-2 transition-all duration-300 ${
+        className={`flex items-center border-b border-gray-100 dark:border-white/10 py-5 mb-2 transition-all duration-300 ${
           showFull ? "justify-start gap-3" : "justify-center"
         }`}
       >
@@ -174,7 +176,7 @@ const AppSidebar: React.FC = () => {
                     <p className="text-[13px] font-bold text-gray-800 dark:text-white truncate leading-tight max-w-[150px]">
                       {companyName ?? "Mon espace"}
                     </p>
-                    <p className="text-[10px] text-brand-500 font-medium tracking-wide uppercase leading-tight">
+                    <p className="text-[10px] font-medium tracking-wide uppercase leading-tight" style={{ color: "var(--brand)" }}>
                       {user?.company?.parent_company_id ? "Espace client" : "Espace recruteur"}
                     </p>
                   </div>
@@ -241,12 +243,12 @@ const AppSidebar: React.FC = () => {
             {groupedNav.map((section) => (
               <div key={section.group}>
                 <h2
-                  className={`mb-3 flex text-xs uppercase leading-[20px] text-gray-400 ${
+                  className={`mb-3 flex text-xs uppercase leading-[20px] text-gray-400 dark:text-white/40 ${
                     !showFull ? "lg:justify-center" : "justify-start"
                   }`}
                 >
                   {showFull ? (
-                    <span className="text-[10px] font-bold tracking-widest text-gray-400/70">
+                    <span className="text-[10px] font-bold tracking-widest text-gray-400 dark:text-white/40">
                       {section.group}
                     </span>
                   ) : (
@@ -261,7 +263,7 @@ const AppSidebar: React.FC = () => {
       </div>
 
       {/* User profile at bottom */}
-      <div className="border-t border-gray-100 dark:border-gray-800 py-4">
+      <div className="border-t border-gray-100 dark:border-white/10 py-4">
         <AnimatePresence mode="wait">
           {showFull ? (
             <motion.div
@@ -270,7 +272,7 @@ const AppSidebar: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.25 }}
-              className="flex items-center gap-3 px-2 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/50"
+              className="flex items-center gap-3 px-2 py-2 rounded-xl bg-gray-50 dark:bg-white/5"
             >
               <UserAvatar user={user ?? undefined} size={36} />
               <div className="flex-1 min-w-0">
@@ -279,7 +281,7 @@ const AppSidebar: React.FC = () => {
                     ? `${user.first_name} ${user.last_name}`
                     : user?.email ?? "Utilisateur"}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                <p className="text-xs text-gray-500 dark:text-white/50 truncate">
                   {user?.role?.name ?? "—"}
                 </p>
               </div>

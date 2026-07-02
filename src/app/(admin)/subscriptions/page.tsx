@@ -9,6 +9,7 @@ import {
   useDeleteSubscriptionPlanMutation,
 } from "@/lib/services/subscriptionApi";
 import { useGetFeaturesQuery } from "@/lib/services/roleApi";
+import { featureIcon, featureLabel } from "@/utils/featureLabels";
 import type { SubscriptionPlan } from "@/types/subscription";
 import { useGetSubscriptionsStatsQuery } from "@/lib/services/statsApi";
 import dynamic from "next/dynamic";
@@ -19,13 +20,6 @@ const BILLING_LABELS: Record<string, string> = {
   monthly: "Mensuel",
   annual: "Annuel",
   one_time: "Unique",
-};
-
-const FEATURE_ICONS: Record<string, string> = {
-  Recrutement: "📋", Candidatures: "👥", Clients: "🏢", Managers: "👤",
-  Utilisateurs: "🔑", Intégrations: "🔗", Agenda: "📅", Entretiens: "🗣️",
-  "Vivier de talents": "💎", "Offres Publiques": "📢", Emails: "✉️",
-  Logs: "📊", Rôles: "🛡️", Entreprises: "🏭", "Assignment Management": "📌",
 };
 
 export default function SubscriptionsPage() {
@@ -153,8 +147,6 @@ export default function SubscriptionsPage() {
 
 // ── Sub-components ──────────────────────────────────────────
 
-const FEATURE_ICONS_LOCAL = FEATURE_ICONS;
-
 function PlanCard({
   plan,
   onEdit,
@@ -206,8 +198,8 @@ function PlanCard({
         <div className="flex flex-wrap gap-1.5">
           {features.map((f) => (
             <span key={f.id} className="inline-flex items-center gap-1 rounded-lg bg-gray-100 dark:bg-gray-700 px-2 py-1 text-xs text-gray-600 dark:text-gray-300">
-              <span>{FEATURE_ICONS_LOCAL[f.name] || "⚙️"}</span>
-              {f.name}
+              <span>{featureIcon(f.name)}</span>
+              {featureLabel(f)}
             </span>
           ))}
           {features.length === 0 && (

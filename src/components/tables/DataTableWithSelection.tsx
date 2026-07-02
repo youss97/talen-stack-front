@@ -154,9 +154,9 @@ function DataTableWithSelection<T extends { id: string }>({
 
   const ViewToggle = enableViewToggle ? (
     <div className="mb-3 flex justify-end">
-      <div className="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 p-0.5 bg-gray-50 dark:bg-gray-800">
-        <button onClick={() => setView("table")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "table" ? "bg-white dark:bg-gray-900 text-brand-600 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>Tableau</button>
-        <button onClick={() => setView("cards")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "cards" ? "bg-white dark:bg-gray-900 text-brand-600 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>Cartes</button>
+      <div className="inline-flex rounded-lg border border-[color:var(--border)] p-0.5 bg-[var(--surface-2)]">
+        <button onClick={() => setView("table")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "table" ? "bg-[var(--surface)] text-[var(--brand-deep)] shadow-sm" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>Tableau</button>
+        <button onClick={() => setView("cards")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "cards" ? "bg-[var(--surface)] text-[var(--brand-deep)] shadow-sm" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>Cartes</button>
       </div>
     </div>
   ) : null;
@@ -175,7 +175,7 @@ function DataTableWithSelection<T extends { id: string }>({
     {ViewToggle}
     {view === "cards" ? (
       data.length === 0 ? (
-        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="gw-card">
           <EmptyState title={emptyMessage} />
         </div>
       ) : (
@@ -187,7 +187,7 @@ function DataTableWithSelection<T extends { id: string }>({
               <div
                 key={row.id}
                 onClick={() => onRowClick?.(row)}
-                className={`relative flex flex-col items-center rounded-2xl border p-5 shadow-sm transition-all hover:shadow-lg hover:-translate-y-0.5 ${selected ? "border-brand-300 bg-brand-50 dark:bg-brand-900/10" : "border-gray-100 dark:border-gray-800 bg-white dark:bg-white/[0.03]"} ${onRowClick ? "cursor-pointer" : ""}`}
+                className={`relative flex flex-col items-center rounded-2xl border p-5 shadow-sm transition-all hover:shadow-lg hover:-translate-y-0.5 ${selected ? "border-brand-300 bg-brand-50 dark:bg-brand-900/10" : "border-[color:var(--border)] bg-[var(--surface)]"} ${onRowClick ? "cursor-pointer" : ""}`}
               >
                 <div className="absolute left-3 top-3" onClick={(e) => e.stopPropagation()}>
                   <input type="checkbox" checked={selected} onChange={(e) => handleSelectItem(row.id, e.target.checked)} className="w-4 h-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" />
@@ -196,7 +196,7 @@ function DataTableWithSelection<T extends { id: string }>({
                 <div className="flex flex-col items-center text-center text-sm text-gray-800 dark:text-gray-200">
                   {first && (first.render ? first.render(getValue(row, String(first.key)), row) : String(getValue(row, String(first.key)) ?? ""))}
                 </div>
-                <dl className="mt-4 w-full space-y-2 border-t border-gray-100 dark:border-gray-800 pt-4">
+                <dl className="mt-4 w-full space-y-2 border-t border-[color:var(--border)] pt-4">
                   {rest.map((column) => {
                     const value = getValue(row, String(column.key));
                     return (
@@ -215,10 +215,10 @@ function DataTableWithSelection<T extends { id: string }>({
         </div>
       )
     ) : (
-    <div className="w-full overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+    <div className="w-full overflow-x-auto gw-card">
     <div className="inline-block min-w-full align-middle">
       <Table className="border-collapse min-w-full">
-        <TableHeader className="border-b border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-white/[0.02]">
+        <TableHeader className="border-b border-[color:var(--border)] bg-[var(--surface-2)]">
           <TableRow>
             <TableCell
               isHeader
@@ -267,7 +267,7 @@ function DataTableWithSelection<T extends { id: string }>({
             data.map((row) => (
               <TableRow
                 key={row.id}
-                className={`border-b border-gray-100 dark:border-gray-800 ${
+                className={`border-b border-[color:var(--border)] ${
                   selectedItems.includes(row.id)
                     ? "bg-brand-50 dark:bg-brand-900/10"
                     : ""

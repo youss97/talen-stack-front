@@ -36,16 +36,16 @@ const TOTAL_LABELS: Record<string, string> = {
 
 function KpiCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
-      <p className="text-xs font-medium uppercase tracking-wide text-gray-400">{label}</p>
-      <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{value ?? 0}</p>
+    <div className="gw-card p-5">
+      <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--text-3)" }}>{label}</p>
+      <p className="mt-2 text-3xl font-bold tracking-tight" style={{ color: "var(--text)" }}>{value ?? 0}</p>
     </div>
   );
 }
 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+    <div className="gw-card p-5">
       <h3 className="mb-4 text-sm font-semibold text-gray-800 dark:text-white">{title}</h3>
       {children}
     </div>
@@ -158,7 +158,7 @@ export default function StatisticsPage() {
   };
 
   const DateFilter = (
-    <div className="mb-6 flex flex-wrap items-center gap-2 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+    <div className="mb-6 flex flex-wrap items-center gap-2 gw-card p-3">
       <div className="inline-flex flex-wrap gap-1 rounded-xl bg-gray-50 p-1 dark:bg-gray-800/40">
         {PRESETS.map((p) => (
           <button

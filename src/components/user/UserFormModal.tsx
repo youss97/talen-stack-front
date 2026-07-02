@@ -8,6 +8,7 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import InfiniteSelect from "@/components/form/InfiniteSelect";
 import ImageUpload from "@/components/form/input/ImageUpload";
+import FormErrorBanner from "@/components/common/FormErrorBanner";
 import {
   createUserSchema,
   updateUserSchema,
@@ -26,6 +27,7 @@ interface UserFormModalProps {
   user?: User | null;
   isLoading?: boolean;
   readOnly?: boolean;
+  serverError?: string | null;
 }
 
 export default function UserFormModal({
@@ -35,6 +37,7 @@ export default function UserFormModal({
   user,
   isLoading = false,
   readOnly = false,
+  serverError = null,
 }: UserFormModalProps) {
   const isEditing = !!user && !readOnly;
   const [showPassword, setShowPassword] = useState(false);
@@ -312,6 +315,10 @@ export default function UserFormModal({
             </div>
           </div>
         </div>
+
+        {!readOnly && serverError && (
+          <div className="px-6 sm:px-8 pb-1"><FormErrorBanner message={serverError} /></div>
+        )}
 
         <div className="flex-shrink-0 flex justify-end gap-3 p-6 sm:p-8 pt-4 border-t border-gray-100 dark:border-gray-800">
           {readOnly ? (

@@ -30,7 +30,7 @@ export default function AuthLayout({
             {children}
 
             {/* Decorated right panel */}
-            <div className="lg:w-1/2 w-full h-full bg-brand-950 dark:bg-white/5 lg:flex flex-col items-center justify-center hidden relative overflow-hidden">
+            <div className="lg:w-1/2 w-full h-full lg:flex flex-col items-center justify-center hidden relative overflow-hidden" style={{ background: "var(--rail)" }}>
               {/* Three.js particle background */}
               <ThreeParticles color="#8AB925" count={60} opacity={0.5} />
 

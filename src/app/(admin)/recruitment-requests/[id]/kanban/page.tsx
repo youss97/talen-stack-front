@@ -131,16 +131,31 @@ export default function RequestKanbanPage() {
     <div className="p-6">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      <div className="mb-5 flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-semibold text-gray-800 dark:text-white">
-            Kanban — {request?.title || "Recrutement"}
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Glissez-déposez les candidatures entre les étapes. KO / Désistement demandent un motif.
+      <button
+        onClick={() => router.push("/recruitment-requests")}
+        className="mb-4 inline-flex items-center gap-2 text-sm font-medium"
+        style={{ color: "var(--text-2)" }}
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+        Retour aux demandes
+      </button>
+
+      <div className="gw-card p-5 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-xl font-bold tracking-tight" style={{ color: "var(--text)" }}>
+              {request?.title || "Recrutement"}
+            </h1>
+            {request?.reference && <span className="gw-badge gw-badge-neutral">Réf. {request.reference}</span>}
+            {request?.status && <span className="gw-badge gw-badge-blue">{request.status}</span>}
+          </div>
+          <p className="mt-1 text-sm flex flex-wrap items-center gap-x-3 gap-y-1" style={{ color: "var(--text-2)" }}>
+            {request?.client?.name && <span>🏢 {request.client.name}</span>}
+            <span>👥 {candidates.length} candidature{candidates.length > 1 ? "s" : ""}</span>
+            <span className="hidden sm:inline" style={{ color: "var(--text-3)" }}>· Glissez-déposez entre les étapes</span>
           </p>
         </div>
-        <Button variant="outline" onClick={() => router.push("/recruitment-requests")}>Retour</Button>
+        <span className="gw-badge gw-badge-brand self-start sm:self-center"><span className="gw-badge-dot" /> Pipeline</span>
       </div>
 
       {/* Barre de statistiques */}
@@ -151,7 +166,7 @@ export default function RequestKanbanPage() {
           { label: "Acceptés", value: (grouped["Accepté"] || []).length, color: "text-green-600" },
           { label: "KO / Désistement", value: (grouped["KO"] || []).length + (grouped["Désistement"] || []).length, color: "text-red-500" },
         ].map((s) => (
-          <div key={s.label} className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] px-4 py-3">
+          <div key={s.label} className="gw-card px-4 py-3">
             <p className="text-xs text-gray-500 dark:text-gray-400">{s.label}</p>
             <p className={`mt-1 text-2xl font-bold ${s.color}`}>{s.value}</p>
           </div>
@@ -176,11 +191,12 @@ export default function RequestKanbanPage() {
                 onDragOver={(e) => { e.preventDefault(); setDragOverCol(col); }}
                 onDragLeave={() => setDragOverCol((c) => (c === col ? null : c))}
                 onDrop={() => handleDrop(col)}
-                className={`flex-1 min-w-[270px] max-w-[360px] rounded-xl bg-gray-50 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-800 flex flex-col transition-shadow ${
+                style={{ background: "var(--surface-2)", borderColor: "var(--border)" }}
+                className={`flex-1 min-w-[270px] max-w-[360px] rounded-xl border flex flex-col transition-shadow ${
                   dragOverCol === col ? "ring-2 ring-brand-400 shadow-lg" : ""
                 }`}
               >
-                <div className="flex items-center justify-between gap-2 px-3 py-2.5 border-b border-gray-200 dark:border-gray-800">
+                <div className="flex items-center justify-between gap-2 px-3 py-2.5 border-b" style={{ borderColor: "var(--border)" }}>
                   <div className="flex items-center gap-2 min-w-0">
                     <span className={`w-2.5 h-2.5 rounded-full ${headerColor(col)} shrink-0`} />
                     <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">{col}</span>
@@ -198,7 +214,7 @@ export default function RequestKanbanPage() {
                       onDragStart={() => setDragId(c.id)}
                       onDragEnd={() => setDragId(null)}
                       onClick={() => router.push(`/applications/${c.id}`)}
-                      className="cursor-grab active:cursor-grabbing rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-500/40 transition-all"
+                      className="gw-card cursor-grab active:cursor-grabbing p-3 hover:shadow-md hover:-translate-y-0.5 transition-all"
                     >
                       {/* En-tête : avatar + nom + poste */}
                       <div className="flex items-center gap-2.5">
@@ -216,17 +232,17 @@ export default function RequestKanbanPage() {
                       {/* Badges infos */}
                       <div className="mt-2.5 flex flex-wrap gap-1.5">
                         {typeof c.cv?.total_experience === "number" && c.cv.total_experience > 0 && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                          <span className="gw-chip !h-6 !text-[11px]">
                             🎯 {c.cv.total_experience} an{c.cv.total_experience > 1 ? "s" : ""}
                           </span>
                         )}
                         {Array.isArray(c.cv?.skills) && c.cv.skills.length > 0 && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                          <span className="gw-chip !h-6 !text-[11px]">
                             🛠 {c.cv.skills.length} comp.
                           </span>
                         )}
                         {c.status && (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300">
+                          <span className="gw-badge gw-badge-brand !h-6 !text-[11px]">
                             {c.status}
                           </span>
                         )}

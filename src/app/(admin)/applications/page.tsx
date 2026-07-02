@@ -62,6 +62,7 @@ export default function ApplicationsPage() {
   const clientFilter = watch("clientFilter");
   const requestFilter = watch("requestFilter");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isBulkEmailModalOpen, setIsBulkEmailModalOpen] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
@@ -460,11 +461,13 @@ export default function ApplicationsPage() {
 
   const handleAddClick = () => {
     setSelectedApplication(null);
+    setFormError(null);
     setIsFormModalOpen(true);
   };
 
   const handleEditClick = async (application: Recruiter) => {
     // Charger les données complètes avant d'ouvrir le modal
+    setFormError(null);
     setIsFormModalOpen(true);
     setSelectedApplication(null); // Afficher un loading
     try {
@@ -553,7 +556,9 @@ export default function ApplicationsPage() {
       const defaultMsg = selectedApplication
         ? "Erreur lors de la modification de l'application"
         : "Erreur lors de la création de l'application";
-      addToast("error", "Erreur", getErrorMessage(error, defaultMsg));
+      const msg = getErrorMessage(error, defaultMsg);
+      setFormError(msg);
+      addToast("error", "Erreur", msg);
     }
   };
 
@@ -788,10 +793,12 @@ export default function ApplicationsPage() {
         onClose={() => {
           setIsFormModalOpen(false);
           setSelectedApplication(null);
+          setFormError(null);
         }}
         onSubmit={handleFormSubmit}
         recruiter={selectedApplication}
         isLoading={isCreating || isUpdating}
+        serverError={formError}
       />
 
       <RecruiterDetailModal

@@ -2,11 +2,12 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store";
 import { useGetFeaturesQuery } from "@/lib/services/roleApi";
+import { featureLabel, pageLabel } from "@/utils/featureLabels";
 import type { Feature, Page, Action } from "@/types/role";
 
-// Technical page paths and action code patterns hidden from non-superadmins
-const TECHNICAL_PATHS = new Set(["/application-statuses", "/applications"]);
-const TECHNICAL_ACTION_CODES = new Set(["application.delete", "application.create", "application.delete", "application.create"]);
+// (Plus de masquage en dur : les modules non-internes — dont Candidatures — sont gérables par le RH)
+const TECHNICAL_PATHS = new Set<string>([]);
+const TECHNICAL_ACTION_CODES = new Set<string>([]);
 
 interface PermissionsSelectorProps {
   selectedFeatures: string[];
@@ -84,13 +85,13 @@ export default function PermissionsSelector({
       onPagesChange([]);
       onActionsChange([]);
     } else {
-      onFeaturesChange(allFeatureIds);
+      onFeaturesChange(Array.from(new Set([...selectedFeatures, ...allFeatureIds])));
       const allPageIdsFromFeatures = allFeatures.flatMap((f) => f.pages?.map((p) => p.id) ?? []);
-      onPagesChange(allPageIdsFromFeatures);
+      onPagesChange(Array.from(new Set([...selectedPages, ...allPageIdsFromFeatures])));
       const allActionIdsFromFeatures = allFeatures.flatMap((f) =>
         f.pages?.flatMap((p) => p.actions?.map((a) => a.id) ?? []) ?? []
       );
-      onActionsChange(allActionIdsFromFeatures);
+      onActionsChange(Array.from(new Set([...selectedActions, ...allActionIdsFromFeatures])));
     }
   };
 
@@ -238,7 +239,7 @@ export default function PermissionsSelector({
                   return (
                     <li key={feature.id}>
                       <div
-                        title={feature.description ? `${feature.name} — ${feature.description}` : feature.name}
+                        title={feature.description ? `${featureLabel(feature)} — ${feature.description}` : featureLabel(feature)}
                         className={`flex items-start gap-2 px-3 py-2.5 transition-colors ${
                           isSelected
                             ? "bg-brand-50 dark:bg-brand-500/10"
@@ -253,7 +254,7 @@ export default function PermissionsSelector({
                         />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-gray-800 dark:text-gray-200 font-medium leading-tight">
-                            {feature.name}
+                            {featureLabel(feature)}
                           </p>
                           {feature.description && (
                             <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
@@ -305,7 +306,7 @@ export default function PermissionsSelector({
                   return (
                     <li key={page.id}>
                       <div
-                        title={page.description ? `${page.name} — ${page.description}` : page.name}
+                        title={page.description ? `${pageLabel(page.name)} — ${page.description}` : pageLabel(page.name)}
                         className={`flex items-start gap-2.5 px-3 py-2.5 cursor-pointer transition-colors ${
                           isSelected
                             ? "bg-brand-50 dark:bg-brand-500/10"
@@ -322,7 +323,7 @@ export default function PermissionsSelector({
                         />
                         <div className="min-w-0">
                           <p className="text-sm text-gray-800 dark:text-gray-200 font-medium leading-tight">
-                            {page.name}
+                            {pageLabel(page.name)}
                           </p>
                           {page.description && (
                             <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
@@ -363,7 +364,7 @@ export default function PermissionsSelector({
                   <div key={page.id}>
                     {/* Page sub-header inside actions column */}
                     <div className="bg-gray-100 dark:bg-gray-800 px-3 py-2 border-b border-gray-200 dark:border-gray-700">
-                      <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{page.name}</p>
+                      <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">{pageLabel(page.name)}</p>
                       {page.description && (
                         <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
                           {page.description}

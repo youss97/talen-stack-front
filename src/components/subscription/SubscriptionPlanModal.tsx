@@ -10,13 +10,7 @@ import {
 } from "@/lib/services/subscriptionApi";
 import type { Feature } from "@/types/role";
 import type { SubscriptionPlan } from "@/types/subscription";
-
-const FEATURE_ICONS: Record<string, string> = {
-  Recrutement: "📋", Candidatures: "👥", Clients: "🏢", Managers: "👤",
-  Utilisateurs: "🔑", Intégrations: "🔗", Agenda: "📅", Entretiens: "🗣️",
-  "Vivier de talents": "💎", "Offres Publiques": "📢", Emails: "✉️",
-  Logs: "📊", Rôles: "🛡️", Entreprises: "🏭", "Assignment Management": "📌",
-};
+import { featureIcon, featureLabel } from "@/utils/featureLabels";
 
 // Features réservées au super admin — non proposées dans les abonnements
 const SYSTEM_FEATURE_NAMES = new Set(["Entreprises", "Logs", "Activity Management", "Company Management"]);
@@ -221,7 +215,7 @@ export default function SubscriptionPlanModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {availableFeatures.map((feature) => {
               const checked = selectedFeatureIds.has(feature.id);
-              const icon = FEATURE_ICONS[feature.name] || "⚙️";
+              const icon = featureIcon(feature.name);
               return (
                 <label
                   key={feature.id}
@@ -245,7 +239,7 @@ export default function SubscriptionPlanModal({
                     <div className="flex items-center gap-1">
                       <span className="text-sm">{icon}</span>
                       <span className={`text-xs font-medium ${checked ? "text-brand-700 dark:text-brand-300" : "text-gray-700 dark:text-gray-300"}`}>
-                        {feature.name}
+                        {featureLabel(feature)}
                       </span>
                     </div>
                     {feature.description && (

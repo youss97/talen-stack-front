@@ -365,7 +365,7 @@ export default function RecruiterDetailModal({
       showCloseButton={!asPage}
       className={asPage ? "w-full flex flex-col" : "max-w-3xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive"}
     >
-      <div className={asPage ? "mb-6" : "flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800"}>
+      <div className={asPage ? "mb-6" : "flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-[color:var(--border)]"}>
         <h2 className={asPage ? "text-2xl font-bold text-gray-900 dark:text-white" : "text-xl font-semibold text-gray-800 dark:text-white"}>
           Détails de la candidature
         </h2>
@@ -390,7 +390,7 @@ export default function RecruiterDetailModal({
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Candidat
                 </h3>
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-3">
+                <div className="gw-panel p-4 space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <DetailItem 
                       label="Nom" 
@@ -489,11 +489,11 @@ export default function RecruiterDetailModal({
 
             {/* Informations de la demande */}
             {recruiter.request && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Demande de recrutement
                 </h3>
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-3">
+                <div className="gw-panel p-4 space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <DetailItem label="Titre" value={recruiter.request.title || "-"} />
                     <DetailItem label="Référence" value={recruiter.request.reference || "-"} />
@@ -509,7 +509,7 @@ export default function RecruiterDetailModal({
             )}
 
             {/* Section Entretiens - toujours visible */}
-            <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+            <div className="border-t border-[color:var(--border)] pt-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Entretiens ({interviews.length})
@@ -532,7 +532,7 @@ export default function RecruiterDetailModal({
                   {interviews.map((interview) => (
                     <div
                       key={interview.id}
-                      className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700"
+                      className="gw-panel p-4 border border-gray-200 dark:border-gray-700"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -647,11 +647,11 @@ export default function RecruiterDetailModal({
 
             {/* Informations du recruteur */}
             {recruiter.recruiter && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Recruteur
                 </h3>
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-3">
+                <div className="gw-panel p-4 space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <DetailItem 
                       label="Nom" 
@@ -675,7 +675,7 @@ export default function RecruiterDetailModal({
             <div className="space-y-6">{/* colonne droite */}
 
             {/* Workflow / étapes (3.2/3.3) — toujours affiché (fallback si la demande n'a pas d'étapes) */}
-            <div className="border-t border-gray-100 dark:border-gray-800 pt-4 lg:border-t-0 lg:pt-0">
+            <div className="border-t border-[color:var(--border)] pt-4 lg:border-t-0 lg:pt-0">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Workflow du recrutement
               </h3>
@@ -692,7 +692,7 @@ export default function RecruiterDetailModal({
 
             {/* Langues */}
             {recruiter.languages && recruiter.languages.filter(l => l && l.language).length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Langues
                 </h3>
@@ -713,7 +713,7 @@ export default function RecruiterDetailModal({
 
             {/* Notes du recruteur */}
             {recruiter.recruiter_notes && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Notes du recruteur
                 </h3>
@@ -724,7 +724,7 @@ export default function RecruiterDetailModal({
             )}
 
             {/* Feedbacks */}
-            <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+            <div className="border-t border-[color:var(--border)] pt-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Feedbacks
@@ -800,7 +800,7 @@ export default function RecruiterDetailModal({
             </div>
 
             {/* Statut de l'application */}
-            <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+            <div className="border-t border-[color:var(--border)] pt-4">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Statut de l'application
               </h3>
@@ -837,7 +837,7 @@ export default function RecruiterDetailModal({
 
             {/* Date de proposition */}
             {recruiter.proposed_at && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Date de proposition
                 </h3>
@@ -857,7 +857,7 @@ export default function RecruiterDetailModal({
         ) : null}
       </div>
 
-      <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+      <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-[color:var(--border)]">
         <Button variant="outline" onClick={onClose}>
           Fermer
         </Button>

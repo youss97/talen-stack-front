@@ -22,14 +22,14 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     },
     ref
   ) => {
-    let textareaClasses = `w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden ${className}`;
+    let textareaClasses = `w-full rounded-lg border px-4 py-2.5 text-sm placeholder:text-[var(--text-3)] focus:outline-none transition ${className}`;
 
     if (disabled) {
-      textareaClasses += ` bg-gray-100 opacity-50 text-gray-500 border-gray-300 cursor-not-allowed dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700`;
+      textareaClasses += ` bg-[var(--surface-2)] text-[var(--text-3)] border-[var(--border-strong)] cursor-not-allowed`;
     } else if (error) {
-      textareaClasses += ` bg-transparent text-gray-900 border-gray-300 focus:border-error-300 focus:ring-3 focus:ring-error-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-error-800`;
+      textareaClasses += ` bg-[var(--surface)] text-[var(--text)] border-[var(--rose)] focus:ring-2 focus:ring-[var(--rose)]/30`;
     } else {
-      textareaClasses += ` bg-transparent text-gray-900 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800`;
+      textareaClasses += ` bg-[var(--surface)] text-[var(--text)] border-[var(--border-strong)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/35`;
     }
 
     return (

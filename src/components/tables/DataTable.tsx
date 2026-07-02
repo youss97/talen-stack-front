@@ -145,16 +145,16 @@ function DataTable<T extends { id: string }>({
 
   const ViewToggle = enableViewToggle ? (
     <div className="mb-3 flex justify-end">
-      <div className="inline-flex rounded-lg border border-gray-200 dark:border-gray-700 p-0.5 bg-gray-50 dark:bg-gray-800">
+      <div className="inline-flex rounded-lg border border-[color:var(--border)] p-0.5 bg-[var(--surface-2)]">
         <button
           onClick={() => setView("table")}
-          className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "table" ? "bg-white dark:bg-gray-900 text-brand-600 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+          className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "table" ? "bg-[var(--surface)] text-[var(--brand-deep)] shadow-sm" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
         >
           Tableau
         </button>
         <button
           onClick={() => setView("cards")}
-          className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "cards" ? "bg-white dark:bg-gray-900 text-brand-600 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+          className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "cards" ? "bg-[var(--surface)] text-[var(--brand-deep)] shadow-sm" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
         >
           Cartes
         </button>
@@ -176,7 +176,7 @@ function DataTable<T extends { id: string }>({
     {ViewToggle}
     {view === "cards" ? (
       data.length === 0 ? (
-        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="gw-card">
           <EmptyState title={emptyMessage} />
         </div>
       ) : (
@@ -187,7 +187,7 @@ function DataTable<T extends { id: string }>({
               <div
                 key={row.id}
                 onClick={() => onRowClick?.(row)}
-                className={`relative flex flex-col items-center rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-white/[0.03] p-5 shadow-sm transition-all hover:shadow-lg hover:-translate-y-0.5 ${onRowClick ? "cursor-pointer" : ""}`}
+                className={`relative flex flex-col items-center gw-card p-5 transition-all hover:shadow-lg hover:-translate-y-0.5 ${onRowClick ? "cursor-pointer" : ""}`}
               >
                 {(actions || hasActionHandlers) && (
                   <div className="absolute right-3 top-3">{renderActions(row)}</div>
@@ -216,10 +216,10 @@ function DataTable<T extends { id: string }>({
         </div>
       )
     ) : (
-    <div className="w-full overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+    <div className="w-full overflow-x-auto gw-card">
     <div className="inline-block min-w-full align-middle">
       <Table className="border-collapse min-w-full">
-        <TableHeader className="border-b border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-white/[0.02]">
+        <TableHeader className="border-b border-[color:var(--border)] bg-[var(--surface-2)]">
           <TableRow>
             {columns.map((column) => (
               <TableCell
@@ -254,9 +254,9 @@ function DataTable<T extends { id: string }>({
             data.map((row) => (
               <TableRow
                 key={row.id}
-                className={`border-b border-gray-100 dark:border-gray-800 ${
+                className={`border-b border-[color:var(--border)] ${
                   onRowClick
-                    ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                    ? "cursor-pointer hover:bg-[var(--brand-soft)]/50 transition-colors"
                     : ""
                 }`}
                 onClick={() => onRowClick?.(row)}

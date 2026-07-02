@@ -28,6 +28,7 @@ export default function ClientsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
@@ -75,10 +76,12 @@ export default function ClientsPage() {
 
   const handleAddClick = () => {
     setEditingClient(null);
+    setFormError(null);
     setIsFormModalOpen(true);
   };
 
   const handleEditClick = async (client: Client) => {
+    setFormError(null);
     setIsFormModalOpen(true);
     setEditingClient(null);
     
@@ -176,7 +179,7 @@ export default function ClientsPage() {
       const defaultMsg = editingClient
         ? "Erreur lors de la modification du client"
         : "Erreur lors de la création du client";
-      addToast("error", "Erreur", getErrorMessage(error, defaultMsg));
+      { const _m = getErrorMessage(error, defaultMsg); setFormError(_m); addToast("error", "Erreur", _m); }
     }
   };
 
@@ -331,10 +334,12 @@ export default function ClientsPage() {
         onClose={() => {
           setIsFormModalOpen(false);
           setEditingClient(null);
+          setFormError(null);
         }}
         onSubmit={handleFormSubmit}
         client={editingClient}
         isLoading={isCreating || isUpdating || isLoadingClient}
+        serverError={formError}
       />
 
       <ClientDetailModal

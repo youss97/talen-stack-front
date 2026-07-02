@@ -66,6 +66,7 @@ export default function UsersPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [detailUser, setDetailUser] = useState<User | null>(null);
@@ -189,10 +190,12 @@ export default function UsersPage() {
 
   const handleAddClick = () => {
     setSelectedUser(null);
+    setFormError(null);
     setIsFormModalOpen(true);
   };
 
   const handleEditClick = async (user: User) => {
+    setFormError(null);
     setIsFormModalOpen(true);
     setSelectedUser(null);
     try {
@@ -303,7 +306,9 @@ export default function UsersPage() {
       const defaultMsg = selectedUser
         ? "Erreur lors de la modification de l'utilisateur"
         : "Erreur lors de la création de l'utilisateur";
-      addToast("error", "Erreur", getErrorMessage(error, defaultMsg));
+      const msg = getErrorMessage(error, defaultMsg);
+      setFormError(msg);
+      addToast("error", "Erreur", msg);
     }
   };
 
@@ -418,10 +423,12 @@ export default function UsersPage() {
         onClose={() => {
           setIsFormModalOpen(false);
           setSelectedUser(null);
+          setFormError(null);
         }}
         onSubmit={handleFormSubmit}
         user={selectedUser}
         isLoading={isCreating || isUpdating || isLoadingDetail}
+        serverError={formError}
       />
 
       <UserDetailModal

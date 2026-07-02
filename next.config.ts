@@ -3,6 +3,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   output: "standalone",
+  // Supprime TOUS les console.* dans le build de production (gardés en dev)
+  compiler: {
+    removeConsole: true,
+  },
   images: {
     remotePatterns: [
       {

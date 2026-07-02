@@ -799,6 +799,153 @@ span.flatpickr-weekday,
   animation: shrink linear forwards;
 }
 
+/* ============================================================
+   GW — Design System (refonte UI/UX)
+   Tokens + primitives. N'affecte que les composants qui les
+   utilisent (classes .gw-*), donc non-cassant pour l'existant.
+   ============================================================ */
+:root {
+  --brand: #8AB925;
+  --brand-strong: #6E9A1D;
+  --brand-deep: #55791A;
+  --brand-soft: #F1F7E1;
+  --brand-ink: #26340F;
+
+  --bg: #F7F8F3;
+  --surface: #FFFFFF;
+  --surface-2: #FBFCF8;
+  --border: #E7EBDE;
+  --border-strong: #D6DCCA;
+
+  --text: #1B2413;
+  --text-2: #5E6B52;
+  --text-3: #95A085;
+
+  --rail: #19210E;
+  --rail-2: #24300F;
+
+  --blue: #2563EB;   --blue-soft: #EAF1FE;
+  --amber: #C77800;  --amber-soft: #FBF1DF;
+  --violet: #7C3AED; --violet-soft: #F1EBFE;
+  --rose: #DC2626;   --rose-soft: #FCEBEB;
+
+  --radius: 12px;
+  --radius-sm: 10px;
+  --radius-lg: 16px;
+  --ds-ring: 0 0 0 3px rgba(138, 185, 37, 0.35);
+  --ds-shadow-card: 0 1px 2px rgba(27, 36, 19, 0.04), 0 1px 3px rgba(27, 36, 19, 0.06);
+}
+
+/* Mode sombre = vert forêt foncé (comme le sidebar) + texte clair.
+   On surcharge uniquement les tokens : toutes les surfaces .gw-* / var() suivent. */
+.dark {
+  --bg: #10160A;
+  --surface: #19210E;
+  --surface-2: #1E2812;
+  --border: #2C3A19;
+  --border-strong: #3A4B22;
+  --text: #EDF2E4;
+  --text-2: #BAC5A9;
+  --text-3: #8C9878;
+  --brand-soft: #223212;
+  --ds-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
+
+  /* Remap des GRIS FONCÉS (fonds) vers du vert foncé en mode sombre.
+     → tous les dark:bg-gray-900/800/700 (skeletons, cartes, tableaux, login) suivent,
+     sans éditer chaque fichier. On ne touche pas aux gris clairs (texte). */
+  --color-gray-950: #0B1006;
+  --color-gray-900: #10160A;
+  --color-gray-800: #19210E;
+  --color-gray-700: #253114;
+  --color-gray-dark: #10160A;
+}
+.dark body { background: var(--bg); }
+
+/* Mode sombre : supprimer les fonds noirs (gris-900) des champs/selects/tabs
+   → surfaces vertes cohérentes, sans devoir éditer chaque page. */
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.dark select,
+.dark textarea {
+  background-color: var(--surface) !important;
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.dark input::placeholder,
+.dark textarea::placeholder { color: var(--text-3); }
+.dark option { background-color: var(--surface); color: var(--text); }
+
+@layer components {
+  /* Boutons */
+  .gw-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    height: 2.5rem; padding: 0 0.95rem; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 600; line-height: 1;
+    transition: background .15s ease, color .15s ease, border-color .15s ease, box-shadow .15s ease;
+    border: 1px solid transparent; white-space: nowrap; cursor: pointer;
+  }
+  .gw-btn:focus-visible { outline: none; box-shadow: var(--ds-ring); }
+  .gw-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+  /* Primaire = fond lime + texte encre (contraste AA) */
+  .gw-btn-primary { background: var(--brand); color: var(--brand-ink); }
+  .gw-btn-primary:hover:not(:disabled) { background: var(--brand-strong); }
+
+  /* CTA alternatif = vert profond + texte blanc */
+  .gw-btn-cta { background: var(--brand-deep); color: #fff; }
+  .gw-btn-cta:hover:not(:disabled) { background: #47670f; }
+
+  /* Secondaire (ghost/outline) */
+  .gw-btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
+  .gw-btn-ghost:hover:not(:disabled) { background: var(--brand-soft); border-color: var(--brand); color: var(--brand-deep); }
+
+  /* Tertiaire (texte seul) */
+  .gw-btn-text { background: transparent; color: var(--text-2); }
+  .gw-btn-text:hover:not(:disabled) { background: rgba(38, 52, 15, .05); color: var(--text); }
+
+  .gw-btn-danger { background: var(--rose); color: #fff; }
+  .gw-btn-danger:hover:not(:disabled) { background: #b91c1c; }
+
+  .gw-btn-sm { height: 2rem; padding: 0 .7rem; font-size: 13.5px; }
+  .gw-btn-lg { height: 2.75rem; padding: 0 1.25rem; font-size: 15px; }
+
+  /* Champs */
+  .gw-field-label { display:block; font-size: 13.5px; font-weight: 600; color: var(--text-2); margin-bottom: .375rem; }
+  .gw-input, .gw-select, .gw-textarea {
+    width: 100%; background: var(--surface); color: var(--text);
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+    font-size: 14px; padding: 0 .85rem; height: 2.6rem;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .gw-textarea { height: auto; padding: .6rem .85rem; min-height: 5rem; }
+  .gw-input::placeholder, .gw-textarea::placeholder { color: var(--text-3); }
+  .gw-input:focus, .gw-select:focus, .gw-textarea:focus {
+    outline: none; border-color: var(--brand); box-shadow: var(--ds-ring);
+  }
+  .gw-input:disabled { background: var(--surface-2); color: var(--text-3); cursor: not-allowed; }
+  .gw-input-error { border-color: var(--rose); }
+  .gw-input-error:focus { box-shadow: 0 0 0 3px rgba(220,38,38,.25); }
+  .gw-field-hint { font-size: 12.5px; color: var(--text-3); margin-top: .35rem; }
+  .gw-field-error { font-size: 12.5px; color: var(--rose); margin-top: .35rem; }
+
+  /* Cartes / surfaces */
+  .gw-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--ds-shadow-card); }
+  .gw-card-flat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .gw-panel { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); }
+
+  /* Badges de statut */
+  .gw-badge { display:inline-flex; align-items:center; gap:.35rem; height:1.5rem; padding:0 .55rem; border-radius:999px; font-size:12.5px; font-weight:600; line-height:1; border:1px solid transparent; }
+  .gw-badge-brand  { background: var(--brand-soft);  color: var(--brand-deep); }
+  .gw-badge-blue   { background: var(--blue-soft);   color: var(--blue); }
+  .gw-badge-amber  { background: var(--amber-soft);  color: var(--amber); }
+  .gw-badge-violet { background: var(--violet-soft); color: var(--violet); }
+  .gw-badge-rose   { background: var(--rose-soft);   color: var(--rose); }
+  .gw-badge-neutral{ background: #EFF1EA;            color: var(--text-2); }
+  .gw-badge-dot { width:.4rem; height:.4rem; border-radius:999px; background: currentColor; }
+
+  /* Chips compétences */
+  .gw-chip { display:inline-flex; align-items:center; height:1.55rem; padding:0 .6rem; border-radius:8px; font-size:12.5px; font-weight:500; background:#EFF1EA; color:var(--text-2); border:1px solid var(--border); }
+}
+
 /* Landing page specific styles */
 .landing-layout {
   /* Removed font-sans as it's not available in this Tailwind version */

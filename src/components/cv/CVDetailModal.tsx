@@ -97,22 +97,38 @@ export default function CVDetailModal({
         });
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
-      <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
-        <div>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-            {fullName}
-          </h2>
-          {(cv?.profile_title || cv?.last_position) && (
-            <p className="mt-1 text-sm font-medium text-brand-600 dark:text-brand-400">
-              {cv?.profile_title || cv?.last_position}
-            </p>
-          )}
-          {cv?.profile_title && cv?.last_position && cv.profile_title !== cv.last_position && (
-            <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-              Poste : {cv.last_position}
-            </p>
-          )}
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
+      <div className="flex-shrink-0 p-4 sm:p-6 pb-4 border-b" style={{ borderColor: "var(--border)" }}>
+        <div className="flex items-start gap-4">
+          {/* Avatar initiales */}
+          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-lg font-bold" style={{ background: "var(--brand-soft)", color: "var(--brand-deep)" }}>
+            {fullName.split(" ").map((x) => x[0]).slice(0, 2).join("").toUpperCase() || "?"}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-xl font-semibold" style={{ color: "var(--text)" }}>{fullName}</h2>
+              {cv && (
+                <Badge color={getStatusColor(cv.status) as "success" | "error" | "warning" | "info" | "light"} variant="light" size="sm">
+                  {getStatusLabel(cv.status)}
+                </Badge>
+              )}
+            </div>
+            {(cv?.profile_title || cv?.last_position) && (
+              <p className="mt-0.5 text-sm font-medium" style={{ color: "var(--brand-deep)" }}>
+                {cv?.profile_title || cv?.last_position}
+              </p>
+            )}
+            {/* Infos clés en chips */}
+            {cv && (
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {cv.candidate_email && <span className="gw-chip">✉ {cv.candidate_email}</span>}
+                {cv.candidate_phone && <span className="gw-chip">☎ {cv.candidate_phone}</span>}
+                {cv.total_experience ? <span className="gw-chip">🎯 {cv.total_experience} ans</span> : null}
+                {cv.last_education && <span className="gw-chip">🎓 {cv.last_education}</span>}
+                {cv.remote_preferred && <span className="gw-chip">🏠 Télétravail</span>}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -123,26 +139,18 @@ export default function CVDetailModal({
           </div>
         ) : cv ? (
           <div className="space-y-6">
-            {/* Informations de base */}
-            <div className="grid grid-cols-2 gap-4">
-              <DetailItem label="Email" value={cv.candidate_email || "-"} />
-              <DetailItem label="Téléphone" value={cv.candidate_phone || "-"} />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <DetailItem label="Expérience" value={cv.total_experience ? `${cv.total_experience} ans` : "-"} />
-              <DetailItem label="Formation" value={cv.last_education || "-"} />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              {cv.specialty && <DetailItem label="Spécialité pertinente" value={cv.specialty} />}
-              <DetailItem label="Secteur" value={cv.industry_experience || "-"} />
-              <DetailItem label="Télétravail" value={cv.remote_preferred ? "Oui" : "Non"} />
-            </div>
+            {/* Infos complémentaires (les coordonnées/exp sont déjà dans l'en-tête) */}
+            {(cv.specialty || cv.industry_experience || cv.remote_preferred != null) && (
+              <div className="gw-panel p-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {cv.specialty && <DetailItem label="Spécialité" value={cv.specialty} />}
+                <DetailItem label="Secteur" value={cv.industry_experience || "-"} />
+                <DetailItem label="Télétravail" value={cv.remote_preferred ? "Oui" : "Non"} />
+              </div>
+            )}
 
             {/* Score de complétude */}
             {cv.details?.stats?.completeness_score && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   Complétude du profil
                 </h3>
@@ -159,7 +167,7 @@ export default function CVDetailModal({
 
             {/* Résumé professionnel */}
             {effectiveSummary && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   📝 Résumé professionnel
                 </h3>
@@ -171,13 +179,13 @@ export default function CVDetailModal({
 
             {/* Expériences professionnelles */}
             {effectiveExperiences.length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   💼 Expériences professionnelles ({cv.details?.stats?.total_experiences || effectiveExperiences.length})
                 </h3>
                 <div className="space-y-4">
                   {effectiveExperiences.map((exp: any, index: number) => (
-                    <div key={index} className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 border-l-4 border-brand-500">
+                    <div key={index} className="gw-panel p-4 border-l-4 border-brand-500">
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="font-semibold text-gray-900 dark:text-white">
                           {exp.title || "Poste non spécifié"}
@@ -205,13 +213,13 @@ export default function CVDetailModal({
 
             {/* Formations */}
             {effectiveFormations.length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   🎓 Formations ({cv.details?.stats?.total_formations || effectiveFormations.length})
                 </h3>
                 <div className="space-y-3">
                   {effectiveFormations.map((form: any, index: number) => (
-                    <div key={index} className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 border-l-4 border-green-500">
+                    <div key={index} className="gw-panel p-4 border-l-4 border-green-500">
                       <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
                         {form.degree || "Diplôme non spécifié"}
                       </h4>
@@ -236,7 +244,7 @@ export default function CVDetailModal({
 
             {/* Compétences techniques */}
             {effectiveTechnicalSkills.length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   🛠️ Compétences techniques ({effectiveTechnicalSkills.length})
                 </h3>
@@ -252,7 +260,7 @@ export default function CVDetailModal({
 
             {/* Compétences transversales */}
             {effectiveSoftSkills.length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   💡 Compétences transversales ({effectiveSoftSkills.length})
                 </h3>
@@ -268,7 +276,7 @@ export default function CVDetailModal({
 
             {/* Toutes les compétences (fallback si pas de détails) */}
             {effectiveTechnicalSkills.length === 0 && effectiveSoftSkills.length === 0 && cv.additional_skills && cv.additional_skills.length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   🛠️ Compétences ({cv.additional_skills.length})
                 </h3>
@@ -284,13 +292,13 @@ export default function CVDetailModal({
 
             {/* Langues */}
             {effectiveLanguages.length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   🌍 Langues ({cv.details?.stats?.total_languages || effectiveLanguages.length})
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                   {effectiveLanguages.map((lang: any, index: number) => (
-                    <div key={index} className="flex justify-between items-center bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3">
+                    <div key={index} className="flex justify-between items-center gw-panel p-3">
                       <span className="text-sm font-medium text-gray-900 dark:text-white">
                         {lang.language}
                       </span>
@@ -305,7 +313,7 @@ export default function CVDetailModal({
 
             {/* Certifications */}
             {effectiveCertifications.length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   🏆 Certifications ({cv.details?.stats?.total_certifications || effectiveCertifications.length})
                 </h3>
@@ -322,7 +330,7 @@ export default function CVDetailModal({
 
             {/* Mobilité géographique */}
             {cv.geographic_mobility && cv.geographic_mobility.length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   📍 Mobilité géographique
                 </h3>
@@ -334,7 +342,7 @@ export default function CVDetailModal({
 
             {/* Types de contrat */}
             {cv.contract_type_preferences && cv.contract_type_preferences.length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   📄 Types de contrat préférés
                 </h3>
@@ -346,7 +354,7 @@ export default function CVDetailModal({
 
             {/* Notes */}
             {effectiveNotes && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   📌 Notes
                 </h3>
@@ -358,7 +366,7 @@ export default function CVDetailModal({
 
             {/* Document CV */}
             {cv.file_path && (
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+              <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   📄 Document CV
                 </h3>
@@ -434,18 +442,6 @@ export default function CVDetailModal({
               </div>
             )}
 
-            {/* Statut */}
-            <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Statut
-              </h3>
-              <Badge
-                color={getStatusColor(cv.status) as "success" | "error" | "warning" | "info" | "light"}
-                variant="light"
-              >
-                {getStatusLabel(cv.status)}
-              </Badge>
-            </div>
           </div>
         ) : null}
       </div>
@@ -462,8 +458,8 @@ export default function CVDetailModal({
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
-      <p className="text-sm text-gray-800 dark:text-gray-200">{value}</p>
+      <p className="text-xs" style={{ color: "var(--text-3)" }}>{label}</p>
+      <p className="text-sm" style={{ color: "var(--text)" }}>{value}</p>
     </div>
   );
 }

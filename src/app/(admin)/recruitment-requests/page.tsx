@@ -42,6 +42,7 @@ export default function RecruitmentPage() {
   const [contractTypeFilter, setContractTypeFilter] = useState<string>("");
   const [locationFilter, setLocationFilter] = useState<string>("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<ApplicationRequest | null>(null);
@@ -100,6 +101,7 @@ export default function RecruitmentPage() {
 
   const handleAddClick = () => {
     setEditingRequest(null);
+    setFormError(null);
     setIsFormModalOpen(true);
   };
 
@@ -120,6 +122,7 @@ export default function RecruitmentPage() {
   };
 
   const handleEditClick = async (request: ApplicationRequest) => {
+    setFormError(null);
     setIsFormModalOpen(true);
     setEditingRequest(null);
     
@@ -332,7 +335,7 @@ export default function RecruitmentPage() {
       const defaultMsg = editingRequest
         ? "Erreur lors de la modification de la demande"
         : "Erreur lors de la création de la demande";
-      addToast("error", "Erreur", getErrorMessage(error, defaultMsg));
+      { const _m = getErrorMessage(error, defaultMsg); setFormError(_m); addToast("error", "Erreur", _m); }
     }
   };
 
@@ -723,10 +726,12 @@ export default function RecruitmentPage() {
         onClose={() => {
           setIsFormModalOpen(false);
           setEditingRequest(null);
+          setFormError(null);
         }}
         onSubmit={handleFormSubmit}
         applicationRequest={editingRequest}
         isLoading={isCreating || isUpdating || isLoadingRequest}
+        serverError={formError}
       />
 
       <ApplicationRequestDetailModal
