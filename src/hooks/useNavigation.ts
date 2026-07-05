@@ -53,6 +53,8 @@ export function useNavigation() {
         if (!path || seenPaths.has(path)) return;
         // "Mes Offres" (/my-requests) est réservé à l'espace client uniquement
         if (path === "/my-requests" && !isClientSpace) return;
+        // "Entreprises" (/companies) est réservé au super admin uniquement
+        if (path === "/companies" && !isSuperAdmin) return;
         if (canAccessPath(path)) {
           const config = NAV_CONFIG[path];
           if (config) {

@@ -4,7 +4,14 @@ import { useParams, useRouter } from "next/navigation";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
-import { useGetPublicJobOfferByIdQuery } from "@/lib/services/publicJobOfferApi";
+import {
+  useGetPublicJobOfferByIdQuery,
+  useGetPublicApplicationsByRequestQuery,
+  useConvertPublicApplicationMutation,
+} from "@/lib/services/publicJobOfferApi";
+import ApplicationsList from "@/components/public-offers/ApplicationsList";
+import ConversionLoader from "@/components/public-offers/ConversionLoader";
+import { getApiErrorMessage } from "@/utils/errorMessages";
 
 export default function PublicOfferDetailPage() {
   const params = useParams();
@@ -13,6 +20,27 @@ export default function PublicOfferDetailPage() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   const { data: offer, isLoading } = useGetPublicJobOfferByIdQuery(id);
+  const { data: publicApps = [] } = useGetPublicApplicationsByRequestQuery(id, { skip: !id });
+  const [convertPublicApp] = useConvertPublicApplicationMutation();
+  const [convertingId, setConvertingId] = useState<string | null>(null);
+  const [convertDone, setConvertDone] = useState(false);
+
+  const handleConvert = async (appId: string) => {
+    setConvertingId(appId);
+    setConvertDone(false);
+    try {
+      await convertPublicApp({ id: appId, requestId: id }).unwrap();
+      // Afficher brièvement les étapes validées avant de fermer l'overlay
+      setConvertDone(true);
+      await new Promise((r) => setTimeout(r, 900));
+      addToast("success", "Transformée", "Candidat ajouté au vivier et candidature créée.");
+    } catch (e) {
+      addToast("error", "Erreur", getApiErrorMessage(e, "Échec de la transformation"));
+    } finally {
+      setConvertingId(null);
+      setConvertDone(false);
+    }
+  };
 
   const publicUrl = offer?.public_slug && typeof window !== "undefined"
     ? `${window.location.origin}/apply/${offer.public_slug}`
@@ -60,6 +88,7 @@ export default function PublicOfferDetailPage() {
   return (
     <div className="p-6">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
+      <ConversionLoader active={!!convertingId} done={convertDone} />
 
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
@@ -229,6 +258,21 @@ export default function PublicOfferDetailPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Candidatures de l'offre publique (séparées des candidatures) */}
+      <div className="mt-6 rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Candidatures reçues (offre publique)
+            <span className="ml-2 text-sm text-gray-400">({publicApps.length})</span>
+          </h2>
+        </div>
+        <ApplicationsList
+          applications={publicApps}
+          onConvert={handleConvert}
+          convertingId={convertingId}
+        />
       </div>
     </div>
   );

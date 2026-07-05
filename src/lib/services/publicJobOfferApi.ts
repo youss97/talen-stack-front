@@ -37,6 +37,21 @@ export const publicJobOfferApi = createApi({
       providesTags: (result, error, id) => [{ type: 'PublicJobOffer', id }],
     }),
 
+    // Candidatures d'offre publique d'une demande (séparées des candidatures)
+    getPublicApplicationsByRequest: builder.query<PublicApplication[], string>({
+      query: (requestId) => `/requests/${requestId}/public-applications`,
+      providesTags: (result, error, requestId) => [{ type: 'PublicApplication', id: requestId }],
+    }),
+
+    // Transformer une candidature publique en vraie candidature
+    convertPublicApplication: builder.mutation<{ application_id: string; cv_id: string }, { id: string; requestId: string }>({
+      query: ({ id }) => ({
+        url: `/public-applications/${id}/convert`,
+        method: 'POST',
+      }),
+      invalidatesTags: (result, error, { requestId }) => [{ type: 'PublicApplication', id: requestId }],
+    }),
+
     togglePublicJobOfferActive: builder.mutation<PublicJobOffer, string>({
       query: (id) => ({
         url: `/requests/${id}/toggle-public`,
@@ -76,6 +91,8 @@ export const publicJobOfferApi = createApi({
 export const {
   useGetPublicJobOffersQuery,
   useGetPublicJobOfferByIdQuery,
+  useGetPublicApplicationsByRequestQuery,
+  useConvertPublicApplicationMutation,
   useTogglePublicJobOfferActiveMutation,
   useDeletePublicJobOfferMutation,
   useGetPublicJobOfferBySlugQuery,
