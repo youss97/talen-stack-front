@@ -245,8 +245,6 @@ export default function PublicOffersPage() {
         onClose={() => setConfigOffer(null)}
         offerId={configOffer?.id ?? null}
         initialVisibleFields={configOffer?.public_visible_fields}
-        initialBrandColor={(configOffer as unknown as { public_brand_color?: string })?.public_brand_color}
-        initialBgColor={(configOffer as unknown as { public_bg_color?: string })?.public_bg_color}
         onSaved={() => { addToast("success", "Succès", "Configuration de l'offre publique enregistrée"); refetch(); }}
       />
     </div>

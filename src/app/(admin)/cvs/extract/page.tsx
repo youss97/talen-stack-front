@@ -14,6 +14,7 @@ import {
 import type { CvExperience, CvFormation } from "@/types/cv";
 import MonthYearPicker from "@/components/form/MonthYearPicker";
 import YearPicker from "@/components/form/YearPicker";
+import { openCvInNewTab } from "@/utils/cvView";
 
 const LANGUAGE_LEVELS = ["Natif", "Courant", "Intermédiaire", "Notions"] as const;
 const CONTRACT_TYPES = ["CDI", "CDD", "Freelance", "Stage", "Alternance", "Intérim"] as const;
@@ -436,7 +437,17 @@ export default function CVExtractPage() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => window.open(previewUrl, "_blank")}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    // Fichier fraîchement sélectionné → blob local (affichage direct OK).
+                    // CV existant → passer par l'endpoint inline pour éviter le téléchargement.
+                    if (selectedFile) window.open(previewUrl!, "_blank");
+                    else if (cvId) openCvInNewTab(cvId);
+                    else if (previewUrl) window.open(previewUrl, "_blank");
+                  }}
+                >
                   Voir le CV
                 </Button>
                 {selectedFile && (

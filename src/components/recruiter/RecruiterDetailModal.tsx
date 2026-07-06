@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
+import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import StatusChangeModal from "./StatusChangeModal";
@@ -55,6 +56,9 @@ export default function RecruiterDetailModal({
   );
   
   const isLoading = externalLoading || isLoadingRecruiter;
+
+  const cvAny = recruiter?.cv as unknown as { file_name?: string } | undefined;
+
   // Récupérer les statuts de candidature
   const { data: applicationStatusesData } = useGetApplicationStatusesQuery({
     page: 1,
@@ -417,30 +421,20 @@ export default function RecruiterDetailModal({
                     </div>
                   )}
                   {recruiter.cv.file_path && (
-                    <div className="pt-2 flex gap-2">
+                    <div className="pt-2 flex flex-wrap gap-2">
+                      {recruiter.cv.id && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openCvInNewTab(recruiter.cv!.id!)}
+                        >
+                          👁️ Visualiser
+                        </Button>
+                      )}
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={async () => {
-                          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-                          const token = localStorage.getItem('token');
-                          try {
-                            const res = await fetch(`${apiUrl}/cvs/${recruiter.cv?.id}/download`, {
-                              headers: token ? { Authorization: `Bearer ${token}` } : {},
-                            });
-                            if (!res.ok) throw new Error();
-                            const blob = await res.blob();
-                            const disposition = res.headers.get('Content-Disposition') || '';
-                            const match = disposition.match(/filename="?([^"]+)"?/);
-                            const filename = match?.[1] || 'CV.pdf';
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url; a.download = filename; a.click();
-                            URL.revokeObjectURL(url);
-                          } catch {
-                            if (recruiter.cv?.file_path) window.open(recruiter.cv.file_path, '_blank');
-                          }
-                        }}
+                        onClick={() => recruiter.cv?.id && downloadCvFile(recruiter.cv.id, cvAny?.file_name || 'CV.pdf')}
                       >
                         📄 Télécharger le CV
                       </Button>

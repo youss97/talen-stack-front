@@ -249,18 +249,19 @@ export default function PublicApplyPage() {
   const [modalOpen,  setModalOpen]  = useState(false);
   const [submitted,  setSubmitted]  = useState(false);
 
-  // Couleurs paramétrables par l'offre (boutons/accent + fond d'animation 3D)
-  const offerBrand = (offer as unknown as { public_brand_color?: string })?.public_brand_color;
-  const offerBg = (offer as unknown as { public_bg_color?: string })?.public_bg_color;
-  if (offerBrand) {
-    BRAND = offerBrand;
-    BRAND_LT = shadeHex(offerBrand, 0.8);
-    BRAND_TX = shadeHex(offerBrand, -0.3);
-  }
-  BRAND_DK = offerBg || BRAND_DK;
-
   // Société RH = offer.client?.company (la firme de recrutement)
   const rhCompany  = offer?.client?.company;
+
+  // Couleur du site carrière définie par la société RH → s'applique à TOUTES ses offres publiques.
+  // Toutes les variantes (clair/foncé/texte/fond hero) sont dérivées de cette unique couleur.
+  const brandColor = (rhCompany as unknown as { public_brand_color?: string })?.public_brand_color;
+  if (brandColor) {
+    BRAND    = brandColor;
+    BRAND_LT = shadeHex(brandColor, 0.8);
+    BRAND_TX = shadeHex(brandColor, -0.3);
+    BRAND_DK = shadeHex(brandColor, -0.85);
+  }
+
   const rhName = rhCompany?.name ?? offer?.company?.name ?? offer?.company_name ?? "";
 
   /* ── Loading ── */

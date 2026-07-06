@@ -26,19 +26,12 @@ interface Props {
   onClose: () => void;
   offerId: string | null;
   initialVisibleFields?: string[];
-  initialBrandColor?: string;
-  initialBgColor?: string;
   onSaved?: () => void;
 }
 
-const DEFAULT_BRAND = "#8AB925";
-const DEFAULT_BG = "#1c2906";
-
-export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initialVisibleFields, initialBrandColor, initialBgColor, onSaved }: Props) {
+export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initialVisibleFields, onSaved }: Props) {
   const [updateRequest, { isLoading }] = useUpdateApplicationRequestMutation();
   const [visible, setVisible] = useState<Record<string, boolean>>({});
-  const [brandColor, setBrandColor] = useState(DEFAULT_BRAND);
-  const [bgColor, setBgColor] = useState(DEFAULT_BG);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,10 +42,8 @@ export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initi
       state[f.key] = all ? true : initialVisibleFields!.includes(f.key);
     });
     setVisible(state);
-    setBrandColor(initialBrandColor || DEFAULT_BRAND);
-    setBgColor(initialBgColor || DEFAULT_BG);
     setError(null);
-  }, [initialVisibleFields, initialBrandColor, initialBgColor, isOpen]);
+  }, [initialVisibleFields, isOpen]);
 
   const toggle = (key: string) => setVisible((s) => ({ ...s, [key]: !s[key] }));
   const allChecked = PUBLIC_OFFER_FIELDS.every((f) => visible[f.key]);
@@ -68,7 +59,7 @@ export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initi
     // Si tout est coché → [] (= tout afficher)
     const payload = selected.length === PUBLIC_OFFER_FIELDS.length ? [] : selected;
     try {
-      await updateRequest({ id: offerId, data: { public_visible_fields: payload, public_brand_color: brandColor, public_bg_color: bgColor } as never }).unwrap();
+      await updateRequest({ id: offerId, data: { public_visible_fields: payload } as never }).unwrap();
       onSaved?.();
       onClose();
     } catch (err) {
@@ -91,23 +82,9 @@ export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initi
             {error}
           </div>
         )}
-        {/* Couleurs personnalisables */}
-        <div className="mb-5 grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Couleur des boutons / accent</label>
-            <div className="flex items-center gap-2">
-              <input type="color" value={brandColor} onChange={(e) => setBrandColor(e.target.value)} className="h-10 w-12 rounded-lg border border-gray-300 cursor-pointer" />
-              <input value={brandColor} onChange={(e) => setBrandColor(e.target.value)} className="h-10 flex-1 rounded-lg border border-gray-300 px-2 text-sm dark:bg-gray-900 dark:border-gray-700" />
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Couleur du fond (animation 3D)</label>
-            <div className="flex items-center gap-2">
-              <input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="h-10 w-12 rounded-lg border border-gray-300 cursor-pointer" />
-              <input value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="h-10 flex-1 rounded-lg border border-gray-300 px-2 text-sm dark:bg-gray-900 dark:border-gray-700" />
-            </div>
-          </div>
-        </div>
+        <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
+          La couleur de vos offres publiques est définie une seule fois dans <span className="font-medium">Paramètres → Site public &amp; branding</span> et s&apos;applique à toutes vos offres.
+        </p>
 
         <div className="mb-3 flex items-center justify-between">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Champs affichés</span>

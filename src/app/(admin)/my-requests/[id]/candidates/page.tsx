@@ -15,6 +15,7 @@ import ManagerRequestFormModal from "@/components/applicationRequest/ManagerRequ
 import Pagination from "@/components/tables/Pagination";
 import { useDebounce } from "@/hooks/useDebounce";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
+import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
 import type { Recruiter } from "@/types/recruiter";
 import type { ApplicationRequest } from "@/types/applicationRequest";
 
@@ -477,32 +478,22 @@ export default function RequestCandidatesPage() {
                 ) : (
                   // Candidature non anonyme: afficher le CV normal
                   candidate.cv?.id && (
-                    <Button
-                      onClick={async () => {
-                        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-                        const token = localStorage.getItem('token');
-                        try {
-                          const res = await fetch(`${apiUrl}/cvs/${candidate.cv!.id}/download`, {
-                            headers: token ? { Authorization: `Bearer ${token}` } : {},
-                          });
-                          if (!res.ok) throw new Error();
-                          const blob = await res.blob();
-                          const disposition = res.headers.get('Content-Disposition') || '';
-                          const match = disposition.match(/filename="?([^"]+)"?/);
-                          const filename = match?.[1] || 'CV.pdf';
-                          const url = URL.createObjectURL(blob);
-                          const a = document.createElement('a');
-                          a.href = url; a.download = filename; a.click();
-                          URL.revokeObjectURL(url);
-                        } catch {
-                          if (candidate.cv?.file_path) window.open(candidate.cv.file_path, '_blank');
-                        }
-                      }}
-                      size="sm"
-                      variant="outline"
-                    >
-                      📄 Télécharger le CV
-                    </Button>
+                    <>
+                      <Button
+                        onClick={() => candidate.cv?.id && openCvInNewTab(candidate.cv.id)}
+                        size="sm"
+                        variant="outline"
+                      >
+                        👁️ Voir le CV
+                      </Button>
+                      <Button
+                        onClick={() => candidate.cv?.id && downloadCvFile(candidate.cv.id, (candidate.cv as unknown as { file_name?: string }).file_name || 'CV.pdf')}
+                        size="sm"
+                        variant="outline"
+                      >
+                        📄 Télécharger le CV
+                      </Button>
+                    </>
                   )
                 )}
                 <Button

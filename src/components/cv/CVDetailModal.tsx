@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import type { CV } from "@/types/cv";
+import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
 
 interface CVDetailModalProps {
   isOpen: boolean;
@@ -18,8 +18,6 @@ export default function CVDetailModal({
   cv,
   isLoading = false,
 }: CVDetailModalProps) {
-  // 5.5 — Visualisation du CV directement dans la plateforme
-  const [showViewer, setShowViewer] = useState(false);
   if (!cv && !isLoading) return null;
 
   const getStatusLabel = (status?: string) => {
@@ -98,15 +96,20 @@ export default function CVDetailModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
-      <div className="flex-shrink-0 p-4 sm:p-6 pb-4 border-b" style={{ borderColor: "var(--border)" }}>
+      {/* ── En-tête ── */}
+      <div className="flex-shrink-0 p-5 sm:p-6 border-b" style={{ borderColor: "var(--border)" }}>
         <div className="flex items-start gap-4">
           {/* Avatar initiales */}
-          <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-lg font-bold" style={{ background: "var(--brand-soft)", color: "var(--brand-deep)" }}>
+          <div
+            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-xl font-bold shadow-sm"
+            style={{ background: "var(--brand-soft)", color: "var(--brand-deep)" }}
+          >
             {fullName.split(" ").map((x) => x[0]).slice(0, 2).join("").toUpperCase() || "?"}
           </div>
+
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-xl font-semibold" style={{ color: "var(--text)" }}>{fullName}</h2>
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h2 className="text-xl font-semibold leading-tight" style={{ color: "var(--text)" }}>{fullName}</h2>
               {cv && (
                 <Badge color={getStatusColor(cv.status) as "success" | "error" | "warning" | "info" | "light"} variant="light" size="sm">
                   {getStatusLabel(cv.status)}
@@ -114,46 +117,47 @@ export default function CVDetailModal({
               )}
             </div>
             {(cv?.profile_title || cv?.last_position) && (
-              <p className="mt-0.5 text-sm font-medium" style={{ color: "var(--brand-deep)" }}>
+              <p className="mt-1 text-sm font-medium" style={{ color: "var(--brand-deep)" }}>
                 {cv?.profile_title || cv?.last_position}
               </p>
             )}
-            {/* Infos clés en chips */}
+
+            {/* Coordonnées / infos clés — aérées */}
             {cv && (
-              <div className="mt-2.5 flex flex-wrap gap-1.5">
-                {cv.candidate_email && <span className="gw-chip">✉ {cv.candidate_email}</span>}
-                {cv.candidate_phone && <span className="gw-chip">☎ {cv.candidate_phone}</span>}
-                {cv.total_experience ? <span className="gw-chip">🎯 {cv.total_experience} ans</span> : null}
-                {cv.last_education && <span className="gw-chip">🎓 {cv.last_education}</span>}
-                {cv.remote_preferred && <span className="gw-chip">🏠 Télétravail</span>}
+              <div className="mt-3.5 flex flex-wrap gap-2">
+                {cv.candidate_email && <InfoChip icon="✉" text={cv.candidate_email} />}
+                {cv.candidate_phone && <InfoChip icon="☎" text={cv.candidate_phone} />}
+                {cv.total_experience ? <InfoChip icon="🎯" text={`${cv.total_experience} ans d'expérience`} /> : null}
+                {cv.last_education && <InfoChip icon="🎓" text={cv.last_education} />}
+                {cv.remote_preferred && <InfoChip icon="🏠" text="Télétravail" />}
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar">
+      {/* ── Corps ── */}
+      <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5 sm:py-6 custom-scrollbar" style={{ background: "var(--surface-2)" }}>
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="w-8 h-8 border-4 border-gray-200 border-t-brand-500 rounded-full animate-spin" />
           </div>
         ) : cv ? (
-          <div className="space-y-6">
-            {/* Infos complémentaires (les coordonnées/exp sont déjà dans l'en-tête) */}
+          <div className="space-y-4">
+            {/* Infos complémentaires */}
             {(cv.specialty || cv.industry_experience || cv.remote_preferred != null) && (
-              <div className="gw-panel p-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {cv.specialty && <DetailItem label="Spécialité" value={cv.specialty} />}
-                <DetailItem label="Secteur" value={cv.industry_experience || "-"} />
-                <DetailItem label="Télétravail" value={cv.remote_preferred ? "Oui" : "Non"} />
-              </div>
+              <Section title="Informations" icon="ℹ️" accent="var(--brand)">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4">
+                  {cv.specialty && <DetailItem label="Spécialité" value={cv.specialty} />}
+                  <DetailItem label="Secteur" value={cv.industry_experience || "-"} />
+                  <DetailItem label="Télétravail" value={cv.remote_preferred ? "Oui" : "Non"} />
+                </div>
+              </Section>
             )}
 
             {/* Score de complétude */}
             {cv.details?.stats?.completeness_score && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Complétude du profil
-                </h3>
+              <Section title="Complétude du profil" icon="📊" accent="var(--brand)">
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6 overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-brand-500 to-green-500 flex items-center justify-center text-xs font-semibold text-white transition-all duration-300"
@@ -162,291 +166,217 @@ export default function CVDetailModal({
                     {cv.details.stats.completeness_score}%
                   </div>
                 </div>
-              </div>
+              </Section>
             )}
 
             {/* Résumé professionnel */}
             {effectiveSummary && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  📝 Résumé professionnel
-                </h3>
-                <p className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed">
+              <Section title="Résumé professionnel" icon="📝" accent="var(--brand)">
+                <p className="text-sm leading-relaxed" style={{ color: "var(--text)" }}>
                   {effectiveSummary}
                 </p>
-              </div>
+              </Section>
             )}
 
             {/* Expériences professionnelles */}
             {effectiveExperiences.length > 0 && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  💼 Expériences professionnelles ({cv.details?.stats?.total_experiences || effectiveExperiences.length})
-                </h3>
-                <div className="space-y-4">
+              <Section
+                title={`Expériences professionnelles (${cv.details?.stats?.total_experiences || effectiveExperiences.length})`}
+                icon="💼"
+                accent="var(--brand)"
+              >
+                <div className="space-y-3">
                   {effectiveExperiences.map((exp: any, index: number) => (
-                    <div key={index} className="gw-panel p-4 border-l-4 border-brand-500">
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-semibold text-gray-900 dark:text-white">
+                    <div
+                      key={index}
+                      className="rounded-xl p-4 border-l-4"
+                      style={{ background: "var(--surface)", borderLeftColor: "var(--brand)", boxShadow: "var(--ds-shadow-card)" }}
+                    >
+                      <div className="flex justify-between items-start gap-3 mb-1.5">
+                        <h4 className="font-semibold" style={{ color: "var(--text)" }}>
                           {exp.title || "Poste non spécifié"}
                         </h4>
                         {exp.duration && (
-                          <span className="text-xs bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 px-2 py-1 rounded-full">
+                          <span className="shrink-0 text-xs px-2.5 py-1 rounded-full" style={{ background: "var(--brand-soft)", color: "var(--brand-deep)" }}>
                             {exp.duration}
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                        <strong>{exp.company || "Entreprise non spécifiée"}</strong>
+                      <p className="text-sm" style={{ color: "var(--text-2)" }}>
+                        <strong style={{ color: "var(--text)" }}>{exp.company || "Entreprise non spécifiée"}</strong>
                         {exp.location && ` · ${exp.location}`}
                       </p>
                       {exp.description && (
-                        <p className="text-sm text-gray-700 dark:text-gray-300 mt-2">
+                        <p className="text-sm mt-2 leading-relaxed" style={{ color: "var(--text-2)" }}>
                           {exp.description}
                         </p>
                       )}
                     </div>
                   ))}
                 </div>
-              </div>
+              </Section>
             )}
 
             {/* Formations */}
             {effectiveFormations.length > 0 && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  🎓 Formations ({cv.details?.stats?.total_formations || effectiveFormations.length})
-                </h3>
+              <Section
+                title={`Formations (${cv.details?.stats?.total_formations || effectiveFormations.length})`}
+                icon="🎓"
+                accent="var(--brand-strong)"
+              >
                 <div className="space-y-3">
                   {effectiveFormations.map((form: any, index: number) => (
-                    <div key={index} className="gw-panel p-4 border-l-4 border-green-500">
-                      <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                    <div
+                      key={index}
+                      className="rounded-xl p-4 border-l-4"
+                      style={{ background: "var(--surface)", borderLeftColor: "var(--brand-strong)", boxShadow: "var(--ds-shadow-card)" }}
+                    >
+                      <h4 className="font-semibold mb-0.5" style={{ color: "var(--text)" }}>
                         {form.degree || "Diplôme non spécifié"}
                       </h4>
                       {form.field && (
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                          {form.field}
-                        </p>
+                        <p className="text-sm" style={{ color: "var(--text-2)" }}>{form.field}</p>
                       )}
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm" style={{ color: "var(--text-2)" }}>
                         {form.institution || "Institution non spécifiée"}
                       </p>
                       {(form.start_date || form.end_date) && (
-                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                        <p className="text-xs mt-1" style={{ color: "var(--text-3)" }}>
                           {form.start_date} {form.end_date && `- ${form.end_date}`}
                         </p>
                       )}
                     </div>
                   ))}
                 </div>
-              </div>
+              </Section>
             )}
 
             {/* Compétences techniques */}
             {effectiveTechnicalSkills.length > 0 && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  🛠️ Compétences techniques ({effectiveTechnicalSkills.length})
-                </h3>
+              <Section title={`Compétences techniques (${effectiveTechnicalSkills.length})`} icon="🛠️" accent="var(--blue)">
                 <div className="flex flex-wrap gap-2">
                   {effectiveTechnicalSkills.map((skill: string, index: number) => (
-                    <Badge key={index} color="info" variant="light" size="sm">
-                      {skill}
-                    </Badge>
+                    <Badge key={index} color="info" variant="light" size="sm">{skill}</Badge>
                   ))}
                 </div>
-              </div>
+              </Section>
             )}
 
             {/* Compétences transversales */}
             {effectiveSoftSkills.length > 0 && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  💡 Compétences transversales ({effectiveSoftSkills.length})
-                </h3>
+              <Section title={`Compétences transversales (${effectiveSoftSkills.length})`} icon="💡" accent="var(--brand-strong)">
                 <div className="flex flex-wrap gap-2">
                   {effectiveSoftSkills.map((skill: string, index: number) => (
-                    <Badge key={index} color="success" variant="light" size="sm">
-                      {skill}
-                    </Badge>
+                    <Badge key={index} color="success" variant="light" size="sm">{skill}</Badge>
                   ))}
                 </div>
-              </div>
+              </Section>
             )}
 
             {/* Toutes les compétences (fallback si pas de détails) */}
             {effectiveTechnicalSkills.length === 0 && effectiveSoftSkills.length === 0 && cv.additional_skills && cv.additional_skills.length > 0 && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  🛠️ Compétences ({cv.additional_skills.length})
-                </h3>
+              <Section title={`Compétences (${cv.additional_skills.length})`} icon="🛠️" accent="var(--blue)">
                 <div className="flex flex-wrap gap-2">
                   {cv.additional_skills.map((skill, index) => (
-                    <Badge key={index} color="light" variant="solid" size="sm">
-                      {skill}
-                    </Badge>
+                    <Badge key={index} color="light" variant="solid" size="sm">{skill}</Badge>
                   ))}
                 </div>
-              </div>
+              </Section>
             )}
 
             {/* Langues */}
             {effectiveLanguages.length > 0 && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  🌍 Langues ({cv.details?.stats?.total_languages || effectiveLanguages.length})
-                </h3>
-                <div className="grid grid-cols-2 gap-3">
+              <Section title={`Langues (${cv.details?.stats?.total_languages || effectiveLanguages.length})`} icon="🌍" accent="var(--brand-strong)">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {effectiveLanguages.map((lang: any, index: number) => (
-                    <div key={index} className="flex justify-between items-center gw-panel p-3">
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
-                        {lang.language}
-                      </span>
-                      <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-1 rounded-full">
+                    <div
+                      key={index}
+                      className="flex justify-between items-center rounded-xl px-4 py-2.5"
+                      style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+                    >
+                      <span className="text-sm font-medium" style={{ color: "var(--text)" }}>{lang.language}</span>
+                      <span className="text-xs px-2.5 py-1 rounded-full" style={{ background: "var(--brand-soft)", color: "var(--brand-deep)" }}>
                         {lang.level}
                       </span>
                     </div>
                   ))}
                 </div>
-              </div>
+              </Section>
             )}
 
             {/* Certifications */}
             {effectiveCertifications.length > 0 && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  🏆 Certifications ({cv.details?.stats?.total_certifications || effectiveCertifications.length})
-                </h3>
-                <ul className="space-y-2">
+              <Section title={`Certifications (${cv.details?.stats?.total_certifications || effectiveCertifications.length})`} icon="🏆" accent="var(--amber)">
+                <ul className="space-y-2.5">
                   {effectiveCertifications.map((cert: string, index: number) => (
-                    <li key={index} className="flex items-start gap-2 text-sm text-gray-800 dark:text-gray-200">
-                      <span className="text-yellow-500 mt-0.5">✓</span>
+                    <li key={index} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--text)" }}>
+                      <span className="mt-0.5" style={{ color: "var(--amber)" }}>✓</span>
                       {cert}
                     </li>
                   ))}
                 </ul>
-              </div>
+              </Section>
             )}
 
             {/* Mobilité géographique */}
             {cv.geographic_mobility && cv.geographic_mobility.length > 0 && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  📍 Mobilité géographique
-                </h3>
-                <p className="text-sm text-gray-800 dark:text-gray-200">
-                  {cv.geographic_mobility.join(", ")}
-                </p>
-              </div>
+              <Section title="Mobilité géographique" icon="📍" accent="var(--brand)">
+                <div className="flex flex-wrap gap-2">
+                  {cv.geographic_mobility.map((loc, i) => (
+                    <span key={i} className="text-sm px-3 py-1 rounded-full" style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text)" }}>
+                      {loc}
+                    </span>
+                  ))}
+                </div>
+              </Section>
             )}
 
             {/* Types de contrat */}
             {cv.contract_type_preferences && cv.contract_type_preferences.length > 0 && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  📄 Types de contrat préférés
-                </h3>
-                <p className="text-sm text-gray-800 dark:text-gray-200">
-                  {cv.contract_type_preferences.join(", ")}
-                </p>
-              </div>
+              <Section title="Types de contrat préférés" icon="📄" accent="var(--brand)">
+                <div className="flex flex-wrap gap-2">
+                  {cv.contract_type_preferences.map((ct, i) => (
+                    <span key={i} className="text-sm px-3 py-1 rounded-full" style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text)" }}>
+                      {ct}
+                    </span>
+                  ))}
+                </div>
+              </Section>
             )}
 
             {/* Notes */}
             {effectiveNotes && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  📌 Notes
-                </h3>
-                <p className="text-sm text-gray-800 dark:text-gray-200 bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg border-l-4 border-yellow-400">
+              <Section title="Notes" icon="📌" accent="var(--amber)">
+                <p
+                  className="text-sm leading-relaxed rounded-lg p-3.5"
+                  style={{ background: "var(--amber-soft, #FDF6EC)", borderLeft: "4px solid var(--amber)", color: "var(--text)" }}
+                >
                   {effectiveNotes}
                 </p>
-              </div>
+              </Section>
             )}
 
             {/* Document CV */}
             {cv.file_path && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  📄 Document CV
-                </h3>
+              <Section title="Document CV" icon="📄" accent="var(--brand-deep)">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <div className="flex-1 min-w-[120px]">
-                    <p className="text-sm text-gray-800 dark:text-gray-200">
-                      {cv.file_name || "CV.pdf"}
-                    </p>
+                  <div className="flex-1 min-w-[120px] text-sm truncate" style={{ color: "var(--text)" }}>
+                    {cv.file_name || "CV.pdf"}
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowViewer((v) => !v)}
-                  >
-                    {showViewer ? "Masquer" : "Visualiser"}
+                  <Button variant="outline" size="sm" onClick={() => cv.id && openCvInNewTab(cv.id)}>
+                    👁️ Visualiser
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={async () => {
-                      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-                      const token = typeof window !== 'undefined'
-                        ? localStorage.getItem('token')
-                        : null;
-                      try {
-                        const res = await fetch(`${apiUrl}/cvs/${cv.id}/download`, {
-                          headers: token ? { Authorization: `Bearer ${token}` } : {},
-                        });
-                        if (!res.ok) throw new Error('Téléchargement échoué');
-                        const blob = await res.blob();
-                        const disposition = res.headers.get('Content-Disposition') || '';
-                        const match = disposition.match(/filename="?([^"]+)"?/);
-                        const filename = match?.[1] || 'CV.pdf';
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = filename;
-                        a.click();
-                        URL.revokeObjectURL(url);
-                      } catch {
-                        // Fallback: open directly
-                        if (cv.file_path) window.open(cv.file_path, '_blank');
-                      }
-                    }}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => cv.id && downloadCvFile(cv.id, cv.file_name || "CV.pdf")}>
                     Télécharger le CV
                   </Button>
                 </div>
-
-                {showViewer && (() => {
-                  const fileUrl = cv.cloudinary_url || cv.file_path || "";
-                  const isPdf = /\.pdf(\?|$)/i.test(fileUrl) || (!/\.(docx?|odt)(\?|$)/i.test(fileUrl));
-                  const viewerSrc = isPdf
-                    ? fileUrl
-                    : `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
-                  return (
-                    <div className="mt-3">
-                      <iframe
-                        src={viewerSrc}
-                        title="Aperçu du CV"
-                        className="w-full h-[600px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white"
-                      />
-                      <p className="mt-2 text-xs text-gray-400">
-                        Si l&apos;aperçu ne s&apos;affiche pas,{" "}
-                        <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-brand-500 underline">
-                          ouvrir dans un nouvel onglet
-                        </a>
-                        .
-                      </p>
-                    </div>
-                  );
-                })()}
-              </div>
+              </Section>
             )}
-
           </div>
         ) : null}
       </div>
 
-      <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+      <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-5 border-t" style={{ borderColor: "var(--border)" }}>
         <Button variant="outline" onClick={onClose}>
           Fermer
         </Button>
@@ -455,11 +385,44 @@ export default function CVDetailModal({
   );
 }
 
+/** Carte de section : titre avec pastille icône colorée + contenu aéré. */
+function Section({ title, icon, accent, children }: { title: React.ReactNode; icon: string; accent: string; children: React.ReactNode }) {
+  return (
+    <section
+      className="rounded-2xl p-5"
+      style={{ background: "var(--surface)", border: "1px solid var(--border)", boxShadow: "var(--ds-shadow-card)" }}
+    >
+      <h3 className="flex items-center gap-2.5 mb-4 text-sm font-semibold" style={{ color: "var(--text)" }}>
+        <span
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm"
+          style={{ background: `color-mix(in srgb, ${accent} 14%, transparent)` }}
+        >
+          {icon}
+        </span>
+        {title}
+      </h3>
+      {children}
+    </section>
+  );
+}
+
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs" style={{ color: "var(--text-3)" }}>{label}</p>
-      <p className="text-sm" style={{ color: "var(--text)" }}>{value}</p>
+      <p className="text-xs mb-0.5" style={{ color: "var(--text-3)" }}>{label}</p>
+      <p className="text-sm font-medium" style={{ color: "var(--text)" }}>{value}</p>
     </div>
+  );
+}
+
+function InfoChip({ icon, text }: { icon: string; text: string }) {
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium"
+      style={{ background: "var(--surface-2)", border: "1px solid var(--border)", color: "var(--text-2)" }}
+    >
+      <span aria-hidden style={{ opacity: 0.8 }}>{icon}</span>
+      <span style={{ color: "var(--text)" }}>{text}</span>
+    </span>
   );
 }
