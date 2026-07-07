@@ -44,7 +44,7 @@ export const publicJobOfferApi = createApi({
     }),
 
     // Transformer une candidature publique en vraie candidature
-    convertPublicApplication: builder.mutation<{ application_id: string; cv_id: string }, { id: string; requestId: string }>({
+    convertPublicApplication: builder.mutation<{ application_id: string; cv_id: string; extraction_warning: string | null }, { id: string; requestId: string }>({
       query: ({ id }) => ({
         url: `/public-applications/${id}/convert`,
         method: 'POST',

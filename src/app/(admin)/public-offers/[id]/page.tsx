@@ -29,11 +29,19 @@ export default function PublicOfferDetailPage() {
     setConvertingId(appId);
     setConvertDone(false);
     try {
-      await convertPublicApp({ id: appId, requestId: id }).unwrap();
+      const result = await convertPublicApp({ id: appId, requestId: id }).unwrap();
       // Afficher brièvement les étapes validées avant de fermer l'overlay
       setConvertDone(true);
       await new Promise((r) => setTimeout(r, 900));
-      addToast("success", "Transformée", "Candidat ajouté au vivier et candidature créée.");
+      if (result.extraction_warning) {
+        addToast(
+          "warning",
+          "Transformée (extraction du CV incomplète)",
+          result.extraction_warning
+        );
+      } else {
+        addToast("success", "Transformée", "Candidat ajouté au vivier et candidature créée.");
+      }
     } catch (e) {
       addToast("error", "Erreur", getApiErrorMessage(e, "Échec de la transformation"));
     } finally {
