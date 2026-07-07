@@ -52,6 +52,15 @@ export const publicJobOfferApi = createApi({
       invalidatesTags: (result, error, { requestId }) => [{ type: 'PublicApplication', id: requestId }],
     }),
 
+    // Supprimer une candidature d'offre publique (non transformée)
+    deletePublicApplication: builder.mutation<void, { id: string; requestId: string }>({
+      query: ({ id }) => ({
+        url: `/public-applications/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (result, error, { requestId }) => [{ type: 'PublicApplication', id: requestId }],
+    }),
+
     togglePublicJobOfferActive: builder.mutation<PublicJobOffer, string>({
       query: (id) => ({
         url: `/requests/${id}/toggle-public`,
@@ -93,6 +102,7 @@ export const {
   useGetPublicJobOfferByIdQuery,
   useGetPublicApplicationsByRequestQuery,
   useConvertPublicApplicationMutation,
+  useDeletePublicApplicationMutation,
   useTogglePublicJobOfferActiveMutation,
   useDeletePublicJobOfferMutation,
   useGetPublicJobOfferBySlugQuery,

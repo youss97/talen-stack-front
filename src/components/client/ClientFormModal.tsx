@@ -99,7 +99,7 @@ export default function ClientFormModal({
           country: displayCountry,
           phone: displayPhone,
           email: displayEmail,
-          status: client.status,
+          status: client.status === "deleted" ? "inactive" : client.status,
           adminEmail: "",
           adminPassword: "",
           adminFirstName: "",

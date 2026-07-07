@@ -10,9 +10,12 @@ interface ApplicationsListProps {
   /** Transformer une candidature publique en vraie candidature */
   onConvert?: (id: string) => void;
   convertingId?: string | null;
+  /** Supprimer une candidature publique (non transformée) */
+  onDelete?: (application: PublicApplication) => void;
+  deletingId?: string | null;
 }
 
-export default function ApplicationsList({ applications, onConvert, convertingId }: ApplicationsListProps) {
+export default function ApplicationsList({ applications, onConvert, convertingId, onDelete, deletingId }: ApplicationsListProps) {
   const filteredApplications = applications;
 
   // Pagination côté client
@@ -113,6 +116,17 @@ export default function ApplicationsList({ applications, onConvert, convertingId
                             </Button>
                           )
                         )}
+                        {onDelete && !synced && (
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => onDelete(application)}
+                            disabled={deletingId === application.id}
+                            startIcon={<TrashIcon />}
+                          >
+                            {deletingId === application.id ? "..." : "Supprimer"}
+                          </Button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -153,6 +167,20 @@ function DownloadIcon() {
     <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
       <path
         d="M17.5 12.5V13.5C17.5 14.9001 17.5 15.6002 17.2275 16.135C16.9878 16.6054 16.6054 16.9878 16.135 17.2275C15.6002 17.5 14.9001 17.5 13.5 17.5H6.5C5.09987 17.5 4.3998 17.5 3.86502 17.2275C3.39462 16.9878 3.01217 16.6054 2.77248 16.135C2.5 15.6002 2.5 14.9001 2.5 13.5V12.5M14.1667 8.33333L10 12.5M10 12.5L5.83333 8.33333M10 12.5V2.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+      <path
+        d="M2.5 5H4.16667M4.16667 5H17.5M4.16667 5V16.6667C4.16667 17.1087 4.34226 17.5326 4.65482 17.8452C4.96738 18.1577 5.39131 18.3333 5.83333 18.3333H14.1667C14.6087 18.3333 15.0326 18.1577 15.3452 17.8452C15.6577 17.5326 15.8333 17.1087 15.8333 16.6667V5M6.66667 5V3.33333C6.66667 2.89131 6.84226 2.46738 7.15482 2.15482C7.46738 1.84226 7.89131 1.66667 8.33333 1.66667H11.6667C12.1087 1.66667 12.5326 1.84226 12.8452 2.15482C13.1577 2.46738 13.3333 2.89131 13.3333 3.33333V5"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"

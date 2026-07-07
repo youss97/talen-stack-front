@@ -15,6 +15,7 @@ import {
   useCreateClientMutation,
   useUpdateClientMutation,
   useToggleClientStatusMutation,
+  useDeleteClientMutation,
 } from "@/lib/services/clientApi";
 import { useActions } from "@/hooks/useActions";
 import type { Client, CreateClientRequest, UpdateClientRequest } from "@/types/client";
@@ -38,6 +39,11 @@ export default function ClientsPage() {
     client: Client | null;
   }>({ isOpen: false, client: null });
   const [isDeleting, setIsDeleting] = useState(false);
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState<{
+    isOpen: boolean;
+    client: Client | null;
+  }>({ isOpen: false, client: null });
+  const [isRemoving, setIsRemoving] = useState(false);
 
   const [limit, setLimit] = useState(5);
 
@@ -57,6 +63,7 @@ export default function ClientsPage() {
   const [createClient, { isLoading: isCreating }] = useCreateClientMutation();
   const [updateClient, { isLoading: isUpdating }] = useUpdateClientMutation();
   const [toggleStatus] = useToggleClientStatusMutation();
+  const [deleteClient] = useDeleteClientMutation();
 
   const addToast = useCallback(
     (
@@ -100,14 +107,14 @@ export default function ClientsPage() {
     setIsViewModalOpen(true);
   };
 
-  const handleDeleteClick = (client: Client) => {
+  const handleToggleClick = (client: Client) => {
     setConfirmModal({ isOpen: true, client });
   };
 
   const getErrorMessage = (error: unknown, defaultMessage: string): string =>
     getApiErrorMessage(error, defaultMessage);
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmToggle = async () => {
     if (!confirmModal.client) return;
 
     setIsDeleting(true);
@@ -120,6 +127,25 @@ export default function ClientsPage() {
       addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la modification du statut"));
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteClick = (client: Client) => {
+    setConfirmDeleteModal({ isOpen: true, client });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDeleteModal.client) return;
+
+    setIsRemoving(true);
+    try {
+      await deleteClient(confirmDeleteModal.client.id).unwrap();
+      addToast("success", "Succès", "Client supprimé avec succès");
+      setConfirmDeleteModal({ isOpen: false, client: null });
+    } catch (error) {
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la suppression"));
+    } finally {
+      setIsRemoving(false);
     }
   };
 
@@ -242,14 +268,15 @@ export default function ClientsPage() {
     {
       key: "status",
       header: "Statut",
-      render: (value) => (
-        <Badge
-          variant="light"
-          color={value === "active" ? "success" : "error"}
-        >
-          {value === "active" ? "Actif" : "Inactif"}
-        </Badge>
-      ),
+      render: (value) => {
+        const statusMap: Record<string, { label: string; color: "success" | "error" | "warning" }> = {
+          active: { label: "Actif", color: "success" },
+          inactive: { label: "Inactif", color: "error" },
+          deleted: { label: "Supprimé", color: "error" },
+        };
+        const { label, color } = statusMap[value as string] ?? { label: String(value), color: "error" };
+        return <Badge color={color} variant="light" size="sm">{label}</Badge>;
+      },
     },
   ];
 
@@ -300,6 +327,7 @@ export default function ClientsPage() {
                 <option value="">Tous les statuts</option>
                 <option value="active">Actif</option>
                 <option value="inactive">Inactif</option>
+                <option value="deleted">Supprimé</option>
               </select>
             </div>
           </div>
@@ -312,6 +340,23 @@ export default function ClientsPage() {
           onView={handleViewClick}
           onEdit={canUpdate ? handleEditClick : undefined}
           onDelete={canDelete ? handleDeleteClick : undefined}
+          canDeleteRow={(row) => row.status !== "deleted"}
+          customActions={canUpdate ? [
+            {
+              label: "Désactiver",
+              icon: <LockIcon />,
+              color: "warning",
+              onClick: (row) => handleToggleClick(row),
+              hidden: (row) => row.status !== "active",
+            },
+            {
+              label: "Activer",
+              icon: <UnlockIcon />,
+              color: "success",
+              onClick: (row) => handleToggleClick(row),
+              hidden: (row) => row.status === "active" || row.status === "deleted",
+            },
+          ] : undefined}
           emptyMessage="Aucun client trouvé"
         />
 
@@ -355,7 +400,7 @@ export default function ClientsPage() {
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false, client: null })}
-        onConfirm={handleConfirmDelete}
+        onConfirm={handleConfirmToggle}
         title={confirmModal.client?.status === 'active' ? "Désactiver le client" : "Activer le client"}
         message={
           confirmModal.client?.status === 'active'
@@ -366,6 +411,18 @@ export default function ClientsPage() {
         cancelText="Annuler"
         variant={confirmModal.client?.status === 'active' ? "danger" : "info"}
         isLoading={isDeleting}
+      />
+
+      <ConfirmModal
+        isOpen={confirmDeleteModal.isOpen}
+        onClose={() => setConfirmDeleteModal({ isOpen: false, client: null })}
+        onConfirm={handleConfirmDelete}
+        title="Supprimer le client"
+        message={`Êtes-vous sûr de vouloir supprimer le client "${confirmDeleteModal.client?.name}" ? Tous ses managers seront supprimés et ne pourront plus se connecter. Cette action est irréversible.`}
+        confirmText="Supprimer"
+        cancelText="Annuler"
+        variant="danger"
+        isLoading={isRemoving}
       />
     </div>
   );
@@ -386,6 +443,22 @@ function PlusIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+    </svg>
+  );
+}
+
+function UnlockIcon() {
+  return (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 018 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
     </svg>
   );
 }

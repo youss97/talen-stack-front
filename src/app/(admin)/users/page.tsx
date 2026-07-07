@@ -165,15 +165,15 @@ export default function UsersPage() {
     {
       key: "status",
       header: "Statut",
-      render: (value) => (
-        <Badge
-          color={value === "active" ? "success" : "error"}
-          variant="light"
-          size="sm"
-        >
-          {value === "active" ? "Actif" : "Inactif"}
-        </Badge>
-      ),
+      render: (value) => {
+        const statusMap: Record<string, { label: string; color: "success" | "error" | "warning" }> = {
+          active: { label: "Actif", color: "success" },
+          inactive: { label: "Inactif", color: "error" },
+          deleted: { label: "Supprimé", color: "error" },
+        };
+        const { label, color } = statusMap[value as string] ?? { label: String(value), color: "error" };
+        return <Badge color={color} variant="light" size="sm">{label}</Badge>;
+      },
     },
   ];
 
@@ -235,7 +235,11 @@ export default function UsersPage() {
 
   const handleDeleteClick = (user: User) => {
     if (isSelf(user)) {
-      addToast("warning", "Action non autorisée", "Vous ne pouvez pas modifier le statut de votre propre compte.");
+      addToast("warning", "Action non autorisée", "Vous ne pouvez pas supprimer votre propre compte.");
+      return;
+    }
+    if (isAdminRole(user)) {
+      addToast("warning", "Action non autorisée", "Les comptes avec le rôle admin ne peuvent pas être supprimés.");
       return;
     }
     setConfirmModal({ isOpen: true, user });
@@ -246,12 +250,11 @@ export default function UsersPage() {
 
     setIsDeleting(true);
     try {
-      await toggleStatus(confirmModal.user.id).unwrap();
-      const action = confirmModal.user.status === 'active' ? 'désactivé' : 'activé';
-      addToast("success", "Succès", `Utilisateur ${action} avec succès`);
+      await deleteUser(confirmModal.user.id).unwrap();
+      addToast("success", "Succès", "Utilisateur supprimé avec succès");
       setConfirmModal({ isOpen: false, user: null });
     } catch (error) {
-      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la modification du statut"));
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la suppression"));
     } finally {
       setIsDeleting(false);
     }
@@ -365,6 +368,7 @@ export default function UsersPage() {
                 <option value="">Tous les statuts</option>
                 <option value="active">Actif</option>
                 <option value="inactive">Inactif</option>
+                <option value="deleted">Supprimé</option>
               </select>
             </div>
           </div>
@@ -377,7 +381,7 @@ export default function UsersPage() {
           onView={handleRowClick}
           onEdit={handleEditClick}
           onDelete={handleDeleteClick}
-          canDeleteRow={(row) => !isSelf(row)}
+          canDeleteRow={(row) => !isSelf(row) && !isAdminRole(row)}
           customActions={[
             {
               label: "Modifier le rôle",
@@ -453,15 +457,11 @@ export default function UsersPage() {
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false, user: null })}
         onConfirm={handleConfirmDelete}
-        title={confirmModal.user?.status === 'active' ? "Désactiver l'utilisateur" : "Activer l'utilisateur"}
-        message={
-          confirmModal.user?.status === 'active'
-            ? `Êtes-vous sûr de vouloir désactiver l'utilisateur "${confirmModal.user?.first_name} ${confirmModal.user?.last_name}" ? Il ne pourra plus se connecter.`
-            : `Êtes-vous sûr de vouloir activer l'utilisateur "${confirmModal.user?.first_name} ${confirmModal.user?.last_name}" ? Il pourra se connecter.`
-        }
-        confirmText={confirmModal.user?.status === 'active' ? "Désactiver" : "Activer"}
+        title="Supprimer l'utilisateur"
+        message={`Êtes-vous sûr de vouloir supprimer l'utilisateur "${confirmModal.user?.first_name} ${confirmModal.user?.last_name}" ? Il ne pourra plus se connecter.`}
+        confirmText="Supprimer"
         cancelText="Annuler"
-        variant={confirmModal.user?.status === 'active' ? "danger" : "info"}
+        variant="danger"
         isLoading={isDeleting}
       />
     </div>

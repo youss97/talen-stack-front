@@ -10,7 +10,7 @@ export interface User {
   photo?: string | null;
   photo_path?: string | null;
   image?: string | null; // URL Cloudinary
-  status: "active" | "inactive";
+  status: "active" | "inactive" | "deleted";
   role_id: string;
   company_id: string;
   role?: {

@@ -18,7 +18,7 @@ export interface Client {
   industry: string | null;
   company_size: string | null;
   logo?: string;
-  status: "active" | "inactive";
+  status: "active" | "inactive" | "deleted";
   created_at?: string;
   updated_at?: string;
   linked_company_id?: string;

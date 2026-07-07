@@ -4,14 +4,17 @@ import { useParams, useRouter } from "next/navigation";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
+import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import {
   useGetPublicJobOfferByIdQuery,
   useGetPublicApplicationsByRequestQuery,
   useConvertPublicApplicationMutation,
+  useDeletePublicApplicationMutation,
 } from "@/lib/services/publicJobOfferApi";
 import ApplicationsList from "@/components/public-offers/ApplicationsList";
 import ConversionLoader from "@/components/public-offers/ConversionLoader";
 import { getApiErrorMessage } from "@/utils/errorMessages";
+import type { PublicApplication } from "@/types/publicJobOffer";
 
 export default function PublicOfferDetailPage() {
   const params = useParams();
@@ -22,8 +25,14 @@ export default function PublicOfferDetailPage() {
   const { data: offer, isLoading } = useGetPublicJobOfferByIdQuery(id);
   const { data: publicApps = [] } = useGetPublicApplicationsByRequestQuery(id, { skip: !id });
   const [convertPublicApp] = useConvertPublicApplicationMutation();
+  const [deletePublicApp] = useDeletePublicApplicationMutation();
   const [convertingId, setConvertingId] = useState<string | null>(null);
   const [convertDone, setConvertDone] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ isOpen: boolean; application: PublicApplication | null }>({
+    isOpen: false,
+    application: null,
+  });
 
   const handleConvert = async (appId: string) => {
     setConvertingId(appId);
@@ -47,6 +56,25 @@ export default function PublicOfferDetailPage() {
     } finally {
       setConvertingId(null);
       setConvertDone(false);
+    }
+  };
+
+  const handleDeleteClick = (application: PublicApplication) => {
+    setConfirmDelete({ isOpen: true, application });
+  };
+
+  const handleConfirmDelete = async () => {
+    const application = confirmDelete.application;
+    if (!application) return;
+    setDeletingId(application.id);
+    try {
+      await deletePublicApp({ id: application.id, requestId: id }).unwrap();
+      addToast("success", "Supprimée", "La candidature a été supprimée.");
+      setConfirmDelete({ isOpen: false, application: null });
+    } catch (e) {
+      addToast("error", "Erreur", getApiErrorMessage(e, "Échec de la suppression"));
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -280,8 +308,22 @@ export default function PublicOfferDetailPage() {
           applications={publicApps}
           onConvert={handleConvert}
           convertingId={convertingId}
+          onDelete={handleDeleteClick}
+          deletingId={deletingId}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={confirmDelete.isOpen}
+        onClose={() => setConfirmDelete({ isOpen: false, application: null })}
+        onConfirm={handleConfirmDelete}
+        title="Supprimer la candidature"
+        message={`Êtes-vous sûr de vouloir supprimer la candidature de ${confirmDelete.application?.first_name ?? ""} ${confirmDelete.application?.last_name ?? ""} ? Cette action est irréversible.`}
+        confirmText="Supprimer"
+        cancelText="Annuler"
+        variant="danger"
+        isLoading={!!deletingId}
+      />
     </div>
   );
 }

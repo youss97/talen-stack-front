@@ -70,7 +70,7 @@ export default function UserFormModal({
         first_name: user.first_name,
         last_name: user.last_name,
         role_id: user.role_id,
-        status: user.status,
+        status: user.status === "deleted" ? "inactive" : user.status,
       });
       setPhotoPreview(getImageUrl(user.photo_path || user.photo));
     } else {
