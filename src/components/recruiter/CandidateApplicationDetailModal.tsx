@@ -3,6 +3,7 @@
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
+import { getFeedbackCardColor } from "@/utils/feedbackColors";
 import type { Recruiter } from "@/types/recruiter";
 import WorkflowStepper from "./WorkflowStepper";
 import { useChangeApplicationStepMutation, useCreateFeedbackMutation } from "@/lib/services/recruiterApi";
@@ -278,7 +279,7 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
               {rhFeedbacks.map(fb => (
                 <div
                   key={fb.id}
-                  className="rounded-lg p-3 border-l-4 bg-blue-50 dark:bg-blue-900/20 border-blue-400 dark:border-blue-600"
+                  className={`rounded-lg p-3 border-l-4 ${getFeedbackCardColor(fb)}`}
                 >
                   <div className="flex items-start justify-between mb-1">
                     <h4 className="text-sm font-medium text-gray-900 dark:text-white">{fb.title}</h4>
@@ -309,7 +310,7 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
               {clientFeedbacks.map(fb => (
                 <div
                   key={fb.id}
-                  className="rounded-lg p-3 border-l-4 bg-purple-50 dark:bg-purple-900/20 border-purple-400 dark:border-purple-600"
+                  className={`rounded-lg p-3 border-l-4 ${getFeedbackCardColor(fb)}`}
                 >
                   <div className="flex items-start justify-between mb-1">
                     <h4 className="text-sm font-medium text-gray-900 dark:text-white">{fb.title}</h4>
@@ -317,7 +318,13 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
                       {formatDateTime(fb.created_at)}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">{fb.description}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{fb.description}</p>
+                  {fb.created_by && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {fb.created_by.first_name} {fb.created_by.last_name}
+                      {fb.created_by.role && ` · ${fb.created_by.role.name}`}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>

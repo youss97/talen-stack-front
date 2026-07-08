@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useGetCandidatesForRequestQuery, useGetManagerRequestByIdQuery, useUpdateManagerOwnRequestMutation } from "@/lib/services/clientManagerApi";
 import { useCreateFeedbackMutation } from "@/lib/services/recruiterApi";
 import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
@@ -16,13 +16,17 @@ import Pagination from "@/components/tables/Pagination";
 import { useDebounce } from "@/hooks/useDebounce";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
 import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
+import { getFeedbackCardColor } from "@/utils/feedbackColors";
 import type { Recruiter } from "@/types/recruiter";
 import type { ApplicationRequest } from "@/types/applicationRequest";
 
 export default function RequestCandidatesPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const requestId = params.id as string;
+  // Venant d'une notification : ouvrir directement le détail de cette candidature
+  const targetApplicationId = searchParams.get("applicationId");
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -53,10 +57,25 @@ export default function RequestCandidatesPage() {
   const { data, isLoading, isFetching, refetch } = useGetCandidatesForRequestQuery({
     requestId,
     page,
-    limit: 5,
+    // Venant d'une notification pour une candidature précise : charger toute la liste (pas de pagination)
+    // pour la retrouver quelle que soit sa page normale, puis ouvrir directement son détail.
+    limit: targetApplicationId ? 1000 : 5,
     search: debouncedSearch,
     status: statusFilter || undefined,
   }, { pollingInterval: 30000 });
+
+  // Auto-ouverture du détail de la candidature ciblée par la notification (une seule fois)
+  useEffect(() => {
+    if (!targetApplicationId || !data?.data?.length) return;
+    const target = data.data.find((c) => c.id === targetApplicationId);
+    if (target) {
+      setDetailCandidate(target);
+      setIsDetailModalOpen(true);
+      // Nettoyer l'URL pour ne pas rouvrir la modale à chaque re-render/rafraîchissement
+      router.replace(`/my-requests/${requestId}/candidates`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetApplicationId, data]);
 
   const [createFeedback, { isLoading: isCreatingFeedback }] = useCreateFeedbackMutation();
 
@@ -147,18 +166,6 @@ export default function RequestCandidatesPage() {
         {statusObj.name}
       </span>
     );
-  };
-
-  const getFeedbackCardColor = (feedback: any) => {
-    const roleCode = feedback?.created_by?.role?.code;
-    
-    if (roleCode?.startsWith('CLIENT_MANAGER_')) {
-      return "bg-purple-50 dark:bg-purple-900/20 border-purple-400 dark:border-purple-600";
-    } else if (roleCode === 'rh' || roleCode === 'admin') {
-      return "bg-blue-50 dark:bg-blue-900/20 border-blue-400 dark:border-blue-600";
-    } else {
-      return "bg-green-50 dark:bg-green-900/20 border-green-400 dark:border-green-600";
-    }
   };
 
   return (
@@ -322,8 +329,9 @@ export default function RequestCandidatesPage() {
                     </div>
                   )}
 
-                  {/* Feedbacks Section — show all feedbacks */}
+                  {/* Feedbacks Section — même UI/UX que côté RH (nom, rôle, couleur par rôle, tri par date) */}
                   {(() => {
+                    // Le backend renvoie déjà les feedbacks triés created_at DESC (le plus récent en premier)
                     const allFeedbacks = candidate.feedbacks || [];
                     if (allFeedbacks.length === 0) return null;
                     const clientFeedbacks = allFeedbacks.filter((f) =>
@@ -332,46 +340,41 @@ export default function RequestCandidatesPage() {
                     const rhFeedbacks = allFeedbacks.filter((f) =>
                       f.created_by?.role?.code && !f.created_by.role.code.startsWith('CLIENT_MANAGER_')
                     );
-                    return (
-                    <div className="mb-4 space-y-3">
-                      {/* RH evaluations */}
-                      {rhFeedbacks.length > 0 && (
-                        <div>
-                          <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            📋 Évaluations RH ({rhFeedbacks.length})
-                          </p>
-                          <div className="space-y-2">
-                            {rhFeedbacks.slice(0, 1).map((feedback) => (
-                              <div
-                                key={feedback.id}
-                                className="rounded-lg p-3 border-l-4 bg-blue-50 dark:bg-blue-900/20 border-blue-400 dark:border-blue-600"
-                              >
-                                <div className="flex items-start justify-between mb-1">
-                                  <h4 className="text-sm font-medium text-gray-900 dark:text-white">{feedback.title}</h4>
-                                  <span className="text-xs text-gray-500 dark:text-gray-400">{formatDateTime(feedback.created_at)}</span>
-                                </div>
-                                <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">{feedback.description}</p>
-                              </div>
-                            ))}
-                            {rhFeedbacks.length > 1 && (
-                              <p className="text-xs text-gray-500 dark:text-gray-400">+{rhFeedbacks.length - 1} autre(s)</p>
+                    const renderFeedbackCard = (feedback: (typeof allFeedbacks)[number]) => (
+                      <div
+                        key={feedback.id}
+                        className={`rounded-lg p-3 border-l-4 ${getFeedbackCardColor(feedback)}`}
+                      >
+                        <div className="flex items-start justify-between mb-1">
+                          <h4 className="text-sm font-medium text-gray-900 dark:text-white">{feedback.title}</h4>
+                          <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ml-4">{formatDateTime(feedback.created_at)}</span>
+                        </div>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 mb-2">{feedback.description}</p>
+                        {feedback.created_by && (
+                          <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                            <span className="font-medium">{feedback.created_by.first_name} {feedback.created_by.last_name}</span>
+                            {feedback.created_by.role && (
+                              <><span>•</span><span>{feedback.created_by.role.name}</span></>
                             )}
                           </div>
-                        </div>
-                      )}
-                      {/* Client feedbacks */}
-                      {clientFeedbacks.length > 0 && (
+                        )}
+                      </div>
+                    );
+                    return (
+                    <div className="mb-4 space-y-3">
+                      {/* Évaluations RH */}
+                      {rhFeedbacks.length > 0 && (
                         <div>
                           <div className="flex items-center justify-between mb-2">
                             <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                              💭 Mes feedbacks ({clientFeedbacks.length})
+                              📋 Évaluations RH ({rhFeedbacks.length})
                             </p>
-                            {clientFeedbacks.length > 2 && (
+                            {rhFeedbacks.length > 1 && (
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => {
-                                  setSelectedCandidate({ ...candidate, feedbacks: clientFeedbacks });
+                                  setSelectedCandidate({ ...candidate, feedbacks: allFeedbacks });
                                   setIsFeedbackListModalOpen(true);
                                 }}
                               >
@@ -380,26 +383,32 @@ export default function RequestCandidatesPage() {
                             )}
                           </div>
                           <div className="space-y-2">
-                            {clientFeedbacks.slice(0, 2).map((feedback) => (
-                              <div
-                                key={feedback.id}
-                                className={`rounded-lg p-3 border-l-4 ${getFeedbackCardColor(feedback)}`}
+                            {rhFeedbacks.slice(0, 1).map(renderFeedbackCard)}
+                          </div>
+                        </div>
+                      )}
+                      {/* Mes feedbacks (client) */}
+                      {clientFeedbacks.length > 0 && (
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                              💭 Mes feedbacks ({clientFeedbacks.length})
+                            </p>
+                            {clientFeedbacks.length > 2 && rhFeedbacks.length === 0 && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedCandidate({ ...candidate, feedbacks: allFeedbacks });
+                                  setIsFeedbackListModalOpen(true);
+                                }}
                               >
-                                <div className="flex items-start justify-between mb-1">
-                                  <h4 className="text-sm font-medium text-gray-900 dark:text-white">{feedback.title}</h4>
-                                  <span className="text-xs text-gray-500 dark:text-gray-400">{formatDateTime(feedback.created_at)}</span>
-                                </div>
-                                <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 mb-2">{feedback.description}</p>
-                                {feedback.created_by && (
-                                  <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-                                    <span className="font-medium">{feedback.created_by.first_name} {feedback.created_by.last_name}</span>
-                                    {feedback.created_by.role && (
-                                      <><span>•</span><span>{feedback.created_by.role.name}</span></>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
+                                Voir tous
+                              </Button>
+                            )}
+                          </div>
+                          <div className="space-y-2">
+                            {clientFeedbacks.slice(0, 2).map(renderFeedbackCard)}
                           </div>
                         </div>
                       )}
