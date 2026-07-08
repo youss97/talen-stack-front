@@ -341,11 +341,11 @@ export default function RecruitmentPage() {
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
-      case "critical":
+      case "urgent":
         return "error";
       case "high":
         return "warning";
-      case "medium":
+      case "normal":
         return "info";
       default:
         return "success";
@@ -354,12 +354,14 @@ export default function RecruitmentPage() {
 
   const getUrgencyLabel = (urgency: string) => {
     switch (urgency) {
-      case "critical":
-        return "Critique";
+      case "urgent":
+        return "Urgente";
       case "high":
         return "Haute";
-      case "medium":
-        return "Moyenne";
+      case "normal":
+        return "Normale";
+      case "low":
+        return "Basse";
       default:
         return "Basse";
     }
@@ -534,7 +536,7 @@ export default function RecruitmentPage() {
       },
     },
     {
-      key: "urgency" as keyof ApplicationRequest,
+      key: "priority" as keyof ApplicationRequest,
       header: "Urgence",
       className: "min-w-[100px]",
       render: (value: unknown) => (

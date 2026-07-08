@@ -122,11 +122,11 @@ export default function ApplicationRequestDetailModal({
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
-      case "critical":
+      case "urgent":
         return "error";
       case "high":
         return "warning";
-      case "medium":
+      case "normal":
         return "info";
       default:
         return "success";
@@ -135,12 +135,14 @@ export default function ApplicationRequestDetailModal({
 
   const getUrgencyLabel = (urgency: string) => {
     switch (urgency) {
-      case "critical":
-        return "Critique";
+      case "urgent":
+        return "Urgente";
       case "high":
         return "Haute";
-      case "medium":
-        return "Moyenne";
+      case "normal":
+        return "Normale";
+      case "low":
+        return "Basse";
       default:
         return "Basse";
     }
@@ -176,9 +178,9 @@ export default function ApplicationRequestDetailModal({
               </div>
               <Badge
                 variant="light"
-                color={getUrgencyColor(applicationRequest.urgency || '')}
+                color={getUrgencyColor(applicationRequest.priority || '')}
               >
-                {getUrgencyLabel(applicationRequest.urgency || '')}
+                {getUrgencyLabel(applicationRequest.priority || '')}
               </Badge>
             </div>
 

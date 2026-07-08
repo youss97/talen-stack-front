@@ -49,7 +49,13 @@ export function usePermissions(): UsePermissionsReturn {
 
     const isSuperAdmin = user.role?.code === 'super_admin' || (!user.company && user.role?.level >= 999);
     if (isSuperAdmin) {
-      if (normalizedPath === "/integrations" || normalizedPath === "/agenda") {
+      // Templates emails : réservé aux sociétés RH, non pertinent pour le Super Admin (multi-sociétés)
+      if (
+        normalizedPath === "/integrations" ||
+        normalizedPath === "/agenda" ||
+        normalizedPath === "/settings/email-templates" ||
+        normalizedPath.startsWith("/settings/email-templates/")
+      ) {
         return false;
       }
       return true;

@@ -111,10 +111,9 @@ export default function RecruiterFormModal({
   const currentContractType = watch("current_contract_type");
   const availabilityType = watch("availability_type");
   const availabilityNegotiable = watch("availability_negotiable");
-  // Prétentions : salaire si contrat non-freelance souhaité (ou aucun) ; TJM si Freelance souhaité
-  const offerTypesArr = (watch("offer_contract_types") || []).filter(Boolean) as string[];
-  const wantsTjmExpectation = offerTypesArr.some((t) => t?.toLowerCase() === "freelance");
-  const wantsSalaryExpectation = offerTypesArr.length === 0 || offerTypesArr.some((t) => t?.toLowerCase() !== "freelance");
+  // Prétentions : basées sur le type de contrat ACTUEL du candidat (TJM si Freelance, sinon salaire)
+  const wantsTjmExpectation = currentContractType?.toLowerCase() === "freelance";
+  const wantsSalaryExpectation = !wantsTjmExpectation;
   const isAnonymized = watch("is_anonymized");
   const salaryConfidential = watch("salary_confidential");
 

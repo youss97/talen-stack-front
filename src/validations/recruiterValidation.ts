@@ -17,22 +17,27 @@ export const createRecruiterSchema = yup.object({
   // Rémunération
   current_salary: yup
     .number()
+    .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
     .typeError('Veuillez saisir un montant valide')
     .nullable(),
   daily_rate: yup
     .number()
+    .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
     .typeError('Veuillez saisir un montant valide')
     .nullable(),
   package_rate: yup
     .number()
+    .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
     .typeError('Veuillez saisir un montant valide')
     .nullable(),
   salary_expectation: yup
     .number()
+    .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
     .typeError('Veuillez saisir un montant valide')
     .nullable(),
   daily_rate_expectation: yup
     .number()
+    .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
     .typeError('Veuillez saisir un montant valide')
     .nullable(),
   package_current: yup.string().nullable(),
@@ -51,6 +56,7 @@ export const createRecruiterSchema = yup.object({
   }),
   availability_days: yup
     .number()
+    .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
     .typeError('Veuillez saisir un nombre de jours valide')
     .when('availability_type', {
       is: 'less_than_one_month',
@@ -59,6 +65,7 @@ export const createRecruiterSchema = yup.object({
     }),
   availability_custom_value: yup
     .number()
+    .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
     .typeError('Veuillez saisir une valeur valide')
     .when('availability_type', {
       is: 'other',
@@ -105,6 +112,7 @@ export const createRecruiterSchema = yup.object({
   salary_confidential: yup.boolean(),
   adjusted_experience: yup
     .number()
+    .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
     .typeError('Veuillez saisir un nombre d\'années valide')
     .nullable()
     .min(0),

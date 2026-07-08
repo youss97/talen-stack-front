@@ -8,6 +8,7 @@ import {
   useSubmitPublicApplicationMutation,
 } from "@/lib/services/publicJobOfferApi";
 import { formatDate } from "@/utils/dateFormat";
+import { getCurrencyByCode, DEFAULT_CURRENCY } from "@/lib/currencies";
 
 const ThreeParticles = dynamic(() => import("@/components/common/ThreeParticles"), { ssr: false });
 
@@ -94,7 +95,6 @@ function ApplyModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-        onClick={(e) => e.target === e.currentTarget && onClose()}
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.94, y: 20 }}
@@ -302,9 +302,12 @@ export default function PublicApplyPage() {
     vis("min_experience") && offer.min_experience && { icon:"🎯", label:"Expérience",    value: `${offer.min_experience} an(s) min.` },
     vis("salary") && (offer.min_salary || offer.max_salary) && {
       icon:"💰", label:"Salaire",
-      value: offer.min_salary && offer.max_salary
-        ? `${offer.min_salary} – ${offer.max_salary}`
-        : offer.min_salary ? `À partir de ${offer.min_salary}` : `Jusqu'à ${offer.max_salary}`,
+      value: (() => {
+        const symbol = getCurrencyByCode(offer.currency || DEFAULT_CURRENCY)?.symbol || offer.currency || "";
+        return offer.min_salary && offer.max_salary
+          ? `${offer.min_salary} – ${offer.max_salary} ${symbol}`
+          : offer.min_salary ? `À partir de ${offer.min_salary} ${symbol}` : `Jusqu'à ${offer.max_salary} ${symbol}`;
+      })(),
     },
     vis("contract_duration") && offer.contract_duration && { icon:"⏱",  label:"Durée",  value: offer.contract_duration },
     vis("remote_possible") && offer.remote_possible !== undefined && {

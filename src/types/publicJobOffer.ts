@@ -9,6 +9,7 @@ export interface PublicJobOffer {
   contract_duration?: string;
   min_salary?: number;
   max_salary?: number;
+  currency?: string;
   location: string;
   remote_possible?: boolean;
   urgency?: string;

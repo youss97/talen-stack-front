@@ -7,6 +7,9 @@ import type { PublicApplication } from "@/types/publicJobOffer";
 
 interface ApplicationsListProps {
   applications: PublicApplication[];
+  /** Intitulé de l'offre (toutes les candidatures de cette liste postulent à la même offre) —
+   * utilisé pour la nomenclature du nom de fichier CV téléchargé, alignée sur celle du vivier. */
+  offerTitle?: string;
   /** Transformer une candidature publique en vraie candidature */
   onConvert?: (id: string) => void;
   convertingId?: string | null;
@@ -15,7 +18,11 @@ interface ApplicationsListProps {
   deletingId?: string | null;
 }
 
-export default function ApplicationsList({ applications, onConvert, convertingId, onDelete, deletingId }: ApplicationsListProps) {
+// Retire les accents/diacritiques pour un nom de fichier ASCII sûr — même logique que
+// talent-backend/src/cvs/cvs.service.ts:downloadCv, pour garder la même nomenclature.
+const deburr = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "");
+
+export default function ApplicationsList({ applications, offerTitle, onConvert, convertingId, onDelete, deletingId }: ApplicationsListProps) {
   const filteredApplications = applications;
 
   // Pagination côté client
@@ -33,18 +40,34 @@ export default function ApplicationsList({ applications, onConvert, convertingId
     [filteredApplications, page, pageSize]
   );
 
-  const downloadCV = (cvPath: string, firstName: string, lastName: string) => {
+  const downloadCV = async (cvPath: string, firstName: string, lastName: string) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
     const year = new Date().getFullYear();
-    const f = (firstName || "Prenom").replace(/\s+/g, "");
-    const l = (lastName || "Nom").replace(/\s+/g, "").toUpperCase();
+    const f = deburr(firstName || "Prenom").replace(/\s+/g, "");
+    const l = deburr(lastName || "Nom").replace(/\s+/g, "").toUpperCase();
+    const position = deburr(offerTitle || "Poste")
+      .replace(/[^a-zA-Z0-9]+/g, "_")
+      .replace(/^_|_$/g, "")
+      .substring(0, 40);
     const ext = cvPath.split(".").pop()?.split("?")[0]?.toLowerCase() || "pdf";
-    const link = document.createElement("a");
-    link.href = `${apiUrl}/${cvPath}`;
-    // Format standard : CV_Prénom_NOM_Année (poste non disponible pour une candidature publique)
-    link.download = `CV_${f}_${l}_${year}.${ext}`;
-    link.target = "_blank";
-    link.click();
+    const filename = `CV_${f}_${l}_${position}_${year}.${ext}`;
+    const fileUrl = `${apiUrl}/${cvPath}`;
+    try {
+      // Fetch + blob : un simple <a href download> sur une URL cross-origin (localhost:4000
+      // vs le front) est ignoré par le navigateur, qui garde le nom de fichier du serveur.
+      const res = await fetch(fileUrl);
+      if (!res.ok) throw new Error("download failed");
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      // Fallback : ouvrir le fichier tel quel si le fetch échoue (CORS, etc.)
+      window.open(fileUrl, "_blank");
+    }
   };
 
   return (

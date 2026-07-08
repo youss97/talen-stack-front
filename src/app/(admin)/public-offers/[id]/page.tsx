@@ -14,6 +14,7 @@ import {
 import ApplicationsList from "@/components/public-offers/ApplicationsList";
 import ConversionLoader from "@/components/public-offers/ConversionLoader";
 import { getApiErrorMessage } from "@/utils/errorMessages";
+import { getCurrencyByCode, DEFAULT_CURRENCY } from "@/lib/currencies";
 import type { PublicApplication } from "@/types/publicJobOffer";
 
 export default function PublicOfferDetailPage() {
@@ -175,12 +176,14 @@ export default function PublicOfferDetailPage() {
                     Salaire
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {offer.min_salary && offer.max_salary 
-                      ? `${offer.min_salary}€ - ${offer.max_salary}€`
-                      : offer.min_salary 
-                        ? `À partir de ${offer.min_salary}€`
-                        : `Jusqu'à ${offer.max_salary}€`
-                    }
+                    {(() => {
+                      const symbol = getCurrencyByCode(offer.currency || DEFAULT_CURRENCY)?.symbol || offer.currency || "";
+                      return offer.min_salary && offer.max_salary
+                        ? `${offer.min_salary} ${symbol} - ${offer.max_salary} ${symbol}`
+                        : offer.min_salary
+                          ? `À partir de ${offer.min_salary} ${symbol}`
+                          : `Jusqu'à ${offer.max_salary} ${symbol}`;
+                    })()}
                   </p>
                 </div>
               )}
@@ -306,6 +309,7 @@ export default function PublicOfferDetailPage() {
         </div>
         <ApplicationsList
           applications={publicApps}
+          offerTitle={offer.title}
           onConvert={handleConvert}
           convertingId={convertingId}
           onDelete={handleDeleteClick}
