@@ -23,6 +23,16 @@ const nextConfig: NextConfig = {
     ],
    
   },
+  async redirects() {
+    return [
+      // La page a déménagé sous Paramètres — anciens liens/favoris ne doivent pas finir en 404
+      {
+        source: "/email-templates",
+        destination: "/settings/email-templates",
+        permanent: true,
+      },
+    ];
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
