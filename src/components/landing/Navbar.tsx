@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Button from '@/components/ui/button/Button';
 import { motion } from 'framer-motion';
 
-export default function Navbar({ logoUrl, siteName = "Talent Stack" }: { logoUrl?: string; siteName?: string } = {}) {
+export default function Navbar({ logoUrl, siteName = "Hire Stack" }: { logoUrl?: string; siteName?: string } = {}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -25,7 +25,7 @@ export default function Navbar({ logoUrl, siteName = "Talent Stack" }: { logoUrl
               ) : (
                 <>
                   <div className="w-8 h-8 bg-[var(--color-brand-500)] rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">TS</span>
+                    <span className="text-white font-bold text-sm">HS</span>
                   </div>
                   <span className="text-xl font-bold text-gray-900">{siteName}</span>
                 </>
