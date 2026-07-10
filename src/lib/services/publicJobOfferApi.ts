@@ -61,6 +61,30 @@ export const publicJobOfferApi = createApi({
       invalidatesTags: (result, error, { requestId }) => [{ type: 'PublicApplication', id: requestId }],
     }),
 
+    // Candidatures SPONTANÉES (sans offre) de la société, pas encore ajoutées au vivier
+    getSpontaneousApplications: builder.query<PublicApplication[], void>({
+      query: () => `/spontaneous-applications`,
+      providesTags: ['PublicApplication'],
+    }),
+
+    // Ajouter une candidature spontanée au vivier de talents
+    convertSpontaneousApplication: builder.mutation<{ cv_id: string; extraction_warning: string | null }, string>({
+      query: (id) => ({
+        url: `/spontaneous-applications/${id}/convert`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['PublicApplication'],
+    }),
+
+    // Supprimer une candidature spontanée (non ajoutée au vivier)
+    deleteSpontaneousApplication: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/spontaneous-applications/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['PublicApplication'],
+    }),
+
     togglePublicJobOfferActive: builder.mutation<PublicJobOffer, string>({
       query: (id) => ({
         url: `/requests/${id}/toggle-public`,
@@ -103,6 +127,9 @@ export const {
   useGetPublicApplicationsByRequestQuery,
   useConvertPublicApplicationMutation,
   useDeletePublicApplicationMutation,
+  useGetSpontaneousApplicationsQuery,
+  useConvertSpontaneousApplicationMutation,
+  useDeleteSpontaneousApplicationMutation,
   useTogglePublicJobOfferActiveMutation,
   useDeletePublicJobOfferMutation,
   useGetPublicJobOfferBySlugQuery,

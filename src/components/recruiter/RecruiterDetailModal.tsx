@@ -425,7 +425,9 @@ export default function RecruiterDetailModal({
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => openCvInNewTab(recruiter.cv!.id!)}
+                          onClick={() => openCvInNewTab(recruiter.cv!.id!).then((ok) => {
+                            if (!ok) showError('Erreur', 'Impossible d\'ouvrir le CV');
+                          })}
                         >
                           👁️ Visualiser
                         </Button>
@@ -433,7 +435,9 @@ export default function RecruiterDetailModal({
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => recruiter.cv?.id && downloadCvFile(recruiter.cv.id, cvAny?.file_name || 'CV.pdf')}
+                        onClick={() => recruiter.cv?.id && downloadCvFile(recruiter.cv.id, cvAny?.file_name || 'CV.pdf').then((ok) => {
+                          if (!ok) showError('Erreur', 'Impossible de télécharger le CV');
+                        })}
                       >
                         📄 Télécharger le CV
                       </Button>

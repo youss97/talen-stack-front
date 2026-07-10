@@ -66,9 +66,15 @@ export interface PublicApplication {
   email: string;
   phone: string;
   cv_path?: string;
+  original_cv_filename?: string;
   message?: string;
-  source: 'qr' | 'direct' | 'linkedin' | 'other';
-  job_offer_id: string;
+  source: 'qr' | 'direct' | 'linkedin' | 'other' | 'spontaneous';
+  job_offer_id?: string;
+  recruitment_request_id?: string | null;
+  company_id?: string | null;
+  synced_to_talent_pool?: boolean;
+  synced_cv_id?: string | null;
+  synced_application_id?: string | null;
   created_at: string;
 }
 

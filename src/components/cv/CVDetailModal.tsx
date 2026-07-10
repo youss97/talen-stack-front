@@ -364,10 +364,14 @@ export default function CVDetailModal({
                   <div className="flex-1 min-w-[120px] text-sm truncate" style={{ color: "var(--text)" }}>
                     {cv.file_name || "CV.pdf"}
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => cv.id && openCvInNewTab(cv.id)}>
+                  <Button variant="outline" size="sm" onClick={() => cv.id && openCvInNewTab(cv.id).then((ok) => {
+                    if (!ok) alert("Impossible d'ouvrir le CV");
+                  })}>
                     👁️ Visualiser
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => cv.id && downloadCvFile(cv.id, cv.file_name || "CV.pdf")}>
+                  <Button variant="outline" size="sm" onClick={() => cv.id && downloadCvFile(cv.id, cv.file_name || "CV.pdf").then((ok) => {
+                    if (!ok) alert("Impossible de télécharger le CV");
+                  })}>
                     Télécharger le CV
                   </Button>
                 </div>

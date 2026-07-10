@@ -494,7 +494,9 @@ export default function CVExtractPage() {
                     // Fichier fraîchement sélectionné → blob local (affichage direct OK).
                     // CV existant → passer par l'endpoint inline pour éviter le téléchargement.
                     if (selectedFile) window.open(previewUrl!, "_blank");
-                    else if (cvId) openCvInNewTab(cvId);
+                    else if (cvId) openCvInNewTab(cvId).then((ok) => {
+                      if (!ok) addToast("error", "Erreur", "Impossible d'ouvrir le CV");
+                    });
                     else if (previewUrl) window.open(previewUrl, "_blank");
                   }}
                 >

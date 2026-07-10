@@ -178,4 +178,5 @@ export interface CVPaginationParams {
   responsible_id?: string;
   unassigned?: boolean;
   is_anonymous?: string; // "true" | "false"
+  source?: string;
 }

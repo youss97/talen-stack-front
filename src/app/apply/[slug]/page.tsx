@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
+import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   useGetPublicJobOfferBySlugQuery,
@@ -58,8 +59,7 @@ function ApplyModal({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
 
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleFile = (file: File | undefined) => {
     if (!file) return;
     const ok = ["application/pdf", "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
@@ -68,6 +68,17 @@ function ApplyModal({
     setCvFile(file);
     setError("");
   };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    multiple: false,
+    accept: {
+      "application/pdf": [".pdf"],
+      "application/msword": [".doc"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+    },
+    onDrop: (accepted) => handleFile(accepted[0]),
+    onDropRejected: () => setError("PDF, DOC ou DOCX uniquement (max 5 MB)"),
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -169,12 +180,15 @@ function ApplyModal({
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 CV (PDF, DOC, DOCX — max 5 MB) <span className="text-red-500">*</span>
               </label>
-              <label
+              <div
+                {...getRootProps()}
                 className="relative flex flex-col items-center justify-center w-full h-28 rounded-xl border-2 border-dashed cursor-pointer transition-colors"
-                style={{ borderColor: cvFile ? BRAND : "#e5e7eb", background: cvFile ? BRAND_LT : "#fafafa" }}
+                style={{
+                  borderColor: isDragActive || cvFile ? BRAND : "#e5e7eb",
+                  background: isDragActive || cvFile ? BRAND_LT : "#fafafa",
+                }}
               >
-                <input type="file" accept=".pdf,.doc,.docx" onChange={handleFile}
-                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
+                <input {...getInputProps()} />
                 {cvFile ? (
                   <>
                     <svg className="w-6 h-6 mb-1" style={{ color: BRAND }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -190,10 +204,12 @@ function ApplyModal({
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                     </svg>
-                    <span className="text-sm text-gray-500">Glisser ou cliquer pour déposer votre CV</span>
+                    <span className="text-sm text-gray-500">
+                      {isDragActive ? "Déposez le fichier ici" : "Glisser ou cliquer pour déposer votre CV"}
+                    </span>
                   </>
                 )}
-              </label>
+              </div>
             </div>
 
             {/* Message */}

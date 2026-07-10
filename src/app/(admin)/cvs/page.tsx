@@ -13,10 +13,28 @@ import {
   useDeleteCVMutation,
   useAssignCVMutation,
 } from "@/lib/services/cvApi";
+import { useGetCvSourcesQuery } from "@/lib/services/cvSourceApi";
+import {
+  useGetSpontaneousApplicationsQuery,
+  useConvertSpontaneousApplicationMutation,
+  useDeleteSpontaneousApplicationMutation,
+} from "@/lib/services/publicJobOfferApi";
 import { useActions } from "@/hooks/useActions";
 import { useRouter } from "next/navigation";
 import type { CV } from "@/types/cv";
 import { getApiErrorMessage } from "@/utils/errorMessages";
+
+const SPONTANEOUS_SOURCE_LABEL = "Candidature spontanée";
+
+function getSourceBadgeColor(source?: string) {
+  if (source === SPONTANEOUS_SOURCE_LABEL) {
+    return "bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400";
+  }
+  if (source === "Offre publique") {
+    return "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400";
+  }
+  return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+}
 
 export default function CVsPage() {
   const router = useRouter();
@@ -31,6 +49,7 @@ export default function CVsPage() {
   const [industryFilter, setIndustryFilter] = useState<string>("");
   const [specialtyFilter, setSpecialtyFilter] = useState<string>("");
   const [anonymousFilter, setAnonymousFilter] = useState<string>(""); // "", "true", "false"
+  const [sourceFilter, setSourceFilter] = useState<string>("");
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailCV, setDetailCV] = useState<CV | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -61,7 +80,7 @@ export default function CVsPage() {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
-  const { data, isLoading, isFetching } = useGetCVsQuery({
+  const { data, isLoading, isFetching, refetch: refetchCVs } = useGetCVsQuery({
     page,
     limit,
     search: search || undefined,
@@ -71,11 +90,49 @@ export default function CVsPage() {
     industry: industryFilter || undefined,
     specialty: specialtyFilter || undefined,
     is_anonymous: anonymousFilter || undefined,
+    source: sourceFilter || undefined,
   });
 
   const [getCVById, { isLoading: isLoadingDetail }] = useLazyGetCVByIdQuery();
   const [deleteCV] = useDeleteCVMutation();
   const [assignCV] = useAssignCVMutation();
+
+  const { data: cvSourcesData } = useGetCvSourcesQuery({ is_active: true });
+  const cvSources = cvSourcesData?.data || [];
+  const sourceOptions = Array.from(
+    new Set([...cvSources.map((s) => s.name), "Offre publique", SPONTANEOUS_SOURCE_LABEL])
+  );
+
+  // Candidatures spontanées pas encore ajoutées au vivier — visibles directement ici
+  const { data: spontaneousApplications = [] } = useGetSpontaneousApplicationsQuery();
+  const [convertSpontaneous, { isLoading: isConvertingSpontaneous }] = useConvertSpontaneousApplicationMutation();
+  const [deleteSpontaneous] = useDeleteSpontaneousApplicationMutation();
+  const [convertingSpontaneousId, setConvertingSpontaneousId] = useState<string | null>(null);
+
+  const handleConvertSpontaneous = async (id: string) => {
+    setConvertingSpontaneousId(id);
+    try {
+      await convertSpontaneous(id).unwrap();
+      addToast("success", "Ajouté au vivier", "La candidature spontanée a été ajoutée au vivier de talents");
+      // convertSpontaneous n'invalide que le cache de publicJobOfferApi (la liste des
+      // candidatures spontanées) — cvApi est un slice RTK Query séparé, donc le tableau du
+      // vivier ne se rafraîchit jamais tout seul : il faut le forcer explicitement.
+      refetchCVs();
+    } catch (error) {
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de l'ajout au vivier"));
+    } finally {
+      setConvertingSpontaneousId(null);
+    }
+  };
+
+  const handleDeleteSpontaneous = async (id: string) => {
+    try {
+      await deleteSpontaneous(id).unwrap();
+      addToast("success", "Supprimée", "La candidature spontanée a été supprimée");
+    } catch (error) {
+      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la suppression"));
+    }
+  };
 
   const getErrorMessage = (error: unknown, defaultMessage: string): string =>
     getApiErrorMessage(error, defaultMessage);
@@ -123,7 +180,14 @@ export default function CVsPage() {
     {
       key: "source",
       header: "Source",
-      render: (value) => <span>{(value as string) || "-"}</span>,
+      render: (value) =>
+        value ? (
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getSourceBadgeColor(value as string)}`}>
+            {value as string}
+          </span>
+        ) : (
+          <span className="text-gray-400">-</span>
+        ),
     },
     {
       key: "created_by_name",
@@ -312,8 +376,61 @@ export default function CVsPage() {
                 <option value="false">Anonymisé : Non</option>
               </select>
             </div>
+            <div>
+              <select
+                value={sourceFilter}
+                onChange={(e) => { setSourceFilter(e.target.value); setPage(1); }}
+                className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+              >
+                <option value="">Source : Toutes</option>
+                {sourceOptions.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
+
+        {spontaneousApplications.length > 0 && (
+          <div className="mb-5 rounded-2xl border border-purple-200 bg-purple-50/50 p-5 dark:border-purple-800 dark:bg-purple-900/10">
+            <h2 className="text-sm font-semibold text-purple-800 dark:text-purple-300 mb-3">
+              Candidatures spontanées en attente ({spontaneousApplications.length})
+            </h2>
+            <div className="space-y-2">
+              {spontaneousApplications.map((app) => (
+                <div
+                  key={app.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-white dark:bg-gray-900 border border-purple-100 dark:border-purple-900/40 px-4 py-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400">
+                      Candidature spontanée
+                    </span>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        {app.first_name} {app.last_name}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{app.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={isConvertingSpontaneous && convertingSpontaneousId === app.id}
+                      onClick={() => handleConvertSpontaneous(app.id)}
+                    >
+                      {isConvertingSpontaneous && convertingSpontaneousId === app.id ? "Ajout..." : "Ajouter au vivier"}
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => handleDeleteSpontaneous(app.id)}>
+                      Supprimer
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <DataTable
           columns={columns}

@@ -41,6 +41,7 @@ export const cvApi = createApi({
           ...(params.responsible_id && { responsible_id: params.responsible_id }),
           ...(params.unassigned && { unassigned: true }),
           ...(params.is_anonymous && { is_anonymous: params.is_anonymous }),
+          ...(params.source && { source: params.source }),
         },
       }),
       providesTags: (result) =>

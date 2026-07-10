@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
+import { useDropzone } from "react-dropzone";
 import ThreeParticles from "@/components/common/ThreeParticles";
 
 interface Offer {
@@ -46,8 +47,31 @@ export default function CompanyLandingPage() {
 
   const [openSpontaneous, setOpenSpontaneous] = useState(false);
   const [form, setForm] = useState({ first_name: "", last_name: "", email: "", phone: "", message: "" });
+  const [cvFile, setCvFile] = useState<File | null>(null);
+  const [formError, setFormError] = useState("");
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
+
+  const handleFile = (file: File | undefined) => {
+    if (!file) return;
+    const ok = ["application/pdf", "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    if (!ok.includes(file.type)) { setFormError("PDF, DOC ou DOCX uniquement"); return; }
+    if (file.size > 5 * 1024 * 1024) { setFormError("Fichier trop lourd (max 5 MB)"); return; }
+    setCvFile(file);
+    setFormError("");
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    multiple: false,
+    accept: {
+      "application/pdf": [".pdf"],
+      "application/msword": [".doc"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+    },
+    onDrop: (accepted) => handleFile(accepted[0]),
+    onDropRejected: () => setFormError("PDF, DOC ou DOCX uniquement (max 5 MB)"),
+  });
 
   useEffect(() => {
     if (!slug) return;
@@ -87,18 +111,31 @@ export default function CompanyLandingPage() {
 
   const submitSpontaneous = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError("");
+    if (!form.first_name || !form.last_name || !form.email || !form.phone) {
+      setFormError("Veuillez remplir tous les champs obligatoires");
+      return;
+    }
+    if (!cvFile) {
+      setFormError("Veuillez joindre votre CV");
+      return;
+    }
     setSending(true);
     try {
+      const fd = new FormData();
+      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+      fd.append("cv_file", cvFile);
       const r = await fetch(`${API}/public/company/${slug}/spontaneous`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: fd,
       });
       if (!r.ok) throw new Error();
       setSent(true);
       setOpenSpontaneous(false);
+      setForm({ first_name: "", last_name: "", email: "", phone: "", message: "" });
+      setCvFile(null);
     } catch {
-      setError("Erreur lors de l'envoi de la candidature");
+      setFormError("Erreur lors de l'envoi. Veuillez réessayer.");
     } finally {
       setSending(false);
     }
@@ -261,13 +298,46 @@ export default function CompanyLandingPage() {
           <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
             <h3 className="text-lg font-semibold text-gray-900 mb-1">Candidature spontanée</h3>
             <p className="text-sm text-gray-400 mb-4">Envoyez votre profil à {c.name}</p>
-            <form onSubmit={submitSpontaneous} className="space-y-3">
+            <form onSubmit={submitSpontaneous} className="space-y-3 max-h-[75vh] overflow-y-auto pr-1">
+              {formError && (
+                <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-sm text-red-700">
+                  {formError}
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-3">
                 <input required value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} placeholder="Prénom" className="h-11 rounded-xl border border-gray-200 px-4 text-sm" />
                 <input required value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} placeholder="Nom" className="h-11 rounded-xl border border-gray-200 px-4 text-sm" />
               </div>
               <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="Email" className="h-11 w-full rounded-xl border border-gray-200 px-4 text-sm" />
-              <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Téléphone" className="h-11 w-full rounded-xl border border-gray-200 px-4 text-sm" />
+              <input required type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Téléphone" className="h-11 w-full rounded-xl border border-gray-200 px-4 text-sm" />
+
+              {/* CV drop zone — même comportement que le formulaire de candidature à une offre publique */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  CV (PDF, DOC, DOCX — max 5 MB) <span className="text-red-500">*</span>
+                </label>
+                <div
+                  {...getRootProps()}
+                  className="relative flex flex-col items-center justify-center w-full h-24 rounded-xl border-2 border-dashed cursor-pointer transition-colors"
+                  style={{
+                    borderColor: isDragActive ? brand : cvFile ? brand : "#e5e7eb",
+                    background: isDragActive || cvFile ? `${brand}10` : "#fafafa",
+                  }}
+                >
+                  <input {...getInputProps()} />
+                  {cvFile ? (
+                    <>
+                      <span className="text-sm font-medium" style={{ color: brand }}>{cvFile.name}</span>
+                      <span className="text-xs text-gray-400 mt-0.5">{(cvFile.size / 1024).toFixed(0)} KB</span>
+                    </>
+                  ) : (
+                    <span className="text-sm text-gray-500">
+                      {isDragActive ? "Déposez le fichier ici" : "Glisser ou cliquer pour déposer votre CV"}
+                    </span>
+                  )}
+                </div>
+              </div>
+
               <textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Message (optionnel)" rows={3} className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm" />
               <div className="flex justify-end gap-3 pt-1">
                 <button type="button" onClick={() => setOpenSpontaneous(false)} className="px-4 py-2.5 rounded-xl border border-gray-200 text-sm">Annuler</button>

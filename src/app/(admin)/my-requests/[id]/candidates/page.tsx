@@ -490,14 +490,18 @@ export default function RequestCandidatesPage() {
                   candidate.cv?.id && (
                     <>
                       <Button
-                        onClick={() => candidate.cv?.id && openCvInNewTab(candidate.cv.id)}
+                        onClick={() => candidate.cv?.id && openCvInNewTab(candidate.cv.id).then((ok) => {
+                          if (!ok) alert("Impossible d'ouvrir le CV");
+                        })}
                         size="sm"
                         variant="outline"
                       >
                         👁️ Voir le CV
                       </Button>
                       <Button
-                        onClick={() => candidate.cv?.id && downloadCvFile(candidate.cv.id, (candidate.cv as unknown as { file_name?: string }).file_name || 'CV.pdf')}
+                        onClick={() => candidate.cv?.id && downloadCvFile(candidate.cv.id, (candidate.cv as unknown as { file_name?: string }).file_name || 'CV.pdf').then((ok) => {
+                          if (!ok) alert('Impossible de télécharger le CV');
+                        })}
                         size="sm"
                         variant="outline"
                       >

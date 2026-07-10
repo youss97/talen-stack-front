@@ -72,7 +72,10 @@ export async function openCvInNewTab(cvId: string): Promise<boolean> {
     a.href = url;
     a.download = match?.[1] || "CV";
     a.click();
-    URL.revokeObjectURL(url);
+    // Révoquer avec un délai : le faire immédiatement après click() peut invalider l'URL avant
+    // que le navigateur ait fini de lire le blob (surtout fichiers volumineux/connexion lente),
+    // ce qui fait échouer le téléchargement de façon intermittente.
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
     return true;
   } catch {
     preOpenedWindow?.close();
@@ -97,7 +100,9 @@ export async function downloadCvFile(cvId: string, fallbackName = "CV.pdf"): Pro
     a.href = url;
     a.download = filename;
     a.click();
-    URL.revokeObjectURL(url);
+    // Voir openCvInNewTab : révocation différée pour ne pas invalider l'URL avant que le
+    // téléchargement soit réellement lancé par le navigateur (échec intermittent sinon).
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
     return true;
   } catch {
     return false;
