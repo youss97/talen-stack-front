@@ -145,12 +145,13 @@ export default function CVDetailModal({
         ) : cv ? (
           <div className="space-y-4">
             {/* Infos complémentaires */}
-            {(cv.specialty || cv.industry_experience || cv.remote_preferred != null) && (
+            {(cv.specialty || cv.industry_experience || cv.remote_preferred != null || cv.source) && (
               <Section title="Informations" icon="ℹ️" accent="var(--brand)">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4">
                   {cv.specialty && <DetailItem label="Spécialité" value={cv.specialty} />}
                   <DetailItem label="Secteur" value={cv.industry_experience || "-"} />
                   <DetailItem label="Télétravail" value={cv.remote_preferred ? "Oui" : "Non"} />
+                  <DetailItem label="Source" value={cv.source || "-"} />
                 </div>
               </Section>
             )}

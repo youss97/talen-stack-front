@@ -168,11 +168,12 @@ export default function RecruiterFormModal({
 
   useEffect(() => {
     if (recruiter && isOpen) {
-      // Filtrer les langues invalides (sans champ language)
-      const validLanguages = (recruiter.languages || []).filter(
-        (lang) => lang && lang.language && lang.language.trim() !== ""
-      );
-      
+      // Ne PAS filtrer les langues ici : une langue existante en base ne doit jamais
+      // disparaître silencieusement à l'ouverture du formulaire (elle serait alors perdue
+      // définitivement à la sauvegarde suivante, même si l'utilisateur n'y touche pas).
+      // Le nettoyage des lignes réellement vides se fait uniquement au submit (handleFormSubmit).
+      const existingLanguages = recruiter.languages || [];
+
       // Mode édition : pré-remplir
       reset({
         request_id: recruiter.request_id || "",
@@ -195,7 +196,7 @@ export default function RecruiterFormModal({
         availability_custom_value: recruiter.availability_custom_value,
         availability_custom_unit: recruiter.availability_custom_unit || "days",
         availability_negotiable: recruiter.availability_negotiable || false,
-        languages: validLanguages,
+        languages: existingLanguages,
         qualification_report: recruiter.qualification_report || "",
         recruiter_notes: recruiter.recruiter_notes || "",
         recruiter_interview_date: recruiter.recruiter_interview_date,
@@ -204,7 +205,7 @@ export default function RecruiterFormModal({
         salary_confidential: recruiter.salary_confidential || false,
         adjusted_experience: recruiter.adjusted_experience,
       });
-      setLanguages(validLanguages);
+      setLanguages(existingLanguages);
       if (recruiter.cv) setSelectedCV(recruiter.cv as CV);
       if (recruiter.request) setSelectedRequest(recruiter.request as ApplicationRequest);
     } else if (isOpen) {
@@ -289,8 +290,17 @@ export default function RecruiterFormModal({
 
   const handleFormSubmit = (data: CreateRecruiterFormData) => {
     setMissingFields([]);
+    // Nettoyer les lignes de langue réellement vides (ex: ligne "+" ajoutée puis non remplie)
+    // uniquement au moment de l'envoi — ne jamais faire ce filtrage à l'affichage (voir useEffect
+    // de pré-remplissage ci-dessus, corrigé pour ne plus perdre de langues existantes en base).
+    const cleanedData = {
+      ...data,
+      languages: (data.languages || []).filter(
+        (lang) => lang && lang.language && lang.language.trim() !== ""
+      ),
+    };
     // Auto-clean: appeler onSubmit puis reset le formulaire
-    onSubmit(data);
+    onSubmit(cleanedData);
     if (!isEditing) {
       // Reset form after successful creation
       reset();

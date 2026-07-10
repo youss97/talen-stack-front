@@ -13,6 +13,7 @@ import { clientManagerApi } from './services/clientManagerApi';
 import { emailApi } from './services/emailApi';
 import { emailTemplateApi } from './services/emailTemplateApi';
 import { contractTypeApi } from './services/contractTypeApi';
+import { cvSourceApi } from './services/cvSourceApi';
 import { applicationStatusApi } from './services/applicationStatusApi';
 import { publicJobOfferApi } from './services/publicJobOfferApi';
 import { interviewApi } from './services/interviewApi';
@@ -40,6 +41,7 @@ const apiMiddlewares = [
   emailApi.middleware,
   emailTemplateApi.middleware,
   contractTypeApi.middleware,
+  cvSourceApi.middleware,
   applicationStatusApi.middleware,
   publicJobOfferApi.middleware,
   interviewApi.middleware,
@@ -66,6 +68,7 @@ const apiResetters = [
   emailApi.util.resetApiState,
   emailTemplateApi.util.resetApiState,
   contractTypeApi.util.resetApiState,
+  cvSourceApi.util.resetApiState,
   applicationStatusApi.util.resetApiState,
   publicJobOfferApi.util.resetApiState,
   interviewApi.util.resetApiState,
@@ -93,6 +96,7 @@ const appReducer = combineReducers({
   [emailApi.reducerPath]: emailApi.reducer,
   [emailTemplateApi.reducerPath]: emailTemplateApi.reducer,
   [contractTypeApi.reducerPath]: contractTypeApi.reducer,
+  [cvSourceApi.reducerPath]: cvSourceApi.reducer,
   [applicationStatusApi.reducerPath]: applicationStatusApi.reducer,
   [publicJobOfferApi.reducerPath]: publicJobOfferApi.reducer,
   [interviewApi.reducerPath]: interviewApi.reducer,

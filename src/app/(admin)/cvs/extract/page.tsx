@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useCallback, useEffect } from "react";
+import { useDropzone, type FileRejection } from "react-dropzone";
 import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
@@ -11,6 +12,7 @@ import {
   useLazyGetCVByIdQuery,
   useExtractCVMutation,
 } from "@/lib/services/cvApi";
+import { useGetCvSourcesQuery } from "@/lib/services/cvSourceApi";
 import type { CvExperience, CvFormation } from "@/types/cv";
 import MonthYearPicker from "@/components/form/MonthYearPicker";
 import YearPicker from "@/components/form/YearPicker";
@@ -69,6 +71,7 @@ export default function CVExtractPage() {
   const [specialty, setSpecialty] = useState("");
   const [summary, setSummary] = useState("");
   const [status, setStatus] = useState("new");
+  const [source, setSource] = useState("");
   const [remotePreferred, setRemotePreferred] = useState(false);
 
   // Tags-based fields
@@ -88,6 +91,8 @@ export default function CVExtractPage() {
   const [getCVById, { isLoading: isLoadingCV }] = useLazyGetCVByIdQuery();
   const [createCV, { isLoading: isCreating }] = useCreateCVMutation();
   const [updateCV, { isLoading: isUpdating }] = useUpdateCVMutation();
+  const { data: cvSourcesData } = useGetCvSourcesQuery({ is_active: true });
+  const cvSources = cvSourcesData?.data || [];
   const [extractCV] = useExtractCVMutation();
 
   const addToast = useCallback(
@@ -118,6 +123,7 @@ export default function CVExtractPage() {
         setSpecialty(cv.specialty || "");
         setSummary((cv.full_information as any)?.summary || "");
         setStatus(cv.status || "new");
+        setSource((cv as any).source || "");
         setRemotePreferred(cv.remote_preferred || false);
         setSkills(cv.skills || cv.additional_skills || []);
         setMobility(cv.geographic_mobility || []);
@@ -146,13 +152,46 @@ export default function CVExtractPage() {
   }, [cvId, getCVById, addToast]);
 
   // ── File upload + extraction ──────────────────────────────────────────────
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleFile = async (file: File) => {
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
     await extractCVData(file);
   };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await handleFile(file);
+  };
+
+  // noClick/noKeyboard : le clic reste géré par le <input> caché existant (fileInputRef),
+  // réutilisé aussi par le bouton "Remplacer le fichier" en mode édition — le dropzone
+  // n'ajoute que la gestion du glisser-déposer par-dessus la même zone.
+  const { getRootProps, isDragActive } = useDropzone({
+    noClick: true,
+    noKeyboard: true,
+    multiple: false,
+    accept: {
+      "application/pdf": [".pdf"],
+      "application/msword": [".doc"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+      "text/plain": [".txt"],
+      "application/rtf": [".rtf"],
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+    },
+    onDrop: (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      if (file) handleFile(file);
+    },
+    onDropRejected: (fileRejections: FileRejection[]) => {
+      addToast(
+        "error",
+        "Fichier non valide",
+        fileRejections[0]?.errors[0]?.message || "Format de fichier non supporté (PDF, DOC, DOCX, Images, TXT, RTF uniquement)"
+      );
+    },
+  });
 
   const extractCVData = async (file: File) => {
     setIsExtracting(true);
@@ -314,6 +353,7 @@ export default function CVExtractPage() {
           contract_type_preferences: contractTypes,
           remote_preferred: remotePreferred,
           status,
+          source: source || undefined,
           experiences: cleanExperiences,
           formations: cleanFormations,
         };
@@ -334,6 +374,7 @@ export default function CVExtractPage() {
         if (specialty) formData.append("specialty", specialty);
         formData.append("remote_preferred", String(remotePreferred));
         formData.append("status", status);
+        if (source) formData.append("source", source);
 
         skills.forEach((s) => formData.append("additional_skills", s));
         langStrings.forEach((l) => formData.append("languages", l));
@@ -401,11 +442,20 @@ export default function CVExtractPage() {
             onChange={handleFileChange} className="hidden" />
 
           {!previewUrl && !isEditing && (
-            <div onClick={() => fileInputRef.current?.click()}
-              className="h-[220px] w-full rounded-xl border-2 border-dashed border-gray-300 hover:border-brand-400 dark:border-gray-700 dark:hover:border-brand-600 cursor-pointer flex flex-col items-center justify-center gap-3 transition-colors">
+            <div
+              {...getRootProps()}
+              onClick={() => fileInputRef.current?.click()}
+              className={`h-[220px] w-full rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-3 transition-colors cursor-pointer ${
+                isDragActive
+                  ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10"
+                  : "border-gray-300 hover:border-brand-400 dark:border-gray-700 dark:hover:border-brand-600"
+              }`}
+            >
               <UploadIcon />
               <div className="text-center">
-                <p className="text-sm font-medium text-gray-800 dark:text-white">Cliquez pour uploader un CV</p>
+                <p className="text-sm font-medium text-gray-800 dark:text-white">
+                  {isDragActive ? "Déposez le fichier ici" : "Glissez-déposez un CV ou cliquez pour en choisir un"}
+                </p>
                 <p className="text-xs text-gray-500 mt-1">PDF, DOCX, DOC, Images, TXT, RTF (max 20MB)</p>
               </div>
             </div>
@@ -512,6 +562,15 @@ export default function CVExtractPage() {
               <select className={inputClass} value={status} onChange={(e) => setStatus(e.target.value)}>
                 {STATUS_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <Label>Source</Label>
+              <select className={inputClass} value={source} onChange={(e) => setSource(e.target.value)}>
+                <option value="">Sélectionner...</option>
+                {cvSources.map((s) => (
+                  <option key={s.id} value={s.name}>{s.name}</option>
                 ))}
               </select>
             </div>

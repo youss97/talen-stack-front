@@ -107,6 +107,7 @@ export interface CV {
   };
   details?: CVDetails;
   status?: "new" | "reviewed" | "shortlisted" | "interviewed" | "hired" | "rejected" | "archived";
+  source?: string;
   created_at?: string;
   updated_at?: string;
   created_by_name?: string;
@@ -136,6 +137,7 @@ export interface CreateCVRequest {
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
   status?: string;
+  source?: string;
   experiences?: CvExperience[];
   formations?: CvFormation[];
 }
@@ -156,6 +158,7 @@ export interface UpdateCVRequest {
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
   status?: string;
+  source?: string;
   experiences?: CvExperience[];
   formations?: CvFormation[];
 }

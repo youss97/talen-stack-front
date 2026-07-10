@@ -121,6 +121,11 @@ export default function CVsPage() {
       ),
     },
     {
+      key: "source",
+      header: "Source",
+      render: (value) => <span>{(value as string) || "-"}</span>,
+    },
+    {
       key: "created_by_name",
       header: "Créé par",
       render: (value) => (

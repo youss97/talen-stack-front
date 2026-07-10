@@ -4,9 +4,11 @@ import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
 import { getFeedbackCardColor } from "@/utils/feedbackColors";
+import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
 import type { Recruiter } from "@/types/recruiter";
 import WorkflowStepper from "./WorkflowStepper";
 import { useChangeApplicationStepMutation, useCreateFeedbackMutation } from "@/lib/services/recruiterApi";
+import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
 
 interface Props {
   isOpen: boolean;
@@ -37,6 +39,8 @@ const Row = ({ label, value }: { label: string; value?: React.ReactNode }) =>
 export default function CandidateApplicationDetailModal({ isOpen, onClose, candidate, canEditStep = false, onUpdated }: Props) {
   const [changeStep, { isLoading: isChangingStep }] = useChangeApplicationStepMutation();
   const [createFeedback, { isLoading: isAddingFeedback }] = useCreateFeedbackMutation();
+  const { data: applicationStatusesData } = useGetApplicationStatusesQuery({ page: 1, limit: 100, is_active: true });
+  const applicationStatuses = applicationStatusesData?.data || [];
 
   if (!candidate) return null;
 
@@ -93,6 +97,8 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
             Informations
           </h3>
           <div className="space-y-2">
+            <Row label="Poste" value={candidate.request?.title} />
+            <Row label="Référence" value={candidate.request?.reference} />
             <Row label="Email" value={cv?.candidate_email} />
             <Row label="Téléphone" value={cv?.candidate_phone} />
             <Row label="Expérience" value={
@@ -102,8 +108,16 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
                 ? `${cv.total_experience} ans`
                 : undefined
             } />
-            <Row label="Statut" value={candidate.status} />
+            <Row label="Statut" value={resolveStatusLabel(candidate.status, applicationStatuses)} />
+            <Row label="État" value={
+              candidate.workflow_status === 'active' ? 'Publiée'
+                : candidate.workflow_status === 'archived' ? 'Archivée'
+                : candidate.workflow_status === 'draft' ? 'Brouillon'
+                : undefined
+            } />
+            <Row label="Anonymisée" value={candidate.is_anonymized != null ? (candidate.is_anonymized ? "Oui" : "Non") : undefined} />
             <Row label="Soumis le" value={candidate.proposed_at ? formatDate(candidate.proposed_at) : undefined} />
+            <Row label="Publiée le" value={candidate.activated_at ? formatDate(candidate.activated_at) : undefined} />
             <Row label="Date entretien" value={candidate.recruiter_interview_date ? formatDateTime(candidate.recruiter_interview_date) : undefined} />
           </div>
         </section>
@@ -144,7 +158,10 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
         )}
 
         {/* Rémunération */}
-        {((candidate as { salary_confidential?: boolean }).salary_confidential || candidate.current_salary != null || candidate.daily_rate != null || candidate.package_rate != null) && (
+        {((candidate as { salary_confidential?: boolean }).salary_confidential
+          || candidate.current_salary != null || candidate.daily_rate != null || candidate.package_rate != null
+          || candidate.salary_expectation != null || candidate.daily_rate_expectation != null
+          || candidate.package_current || candidate.package_desired) && (
           <section>
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
               Rémunération
@@ -169,8 +186,20 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
                       `${candidate.package_rate.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}`
                     } />
                   )}
+                  <Row label="Package actuel" value={candidate.package_current} />
                 </>
               )}
+              {candidate.salary_expectation != null && (
+                <Row label="Salaire souhaité" value={
+                  `${candidate.salary_expectation.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}`
+                } />
+              )}
+              {candidate.daily_rate_expectation != null && (
+                <Row label="TJM souhaité" value={
+                  `${candidate.daily_rate_expectation.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}/jour`
+                } />
+              )}
+              <Row label="Package souhaité" value={candidate.package_desired} />
             </div>
           </section>
         )}
@@ -199,6 +228,11 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
             } />
             {candidate.availability_days != null && (
               <Row label="Délai (jours)" value={String(candidate.availability_days)} />
+            )}
+            {candidate.availability_custom_value != null && (
+              <Row label="Délai personnalisé" value={
+                `${candidate.availability_custom_value} ${candidate.availability_custom_unit === 'months' ? 'mois' : 'jours'}`
+              } />
             )}
             <Row label="Raison" value={candidate.availability_reason} />
             {candidate.availability_negotiable != null && (
@@ -279,20 +313,33 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
               {rhFeedbacks.map(fb => (
                 <div
                   key={fb.id}
-                  className={`rounded-lg p-3 border-l-4 ${getFeedbackCardColor(fb)}`}
+                  className={`rounded-lg p-4 border-l-4 ${getFeedbackCardColor(fb)}`}
                 >
-                  <div className="flex items-start justify-between mb-1">
-                    <h4 className="text-sm font-medium text-gray-900 dark:text-white">{fb.title}</h4>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="text-base font-medium text-gray-900 dark:text-white">
+                      {fb.title}
+                    </h3>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ml-4">
                       {formatDateTime(fb.created_at)}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{fb.description}</p>
+
+                  <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap mb-3">
+                    {fb.description}
+                  </p>
+
                   {fb.created_by && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {fb.created_by.first_name} {fb.created_by.last_name}
-                      {fb.created_by.role && ` · ${fb.created_by.role.name}`}
-                    </p>
+                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                      <span className="font-medium">
+                        {fb.created_by.first_name} {fb.created_by.last_name}
+                      </span>
+                      {fb.created_by.role && (
+                        <>
+                          <span>•</span>
+                          <span>{fb.created_by.role.name}</span>
+                        </>
+                      )}
+                    </div>
                   )}
                 </div>
               ))}
@@ -310,20 +357,33 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
               {clientFeedbacks.map(fb => (
                 <div
                   key={fb.id}
-                  className={`rounded-lg p-3 border-l-4 ${getFeedbackCardColor(fb)}`}
+                  className={`rounded-lg p-4 border-l-4 ${getFeedbackCardColor(fb)}`}
                 >
-                  <div className="flex items-start justify-between mb-1">
-                    <h4 className="text-sm font-medium text-gray-900 dark:text-white">{fb.title}</h4>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="text-base font-medium text-gray-900 dark:text-white">
+                      {fb.title}
+                    </h3>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ml-4">
                       {formatDateTime(fb.created_at)}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{fb.description}</p>
+
+                  <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap mb-3">
+                    {fb.description}
+                  </p>
+
                   {fb.created_by && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {fb.created_by.first_name} {fb.created_by.last_name}
-                      {fb.created_by.role && ` · ${fb.created_by.role.name}`}
-                    </p>
+                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                      <span className="font-medium">
+                        {fb.created_by.first_name} {fb.created_by.last_name}
+                      </span>
+                      {fb.created_by.role && (
+                        <>
+                          <span>•</span>
+                          <span>{fb.created_by.role.name}</span>
+                        </>
+                      )}
+                    </div>
                   )}
                 </div>
               ))}

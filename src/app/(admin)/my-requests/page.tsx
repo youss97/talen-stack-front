@@ -331,7 +331,6 @@ export default function MyRequestsPage() {
           <Pagination
             currentPage={page}
             totalPages={data.pagination.totalPages}
-            totalItems={data.pagination.total}
             itemsPerPage={data.pagination.limit}
             onPageChange={setPage}
           />

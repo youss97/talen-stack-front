@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
 import { getFeedbackCardColor } from "@/utils/feedbackColors";
+import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import StatusChangeModal from "./StatusChangeModal";
@@ -30,6 +31,15 @@ import WorkflowStepper from "./WorkflowStepper";
 import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
 import { useCreateInterviewMutation, useGetApplicationInterviewsQuery, useUpdateInterviewNotesMutation, useCancelInterviewMutation } from "@/lib/services/interviewApi";
 import { formatDateTime } from "@/utils/dateFormat";
+
+const AVAILABILITY_LABELS: Record<string, string> = {
+  immediate: "Immédiate",
+  less_than_one_month: "Moins d'un mois",
+  one_month: "1 mois",
+  two_months: "2 mois",
+  three_months: "3 mois",
+  other: "Autre",
+};
 
 interface RecruiterDetailModalProps {
   isOpen: boolean;
@@ -77,7 +87,7 @@ export default function RecruiterDetailModal({
   }));
 
   const getStatusLabel = (status: string) => {
-    return STATUS_OPTIONS.find(s => s.value === status)?.label || status;
+    return resolveStatusLabel(status, applicationStatuses);
   };
 
   const getStatusColor = (status: string) => {
@@ -672,6 +682,117 @@ export default function RecruiterDetailModal({
                 isAddingFeedback={isCreatingFeedback}
               />
             </div>
+
+            {/* Informations candidature */}
+            <div className="border-t border-[color:var(--border)] pt-4">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                Informations candidature
+              </h3>
+              <div className="gw-panel p-4 grid grid-cols-2 gap-4">
+                {recruiter.workflow_status && (
+                  <DetailItem
+                    label="État"
+                    value={
+                      recruiter.workflow_status === 'active' ? 'Publiée'
+                        : recruiter.workflow_status === 'archived' ? 'Archivée'
+                        : 'Brouillon'
+                    }
+                  />
+                )}
+                {recruiter.activated_at && (
+                  <DetailItem label="Publiée le" value={formatDateTime(recruiter.activated_at)} />
+                )}
+                {recruiter.is_anonymized != null && (
+                  <DetailItem label="Anonymisée" value={recruiter.is_anonymized ? "Oui" : "Non"} />
+                )}
+              </div>
+            </div>
+
+            {/* Rémunération */}
+            {(recruiter.salary_confidential || recruiter.current_salary != null || recruiter.daily_rate != null || recruiter.package_rate != null
+              || recruiter.salary_expectation != null || recruiter.daily_rate_expectation != null
+              || recruiter.package_current || recruiter.package_desired) && (
+              <div className="border-t border-[color:var(--border)] pt-4">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Rémunération
+                </h3>
+                <div className="gw-panel p-4 grid grid-cols-2 gap-4">
+                  {recruiter.salary_confidential ? (
+                    <DetailItem label="Salaire" value="🔒 Confidentiel" />
+                  ) : (
+                    <>
+                      {recruiter.current_salary != null && (
+                        <DetailItem label="Salaire actuel" value={`${recruiter.current_salary.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}`} />
+                      )}
+                      {recruiter.daily_rate != null && (
+                        <DetailItem label="Taux journalier" value={`${recruiter.daily_rate.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}/jour`} />
+                      )}
+                      {recruiter.package_rate != null && (
+                        <DetailItem label="Package annuel" value={`${recruiter.package_rate.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}`} />
+                      )}
+                      {recruiter.package_current && <DetailItem label="Package actuel" value={recruiter.package_current} />}
+                    </>
+                  )}
+                  {recruiter.salary_expectation != null && (
+                    <DetailItem label="Salaire souhaité" value={`${recruiter.salary_expectation.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}`} />
+                  )}
+                  {recruiter.daily_rate_expectation != null && (
+                    <DetailItem label="TJM souhaité" value={`${recruiter.daily_rate_expectation.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}/jour`} />
+                  )}
+                  {recruiter.package_desired && <DetailItem label="Package souhaité" value={recruiter.package_desired} />}
+                </div>
+              </div>
+            )}
+
+            {/* Contrat & disponibilité */}
+            <div className="border-t border-[color:var(--border)] pt-4">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                Contrat & Disponibilité
+              </h3>
+              <div className="gw-panel p-4 grid grid-cols-2 gap-4">
+                {recruiter.offer_contract_types && recruiter.offer_contract_types.length > 0 && (
+                  <DetailItem label="Type de contrat souhaité" value={recruiter.offer_contract_types.join(", ")} />
+                )}
+                {recruiter.current_contract_type && <DetailItem label="Contrat actuel" value={recruiter.current_contract_type} />}
+                {recruiter.currently_employed != null && (
+                  <DetailItem label="En poste" value={recruiter.currently_employed ? "Oui" : "Non"} />
+                )}
+                {recruiter.availability_type && (
+                  <DetailItem
+                    label="Disponibilité"
+                    value={AVAILABILITY_LABELS[recruiter.availability_type] ?? recruiter.availability_type}
+                  />
+                )}
+                {recruiter.availability_days != null && (
+                  <DetailItem label="Délai (jours)" value={String(recruiter.availability_days)} />
+                )}
+                {recruiter.availability_custom_value != null && (
+                  <DetailItem
+                    label="Délai personnalisé"
+                    value={`${recruiter.availability_custom_value} ${recruiter.availability_custom_unit === 'months' ? 'mois' : 'jours'}`}
+                  />
+                )}
+                {recruiter.availability_reason && <DetailItem label="Raison" value={recruiter.availability_reason} />}
+                {recruiter.availability_negotiable != null && (
+                  <DetailItem label="Négociable" value={recruiter.availability_negotiable ? "Oui" : "Non"} />
+                )}
+                {recruiter.adjusted_experience != null && (
+                  <DetailItem label="Expérience ajustée" value={`${recruiter.adjusted_experience} ans`} />
+                )}
+              </div>
+            </div>
+
+            {/* Compte-rendu de qualification */}
+            {recruiter.qualification_report && (
+              <div className="border-t border-[color:var(--border)] pt-4">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Compte-rendu de qualification
+                </h3>
+                <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                  {recruiter.qualification_report}
+                </p>
+              </div>
+            )}
 
             {/* Langues */}
             {recruiter.languages && recruiter.languages.filter(l => l && l.language).length > 0 && (

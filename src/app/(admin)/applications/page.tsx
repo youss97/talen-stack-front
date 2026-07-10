@@ -9,6 +9,7 @@ import Pagination from "@/components/tables/Pagination";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
+import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import RecruiterFormModal from "@/components/recruiter/RecruiterFormModal";
 import RecruiterDetailModal from "@/components/recruiter/RecruiterDetailModal";
@@ -139,10 +140,7 @@ export default function ApplicationsPage() {
 
   const applicationStatuses = applicationStatusesData?.data || [];
 
-  const getStatusLabel = (status: string) => {
-    const statusObj = applicationStatuses.find(s => s.name === status);
-    return statusObj?.name || status;
-  };
+  const getStatusLabel = (status: string) => resolveStatusLabel(status, applicationStatuses);
 
   const getStatusColor = (status: string) => {
     const statusObj = applicationStatuses.find(s => s.name === status);

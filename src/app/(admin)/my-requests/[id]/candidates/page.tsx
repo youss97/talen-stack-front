@@ -17,6 +17,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
 import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
 import { getFeedbackCardColor } from "@/utils/feedbackColors";
+import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
 import type { Recruiter } from "@/types/recruiter";
 import type { ApplicationRequest } from "@/types/applicationRequest";
 
@@ -127,7 +128,7 @@ export default function RequestCandidatesPage() {
     if (!statusObj) {
       return (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300">
-          {status}
+          {resolveStatusLabel(status, applicationStatuses)}
         </span>
       );
     }
@@ -527,7 +528,6 @@ export default function RequestCandidatesPage() {
             currentPage={page}
             totalPages={data.pagination.totalPages}
             onPageChange={setPage}
-            totalItems={data.pagination.total}
             itemsPerPage={5}
           />
         </div>
