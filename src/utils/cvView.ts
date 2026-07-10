@@ -25,14 +25,43 @@ export async function fetchCvBlobUrl(cvId: string): Promise<string | null> {
   }
 }
 
-/** Ouvre le CV dans un nouvel onglet (affichage inline, jamais de téléchargement). */
+/** Types que le navigateur sait afficher nativement dans un onglet (PDF, images). */
+const isPreviewableMime = (mime: string) => mime === "application/pdf" || mime.startsWith("image/");
+
+/**
+ * Ouvre le CV dans un nouvel onglet si le navigateur peut l'afficher nativement (PDF, image).
+ * Sinon (Word, etc. — aucun navigateur n'embarque de moteur de rendu Office), bascule sur un
+ * téléchargement propre : un `window.open()` sur un blob non-PDF déclenche sinon un onglet vide
+ * ou un téléchargement silencieux/déguisé selon le navigateur.
+ */
 export async function openCvInNewTab(cvId: string): Promise<boolean> {
-  const url = await fetchCvBlobUrl(cvId);
-  if (!url) return false;
-  window.open(url, "_blank");
-  // Révoquer plus tard (laisser le temps à l'onglet de charger le blob)
-  setTimeout(() => URL.revokeObjectURL(url), 60_000);
-  return true;
+  try {
+    const token = getToken();
+    const res = await fetch(`${getApiUrl()}/cvs/${cvId}/view`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) return false;
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+
+    if (isPreviewableMime(blob.type)) {
+      window.open(url, "_blank");
+      // Révoquer plus tard (laisser le temps à l'onglet de charger le blob)
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      return true;
+    }
+
+    const disposition = res.headers.get("Content-Disposition") || "";
+    const match = disposition.match(/filename="?([^"]+)"?/);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = match?.[1] || "CV";
+    a.click();
+    URL.revokeObjectURL(url);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /** Télécharge le CV avec un nom formaté (via l'endpoint `/download`). */
