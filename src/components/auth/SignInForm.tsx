@@ -40,29 +40,18 @@ export default function SignInForm() {
       const response = await login(data).unwrap();
       console.log('🔐 Connexion réussie:', response);
 
-      const u = response.user;
-      const userRoleCode = u?.role?.code;
-      const isSuperAdmin =
-        userRoleCode === 'super_admin' ||
-        (!u?.company && u?.role?.level != null && u.role.level >= 999);
-
-      // Super Admin → gestion des entreprises
-      if (isSuperAdmin) {
-        router.push('/companies');
-        return;
-      }
-
-      // Client Manager → ses demandes
-      if (userRoleCode?.startsWith('CLIENT_MANAGER_')) {
-        router.push('/my-requests');
-        return;
-      }
-
-      // Sinon, rediriger vers le premier chemin autorisé ou dashboard par défaut
-      const firstFeaturePath = u?.features?.[0]?.pages?.[0]?.path;
-      const redirectPath = firstFeaturePath || "/dashboard";
-      const adminPath = redirectPath.startsWith('/') ? redirectPath : `/${redirectPath}`;
-      router.push(adminPath);
+      // Page d'accueil = Statistiques pour tous les rôles, SAUF l'espace client
+      // qui n'a pas accès aux statistiques (voir usePermissions.ts::canAccessPath).
+      const u = response?.user as unknown as {
+        company?: { parent_company_id?: string | null };
+        client_id?: string | null;
+        role?: { code?: string };
+      } | undefined;
+      const isClientSpace =
+        !!u?.company?.parent_company_id ||
+        !!u?.client_id ||
+        (u?.role?.code || "").toUpperCase().startsWith("CLIENT_MANAGER");
+      router.push(isClientSpace ? '/my-requests' : '/statistics');
     } catch (error) {
       const err = error as ApiError;
       console.error('❌ Erreur de connexion:', err);

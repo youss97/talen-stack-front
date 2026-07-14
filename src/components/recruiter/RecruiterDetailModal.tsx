@@ -70,6 +70,13 @@ export default function RecruiterDetailModal({
 
   const cvAny = recruiter?.cv as unknown as { file_name?: string } | undefined;
 
+  // Prétentions affichées selon les types de contrat SOUHAITÉS pour l'offre — même règle
+  // que RecruiterFormModal.tsx : CDI souhaité → salaire, Freelance souhaité → TJM,
+  // les deux souhaités → les deux affichés.
+  const offerTypes = (recruiter?.offer_contract_types || []).filter(Boolean) as string[];
+  const wantsTjmExpectation = offerTypes.some((v) => v?.toLowerCase() === "freelance");
+  const wantsSalaryExpectation = offerTypes.length === 0 || offerTypes.some((v) => ["CDI", "CDD", "Stage", "Intérim", "Alternance"].includes(v));
+
   // Récupérer les statuts de candidature
   const { data: applicationStatusesData } = useGetApplicationStatusesQuery({
     page: 1,
@@ -737,10 +744,10 @@ export default function RecruiterDetailModal({
                       {recruiter.package_current && <DetailItem label="Package actuel" value={recruiter.package_current} />}
                     </>
                   )}
-                  {recruiter.salary_expectation != null && (
+                  {recruiter.salary_expectation != null && wantsSalaryExpectation && (
                     <DetailItem label="Salaire souhaité" value={`${recruiter.salary_expectation.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}`} />
                   )}
-                  {recruiter.daily_rate_expectation != null && (
+                  {recruiter.daily_rate_expectation != null && wantsTjmExpectation && (
                     <DetailItem label="TJM souhaité" value={`${recruiter.daily_rate_expectation.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}/jour`} />
                   )}
                   {recruiter.package_desired && <DetailItem label="Package souhaité" value={recruiter.package_desired} />}

@@ -22,6 +22,7 @@ export interface EmailTemplate {
 export interface EmailTemplateVariableInfo {
   type: EmailTemplateType;
   label: string;
+  description: string;
   variables: string[];
 }
 

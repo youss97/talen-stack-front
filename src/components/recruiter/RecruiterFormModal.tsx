@@ -111,9 +111,15 @@ export default function RecruiterFormModal({
   const currentContractType = watch("current_contract_type");
   const availabilityType = watch("availability_type");
   const availabilityNegotiable = watch("availability_negotiable");
-  // Prétentions : basées sur le type de contrat ACTUEL du candidat (TJM si Freelance, sinon salaire)
-  const wantsTjmExpectation = currentContractType?.toLowerCase() === "freelance";
-  const wantsSalaryExpectation = !wantsTjmExpectation;
+  // Prétentions : basées sur les types de contrat SOUHAITÉS pour l'offre (offer_contract_types),
+  // pas sur le contrat actuel du candidat — CDI souhaité → salaire, Freelance souhaité → TJM,
+  // les deux souhaités → les deux affichés (conditions indépendantes, pas d'exclusion mutuelle).
+  // Même pattern que ApplicationRequestFormModal.tsx (isFreelance/hasSalary).
+  const offerTypes = (watch("offer_contract_types") || []).filter(Boolean) as string[];
+  const wantsTjmExpectation = offerTypes.some((v) => v?.toLowerCase() === "freelance");
+  // Tant qu'aucun type de contrat n'a encore été choisi pour l'offre, on affiche le salaire
+  // par défaut (comportement le plus courant), plutôt que de masquer les deux champs.
+  const wantsSalaryExpectation = offerTypes.length === 0 || offerTypes.some((v) => ["CDI", "CDD", "Stage", "Intérim", "Alternance"].includes(v));
   const isAnonymized = watch("is_anonymized");
   const salaryConfidential = watch("salary_confidential");
 

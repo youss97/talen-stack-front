@@ -7,6 +7,7 @@ import { getApiErrorMessage } from "@/utils/errorMessages";
 
 // Champs configurables de l'offre publique (clés ↔ page /apply/[slug])
 export const PUBLIC_OFFER_FIELDS: { key: string; label: string }[] = [
+  { key: "client", label: "Nom du client" },
   { key: "description", label: "Description du poste" },
   { key: "required_skills", label: "Compétences requises" },
   { key: "location", label: "Lieu" },
@@ -72,7 +73,7 @@ export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initi
       <div className="flex-shrink-0 p-6 pb-0">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Configurer l&apos;offre publique</h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Sélectionnez les champs à afficher sur la page publique de l&apos;offre. Le titre, l&apos;entreprise et le formulaire de candidature sont toujours visibles.
+          Sélectionnez les champs à afficher sur la page publique de l&apos;offre. Le titre et le formulaire de candidature sont toujours visibles.
         </p>
       </div>
 

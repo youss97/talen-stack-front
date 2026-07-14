@@ -12,24 +12,18 @@ export default function AdminHomePage() {
     console.log('🔍 Admin page - État auth:', { isAuth, user: user?.email });
     
     if (isAuth && user) {
-      const userRoleCode = user.role?.code;
-      const isSuperAdmin =
-        userRoleCode === 'super_admin' ||
-        (!user.company && user.role?.level != null && user.role.level >= 999);
-
-      if (isSuperAdmin) {
-        router.push('/companies');
-        return;
-      }
-
-      if (userRoleCode?.startsWith('CLIENT_MANAGER_')) {
-        router.push('/my-requests');
-        return;
-      }
-
-      const firstFeaturePath = user.features?.[0]?.pages?.[0]?.path;
-      const redirectPath = firstFeaturePath || "/dashboard";
-      router.push(redirectPath);
+      // Page d'accueil = Statistiques pour tous les rôles, SAUF l'espace client
+      // qui n'a pas accès aux statistiques (voir usePermissions.ts::canAccessPath).
+      const u = user as unknown as {
+        company?: { parent_company_id?: string | null };
+        client_id?: string | null;
+        role?: { code?: string };
+      };
+      const isClientSpace =
+        !!u?.company?.parent_company_id ||
+        !!u?.client_id ||
+        (u?.role?.code || "").toUpperCase().startsWith("CLIENT_MANAGER");
+      router.push(isClientSpace ? '/my-requests' : '/statistics');
     } else if (isAuth === false) {
       // Si pas connecté, rediriger vers la page de connexion (pas la landing)
       console.log('🚫 Utilisateur non connecté, redirection vers /signin');

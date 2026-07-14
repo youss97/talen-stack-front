@@ -27,6 +27,7 @@ export default function EmailTemplatesPage() {
   }, []);
 
   const labelFor = (type: EmailTemplateType) => variableInfo.find((v) => v.type === type)?.label || type;
+  const descriptionFor = (type: EmailTemplateType) => variableInfo.find((v) => v.type === type)?.description || "";
   const selectedTemplate: EmailTemplate | null = templates.find((t) => t.type === selectedType) || null;
 
   return (
@@ -57,6 +58,11 @@ export default function EmailTemplatesPage() {
                   {template.is_custom ? "Personnalisé" : "Par défaut"}
                 </Badge>
               </div>
+              {descriptionFor(template.type) && (
+                <p className="text-xs text-gray-400 dark:text-gray-500">
+                  {descriptionFor(template.type)}
+                </p>
+              )}
               <p className="text-sm text-gray-500 dark:text-gray-400 truncate" title={template.subject}>
                 {template.subject}
               </p>

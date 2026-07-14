@@ -79,16 +79,19 @@ export default function LandingPageClient() {
     // Attendre que l'initialisation soit terminée et que la vérification soit faite
     if (isInitialized && !isVerifying && isAuth && user) {
       console.log('🔄 Utilisateur connecté détecté, redirection vers l\'application...');
-      
-      const userRoleCode = user.role?.code;
-      if (userRoleCode?.startsWith('CLIENT_MANAGER_')) {
-        router.push('/my-requests');
-        return;
-      }
 
-      const firstFeaturePath = user.features?.[0]?.pages?.[0]?.path;
-      const redirectPath = firstFeaturePath || "/dashboard";
-      router.push(redirectPath);
+      // Page d'accueil = Statistiques pour tous les rôles, SAUF l'espace client
+      // qui n'a pas accès aux statistiques (voir usePermissions.ts::canAccessPath).
+      const u = user as unknown as {
+        company?: { parent_company_id?: string | null };
+        client_id?: string | null;
+        role?: { code?: string };
+      };
+      const isClientSpace =
+        !!u?.company?.parent_company_id ||
+        !!u?.client_id ||
+        (u?.role?.code || "").toUpperCase().startsWith("CLIENT_MANAGER");
+      router.push(isClientSpace ? '/my-requests' : '/statistics');
     }
   }, [isInitialized, isVerifying, isAuth, user, router]);
 

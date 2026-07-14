@@ -72,6 +72,13 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
   const cv = candidate.cv;
   const fullName = `${cv?.candidate_first_name || ""} ${cv?.candidate_last_name || ""}`.trim() || "Candidat";
 
+  // Prétentions affichées selon les types de contrat SOUHAITÉS pour l'offre — même règle
+  // que RecruiterFormModal.tsx : CDI souhaité → salaire, Freelance souhaité → TJM,
+  // les deux souhaités → les deux affichés.
+  const offerTypes = (candidate.offer_contract_types || []).filter(Boolean) as string[];
+  const wantsTjmExpectation = offerTypes.some((v) => v?.toLowerCase() === "freelance");
+  const wantsSalaryExpectation = offerTypes.length === 0 || offerTypes.some((v) => ["CDI", "CDD", "Stage", "Intérim", "Alternance"].includes(v));
+
   const allFeedbacks = candidate.feedbacks || [];
   const clientFeedbacks = allFeedbacks.filter(f =>
     f.created_by?.role?.code?.startsWith("CLIENT_MANAGER_")
@@ -189,12 +196,12 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
                   <Row label="Package actuel" value={candidate.package_current} />
                 </>
               )}
-              {candidate.salary_expectation != null && (
+              {candidate.salary_expectation != null && wantsSalaryExpectation && (
                 <Row label="Salaire souhaité" value={
                   `${candidate.salary_expectation.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}`
                 } />
               )}
-              {candidate.daily_rate_expectation != null && (
+              {candidate.daily_rate_expectation != null && wantsTjmExpectation && (
                 <Row label="TJM souhaité" value={
                   `${candidate.daily_rate_expectation.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}/jour`
                 } />
