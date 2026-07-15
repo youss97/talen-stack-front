@@ -1,0 +1,25 @@
+{
+  "page": {
+    "title": "Notifications",
+    "description": "Toutes vos notifications et alertes"
+  },
+  "actions": {
+    "markAllRead": "Tout marquer comme lu"
+  },
+  "emptyState": {
+    "title": "Aucune notification",
+    "message": "Vous serez notifié ici des nouvelles candidatures et événements."
+  },
+  "time": {
+    "now": "à l'instant",
+    "minutesAgo": "il y a {minutes} min",
+    "hoursAgo": "il y a {hours} h",
+    "daysAgo": "il y a {days} j"
+  },
+  "types": {
+    "application": "Candidature",
+    "recruitment": "Recrutement",
+    "integration": "Intégration",
+    "system": "Système"
+  }
+}

@@ -1,0 +1,369 @@
+{
+  "hub": {
+    "title": "الإعدادات",
+    "subtitle": "إدارة إعدادات تطبيقك",
+    "unauthorized": "الوصول غير مصرح به. جارٍ إعادة التوجيه...",
+    "categories": {
+      "applicationStatuses": {
+        "title": "حالات الترشيحات",
+        "description": "إدارة حالات الترشيحات (قيد الانتظار، مقبول، مرفوض، إلخ.)"
+      },
+      "contractTypes": {
+        "title": "أنواع العقود",
+        "description": "إدارة أنواع العقود (عقد غير محدد المدة، عقد محدد المدة، عمل حر، إلخ.)"
+      },
+      "sidebarOrder": {
+        "title": "ترتيب القائمة الجانبية",
+        "description": "تحديد ترتيب عرض الوحدات (الميزات) في القائمة الجانبية"
+      },
+      "publicSite": {
+        "title": "الموقع العام والهوية البصرية",
+        "description": "تخصيص الصفحة العامة للشركة (الرابط، التقديم، اللون، «مشغّل بواسطة»)"
+      },
+      "landing": {
+        "title": "الصفحة الرئيسية",
+        "description": "إدارة الصفحة العامة: النصوص، الأسعار، الشهادات، نموذج الاتصال (المشرف العام)"
+      },
+      "cvSources": {
+        "title": "إدارة مصادر السير الذاتية",
+        "description": "إدارة مصادر السير الذاتية (عرض عام، ترشيح داخلي، LinkedIn، إلخ.)"
+      },
+      "emailTemplates": {
+        "title": "قوالب البريد الإلكتروني",
+        "description": "تخصيص محتوى الرسائل الإلكترونية المُرسلة تلقائيًا من المنصة (الترشيحات، المقابلات، الإشعارات)"
+      },
+      "businessCards": {
+        "title": "بطاقات العمل",
+        "description": "إنشاء وإدارة بطاقات العمل بترميز QR (موارد بشرية، عميل، موظف)"
+      }
+    }
+  },
+  "applicationStatuses": {
+    "breadcrumb": "حالات الترشيحات",
+    "title": "حالات الترشيحات",
+    "subtitle": "إدارة حالات الترشيحات",
+    "searchPlaceholder": "بحث...",
+    "createButton": "إنشاء حالة",
+    "columns": { "name": "الاسم", "status": "الحالة" },
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "modal": {
+      "editTitle": "تعديل الحالة",
+      "createTitle": "إنشاء حالة",
+      "nameLabel": "الاسم",
+      "activeLabel": "نشط",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ..."
+    },
+    "deleteModal": {
+      "title": "حذف الحالة",
+      "message": "هل أنت متأكد أنك تريد حذف الحالة \"{name}\"؟",
+      "confirmText": "حذف"
+    },
+    "toasts": {
+      "updated": "تم تعديل الحالة بنجاح",
+      "created": "تم إنشاء الحالة بنجاح",
+      "deleted": "تم حذف الحالة بنجاح",
+      "genericError": "حدث خطأ",
+      "deleteError": "خطأ أثناء الحذف"
+    }
+  },
+  "contractTypes": {
+    "breadcrumb": "أنواع العقود",
+    "title": "أنواع العقود",
+    "subtitle": "إدارة أنواع العقود (عقد غير محدد المدة، عقد محدد المدة، عمل حر، إلخ.)",
+    "searchPlaceholder": "بحث...",
+    "createButton": "إنشاء نوع عقد",
+    "columns": { "name": "الاسم", "status": "الحالة" },
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "modal": {
+      "editTitle": "تعديل نوع العقد",
+      "createTitle": "إنشاء نوع عقد",
+      "nameLabel": "الاسم",
+      "namePlaceholder": "مثال: عقد غير محدد المدة، عقد محدد المدة، عمل حر",
+      "activeLabel": "نشط",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ..."
+    },
+    "deleteModal": {
+      "title": "حذف نوع العقد",
+      "message": "هل أنت متأكد أنك تريد حذف نوع العقد \"{name}\"؟",
+      "confirmText": "حذف"
+    },
+    "toasts": {
+      "updated": "تم تعديل نوع العقد بنجاح",
+      "created": "تم إنشاء نوع العقد بنجاح",
+      "deleted": "تم حذف نوع العقد بنجاح",
+      "genericError": "حدث خطأ",
+      "deleteError": "خطأ أثناء الحذف"
+    }
+  },
+  "cvSources": {
+    "breadcrumb": "إدارة مصادر السير الذاتية",
+    "title": "إدارة مصادر السير الذاتية",
+    "subtitle": "إدارة مصادر السير الذاتية (عرض عام، ترشيح داخلي، LinkedIn، إلخ.)",
+    "searchPlaceholder": "بحث...",
+    "createButton": "إنشاء مصدر سيرة ذاتية",
+    "columns": { "name": "الاسم", "status": "الحالة" },
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "modal": {
+      "editTitle": "تعديل مصدر السيرة الذاتية",
+      "createTitle": "إنشاء مصدر سيرة ذاتية",
+      "nameLabel": "الاسم",
+      "namePlaceholder": "مثال: عرض عام، ترشيح داخلي، LinkedIn",
+      "activeLabel": "نشط",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ..."
+    },
+    "deleteModal": {
+      "title": "حذف مصدر السيرة الذاتية",
+      "message": "هل أنت متأكد أنك تريد حذف مصدر السيرة الذاتية \"{name}\"؟",
+      "confirmText": "حذف"
+    },
+    "toasts": {
+      "updated": "تم تعديل مصدر السيرة الذاتية بنجاح",
+      "created": "تم إنشاء مصدر السيرة الذاتية بنجاح",
+      "deleted": "تم حذف مصدر السيرة الذاتية بنجاح",
+      "genericError": "حدث خطأ",
+      "deleteError": "خطأ أثناء الحذف"
+    }
+  },
+  "applicationStatusesPage": {
+    "title": "حالات الترشيح",
+    "subtitle": "إدارة حالات الترشيح الخاصة بالمنصة",
+    "addButton": "إضافة حالة",
+    "searchPlaceholder": "البحث عن حالة ترشيح...",
+    "columns": { "name": "الاسم", "description": "الوصف", "color": "اللون", "order": "الترتيب" },
+    "emptyMessage": "لم يتم العثور على أي حالة ترشيح",
+    "toasts": {
+      "loadDetailError": "خطأ أثناء تحميل تفاصيل حالة الترشيح",
+      "deleted": "تم حذف حالة الترشيح بنجاح",
+      "deleteError": "خطأ أثناء حذف حالة الترشيح",
+      "updated": "تم تعديل حالة الترشيح بنجاح",
+      "created": "تم إنشاء حالة الترشيح بنجاح",
+      "updateError": "خطأ أثناء تعديل حالة الترشيح",
+      "createError": "خطأ أثناء إنشاء حالة الترشيح"
+    },
+    "deleteModal": {
+      "title": "حذف حالة الترشيح",
+      "message": "هل أنت متأكد أنك تريد حذف حالة الترشيح \"{name}\"؟ هذا الإجراء لا يمكن التراجع عنه.",
+      "confirmText": "حذف",
+      "cancelText": "إلغاء"
+    },
+    "formModal": {
+      "detailTitle": "تفاصيل حالة الترشيح",
+      "editTitle": "تعديل حالة الترشيح",
+      "createTitle": "إضافة حالة ترشيح",
+      "detailSubtitle": "اطّلع على معلومات حالة الترشيح",
+      "editSubtitle": "عدّل معلومات حالة الترشيح",
+      "createSubtitle": "املأ المعلومات لإنشاء حالة ترشيح جديدة",
+      "loading": "جارٍ تحميل البيانات...",
+      "nameLabel": "الاسم",
+      "namePlaceholder": "قيد الانتظار، مقبول، مرفوض...",
+      "descriptionLabel": "الوصف",
+      "descriptionPlaceholder": "وصف حالة الترشيح...",
+      "colorLabel": "اللون",
+      "orderLabel": "ترتيب العرض",
+      "activeLabel": "نشط",
+      "finalLabel": "حالة نهائية",
+      "close": "إغلاق",
+      "cancel": "إلغاء",
+      "saving": "جارٍ الحفظ...",
+      "edit": "تعديل",
+      "add": "إضافة"
+    }
+  },
+  "contractTypesPage": {
+    "title": "أنواع العقود",
+    "subtitle": "إدارة أنواع العقود الخاصة بالمنصة",
+    "addButton": "إضافة نوع عقد",
+    "searchPlaceholder": "البحث عن نوع عقد...",
+    "columns": { "name": "الاسم", "description": "الوصف" },
+    "emptyMessage": "لم يتم العثور على أي نوع عقد",
+    "toasts": {
+      "loadDetailError": "خطأ أثناء تحميل تفاصيل نوع العقد",
+      "deleted": "تم حذف نوع العقد بنجاح",
+      "deleteError": "خطأ أثناء حذف نوع العقد",
+      "updated": "تم تعديل نوع العقد بنجاح",
+      "created": "تم إنشاء نوع العقد بنجاح",
+      "updateError": "خطأ أثناء تعديل نوع العقد",
+      "createError": "خطأ أثناء إنشاء نوع العقد"
+    },
+    "deleteModal": {
+      "title": "حذف نوع العقد",
+      "message": "هل أنت متأكد أنك تريد حذف نوع العقد \"{name}\"؟ هذا الإجراء لا يمكن التراجع عنه.",
+      "confirmText": "حذف",
+      "cancelText": "إلغاء"
+    },
+    "formModal": {
+      "detailTitle": "تفاصيل نوع العقد",
+      "editTitle": "تعديل نوع العقد",
+      "createTitle": "إضافة نوع عقد",
+      "detailSubtitle": "اطّلع على معلومات نوع العقد",
+      "editSubtitle": "عدّل معلومات نوع العقد",
+      "createSubtitle": "املأ المعلومات لإنشاء نوع عقد جديد",
+      "loading": "جارٍ تحميل البيانات...",
+      "nameLabel": "الاسم",
+      "namePlaceholder": "عقد غير محدد المدة، عقد محدد المدة، تدريب...",
+      "descriptionLabel": "الوصف",
+      "descriptionPlaceholder": "وصف نوع العقد...",
+      "orderLabel": "ترتيب العرض",
+      "activeLabel": "نشط",
+      "close": "إغلاق",
+      "cancel": "إلغاء",
+      "saving": "جارٍ الحفظ...",
+      "edit": "تعديل",
+      "add": "إضافة"
+    }
+  },
+  "publicSite": {
+    "backButton": "العودة إلى الإعدادات",
+    "title": "الموقع العام والهوية البصرية",
+    "subtitle": "خصص الصفحة العامة لشركتك (العروض، الترشيحات التلقائية).",
+    "slugLabel": "الرابط العام (URL)",
+    "slugPlaceholder": "شركتي",
+    "linkLabel": "الرابط",
+    "descriptionLabel": "التقديم",
+    "descriptionPlaceholder": "قدّم شركتك للمترشحين…",
+    "brandColorLabel": "لون العلامة التجارية",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
+    "toasts": {
+      "savedTitle": "تم الحفظ",
+      "savedMessage": "تم تحديث إعدادات الموقع العام",
+      "errorTitle": "خطأ",
+      "errorMessage": "فشل الحفظ"
+    }
+  },
+  "sidebarOrder": {
+    "backButton": "العودة إلى الإعدادات",
+    "title": "ترتيب القائمة الجانبية",
+    "subtitle": "أعد ترتيب <strong>الوحدات</strong> (الأقسام) في القائمة الجانبية.",
+    "saveButton": "حفظ الترتيب",
+    "emptyState": "لا توجد وحدات.",
+    "moveUp": "تحريك لأعلى",
+    "moveDown": "تحريك لأسفل",
+    "toasts": {
+      "savedTitle": "تم بنجاح",
+      "savedMessage": "تم حفظ ترتيب الوحدات. تم تحديث القائمة."
+    }
+  },
+  "landing": {
+    "title": "الصفحة الرئيسية",
+    "subtitle": "إدارة المحتوى العام: النصوص، الأسعار، الشهادات، الاتصال.",
+    "preview": "معاينة",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
+    "tabs": {
+      "content": "المحتوى",
+      "messages": "الرسائل",
+      "messagesWithCount": "الرسائل ({count})"
+    },
+    "identity": {
+      "title": "الهوية (الترويسة)",
+      "siteNamePlaceholder": "اسم الموقع (مثال: Talent Stack)",
+      "logoAlt": "شعار",
+      "logoPlaceholder": "شعار",
+      "uploadLogo": "رفع الشعار",
+      "uploading": "جارٍ الرفع…",
+      "removeLogo": "إزالة"
+    },
+    "hero": {
+      "title": "قسم الواجهة الرئيسية",
+      "titlePlaceholder": "العنوان",
+      "subtitlePlaceholder": "العنوان الفرعي",
+      "ctaTextPlaceholder": "نص الزر",
+      "ctaLinkPlaceholder": "رابط الزر (#contact)",
+      "brandColorLabel": "لون العلامة التجارية"
+    },
+    "about": {
+      "title": "قسم «من نحن»",
+      "titlePlaceholder": "العنوان",
+      "textPlaceholder": "النص"
+    },
+    "features": {
+      "title": "الميزات",
+      "addButton": "+ إضافة",
+      "titlePlaceholder": "العنوان",
+      "descriptionPlaceholder": "الوصف"
+    },
+    "pricing": {
+      "title": "الأسعار",
+      "addButton": "+ إضافة خطة",
+      "planLabel": "الخطة {index}",
+      "moveUp": "تحريك لأعلى",
+      "moveDown": "تحريك لأسفل",
+      "deleteButton": "حذف",
+      "namePlaceholder": "اسم الخطة",
+      "pricePlaceholder": "السعر (مثال: 49)",
+      "currency": {
+        "eur": "€ (يورو)",
+        "usd": "$ (دولار)",
+        "mad": "درهم",
+        "gbp": "£ (جنيه إسترليني)",
+        "none": "بدون"
+      },
+      "cycle": {
+        "monthly": "/ شهر",
+        "yearly": "/ سنة",
+        "oneTime": "دفعة واحدة / حسب الطلب"
+      },
+      "featuresPlaceholder": "ميزة واحدة في كل سطر",
+      "highlightedLabel": "الخطة الأكثر شيوعًا",
+      "ctaTextPlaceholder": "نص الزر"
+    },
+    "testimonials": {
+      "title": "شهادات العملاء",
+      "addButton": "+ إضافة",
+      "namePlaceholder": "الاسم",
+      "rolePlaceholder": "المنصب",
+      "companyPlaceholder": "الشركة",
+      "ratingPlaceholder": "التقييم /5",
+      "avatarPlaceholder": "رابط صورة العميل (أو ارفعها →)",
+      "upload": "رفع",
+      "uploading": "جارٍ الرفع…",
+      "textPlaceholder": "الشهادة",
+      "photoAddedTitle": "تمت إضافة الصورة",
+      "photoUploadErrorTitle": "خطأ",
+      "photoUploadErrorMessage": "فشل رفع الصورة"
+    },
+    "partners": {
+      "title": "شعارات الشركاء",
+      "addButton": "+ إضافة",
+      "upload": "رفع",
+      "uploading": "جارٍ الرفع…",
+      "namePlaceholder": "اسم الشريك (اختياري)",
+      "emptyState": "لا يوجد شركاء. انقر على «+ إضافة» لإدراج شعار.",
+      "logoAddedTitle": "تمت إضافة الشعار",
+      "logoUploadErrorTitle": "خطأ",
+      "logoUploadErrorMessage": "فشل رفع الشعار"
+    },
+    "contact": {
+      "title": "معلومات الاتصال والشبكات الاجتماعية",
+      "emailPlaceholder": "البريد الإلكتروني",
+      "phonePlaceholder": "الهاتف",
+      "addressPlaceholder": "العنوان",
+      "linkedinPlaceholder": "LinkedIn (رابط)",
+      "instagramPlaceholder": "Instagram (رابط)"
+    },
+    "messages": {
+      "emptyState": "لا توجد رسائل.",
+      "newBadge": "جديد",
+      "markRead": "وضع علامة كمقروء"
+    },
+    "toasts": {
+      "savedTitle": "تم الحفظ",
+      "savedMessage": "تم تحديث الصفحة الرئيسية",
+      "errorTitle": "خطأ",
+      "errorMessage": "فشل الحفظ",
+      "logoAddedTitle": "تمت إضافة الشعار",
+      "logoAddedMessage": "لا تنسَ الحفظ",
+      "logoErrorMessage": "فشل رفع الشعار"
+    }
+  }
+}

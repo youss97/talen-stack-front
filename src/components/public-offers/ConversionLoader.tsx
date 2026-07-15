@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface ConversionLoaderProps {
   /** Affiche l'overlay quand true */
@@ -8,11 +9,8 @@ interface ConversionLoaderProps {
   done?: boolean;
 }
 
-const STEPS = [
-  { icon: "📄", label: "Extraction du CV du candidat" },
-  { icon: "🗂️", label: "Enregistrement dans le vivier de talents" },
-  { icon: "✅", label: "Création de la candidature" },
-];
+const STEP_ICONS = ["📄", "🗂️", "✅"];
+const STEP_KEYS = ["extract", "save", "create"] as const;
 
 /**
  * Overlay explicatif pendant la transformation d'une candidature publique.
@@ -20,7 +18,9 @@ const STEPS = [
  * pour que l'utilisateur comprenne ce qui se passe (vivier -> candidature).
  */
 export default function ConversionLoader({ active, done }: ConversionLoaderProps) {
+  const t = useTranslations("publicOffers.conversion");
   const [current, setCurrent] = useState(0);
+  const STEPS = STEP_KEYS.map((key, i) => ({ icon: STEP_ICONS[i], label: t(`steps.${key}`) }));
 
   useEffect(() => {
     if (!active) {
@@ -44,10 +44,10 @@ export default function ConversionLoader({ active, done }: ConversionLoaderProps
     <div className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="gw-card w-full max-w-md p-6" style={{ background: "var(--surface)" }}>
         <h3 className="text-base font-semibold mb-1" style={{ color: "var(--text)" }}>
-          Transformation en candidature…
+          {t("title")}
         </h3>
         <p className="text-sm mb-5" style={{ color: "var(--text-2)" }}>
-          Merci de patienter, ne fermez pas cette fenêtre.
+          {t("subtitle")}
         </p>
 
         <ul className="space-y-3">

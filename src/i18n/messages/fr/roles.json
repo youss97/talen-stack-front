@@ -1,0 +1,110 @@
+{
+  "list": {
+    "title": "Rôles et permissions",
+    "subtitle": "Gérez les rôles et leurs permissions",
+    "addButton": "Ajouter un rôle",
+    "searchPlaceholder": "Rechercher un rôle...",
+    "emptyMessage": "Aucun rôle trouvé",
+    "columns": {
+      "usersCount": "Utilisateurs",
+      "createdAt": "Date de création"
+    },
+    "status": {
+      "protected": "🔒 Protégé",
+      "editable": "✏️ Modifiable"
+    }
+  },
+  "toasts": {
+    "unauthorizedTitle": "Action non autorisée",
+    "unauthorizedEditMessage": "Ce rôle est protégé et ne peut pas être modifié.",
+    "unauthorizedDeleteMessage": "Ce rôle est protégé et ne peut pas être supprimé.",
+    "cannotDeleteTitle": "Suppression impossible",
+    "cannotDeleteMessage": "Ce rôle est affecté à {count} utilisateur(s). Retirez-le d'abord de ces utilisateurs.",
+    "deleteSuccess": "Rôle supprimé avec succès",
+    "deleteErrorDefault": "Erreur lors de la suppression du rôle",
+    "updateSuccess": "Rôle modifié avec succès",
+    "createSuccess": "Rôle créé avec succès",
+    "updateErrorDefault": "Erreur lors de la modification du rôle",
+    "createErrorDefault": "Erreur lors de la création du rôle"
+  },
+  "confirmDelete": {
+    "title": "Supprimer le rôle",
+    "message": "Êtes-vous sûr de vouloir supprimer le rôle \"{name}\" ? Cette action est irréversible."
+  },
+  "form": {
+    "titleEdit": "Modifier le rôle",
+    "titleAdd": "Ajouter un rôle",
+    "subtitleEdit": "Modifiez les informations du rôle",
+    "subtitleAdd": "Remplissez les informations pour créer un nouveau rôle",
+    "nameLabel": "Nom du rôle",
+    "namePlaceholder": "Administrateur",
+    "descriptionPlaceholder": "Description du rôle...",
+    "permissionsLabel": "Permissions",
+    "permissionsSubtitle": "Sélectionnez les modules, pages et actions accessibles pour ce rôle",
+    "saving": "Enregistrement...",
+    "dataScope": {
+      "title": "Portée des données",
+      "subtitle": "Pour chaque ressource, choisissez si l'utilisateur voit uniquement <strong>ses propres éléments</strong> (ceux qu'il a créés ou qui lui sont affectés) ou <strong>toute l'entreprise</strong>.",
+      "own": "Les siennes",
+      "company": "Toute l'entreprise"
+    }
+  },
+  "detail": {
+    "defaultTitle": "Détails du rôle",
+    "createdOn": "Créé le {date}",
+    "dataScopeTitle": "Portée des données",
+    "scopeTooltipCompany": "Voit toute l'entreprise",
+    "scopeTooltipOwn": "Voit seulement ses propres éléments",
+    "permissionsTitle": "Permissions attribuées",
+    "noPermissions": "Aucune permission attribuée"
+  },
+  "resources": {
+    "applications": "Candidatures",
+    "requests": "Demandes de recrutement",
+    "cvs": "Vivier de talents (CVs)",
+    "clients": "Clients",
+    "emails": "Emails",
+    "integrations": "Intégrations"
+  },
+  "permissionsSelector": {
+    "globalSelection": "Sélection globale :",
+    "selectAll": "Tout sélectionner",
+    "deselectAll": "Tout désélectionner",
+    "modules": {
+      "title": "Modules",
+      "none": "Aucun",
+      "all": "Tous",
+      "empty": "Aucun module",
+      "removeAllPages": "Retirer toutes les pages",
+      "selectAllPages": "Sélectionner toutes les pages"
+    },
+    "pages": {
+      "title": "Pages",
+      "none": "Aucune",
+      "all": "Toutes",
+      "selectModuleFirst": "Sélectionnez un module",
+      "empty": "Aucune page disponible"
+    },
+    "actionsColumn": {
+      "title": "Actions",
+      "minimum": "Minimum",
+      "all": "Toutes",
+      "selectPageFirst": "Sélectionnez une page",
+      "empty": "Aucune action"
+    },
+    "required": "Obligatoire",
+    "actions": {
+      "read": "Consulter",
+      "import": "Importer",
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "archive": "Archiver",
+      "send": "Envoyer",
+      "assign": "Assigner",
+      "manage": "Gérer",
+      "resend": "Renvoyer",
+      "stats": "Statistiques",
+      "updateStatus": "Changer le statut"
+    }
+  }
+}

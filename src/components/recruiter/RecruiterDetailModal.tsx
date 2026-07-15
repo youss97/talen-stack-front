@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
 import { getFeedbackCardColor } from "@/utils/feedbackColors";
@@ -32,15 +33,6 @@ import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatus
 import { useCreateInterviewMutation, useGetApplicationInterviewsQuery, useUpdateInterviewNotesMutation, useCancelInterviewMutation } from "@/lib/services/interviewApi";
 import { formatDateTime } from "@/utils/dateFormat";
 
-const AVAILABILITY_LABELS: Record<string, string> = {
-  immediate: "Immédiate",
-  less_than_one_month: "Moins d'un mois",
-  one_month: "1 mois",
-  two_months: "2 mois",
-  three_months: "3 mois",
-  other: "Autre",
-};
-
 interface RecruiterDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -60,6 +52,8 @@ export default function RecruiterDetailModal({
   canAddFeedback = true,
   asPage = false,
 }: RecruiterDetailModalProps) {
+  const t = useTranslations("applications.detail");
+  const tc = useTranslations("common");
   // Utiliser la query pour récupérer les données en temps réel
   const { data: recruiter, isLoading: isLoadingRecruiter } = useGetRecruiterByIdQuery(
     recruiterId || '', 
@@ -149,9 +143,9 @@ export default function RecruiterDetailModal({
         feedback_description: feedbackDescription,
         ...(terminal ? { status: step } : {}),
       }).unwrap();
-      success("Étape mise à jour", `La candidature est passée à « ${step} »`);
+      success(t("toast.stepUpdatedTitle"), t("toast.stepUpdatedMessage", { step }));
     } catch {
-      showError("Erreur", "Impossible de changer l'étape");
+      showError(t("toast.stepUpdateErrorTitle"), t("toast.stepUpdateErrorMessage"));
     }
   };
 
@@ -159,10 +153,10 @@ export default function RecruiterDetailModal({
   const handleAddStepFeedback = async (step: string, description: string) => {
     if (!recruiter) return;
     try {
-      await createFeedback({ id: recruiter.id, title: `Feedback — ${step}`, description, step }).unwrap();
-      success("Feedback ajouté", `Feedback enregistré pour l'étape « ${step} »`);
+      await createFeedback({ id: recruiter.id, title: t("feedbackTitleForStep", { step }), description, step }).unwrap();
+      success(t("toast.feedbackAddedTitle"), t("toast.feedbackAddedForStepMessage", { step }));
     } catch {
-      showError("Erreur", "Impossible d'ajouter le feedback");
+      showError(t("toast.stepUpdateErrorTitle"), t("toast.feedbackAddErrorMessage"));
     }
   };
   const [sendEmail, { isLoading: isSendingEmail }] = useSendApplicationEmailMutation();
@@ -199,15 +193,15 @@ export default function RecruiterDetailModal({
       console.log('✅ Statut changé avec succès:', result);
       
       success(
-        "Statut modifié", 
-        `Le statut a été changé de "${getStatusLabel(recruiter.status)}" vers "${getStatusLabel(newStatus)}"`
+        t("toast.statusChangedTitle"),
+        t("toast.statusChangedMessage", { oldStatus: getStatusLabel(recruiter.status), newStatus: getStatusLabel(newStatus) })
       );
-      
+
       setIsStatusModalOpen(false);
-      
+
       // Le cache RTK Query sera automatiquement mis à jour grâce aux tags invalidés
       // Pas besoin de callback onStatusUpdate car les données se mettent à jour automatiquement
-      
+
     } catch (error: any) {
       console.error("❌ Erreur lors du changement de statut:", error);
       console.error("Détails de l'erreur:", {
@@ -215,9 +209,9 @@ export default function RecruiterDetailModal({
         data: error?.data,
         message: error?.data?.message || error?.message
       });
-      
-      const errorMessage = error?.data?.message || error?.message || 'Erreur lors du changement de statut';
-      showError("Erreur", errorMessage);
+
+      const errorMessage = error?.data?.message || error?.message || t("toast.statusChangeErrorMessage");
+      showError(t("toast.stepUpdateErrorTitle"), errorMessage);
     }
   };
 
@@ -248,9 +242,9 @@ export default function RecruiterDetailModal({
       
       setIsAddFeedbackModalOpen(false);
       setIsFeedbackModalOpen(false);
-      
-      success("Feedback ajouté", "Le feedback a été ajouté avec succès");
-      
+
+      success(t("toast.feedbackAddedTitle"), t("toast.feedbackAddedMessage"));
+
       // RTK Query invalide automatiquement les tags, pas besoin de refetch manuel
     } catch (err: any) {
       console.error("❌ Error creating feedback:", err);
@@ -259,14 +253,14 @@ export default function RecruiterDetailModal({
         data: err?.data,
         message: err?.data?.message || err?.message
       });
-      showError("Erreur", err?.data?.message || err?.message || 'Erreur lors de l\'ajout du feedback');
+      showError(t("toast.stepUpdateErrorTitle"), err?.data?.message || err?.message || t("toast.feedbackAddErrorFallback"));
       throw err;
     }
   };
 
   const handleSendEmail = async (recipients: ('candidate' | 'client')[], subject: string, message: string) => {
     if (!recruiter) return;
-    
+
     try {
       const result = await sendEmail({
         id: recruiter.id,
@@ -274,39 +268,39 @@ export default function RecruiterDetailModal({
         subject,
         message,
       }).unwrap();
-      
+
       console.log('✅ Email envoyé:', result);
-      success("Email envoyé", result.message);
+      success(t("toast.emailSentTitle"), result.message);
       setIsSendEmailModalOpen(false);
     } catch (err: any) {
       console.error("❌ Error sending email:", err);
-      const errorMessage = err?.data?.message || err?.message || 'Erreur lors de l\'envoi de l\'email';
-      showError("Erreur", errorMessage);
+      const errorMessage = err?.data?.message || err?.message || t("toast.emailSendErrorFallback");
+      showError(t("toast.stepUpdateErrorTitle"), errorMessage);
       throw err;
     }
   };
 
   const handleScheduleInterview = async (data: CreateInterviewRequest) => {
     if (!recruiter) return;
-    
+
     try {
       const result = await createInterview({
         applicationId: recruiter.id,
         data,
       }).unwrap();
-      
+
       console.log('✅ Entretien créé:', result);
       success(
-        "Entretien créé",
-        data.send_email_automatically 
-          ? 'Un email a été envoyé au candidat' 
-          : 'L\'entretien a été créé avec succès'
+        t("toast.interviewCreatedTitle"),
+        data.send_email_automatically
+          ? t("toast.interviewCreatedEmailMessage")
+          : t("toast.interviewCreatedMessage")
       );
       setIsScheduleInterviewModalOpen(false);
     } catch (err: any) {
       console.error("❌ Error creating interview:", err);
-      const errorMessage = err?.data?.message || err?.message || 'Erreur lors de la création de l\'entretien';
-      showError("Erreur", errorMessage);
+      const errorMessage = err?.data?.message || err?.message || t("toast.interviewCreateErrorFallback");
+      showError(t("toast.stepUpdateErrorTitle"), errorMessage);
       throw err;
     }
   };
@@ -326,13 +320,13 @@ export default function RecruiterDetailModal({
       }).unwrap();
       
       console.log('✅ Entretien modifié:', result);
-      success("Entretien modifié", "L'entretien a été modifié et un email a été envoyé");
+      success(t("toast.interviewUpdatedTitle"), t("toast.interviewUpdatedMessage"));
       setIsEditInterviewNotesModalOpen(false);
       setSelectedInterview(null);
     } catch (err: any) {
       console.error("❌ Error updating interview:", err);
-      const errorMessage = err?.data?.message || err?.message || 'Erreur lors de la modification de l\'entretien';
-      showError("Erreur", errorMessage);
+      const errorMessage = err?.data?.message || err?.message || t("toast.interviewUpdateErrorFallback");
+      showError(t("toast.stepUpdateErrorTitle"), errorMessage);
       throw err;
     }
   };
@@ -352,13 +346,13 @@ export default function RecruiterDetailModal({
       }).unwrap();
       
       console.log('✅ Entretien annulé:', result);
-      success("Entretien annulé", result.message);
+      success(t("toast.interviewCancelledTitle"), result.message);
       setIsCancelInterviewModalOpen(false);
       setSelectedInterview(null);
     } catch (err: any) {
       console.error("❌ Error cancelling interview:", err);
-      const errorMessage = err?.data?.message || err?.message || 'Erreur lors de l\'annulation de l\'entretien';
-      showError("Erreur", errorMessage);
+      const errorMessage = err?.data?.message || err?.message || t("toast.interviewCancelErrorFallback");
+      showError(t("toast.stepUpdateErrorTitle"), errorMessage);
       throw err;
     }
   };
@@ -377,11 +371,11 @@ export default function RecruiterDetailModal({
     >
       <div className={asPage ? "mb-6" : "flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-[color:var(--border)]"}>
         <h2 className={asPage ? "text-2xl font-bold text-gray-900 dark:text-white" : "text-xl font-semibold text-gray-800 dark:text-white"}>
-          Détails de la candidature
+          {t("title")}
         </h2>
         {asPage && (
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Informations complètes, workflow et historique de la candidature
+            {t("subtitle")}
           </p>
         )}
       </div>
@@ -398,22 +392,22 @@ export default function RecruiterDetailModal({
             {recruiter.cv && (
               <div>
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Candidat
+                  {t("candidateSection")}
                 </h3>
                 <div className="gw-panel p-4 space-y-3">
                   <div className="grid grid-cols-2 gap-4">
-                    <DetailItem 
-                      label="Nom" 
-                      value={`${recruiter.cv.candidate_first_name || ""} ${recruiter.cv.candidate_last_name || ""}`.trim() || "-"} 
+                    <DetailItem
+                      label={t("name")}
+                      value={`${recruiter.cv.candidate_first_name || ""} ${recruiter.cv.candidate_last_name || ""}`.trim() || "-"}
                     />
-                    <DetailItem label="Email" value={recruiter.cv.candidate_email || "-"} />
+                    <DetailItem label={t("email")} value={recruiter.cv.candidate_email || "-"} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <DetailItem label="Téléphone" value={recruiter.cv.candidate_phone || "-"} />
+                    <DetailItem label={t("phone")} value={recruiter.cv.candidate_phone || "-"} />
                   </div>
                   {recruiter.cv.skills && recruiter.cv.skills.length > 0 && (
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Compétences</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t("skills")}</p>
                       <div className="flex flex-wrap gap-2">
                         {recruiter.cv.skills.map((skill, index) => (
                           <span
@@ -433,20 +427,20 @@ export default function RecruiterDetailModal({
                           variant="outline"
                           size="sm"
                           onClick={() => openCvInNewTab(recruiter.cv!.id!).then((ok) => {
-                            if (!ok) showError('Erreur', 'Impossible d\'ouvrir le CV');
+                            if (!ok) showError(t("toast.stepUpdateErrorTitle"), t("openCvError"));
                           })}
                         >
-                          👁️ Visualiser
+                          {t("viewCv")}
                         </Button>
                       )}
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => recruiter.cv?.id && downloadCvFile(recruiter.cv.id, cvAny?.file_name || 'CV.pdf').then((ok) => {
-                          if (!ok) showError('Erreur', 'Impossible de télécharger le CV');
+                          if (!ok) showError(t("toast.stepUpdateErrorTitle"), t("downloadCvError"));
                         })}
                       >
-                        📄 Télécharger le CV
+                        {t("downloadCv")}
                       </Button>
                       {recruiter.cv.id && (
                         <Button
@@ -456,17 +450,17 @@ export default function RecruiterDetailModal({
                             try {
                               const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
                               const token = localStorage.getItem('token');
-                              
+
                               const response = await fetch(`${apiUrl}/cvs/${recruiter.cv?.id}/anonymized`, {
                                 headers: {
                                   'Authorization': `Bearer ${token}`
                                 }
                               });
-                              
+
                               if (!response.ok) {
-                                throw new Error('Erreur lors du téléchargement');
+                                throw new Error(t("downloadError"));
                               }
-                              
+
                               const blob = await response.blob();
                               const url = window.URL.createObjectURL(blob);
                               const a = document.createElement('a');
@@ -478,11 +472,11 @@ export default function RecruiterDetailModal({
                               document.body.removeChild(a);
                             } catch (err) {
                               console.error('Erreur:', err);
-                              showError('Erreur', 'Erreur lors du téléchargement du CV anonymisé');
+                              showError(t("toast.stepUpdateErrorTitle"), t("downloadAnonymizedCvError"));
                             }
                           }}
                         >
-                          🔒 CV Anonymisé
+                          {t("anonymizedCv")}
                         </Button>
                       )}
                     </div>
@@ -495,17 +489,17 @@ export default function RecruiterDetailModal({
             {recruiter.request && (
               <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Demande de recrutement
+                  {t("requestSection")}
                 </h3>
                 <div className="gw-panel p-4 space-y-3">
                   <div className="grid grid-cols-2 gap-4">
-                    <DetailItem label="Titre" value={recruiter.request.title || "-"} />
-                    <DetailItem label="Référence" value={recruiter.request.reference || "-"} />
+                    <DetailItem label={t("requestTitle")} value={recruiter.request.title || "-"} />
+                    <DetailItem label={t("reference")} value={recruiter.request.reference || "-"} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <DetailItem label="Statut" value={recruiter.request.status || "-"} />
+                    <DetailItem label={t("status")} value={recruiter.request.status || "-"} />
                     {recruiter.request.client && (
-                      <DetailItem label="Client" value={recruiter.request.client.name || "-"} />
+                      <DetailItem label={t("client")} value={recruiter.request.client.name || "-"} />
                     )}
                   </div>
                 </div>
@@ -516,17 +510,17 @@ export default function RecruiterDetailModal({
             <div className="border-t border-[color:var(--border)] pt-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Entretiens ({interviews.length})
+                  {t("interviewsSection", { count: interviews.length })}
                 </h3>
                 <Button
                   onClick={() => setIsScheduleInterviewModalOpen(true)}
                   variant="outline"
                   className="text-xs px-3 py-1"
                 >
-                  📅 Planifier
+                  {t("scheduleButton")}
                 </Button>
               </div>
-              
+
               {isLoadingInterviews ? (
                 <div className="flex items-center justify-center py-4">
                   <div className="w-6 h-6 border-2 border-gray-200 border-t-brand-500 rounded-full animate-spin" />
@@ -550,85 +544,85 @@ export default function RecruiterDetailModal({
                               })}
                             </span>
                             <span className="text-sm text-gray-600 dark:text-gray-400">
-                              à {new Date(interview.scheduled_date).toLocaleTimeString('fr-FR', {
+                              {t("interviewAt", { time: new Date(interview.scheduled_date).toLocaleTimeString('fr-FR', {
                                 hour: '2-digit',
                                 minute: '2-digit'
-                              })}
+                              }) })}
                             </span>
-                            <Badge 
-                              color={interview.status === 'scheduled' ? 'info' : 
-                                     interview.status === 'completed' ? 'success' : 
+                            <Badge
+                              color={interview.status === 'scheduled' ? 'info' :
+                                     interview.status === 'completed' ? 'success' :
                                      interview.status === 'cancelled' ? 'error' : 'warning'}
                             >
-                              {interview.status === 'scheduled' ? 'Planifié' :
-                               interview.status === 'completed' ? 'Terminé' :
-                               interview.status === 'cancelled' ? 'Annulé' :
-                               interview.status === 'rescheduled' ? 'Reporté' : interview.status}
+                              {interview.status === 'scheduled' ? t("interviewStatus.scheduled") :
+                               interview.status === 'completed' ? t("interviewStatus.completed") :
+                               interview.status === 'cancelled' ? t("interviewStatus.cancelled") :
+                               interview.status === 'rescheduled' ? t("interviewStatus.rescheduled") : interview.status}
                             </Badge>
                           </div>
-                          
+
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                              <span className="text-gray-500 dark:text-gray-400">Type:</span>
-                              <span className="ml-2 text-gray-900 dark:text-white">
-                                {interview.type === 'online' ? '🌐 En ligne' : '📍 Présentiel'}
+                              <span className="text-gray-500 dark:text-gray-400">{t("type")}</span>
+                              <span className="ms-2 text-gray-900 dark:text-white">
+                                {interview.type === 'online' ? t("interviewType.online") : t("interviewType.onsite")}
                               </span>
                             </div>
                             <div>
-                              <span className="text-gray-500 dark:text-gray-400">Durée:</span>
-                              <span className="ml-2 text-gray-900 dark:text-white">
-                                {interview.duration_minutes} min
+                              <span className="text-gray-500 dark:text-gray-400">{t("duration")}</span>
+                              <span className="ms-2 text-gray-900 dark:text-white">
+                                {t("durationMinutes", { minutes: interview.duration_minutes })}
                               </span>
                             </div>
                           </div>
-                          
+
                           {interview.location && (
                             <div className="mt-2 text-sm">
-                              <span className="text-gray-500 dark:text-gray-400">Lieu:</span>
-                              <span className="ml-2 text-gray-900 dark:text-white">
+                              <span className="text-gray-500 dark:text-gray-400">{t("location")}</span>
+                              <span className="ms-2 text-gray-900 dark:text-white">
                                 {interview.location}
                               </span>
                             </div>
                           )}
-                          
+
                           {interview.meeting_link && (
                             <div className="mt-2 text-sm">
-                              <span className="text-gray-500 dark:text-gray-400">Lien:</span>
-                              <a 
+                              <span className="text-gray-500 dark:text-gray-400">{t("link")}</span>
+                              <a
                                 href={interview.meeting_link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="ml-2 text-brand-600 dark:text-brand-400 hover:underline"
+                                className="ms-2 text-brand-600 dark:text-brand-400 hover:underline"
                               >
-                                Rejoindre la réunion
+                                {t("joinMeeting")}
                               </a>
                             </div>
                           )}
-                          
+
                           {interview.notes && (
                             <div className="mt-2 text-sm">
-                              <span className="text-gray-500 dark:text-gray-400">Notes:</span>
+                              <span className="text-gray-500 dark:text-gray-400">{t("notes")}</span>
                               <p className="mt-1 text-gray-900 dark:text-white">
                                 {interview.notes}
                               </p>
                             </div>
                           )}
                         </div>
-                        
-                        <div className="flex gap-2 ml-4">
+
+                        <div className="flex gap-2 ms-4">
                           <Button
                             onClick={() => handleEditInterview(interview)}
                             variant="outline"
                             className="text-xs px-2 py-1"
                           >
-                            ✏️ Notes
+                            {t("editNotes")}
                           </Button>
                           <Button
                             onClick={() => handleCancelInterview(interview)}
                             variant="outline"
                             className="text-xs px-2 py-1 text-red-600 hover:text-red-700 hover:border-red-300"
                           >
-                            ❌ Annuler
+                            {t("cancelInterview")}
                           </Button>
                         </div>
                       </div>
@@ -637,13 +631,13 @@ export default function RecruiterDetailModal({
                 </div>
               ) : (
                 <div className="text-center py-6 text-gray-500 dark:text-gray-400">
-                  <p className="text-sm">Aucun entretien planifié</p>
+                  <p className="text-sm">{t("noInterviews")}</p>
                   <Button
                     onClick={() => setIsScheduleInterviewModalOpen(true)}
                     variant="outline"
                     className="mt-2 text-xs"
                   >
-                    📅 Planifier le premier entretien
+                    {t("scheduleFirstInterview")}
                   </Button>
                 </div>
               )}
@@ -653,21 +647,21 @@ export default function RecruiterDetailModal({
             {recruiter.recruiter && (
               <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Recruteur
+                  {t("recruiterSection")}
                 </h3>
                 <div className="gw-panel p-4 space-y-3">
                   <div className="grid grid-cols-2 gap-4">
-                    <DetailItem 
-                      label="Nom" 
-                      value={`${recruiter.recruiter.first_name || ""} ${recruiter.recruiter.last_name || ""}`.trim() || "-"} 
+                    <DetailItem
+                      label={t("name")}
+                      value={`${recruiter.recruiter.first_name || ""} ${recruiter.recruiter.last_name || ""}`.trim() || "-"}
                     />
-                    <DetailItem label="Email" value={recruiter.recruiter.email || "-"} />
+                    <DetailItem label={t("email")} value={recruiter.recruiter.email || "-"} />
                   </div>
                   {recruiter.recruiter.role && (
                     <div className="grid grid-cols-2 gap-4">
-                      <DetailItem label="Rôle" value={recruiter.recruiter.role.name || "-"} />
+                      <DetailItem label={t("role")} value={recruiter.recruiter.role.name || "-"} />
                       {recruiter.recruiter.company && (
-                        <DetailItem label="Société" value={recruiter.recruiter.company.name || "-"} />
+                        <DetailItem label={t("company")} value={recruiter.recruiter.company.name || "-"} />
                       )}
                     </div>
                   )}
@@ -681,7 +675,7 @@ export default function RecruiterDetailModal({
             {/* Workflow / étapes (3.2/3.3) — toujours affiché (fallback si la demande n'a pas d'étapes) */}
             <div className="border-t border-[color:var(--border)] pt-4 lg:border-t-0 lg:pt-0">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Workflow du recrutement
+                {t("workflowSection")}
               </h3>
               <WorkflowStepper
                 steps={recruiter.request?.workflow_steps || []}
@@ -697,24 +691,24 @@ export default function RecruiterDetailModal({
             {/* Informations candidature */}
             <div className="border-t border-[color:var(--border)] pt-4">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Informations candidature
+                {t("applicationInfoSection")}
               </h3>
               <div className="gw-panel p-4 grid grid-cols-2 gap-4">
                 {recruiter.workflow_status && (
                   <DetailItem
-                    label="État"
+                    label={t("state")}
                     value={
-                      recruiter.workflow_status === 'active' ? 'Publiée'
-                        : recruiter.workflow_status === 'archived' ? 'Archivée'
-                        : 'Brouillon'
+                      recruiter.workflow_status === 'active' ? t("statePublished")
+                        : recruiter.workflow_status === 'archived' ? t("stateArchived")
+                        : t("stateDraft")
                     }
                   />
                 )}
                 {recruiter.activated_at && (
-                  <DetailItem label="Publiée le" value={formatDateTime(recruiter.activated_at)} />
+                  <DetailItem label={t("publishedAt")} value={formatDateTime(recruiter.activated_at)} />
                 )}
                 {recruiter.is_anonymized != null && (
-                  <DetailItem label="Anonymisée" value={recruiter.is_anonymized ? "Oui" : "Non"} />
+                  <DetailItem label={t("anonymized")} value={recruiter.is_anonymized ? tc("labels.yes") : tc("labels.no")} />
                 )}
               </div>
             </div>
@@ -725,32 +719,32 @@ export default function RecruiterDetailModal({
               || recruiter.package_current || recruiter.package_desired) && (
               <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Rémunération
+                  {t("remunerationSection")}
                 </h3>
                 <div className="gw-panel p-4 grid grid-cols-2 gap-4">
                   {recruiter.salary_confidential ? (
-                    <DetailItem label="Salaire" value="🔒 Confidentiel" />
+                    <DetailItem label={t("salary")} value={t("confidential")} />
                   ) : (
                     <>
                       {recruiter.current_salary != null && (
-                        <DetailItem label="Salaire actuel" value={`${recruiter.current_salary.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}`} />
+                        <DetailItem label={t("currentSalary")} value={`${recruiter.current_salary.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}`} />
                       )}
                       {recruiter.daily_rate != null && (
-                        <DetailItem label="Taux journalier" value={`${recruiter.daily_rate.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}/jour`} />
+                        <DetailItem label={t("dailyRate")} value={`${recruiter.daily_rate.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}${t("perDay")}`} />
                       )}
                       {recruiter.package_rate != null && (
-                        <DetailItem label="Package annuel" value={`${recruiter.package_rate.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}`} />
+                        <DetailItem label={t("annualPackage")} value={`${recruiter.package_rate.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}`} />
                       )}
-                      {recruiter.package_current && <DetailItem label="Package actuel" value={recruiter.package_current} />}
+                      {recruiter.package_current && <DetailItem label={t("currentPackage")} value={recruiter.package_current} />}
                     </>
                   )}
                   {recruiter.salary_expectation != null && wantsSalaryExpectation && (
-                    <DetailItem label="Salaire souhaité" value={`${recruiter.salary_expectation.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}`} />
+                    <DetailItem label={t("desiredSalary")} value={`${recruiter.salary_expectation.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}`} />
                   )}
                   {recruiter.daily_rate_expectation != null && wantsTjmExpectation && (
-                    <DetailItem label="TJM souhaité" value={`${recruiter.daily_rate_expectation.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}/jour`} />
+                    <DetailItem label={t("desiredDailyRate")} value={`${recruiter.daily_rate_expectation.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}${t("perDay")}`} />
                   )}
-                  {recruiter.package_desired && <DetailItem label="Package souhaité" value={recruiter.package_desired} />}
+                  {recruiter.package_desired && <DetailItem label={t("desiredPackage")} value={recruiter.package_desired} />}
                 </div>
               </div>
             )}
@@ -758,37 +752,37 @@ export default function RecruiterDetailModal({
             {/* Contrat & disponibilité */}
             <div className="border-t border-[color:var(--border)] pt-4">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Contrat & Disponibilité
+                {t("contractSection")}
               </h3>
               <div className="gw-panel p-4 grid grid-cols-2 gap-4">
                 {recruiter.offer_contract_types && recruiter.offer_contract_types.length > 0 && (
-                  <DetailItem label="Type de contrat souhaité" value={recruiter.offer_contract_types.join(", ")} />
+                  <DetailItem label={t("desiredContractType")} value={recruiter.offer_contract_types.join(", ")} />
                 )}
-                {recruiter.current_contract_type && <DetailItem label="Contrat actuel" value={recruiter.current_contract_type} />}
+                {recruiter.current_contract_type && <DetailItem label={t("currentContract")} value={recruiter.current_contract_type} />}
                 {recruiter.currently_employed != null && (
-                  <DetailItem label="En poste" value={recruiter.currently_employed ? "Oui" : "Non"} />
+                  <DetailItem label={t("currentlyEmployed")} value={recruiter.currently_employed ? tc("labels.yes") : tc("labels.no")} />
                 )}
                 {recruiter.availability_type && (
                   <DetailItem
-                    label="Disponibilité"
-                    value={AVAILABILITY_LABELS[recruiter.availability_type] ?? recruiter.availability_type}
+                    label={t("availability")}
+                    value={t.has(`availabilityLabels.${recruiter.availability_type}`) ? t(`availabilityLabels.${recruiter.availability_type}`) : recruiter.availability_type}
                   />
                 )}
                 {recruiter.availability_days != null && (
-                  <DetailItem label="Délai (jours)" value={String(recruiter.availability_days)} />
+                  <DetailItem label={t("availabilityDelay")} value={String(recruiter.availability_days)} />
                 )}
                 {recruiter.availability_custom_value != null && (
                   <DetailItem
-                    label="Délai personnalisé"
-                    value={`${recruiter.availability_custom_value} ${recruiter.availability_custom_unit === 'months' ? 'mois' : 'jours'}`}
+                    label={t("customDelay")}
+                    value={`${recruiter.availability_custom_value} ${recruiter.availability_custom_unit === 'months' ? t("months") : t("days")}`}
                   />
                 )}
-                {recruiter.availability_reason && <DetailItem label="Raison" value={recruiter.availability_reason} />}
+                {recruiter.availability_reason && <DetailItem label={t("reason")} value={recruiter.availability_reason} />}
                 {recruiter.availability_negotiable != null && (
-                  <DetailItem label="Négociable" value={recruiter.availability_negotiable ? "Oui" : "Non"} />
+                  <DetailItem label={t("negotiable")} value={recruiter.availability_negotiable ? tc("labels.yes") : tc("labels.no")} />
                 )}
                 {recruiter.adjusted_experience != null && (
-                  <DetailItem label="Expérience ajustée" value={`${recruiter.adjusted_experience} ans`} />
+                  <DetailItem label={t("adjustedExperience")} value={t("yearsValue", { years: recruiter.adjusted_experience })} />
                 )}
               </div>
             </div>
@@ -797,7 +791,7 @@ export default function RecruiterDetailModal({
             {recruiter.qualification_report && (
               <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Compte-rendu de qualification
+                  {t("qualificationSection")}
                 </h3>
                 <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
                   {recruiter.qualification_report}
@@ -809,7 +803,7 @@ export default function RecruiterDetailModal({
             {recruiter.languages && recruiter.languages.filter(l => l && l.language).length > 0 && (
               <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Langues
+                  {t("languagesSection")}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {recruiter.languages
@@ -819,7 +813,7 @@ export default function RecruiterDetailModal({
                         key={i}
                         className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
                       >
-                        {l.language} — {l.level}/5
+                        {t("languageLevel", { language: l.language, level: l.level })}
                       </span>
                     ))}
                 </div>
@@ -830,7 +824,7 @@ export default function RecruiterDetailModal({
             {recruiter.recruiter_notes && (
               <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Notes du recruteur
+                  {t("recruiterNotesSection")}
                 </h3>
                 <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
                   {recruiter.recruiter_notes}
@@ -842,7 +836,7 @@ export default function RecruiterDetailModal({
             <div className="border-t border-[color:var(--border)] pt-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Feedbacks
+                  {t("feedbacksSection")}
                 </h3>
                 <div className="flex items-center gap-2">
                   {recruiter.feedbacks && recruiter.feedbacks.length > 0 && (
@@ -851,7 +845,7 @@ export default function RecruiterDetailModal({
                       size="sm"
                       onClick={handleOpenFeedbacks}
                     >
-                      Voir tous ({recruiter.feedbacks.length})
+                      {t("viewAllFeedbacks", { count: recruiter.feedbacks.length })}
                     </Button>
                   )}
                   {canAddFeedback && (
@@ -860,18 +854,18 @@ export default function RecruiterDetailModal({
                       size="sm"
                       onClick={() => setIsAddFeedbackModalOpen(true)}
                     >
-                      Ajouter un feedback
+                      {t("addFeedback")}
                     </Button>
                   )}
                 </div>
               </div>
-              
+
               {recruiter.feedbacks && recruiter.feedbacks.length > 0 ? (
                 <div className="space-y-3">
                   {recruiter.feedbacks.slice(0, 2).map((feedback) => (
                     <div 
                       key={feedback.id}
-                      className={`rounded-lg p-4 border-l-4 ${getFeedbackCardColor(feedback)}`}
+                      className={`rounded-lg p-4 border-s-4 ${getFeedbackCardColor(feedback)}`}
                     >
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
@@ -903,13 +897,15 @@ export default function RecruiterDetailModal({
                   ))}
                   {recruiter.feedbacks.length > 2 && (
                     <p className="text-xs text-gray-500 dark:text-gray-400 text-center pt-2 border-t border-gray-200 dark:border-gray-700">
-                      +{recruiter.feedbacks.length - 2} autre{recruiter.feedbacks.length - 2 > 1 ? "s" : ""} feedback{recruiter.feedbacks.length - 2 > 1 ? "s" : ""}
+                      {recruiter.feedbacks.length - 2 > 1
+                        ? t("moreFeedbacksPlural", { count: recruiter.feedbacks.length - 2 })
+                        : t("moreFeedbacks", { count: recruiter.feedbacks.length - 2 })}
                     </p>
                   )}
                 </div>
               ) : (
                 <p className="text-sm text-gray-500 dark:text-gray-400 italic">
-                  Aucun feedback pour le moment
+                  {t("noFeedbacks")}
                 </p>
               )}
             </div>
@@ -917,7 +913,7 @@ export default function RecruiterDetailModal({
             {/* Statut de l'application */}
             <div className="border-t border-[color:var(--border)] pt-4">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Statut de l'application
+                {t("statusSection")}
               </h3>
               <div className="flex items-center gap-3 flex-wrap">
                 <Badge
@@ -931,21 +927,21 @@ export default function RecruiterDetailModal({
                   size="sm"
                   onClick={() => setIsStatusModalOpen(true)}
                 >
-                  Changer le statut
+                  {t("changeStatus")}
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleOpenHistory}
                 >
-                  Voir l'historique
+                  {t("viewHistory")}
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setIsSendEmailModalOpen(true)}
                 >
-                  📧 Envoyer un email
+                  {t("sendEmailButton")}
                 </Button>
               </div>
             </div>
@@ -954,7 +950,7 @@ export default function RecruiterDetailModal({
             {recruiter.proposed_at && (
               <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Date de proposition
+                  {t("proposedDateSection")}
                 </h3>
                 <p className="text-sm text-gray-800 dark:text-gray-200">
                   {new Date(recruiter.proposed_at).toLocaleDateString("fr-FR", {
@@ -974,7 +970,7 @@ export default function RecruiterDetailModal({
 
       <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-[color:var(--border)]">
         <Button variant="outline" onClick={onClose}>
-          Fermer
+          {t("close")}
         </Button>
       </div>
     </Modal>

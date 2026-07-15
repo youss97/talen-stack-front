@@ -1,9 +1,11 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { useGlobalSearchQuery } from "@/lib/services/statsApi";
 
 export default function GlobalSearch() {
+  const t = useTranslations("layout.header");
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -59,7 +61,7 @@ export default function GlobalSearch() {
   return (
     <div ref={containerRef} className="relative hidden lg:block">
       <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+        <span className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -74,11 +76,11 @@ export default function GlobalSearch() {
             setOpen(true);
           }}
           onFocus={() => setOpen(true)}
-          placeholder="Rechercher"
-          className="h-9 w-64 xl:w-80 rounded-lg border border-gray-200 bg-transparent py-2 pl-9 pr-4 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10 dark:border-gray-800 dark:text-white dark:placeholder:text-white/30"
+          placeholder={t("searchPlaceholder")}
+          className="h-9 w-64 xl:w-80 rounded-lg border border-gray-200 bg-transparent py-2 ps-9 pe-4 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10 dark:border-gray-800 dark:text-white dark:placeholder:text-white/30"
         />
         {isFetching && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2">
+          <span className="absolute end-3 top-1/2 -translate-y-1/2">
             <svg className="animate-spin h-3.5 w-3.5 text-brand-500" viewBox="0 0 24 24" fill="none">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
@@ -88,10 +90,10 @@ export default function GlobalSearch() {
       </div>
 
       {open && query.trim().length >= 2 && (
-        <div className="absolute top-11 left-0 z-50 w-full min-w-[320px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-xl overflow-hidden">
+        <div className="absolute top-11 start-0 z-50 w-full min-w-[320px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-xl overflow-hidden">
           {results.length === 0 && !isFetching ? (
             <div className="px-4 py-6 text-center text-sm text-gray-400">
-              Aucun résultat pour &ldquo;{query}&rdquo;
+              {t("noResultsFor", { query })}
             </div>
           ) : (
             <ul>
@@ -111,7 +113,7 @@ export default function GlobalSearch() {
                         {r.sublabel}
                       </p>
                     </div>
-                    <span className="ml-auto flex-shrink-0 text-[10px] uppercase text-gray-400 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">
+                    <span className="ms-auto flex-shrink-0 text-[10px] uppercase text-gray-400 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">
                       {r.type}
                     </span>
                   </button>

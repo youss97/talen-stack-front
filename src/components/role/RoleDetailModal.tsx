@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import type { RoleWithFeatures } from "@/types/role";
@@ -23,6 +24,8 @@ export default function RoleDetailModal({
   role,
   isLoading = false,
 }: RoleDetailModalProps) {
+  const t = useTranslations("roles");
+  const tc = useTranslations("common");
   const user = useSelector((state: RootState) => state.auth.user);
   const isSuperAdmin = user?.role?.code === "super_admin";
 
@@ -32,7 +35,7 @@ export default function RoleDetailModal({
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-5xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          {role?.name || "Détails du rôle"}
+          {role?.name || t("detail.defaultTitle")}
         </h2>
         {role?.description && (
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -41,7 +44,9 @@ export default function RoleDetailModal({
         )}
         {role?.createdAt && (
           <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
-            Créé le {formatDate(role.createdAt, { day: "2-digit", month: "long", year: "numeric" })}
+            {t("detail.createdOn", {
+              date: formatDate(role.createdAt, { day: "2-digit", month: "long", year: "numeric" }),
+            })}
           </p>
         )}
       </div>
@@ -55,16 +60,16 @@ export default function RoleDetailModal({
           <div className="space-y-4">
             <div>
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Portée des données
+                {t("detail.dataScopeTitle")}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {[
-                  { key: "scope_applications_company", label: "Candidatures" },
-                  { key: "scope_requests_company", label: "Demandes de recrutement" },
-                  { key: "scope_cvs_company", label: "Vivier de talents (CVs)" },
-                  { key: "scope_clients_company", label: "Clients" },
-                  { key: "scope_emails_company", label: "Emails" },
-                  { key: "scope_integrations_company", label: "Intégrations" },
+                  { key: "scope_applications_company", label: t("resources.applications") },
+                  { key: "scope_requests_company", label: t("resources.requests") },
+                  { key: "scope_cvs_company", label: t("resources.cvs") },
+                  { key: "scope_clients_company", label: t("resources.clients") },
+                  { key: "scope_emails_company", label: t("resources.emails") },
+                  { key: "scope_integrations_company", label: t("resources.integrations") },
                 ].map((res) => {
                   const company = (role as unknown as Record<string, unknown>)[res.key] === true;
                   return (
@@ -75,9 +80,9 @@ export default function RoleDetailModal({
                           ? "bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-300"
                           : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
                       }`}
-                      title={company ? "Voit toute l'entreprise" : "Voit seulement ses propres éléments"}
+                      title={company ? t("detail.scopeTooltipCompany") : t("detail.scopeTooltipOwn")}
                     >
-                      {res.label}: {company ? "Entreprise" : "Les siennes"}
+                      {res.label}: {company ? t("form.dataScope.company") : t("form.dataScope.own")}
                     </span>
                   );
                 })}
@@ -86,11 +91,11 @@ export default function RoleDetailModal({
 
             <div>
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Permissions attribuées
+                {t("detail.permissionsTitle")}
               </h3>
 
               {!role.features || role.features.length === 0 ? (
-                <p className="text-sm text-gray-500">Aucune permission attribuée</p>
+                <p className="text-sm text-gray-500">{t("detail.noPermissions")}</p>
               ) : (
                 <div className="space-y-4">
                   {role.features.map((feature) => (
@@ -117,7 +122,7 @@ export default function RoleDetailModal({
                                   <p className="text-sm font-medium text-gray-700 dark:text-gray-300" title={page.description || undefined}>
                                     {page.name}
                                     {isSuperAdmin && page.path && (
-                                      <span className="text-xs text-gray-400 ml-2 font-normal">
+                                      <span className="text-xs text-gray-400 ms-2 font-normal">
                                         ({page.path})
                                       </span>
                                     )}
@@ -128,7 +133,7 @@ export default function RoleDetailModal({
                                     </p>
                                   )}
                                   {visibleActions.length > 0 && (
-                                    <div className="flex flex-wrap gap-1.5 ml-4 mt-1.5">
+                                    <div className="flex flex-wrap gap-1.5 ms-4 mt-1.5">
                                       {visibleActions.map((action) => (
                                         <span
                                           key={action.id}
@@ -156,7 +161,7 @@ export default function RoleDetailModal({
 
       <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
         <Button variant="outline" onClick={onClose}>
-          Fermer
+          {tc("actions.close")}
         </Button>
       </div>
     </Modal>

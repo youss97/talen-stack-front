@@ -1,0 +1,55 @@
+{
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "search": "Search",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "view": "View",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "download": "Download",
+    "export": "Export",
+    "filter": "Filter",
+    "reset": "Reset",
+    "create": "Create",
+    "update": "Update",
+    "submit": "Submit",
+    "loadMore": "Load more"
+  },
+  "status": {
+    "loading": "Loading...",
+    "noData": "No data",
+    "noResults": "No results",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "labels": {
+    "actions": "Actions",
+    "status": "Status",
+    "date": "Date",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "description": "Description",
+    "type": "Type",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "pagination": {
+    "page": "Page",
+    "of": "of",
+    "showing": "Showing {from} to {to} of {total}",
+    "rowsPerPage": "Rows per page"
+  },
+  "confirmDialog": {
+    "deleteTitle": "Confirm deletion",
+    "deleteMessage": "This action cannot be undone. Do you want to continue?"
+  }
+}

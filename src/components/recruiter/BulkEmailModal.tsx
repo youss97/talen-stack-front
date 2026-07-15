@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Modal } from '@/components/ui/modal';
 import Button from '@/components/ui/button/Button';
 import Input from '@/components/form/input/InputField';
@@ -22,6 +23,8 @@ export default function BulkEmailModal({
   selectedCandidates,
   isLoading = false,
 }: BulkEmailModalProps) {
+  const t = useTranslations('applications.bulkEmail');
+  const tc = useTranslations('common');
   const [formData, setFormData] = useState({
     subject: '',
     message: '',
@@ -34,17 +37,17 @@ export default function BulkEmailModal({
     setError(null);
 
     if (!formData.subject.trim()) {
-      setError('Le sujet est requis');
+      setError(t('subjectRequired'));
       return;
     }
 
     if (!formData.message.trim()) {
-      setError('Le message est requis');
+      setError(t('messageRequired'));
       return;
     }
 
     if (formData.recipients.length === 0) {
-      setError('Veuillez sélectionner au moins un destinataire');
+      setError(t('recipientRequired'));
       return;
     }
 
@@ -58,7 +61,7 @@ export default function BulkEmailModal({
         recipients: ['candidate'],
       });
     } catch (error: any) {
-      setError(error?.message || 'Erreur lors de l\'envoi des emails');
+      setError(error?.message || t('sendError'));
     }
   };
 
@@ -85,7 +88,7 @@ export default function BulkEmailModal({
         <div className="flex items-center gap-3 mb-6">
           <span className="text-2xl">📧</span>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Envoyer un email groupé
+            {t('title')}
           </h2>
         </div>
 
@@ -100,17 +103,17 @@ export default function BulkEmailModal({
 
         <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
           <p className="text-sm text-blue-700 dark:text-blue-300">
-            <strong>Candidatures sélectionnées :</strong> {candidateCount}
+            <strong>{t('selectedApplications')}</strong> {candidateCount}
           </p>
           <p className="text-sm text-blue-700 dark:text-blue-300">
-            <strong>Clients concernés :</strong> {clientCount}
+            <strong>{t('concernedClients')}</strong> {clientCount}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Destinataires */}
           <div>
-            <Label>Destinataires</Label>
+            <Label>{t('recipients')}</Label>
             <div className="mt-2 space-y-2">
               <label className="flex items-center">
                 <input
@@ -119,8 +122,8 @@ export default function BulkEmailModal({
                   onChange={(e) => handleRecipientChange('candidate', e.target.checked)}
                   className="w-4 h-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded"
                 />
-                <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                  Candidats ({candidateCount})
+                <span className="ms-2 text-sm text-gray-700 dark:text-gray-300">
+                  {t('candidates', { count: candidateCount })}
                 </span>
               </label>
               <label className="flex items-center">
@@ -130,8 +133,8 @@ export default function BulkEmailModal({
                   onChange={(e) => handleRecipientChange('client', e.target.checked)}
                   className="w-4 h-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded"
                 />
-                <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                  Clients ({clientCount})
+                <span className="ms-2 text-sm text-gray-700 dark:text-gray-300">
+                  {t('clients', { count: clientCount })}
                 </span>
               </label>
             </div>
@@ -140,7 +143,7 @@ export default function BulkEmailModal({
           {/* Sujet */}
           <div>
             <Label htmlFor="subject">
-              Sujet <span className="text-red-500">*</span>
+              {t('subject')} <span className="text-red-500">*</span>
             </Label>
             <Input
               id="subject"
@@ -148,14 +151,14 @@ export default function BulkEmailModal({
               required
               value={formData.subject}
               onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-              placeholder="Ex: Mise à jour sur votre candidature"
+              placeholder={t('subjectPlaceholder')}
             />
           </div>
 
           {/* Message */}
           <div>
             <Label htmlFor="message">
-              Message <span className="text-red-500">*</span>
+              {t('message')} <span className="text-red-500">*</span>
             </Label>
             <textarea
               id="message"
@@ -164,16 +167,16 @@ export default function BulkEmailModal({
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               rows={6}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-              placeholder="Votre message..."
+              placeholder={t('messagePlaceholder')}
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <Button type="button" onClick={onClose} variant="outline">
-              Annuler
+              {tc('actions.cancel')}
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Envoi...' : 'Envoyer'}
+              {isLoading ? t('sending') : tc('actions.submit')}
             </Button>
           </div>
         </form>

@@ -1,0 +1,104 @@
+{
+  "list": {
+    "title": "Users",
+    "subtitle": "Manage the platform's users",
+    "addButton": "Add a user",
+    "searchPlaceholder": "Search by email...",
+    "filters": {
+      "allStatuses": "All statuses",
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleted": "Deleted"
+    },
+    "columns": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "role": "Role",
+      "company": "Company",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleted": "Deleted"
+    },
+    "emptyState": "No users found",
+    "actions": {
+      "changeRole": "Change role",
+      "block": "Block",
+      "activate": "Activate"
+    },
+    "debug": {
+      "none": "None"
+    },
+    "delete": {
+      "title": "Delete user",
+      "message": "Are you sure you want to delete the user \"{name}\"? They will no longer be able to log in."
+    },
+    "toasts": {
+      "statusChanged": "Account {action} successfully",
+      "statusChangeError": "Error while updating status",
+      "userDetailLoadError": "Error loading user details",
+      "roleChanged": "Role changed successfully",
+      "roleChangeError": "Error while changing role",
+      "userDeleted": "User deleted successfully",
+      "deleteError": "Error while deleting",
+      "userUpdated": "User updated successfully",
+      "userCreated": "User created successfully",
+      "updateError": "Error while updating the user",
+      "createError": "Error while creating the user",
+      "notAllowedTitle": "Action not allowed",
+      "cannotChangeAdminRole": "The admin role is assigned by the super admin and cannot be changed here.",
+      "cannotDeleteSelf": "You cannot delete your own account.",
+      "cannotDeleteAdmin": "Accounts with the admin role cannot be deleted.",
+      "blocked": "blocked",
+      "activated": "activated"
+    }
+  },
+  "form": {
+    "titles": {
+      "view": "User details",
+      "edit": "Edit user",
+      "add": "Add a user"
+    },
+    "subtitles": {
+      "view": "View the user's information",
+      "edit": "Edit the user's information",
+      "add": "Fill in the information to create a new user"
+    },
+    "loadingData": "Loading data...",
+    "photo": "Profile photo",
+    "fields": {
+      "firstName": "First name",
+      "firstNamePlaceholder": "John",
+      "lastName": "Last name",
+      "lastNamePlaceholder": "Doe",
+      "email": "Email",
+      "emailPlaceholder": "john.doe@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "SecurePassword123!",
+      "passwordEditHint": "(leave blank to keep unchanged)",
+      "role": "Role",
+      "rolePlaceholder": "Select a role",
+      "roleEmpty": "No role found",
+      "status": "Status",
+      "statusActive": "Active",
+      "statusInactive": "Inactive"
+    },
+    "buttons": {
+      "saving": "Saving...",
+      "edit": "Edit",
+      "add": "Add"
+    }
+  },
+  "roleChange": {
+    "title": "Change role",
+    "subtitleWithUser": "Choose a new role for {name}.",
+    "subtitle": "Choose a new role.",
+    "roleLabel": "Role *",
+    "rolePlaceholder": "Select a role",
+    "roleEmpty": "No role found",
+    "saving": "Saving..."
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useForm, Controller } from "react-hook-form";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
@@ -45,6 +46,8 @@ const isValidEmail = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
 const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSuccess, editingEmail }) => {
+  const t = useTranslations("emails");
+  const tc = useTranslations("common");
   const [sendEmail, { isLoading: isSending }] = useSendEmailMutation();
   const [updateEmail, { isLoading: isUpdating }] = useUpdateEmailMutation();
   const isEditing = !!editingEmail;
@@ -177,18 +180,18 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
 
       // Un brouillon peut être enregistré sans destinataire ; pas un envoi/programmation
       if (mode !== "draft" && uniqueRecipients.length === 0 && uniqueCC.length === 0 && bccRecipients.length === 0) {
-        setSubmitError("Veuillez sélectionner au moins un destinataire.");
+        setSubmitError(t("formModal.errors.noRecipient"));
         return;
       }
 
       // En mode programmation : exiger une date future
       if (mode === "schedule") {
         if (!scheduledAt) {
-          setSubmitError("Veuillez choisir une date et heure d'envoi.");
+          setSubmitError(t("formModal.errors.noScheduleDate"));
           return;
         }
         if (new Date(scheduledAt).getTime() <= Date.now()) {
-          setSubmitError("La date d'envoi doit être dans le futur.");
+          setSubmitError(t("formModal.errors.scheduleDateFuture"));
           return;
         }
       }
@@ -217,7 +220,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
       let msg: string;
       if (Array.isArray(errData?.message)) msg = errData.message.join(". ");
       else if (errData?.message) msg = errData.message;
-      else msg = "Erreur lors de l'envoi de l'email. Vérifiez les destinataires et réessayez.";
+      else msg = t("formModal.errors.sendFailed");
       setSubmitError(msg);
     }
   };
@@ -257,7 +260,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
         {items.map(email => (
           <span key={email} className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${colorClass}`}>
             {email}
-            <button type="button" onClick={() => onRemove(email)} className="ml-0.5 hover:opacity-70 text-sm leading-none">×</button>
+            <button type="button" onClick={() => onRemove(email)} className="ms-0.5 hover:opacity-70 text-sm leading-none">×</button>
           </span>
         ))}
       </div>
@@ -294,7 +297,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
           />
         </div>
         <Button type="button" variant="outline" size="sm" onClick={() => addChip(inputValue, setInputValue, list, setList)}>
-          Ajouter
+          {t("formModal.addButton")}
         </Button>
       </div>
       <ChipList items={list} onRemove={e => removeChip(e, list, setList)} colorClass={colorClass} />
@@ -304,9 +307,9 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
   return (
     <Modal isOpen={isOpen} onClose={handleClose} className="max-w-2xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-4 border-b border-gray-100 dark:border-gray-800">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{isEditing ? "Modifier le brouillon" : "Envoyer un email"}</h2>
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{isEditing ? t("formModal.titleEdit") : t("formModal.titleAdd")}</h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Sélectionnez les destinataires et composez votre message
+          {t("formModal.subtitle")}
         </p>
       </div>
 
@@ -318,7 +321,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
         )}
         {submitSuccess && (
           <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-lg bg-success-50 border border-success-200 dark:bg-success-500/10 dark:border-success-500/30 text-success-700 dark:text-success-400 text-sm">
-            Email envoyé avec succès !
+            {t("formModal.sendSuccess")}
           </div>
         )}
 
@@ -329,16 +332,16 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-100 text-brand-700 dark:bg-brand-500/20 dark:text-brand-300">
-                  À
+                  {t("formModal.to.badge")}
                 </span>
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Destinataires principaux</h3>
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t("formModal.to.title")}</h3>
                 {totalTo > 0 && (
-                  <span className="text-xs text-gray-400">{totalTo} sélectionné{totalTo > 1 ? "s" : ""}</span>
+                  <span className="text-xs text-gray-400">{t("formModal.to.selectedCount", { count: totalTo })}</span>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="candidateIds">Candidats</Label>
+                <Label htmlFor="candidateIds">{t("formModal.to.candidates")}</Label>
                 <Controller
                   name="candidateIds"
                   control={control}
@@ -352,7 +355,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                         else setSelectedCVs([]);
                       }}
                       useInfiniteQuery={useGetCVsForSelectInfiniteQuery}
-                      placeholder="Rechercher des candidats..."
+                      placeholder={t("formModal.to.candidatesPlaceholder")}
                       multiple
                     />
                   )}
@@ -360,7 +363,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
               </div>
 
               <div>
-                <Label htmlFor="clientEmails">Clients</Label>
+                <Label htmlFor="clientEmails">{t("formModal.to.clients")}</Label>
                 <Controller
                   name="clientEmails"
                   control={control}
@@ -371,10 +374,10 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                       onChange={field.onChange}
                       getOptionLabel={(client: any) => {
                         const email = client.contact_email;
-                        return email ? `${client.name} — ${email}` : `${client.name} (pas d'email)`;
+                        return email ? `${client.name} — ${email}` : t("formModal.to.clientNoEmail", { name: client.name });
                       }}
                       getOptionValue={(client: any) => client.contact_email || `no-email-${client.id}`}
-                      placeholder="Rechercher des clients..."
+                      placeholder={t("formModal.to.clientsPlaceholder")}
                       multiple
                     />
                   )}
@@ -382,7 +385,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
               </div>
 
               <div>
-                <Label htmlFor="userEmails">Utilisateurs</Label>
+                <Label htmlFor="userEmails">{t("formModal.to.users")}</Label>
                 <Controller
                   name="userEmails"
                   control={control}
@@ -393,7 +396,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                       onChange={field.onChange}
                       getOptionLabel={(user: any) => `${user.first_name} ${user.last_name} — ${user.email}`}
                       getOptionValue={(user: any) => user.email}
-                      placeholder="Rechercher des utilisateurs..."
+                      placeholder={t("formModal.to.usersPlaceholder")}
                       multiple
                     />
                   )}
@@ -401,7 +404,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
               </div>
 
               <div>
-                <Label>Managers</Label>
+                <Label>{t("formModal.to.managers")}</Label>
                 <div className="mb-2">
                   <MultiInfiniteSelect
                     useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
@@ -412,7 +415,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                     }}
                     getOptionLabel={(client: any) => client.name}
                     getOptionValue={(client: any) => client.id}
-                    placeholder="Sélectionner un client d'abord..."
+                    placeholder={t("formModal.to.selectClientFirst")}
                     multiple={false}
                   />
                 </div>
@@ -428,7 +431,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                         onChange={field.onChange}
                         getOptionLabel={(manager: any) => `${manager.firstName} ${manager.lastName} — ${manager.email}`}
                         getOptionValue={(manager: any) => manager.email}
-                        placeholder="Rechercher des managers..."
+                        placeholder={t("formModal.to.managersPlaceholder")}
                         multiple
                       />
                     )}
@@ -437,8 +440,8 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
               </div>
 
               <EmailChipInput
-                label="Adresses email manuelles"
-                placeholder="exemple@email.com, appuyez sur Entrée..."
+                label={t("formModal.to.manualEmails")}
+                placeholder={t("formModal.to.manualEmailsPlaceholder")}
                 inputValue={manualInput}
                 setInputValue={setManualInput}
                 list={manualRecipients}
@@ -456,9 +459,9 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">
                   CC
                 </span>
-                {showCC ? "Masquer la copie" : "Ajouter une copie (CC)"}
+                {showCC ? t("formModal.cc.hideLabel") : t("formModal.cc.showLabel")}
                 {totalCC > 0 && !showCC && (
-                  <span className="ml-1 text-xs text-blue-600 dark:text-blue-400">{totalCC} sélectionné{totalCC > 1 ? "s" : ""}</span>
+                  <span className="ms-1 text-xs text-blue-600 dark:text-blue-400">{t("formModal.cc.selectedCount", { count: totalCC })}</span>
                 )}
                 <svg className={`w-4 h-4 transition-transform ${showCC ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -466,10 +469,10 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
               </button>
 
               {showCC && (
-                <div className="mt-4 space-y-3 pl-3 border-l-2 border-blue-100 dark:border-blue-500/20">
+                <div className="mt-4 space-y-3 ps-3 border-s-2 border-blue-100 dark:border-blue-500/20">
 
                   <div>
-                    <Label>Candidats (CC)</Label>
+                    <Label>{t("formModal.cc.candidates")}</Label>
                     <Controller
                       name="ccCandidateIds"
                       control={control}
@@ -483,7 +486,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                             else setCcSelectedCVs([]);
                           }}
                           useInfiniteQuery={useGetCVsForSelectInfiniteQuery}
-                          placeholder="Rechercher des candidats en copie..."
+                          placeholder={t("formModal.cc.candidatesPlaceholder")}
                           multiple
                         />
                       )}
@@ -491,7 +494,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                   </div>
 
                   <div>
-                    <Label>Clients (CC)</Label>
+                    <Label>{t("formModal.cc.clients")}</Label>
                     <Controller
                       name="ccClientEmails"
                       control={control}
@@ -502,10 +505,10 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                           onChange={field.onChange}
                           getOptionLabel={(client: any) => {
                             const email = client.contact_email;
-                            return email ? `${client.name} — ${email}` : `${client.name} (pas d'email)`;
+                            return email ? `${client.name} — ${email}` : t("formModal.to.clientNoEmail", { name: client.name });
                           }}
                           getOptionValue={(client: any) => client.contact_email || `no-email-${client.id}`}
-                          placeholder="Rechercher des clients en copie..."
+                          placeholder={t("formModal.cc.clientsPlaceholder")}
                           multiple
                         />
                       )}
@@ -513,7 +516,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                   </div>
 
                   <div>
-                    <Label>Managers (CC)</Label>
+                    <Label>{t("formModal.cc.managers")}</Label>
                     <div className="mb-2">
                       <MultiInfiniteSelect
                         useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
@@ -524,7 +527,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                         }}
                         getOptionLabel={(client: any) => client.name}
                         getOptionValue={(client: any) => client.id}
-                        placeholder="Sélectionner un client d'abord..."
+                        placeholder={t("formModal.to.selectClientFirst")}
                         multiple={false}
                       />
                     </div>
@@ -540,7 +543,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                             onChange={field.onChange}
                             getOptionLabel={(manager: any) => `${manager.firstName} ${manager.lastName} — ${manager.email}`}
                             getOptionValue={(manager: any) => manager.email}
-                            placeholder="Rechercher des managers en copie..."
+                            placeholder={t("formModal.cc.managersPlaceholder")}
                             multiple
                           />
                         )}
@@ -549,8 +552,8 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                   </div>
 
                   <EmailChipInput
-                    label="Adresses CC manuelles"
-                    placeholder="cc@email.com, appuyez sur Entrée..."
+                    label={t("formModal.cc.manualEmails")}
+                    placeholder={t("formModal.cc.manualEmailsPlaceholder")}
                     inputValue={ccInput}
                     setInputValue={setCcInput}
                     list={ccRecipients}
@@ -571,9 +574,9 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300">
                   CCI
                 </span>
-                {showBCC ? "Masquer la copie cachée" : "Ajouter une copie cachée (CCI)"}
+                {showBCC ? t("formModal.bcc.hideLabel") : t("formModal.bcc.showLabel")}
                 {bccRecipients.length > 0 && !showBCC && (
-                  <span className="ml-1 text-xs text-gray-500">{bccRecipients.length} sélectionné{bccRecipients.length > 1 ? "s" : ""}</span>
+                  <span className="ms-1 text-xs text-gray-500">{t("formModal.bcc.selectedCount", { count: bccRecipients.length })}</span>
                 )}
                 <svg className={`w-4 h-4 transition-transform ${showBCC ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -581,10 +584,10 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
               </button>
 
               {showBCC && (
-                <div className="mt-3 pl-3 border-l-2 border-gray-100 dark:border-gray-700">
+                <div className="mt-3 ps-3 border-s-2 border-gray-100 dark:border-gray-700">
                   <EmailChipInput
-                    label="Adresses CCI"
-                    placeholder="cci@email.com, appuyez sur Entrée..."
+                    label={t("formModal.bcc.manualEmails")}
+                    placeholder={t("formModal.bcc.manualEmailsPlaceholder")}
                     inputValue={bccInput}
                     setInputValue={setBccInput}
                     list={bccRecipients}
@@ -597,13 +600,13 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
 
             {/* ══ Sujet ══ */}
             <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
-              <Label htmlFor="subject">Sujet <span className="text-error-500">*</span></Label>
+              <Label htmlFor="subject">{t("formModal.subject")} <span className="text-error-500">*</span></Label>
               <Controller
                 name="subject"
                 control={control}
-                rules={{ required: "Le sujet est requis" }}
+                rules={{ required: t("formModal.subjectRequired") }}
                 render={({ field }) => (
-                  <InputField {...field} id="subject" placeholder="Entrez le sujet de l'email" />
+                  <InputField {...field} id="subject" placeholder={t("formModal.subjectPlaceholder")} />
                 )}
               />
               {errors.subject && <p className="mt-1 text-sm text-error-500">{errors.subject.message}</p>}
@@ -611,13 +614,13 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
 
             {/* ══ Message ══ */}
             <div>
-              <Label htmlFor="body">Message <span className="text-error-500">*</span></Label>
+              <Label htmlFor="body">{t("formModal.message")} <span className="text-error-500">*</span></Label>
               <Controller
                 name="body"
                 control={control}
-                rules={{ required: "Le message est requis" }}
+                rules={{ required: t("formModal.messageRequired") }}
                 render={({ field }) => (
-                  <TextArea {...field} placeholder="Entrez le contenu de l'email" rows={8} />
+                  <TextArea {...field} placeholder={t("formModal.messagePlaceholder")} rows={8} />
                 )}
               />
               {errors.body && <p className="mt-1 text-sm text-error-500">{errors.body.message}</p>}
@@ -632,19 +635,19 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
             {totalTo > 0 && (
               <span className="flex items-center gap-1">
                 <span className="inline-block w-2 h-2 rounded-full bg-brand-500" />
-                {totalTo} destinataire{totalTo > 1 ? "s" : ""}
+                {t("formModal.footer.recipientsCount", { count: totalTo })}
               </span>
             )}
             {totalCC > 0 && (
               <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
                 <span className="inline-block w-2 h-2 rounded-full bg-blue-500" />
-                {totalCC} CC
+                {t("formModal.footer.ccCount", { count: totalCC })}
               </span>
             )}
             {bccRecipients.length > 0 && (
               <span className="flex items-center gap-1 text-gray-500">
                 <span className="inline-block w-2 h-2 rounded-full bg-gray-400" />
-                {bccRecipients.length} CCI
+                {t("formModal.footer.bccCount", { count: bccRecipients.length })}
               </span>
             )}
           </div>
@@ -659,7 +662,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                   : "border-gray-300 text-gray-600 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
               }`}
             >
-              🕐 {showSchedule ? "Programmation activée" : "Programmer l'envoi"}
+              🕐 {showSchedule ? t("formModal.footer.scheduleEnabled") : t("formModal.footer.scheduleSend")}
             </button>
             {showSchedule && (
               <input
@@ -673,12 +676,12 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
 
             <div className="flex-1" />
 
-            <Button variant="outline" onClick={handleClose}>Annuler</Button>
+            <Button variant="outline" onClick={handleClose}>{tc("actions.cancel")}</Button>
 
             {isEditing ? (
               /* Mode édition : un seul bouton d'enregistrement */
               <Button type="submit" disabled={isUpdating}>
-                {isUpdating ? "Enregistrement..." : "💾 Enregistrer les modifications"}
+                {isUpdating ? t("formModal.footer.saving") : `💾 ${t("formModal.footer.saveChanges")}`}
               </Button>
             ) : (
               <>
@@ -689,7 +692,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                   disabled={isSending}
                   onClick={() => { submitModeRef.current = "draft"; }}
                 >
-                  💾 Brouillon
+                  💾 {t("formModal.footer.draft")}
                 </Button>
 
                 {/* Programmer (si toggle activé) sinon Envoyer */}
@@ -699,7 +702,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                     disabled={isSending || (totalTo === 0 && totalCC === 0 && bccRecipients.length === 0)}
                     onClick={() => { submitModeRef.current = "schedule"; }}
                   >
-                    {isSending ? "..." : "📅 Programmer"}
+                    {isSending ? "..." : `📅 ${t("formModal.footer.programSchedule")}`}
                   </Button>
                 ) : (
                   <Button
@@ -707,7 +710,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                     disabled={isSending || (totalTo === 0 && totalCC === 0 && bccRecipients.length === 0)}
                     onClick={() => { submitModeRef.current = "send"; }}
                   >
-                    {isSending ? "Envoi en cours..." : "Envoyer"}
+                    {isSending ? t("formModal.footer.sending") : t("formModal.footer.send")}
                   </Button>
                 )}
               </>

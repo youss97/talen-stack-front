@@ -1,0 +1,84 @@
+{
+  "page": {
+    "title": "Gestion des Affectations",
+    "subtitle": "Affectez des responsables aux talents, candidatures et demandes de recrutement"
+  },
+  "stats": {
+    "unassignedCvs": "{count} CVs non affectés",
+    "applications": "{count} candidatures",
+    "requests": "{count} demandes"
+  },
+  "tabs": {
+    "cvs": "Talents (CVs)",
+    "applications": "Candidatures",
+    "requests": "Demandes"
+  },
+  "filters": {
+    "searchCvs": "Rechercher par nom, poste...",
+    "searchApplications": "Rechercher par candidat, poste...",
+    "searchRequests": "Rechercher par titre, référence...",
+    "unassignedOnly": "Non affectés uniquement"
+  },
+  "columns": {
+    "candidate": "Candidat",
+    "position": "Poste actuel",
+    "experience": "Expérience",
+    "experienceYears": "{count} ans",
+    "skills": "Compétences",
+    "responsible": "Responsable",
+    "titleOrRequest": "Poste / Demande",
+    "client": "Client",
+    "reqTitle": "Titre",
+    "contract": "Contrat",
+    "priority": "Priorité"
+  },
+  "priority": {
+    "urgent": "Urgent",
+    "high": "Haute",
+    "normal": "Normale",
+    "low": "Basse"
+  },
+  "responsible": {
+    "unassigned": "Non affecté"
+  },
+  "entities": {
+    "cvSingular": "talent",
+    "cvPlural": "talents",
+    "applicationSingular": "candidature",
+    "applicationPlural": "candidatures",
+    "requestSingular": "demande",
+    "requestPlural": "demandes"
+  },
+  "modal": {
+    "singleCv": "ce talent",
+    "singleApplication": "cette candidature",
+    "singleRequest": "cette demande",
+    "bulk": "ces {count} {entity}"
+  },
+  "emptyState": {
+    "cvs": "Aucun talent trouvé",
+    "applications": "Aucune candidature trouvée",
+    "requests": "Aucune demande trouvée"
+  },
+  "actions": {
+    "assign": "Affecter",
+    "unassign": "Désaffecter",
+    "assignSelected": "Affecter les {count} sélectionnés",
+    "cancelSelection": "Annuler la sélection"
+  },
+  "bulkBar": {
+    "selectedCv": "{count, plural, one {# talent sélectionné} other {# talents sélectionnés}}",
+    "selectedApplication": "{count, plural, one {# candidature sélectionnée} other {# candidatures sélectionnées}}",
+    "selectedRequest": "{count, plural, one {# demande sélectionnée} other {# demandes sélectionnées}}"
+  },
+  "toasts": {
+    "assignSuccess": "Responsable affecté",
+    "unassignSuccess": "Affectation retirée",
+    "assignError": "Erreur lors de l'affectation",
+    "bulkSuccess": "{count, plural, one {# élément affecté} other {# éléments affectés}}",
+    "bulkPartialTitle": "Partiel",
+    "bulkPartial": "{success, plural, one {# réussi} other {# réussis}}, {error, plural, one {# échoué} other {# échoués}}",
+    "deassignSuccessTitle": "Désaffectés",
+    "deassignSuccess": "{count, plural, one {# élément désaffecté} other {# éléments désaffectés}}"
+  }
+}

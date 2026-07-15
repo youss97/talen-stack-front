@@ -1,0 +1,155 @@
+{
+  "list": {
+    "title": "عروض التوظيف الخاصة بي",
+    "subtitle": "قم بإدارة عروضك واطّلع على المرشحين المقترحين",
+    "newOffer": "+ عرض جديد",
+    "searchPlaceholder": "البحث حسب العنوان أو المرجع...",
+    "allStatuses": "كل الحالات",
+    "allContracts": "كل أنواع العقود",
+    "status": {
+      "in_progress": "قيد التنفيذ",
+      "standby": "معلّق",
+      "filled": "تم الشغل",
+      "abandoned": "متوقف",
+      "archived": "مؤرشف",
+      "open": "مفتوح"
+    },
+    "priority": {
+      "urgent": "عاجل",
+      "high": "عالية",
+      "normal": "عادية",
+      "low": "منخفضة"
+    },
+    "empty": {
+      "title": "لم يتم العثور على أي عرض",
+      "filtered": "حاول تعديل عوامل التصفية الخاصة بك",
+      "noOffers": "لا توجد عروض توظيف حاليًا"
+    },
+    "reference": "المرجع: {ref}",
+    "years": "سنوات",
+    "candidatesCount": "{count, plural, one {مرشح} other {مرشحون}}",
+    "viewCandidates": "عرض المرشحين",
+    "edit": "تعديل",
+    "archive": "أرشفة",
+    "toast": {
+      "success": "نجاح",
+      "error": "خطأ",
+      "createSuccess": "تم إنشاء العرض بنجاح",
+      "createError": "خطأ أثناء إنشاء العرض",
+      "editSuccess": "تم تعديل العرض بنجاح",
+      "editError": "خطأ أثناء التعديل",
+      "archiveSuccess": "تمت أرشفة العرض",
+      "archiveError": "خطأ أثناء الأرشفة"
+    }
+  },
+  "candidates": {
+    "backToOffers": "العودة إلى العروض",
+    "title": "المرشحون المقترحون",
+    "subtitle": "اطّلع على المرشحين وأضف تعليقاتك",
+    "offerDetails": "تفاصيل العرض",
+    "editOffer": "تعديل العرض",
+    "refresh": "تحديث",
+    "searchPlaceholder": "البحث حسب الاسم أو البريد الإلكتروني...",
+    "allStatuses": "كل الحالات",
+    "empty": {
+      "title": "لم يتم العثور على أي مرشح",
+      "filtered": "حاول تعديل عوامل التصفية الخاصة بك",
+      "noCandidates": "لم يتم اقتراح أي مرشح لهذا العرض بعد"
+    },
+    "years": "سنوات",
+    "skillsLabel": "المهارات:",
+    "feedback": {
+      "hrEvaluations": "تقييمات الموارد البشرية ({count})",
+      "myFeedbacks": "ملاحظاتي ({count})",
+      "viewAll": "عرض الكل"
+    },
+    "addFeedback": "إضافة ملاحظة",
+    "consultApplication": "الاطّلاع على الترشيح",
+    "viewCv": "عرض السيرة الذاتية",
+    "downloadCv": "تحميل السيرة الذاتية",
+    "errors": {
+      "cvOpenFailed": "تعذّر فتح السيرة الذاتية",
+      "cvDownloadFailed": "تعذّر تحميل السيرة الذاتية",
+      "cvDownloadError": "خطأ أثناء تحميل السيرة الذاتية: {message}"
+    }
+  },
+  "form": {
+    "createTitle": "عرض توظيف جديد",
+    "editTitle": "تعديل عرض التوظيف",
+    "createSubtitle": "صف الملف الشخصي الذي تبحث عنه",
+    "editSubtitle": "قم بتعديل معلومات عرضك",
+    "titleLabel": "المسمى الوظيفي",
+    "titlePlaceholder": "مثال: مطوّر Full Stack React",
+    "titleRequired": "العنوان مطلوب",
+    "descriptionLabel": "الوصف",
+    "descriptionPlaceholder": "صف الوظيفة والمسؤوليات والملف الشخصي المطلوب...",
+    "descriptionRequired": "الوصف مطلوب",
+    "skillsLabel": "المهارات المطلوبة",
+    "skillsPlaceholder": "مثال: React، Node.js...",
+    "add": "إضافة",
+    "skillsHint": "أضف مهارة واحدة مطلوبة على الأقل",
+    "softSkillsLabel": "المهارات الشخصية",
+    "softSkillsPlaceholder": "مثال: القيادة، العمل الجماعي...",
+    "contractTypesLabel": "أنواع العقود",
+    "currencyLabel": "العملة",
+    "currencies": {
+      "MAD": "MAD — درهم مغربي",
+      "EUR": "EUR — يورو (€)",
+      "USD": "USD — دولار أمريكي ($)",
+      "GBP": "GBP — جنيه إسترليني (£)",
+      "TND": "TND — دينار تونسي",
+      "DZD": "DZD — دينار جزائري",
+      "AED": "AED — درهم إماراتي",
+      "SAR": "SAR — ريال سعودي"
+    },
+    "salarySection": "المرتب المطلوب ({symbol}/شهر)",
+    "salaryMin": "الحد الأدنى للراتب",
+    "salaryMax": "الحد الأقصى للراتب",
+    "packageCurrent": "الحزمة الحالية ({symbol})",
+    "packageDesired": "الحزمة المرغوبة ({symbol})",
+    "tjmSection": "التعرفة اليومية المرغوبة ({symbol}/يوم)",
+    "tjmMin": "الحد الأدنى للتعرفة اليومية",
+    "tjmMax": "الحد الأقصى للتعرفة اليومية",
+    "workType": "نمط العمل",
+    "workTypes": {
+      "on_site": "حضوري",
+      "remote": "عن بُعد",
+      "hybrid": "مختلط"
+    },
+    "country": "الدولة",
+    "countryRequired": "الدولة مطلوبة",
+    "city": "المدينة",
+    "citySelectPlaceholder": "اختر مدينة",
+    "cityPlaceholder": "اسم المدينة",
+    "cityRequired": "المدينة مطلوبة",
+    "minExperience": "الحد الأدنى للخبرة (سنوات)",
+    "maxExperience": "الحد الأقصى للخبرة (سنوات)",
+    "priority": "الأولوية",
+    "priorities": {
+      "low": "منخفضة",
+      "normal": "عادية",
+      "high": "عالية",
+      "urgent": "عاجل"
+    },
+    "numberOfProfiles": "عدد الملفات الشخصية",
+    "languagesLabel": "اللغات المطلوبة",
+    "desiredStartDate": "تاريخ البدء المرغوب",
+    "benefits": "المزايا",
+    "benefitsPlaceholder": "تأمين صحي، قسائم مطعم، سيارة الشركة...",
+    "bonuses": "المكافآت",
+    "bonusesPlaceholder": "مكافأة الأداء، الشهر الثالث عشر...",
+    "note": "ملاحظة",
+    "notePlaceholder": "معلومات إضافية لفريق الموارد البشرية...",
+    "noteHint": "مرئية لك ولفريق الموارد البشرية",
+    "cancel": "إلغاء",
+    "saving": "جارٍ الحفظ...",
+    "createSubmit": "إنشاء العرض",
+    "editSubmit": "تعديل العرض",
+    "defaultWorkflowSteps": {
+      "proposed": "مقترح",
+      "hrInterview": "مقابلة الموارد البشرية",
+      "clientInterview": "مقابلة العميل",
+      "offer": "عرض"
+    }
+  }
+}

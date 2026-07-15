@@ -1,0 +1,84 @@
+{
+  "page": {
+    "title": "Abonnements",
+    "subtitle": "Créez des plans d'abonnement et assignez-les aux entreprises pour contrôler leurs accès",
+    "newPlan": "Nouveau plan"
+  },
+  "stats": {
+    "availablePlans": "Plans disponibles",
+    "subscribedCompanies": "Sociétés abonnées",
+    "activePlans": "Plans actifs"
+  },
+  "emptyState": {
+    "title": "Aucun plan créé",
+    "subtitle": "Créez votre premier plan d'abonnement",
+    "cta": "Créer un plan"
+  },
+  "billing": {
+    "monthly": "Mensuel",
+    "annual": "Annuel",
+    "one_time": "Unique"
+  },
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
+  "card": {
+    "modules": "{count, plural, =0 {module} =1 {module} other {modules}}",
+    "noModuleSelected": "Aucun module sélectionné"
+  },
+  "toast": {
+    "deletedTitle": "Supprimé",
+    "deletedMessage": "Le plan \"{name}\" a été supprimé",
+    "deleteErrorTitle": "Erreur",
+    "deleteErrorMessage": "Impossible de supprimer ce plan",
+    "savedTitle": "Succès"
+  },
+  "deleteModal": {
+    "title": "Supprimer le plan",
+    "message": "Êtes-vous sûr de vouloir supprimer le plan \"{name}\" ? Les entreprises qui l'utilisent perdront leurs accès actuels."
+  },
+  "planModal": {
+    "title": {
+      "edit": "Modifier le plan",
+      "new": "Nouveau plan d'abonnement"
+    },
+    "subtitle": "Définissez les modules inclus et le tarif",
+    "sections": {
+      "information": "Informations",
+      "modulesIncluded": "Modules inclus"
+    },
+    "fields": {
+      "planName": "Nom du plan",
+      "planNamePlaceholder": "Ex: Starter, Pro, Enterprise...",
+      "description": "Description",
+      "descriptionPlaceholder": "Décrivez ce plan en quelques mots...",
+      "price": "Prix",
+      "billingCycle": "Facturation",
+      "planActive": "Plan actif"
+    },
+    "modules": {
+      "selectAll": "Tout sélectionner",
+      "deselectAll": "Tout désélectionner",
+      "footnote": "* Les modules Entreprises et Logs sont réservés au Super Admin et non disponibles dans les abonnements."
+    },
+    "errors": {
+      "nameRequired": "Le nom du plan est requis",
+      "updateError": "Erreur lors de la modification du plan",
+      "createError": "Erreur lors de la création du plan"
+    },
+    "success": {
+      "updated": "Plan \"{name}\" mis à jour avec succès",
+      "created": "Plan \"{name}\" créé avec succès"
+    },
+    "buttons": {
+      "saving": "Sauvegarde...",
+      "createPlan": "Créer le plan"
+    }
+  },
+  "charts": {
+    "companiesPerPlan": "Sociétés par plan",
+    "noSubscribedCompany": "Aucune société abonnée",
+    "companyCount": "{count, plural, =0 {société} =1 {société} other {sociétés}}"
+  }
+}

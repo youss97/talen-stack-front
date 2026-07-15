@@ -1,0 +1,141 @@
+{
+  "list": {
+    "title": "الشركات",
+    "subtitle": "إدارة الشركات والوحدات المتاحة لها",
+    "addButton": "إضافة شركة",
+    "searchPlaceholder": "البحث عن شركة...",
+    "allStatuses": "جميع الحالات",
+    "columns": {
+      "name": "الاسم",
+      "siret": "السجل التجاري",
+      "city": "المدينة",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "status": "الحالة"
+    },
+    "status": {
+      "active": "نشطة",
+      "inactive": "غير نشطة",
+      "deleted": "محذوفة"
+    },
+    "rowActions": {
+      "activate": "تفعيل",
+      "deactivate": "تعطيل"
+    },
+    "emptyState": "لم يتم العثور على أي شركة",
+    "deactivateModal": {
+      "title": "تعطيل الشركة",
+      "message": "هل أنت متأكد من رغبتك في تعطيل الشركة \"{name}\"؟ سيتم تعطيل جميع حساباتها. يمكنك إعادة تفعيلها لاحقًا من الجدول.",
+      "confirm": "تعطيل"
+    }
+  },
+  "toasts": {
+    "companyActivatedTitle": "تم تفعيل الشركة",
+    "companyDeactivatedTitle": "تم تعطيل الشركة",
+    "companyActivatedMessage": "تمت إعادة تفعيل \"{name}\" وحساباتها",
+    "companyDeactivatedMessage": "تم تعطيل \"{name}\" وحساباتها",
+    "statusUpdateError": "خطأ أثناء تعديل الحالة",
+    "reactivatedTitle": "تمت إعادة تفعيل الشركة",
+    "reactivatedMessage": "تمت إعادة تفعيل \"{name}\" وحساباتها",
+    "reactivateError": "خطأ أثناء إعادة التفعيل",
+    "loadDetailError": "خطأ أثناء تحميل تفاصيل الشركة",
+    "deleteSuccess": "تم حذف الشركة بنجاح",
+    "deleteError": "خطأ أثناء الحذف",
+    "updateSuccess": "تم تعديل الشركة بنجاح",
+    "updateError": "خطأ أثناء تعديل الشركة",
+    "createSuccess": "تم إنشاء الشركة بنجاح",
+    "createError": "خطأ أثناء إنشاء الشركة"
+  },
+  "form": {
+    "titleView": "تفاصيل الشركة",
+    "titleEdit": "تعديل الشركة",
+    "titleAdd": "إضافة شركة",
+    "subtitleView": "اطّلع على معلومات الشركة",
+    "subtitleEdit": "عدّل معلومات الشركة ووحداتها",
+    "subtitleAdd": "أنشئ الشركة ومسؤولها وحدّد الوحدات المتاحة لها",
+    "loading": "جارٍ التحميل...",
+    "sections": {
+      "company": "معلومات الشركة",
+      "contact": "معلومات الاتصال",
+      "admin": "مسؤول الشركة",
+      "subscription": "الاشتراك والوحدات"
+    },
+    "fields": {
+      "logo": "شعار الشركة",
+      "logoHelper": "الصيغ المقبولة: JPEG، PNG، GIF، WebP (بحد أقصى 5 ميغابايت)",
+      "companyName": "الاسم القانوني",
+      "ice": "المعرف الضريبي",
+      "address": "العنوان",
+      "city": "المدينة",
+      "postalCode": "الرمز البريدي",
+      "country": "الدولة",
+      "selectCountry": "— اختر دولة —",
+      "status": "الحالة",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "adminPhoto": "صورة المسؤول",
+      "currentInfo": "(المعلومات الحالية)",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "adminEmail": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "notEditable": "غير قابل للتعديل",
+      "adminPhone": "هاتف المسؤول",
+      "position": "المنصب / الوظيفة",
+      "subscriptionPlan": "خطة الاشتراك",
+      "noSubscription": "— بدون اشتراك (اختيار يدوي) —",
+      "planPrefilled": "✓ تم اختيار الوحدات أدناه مسبقًا وفق هذه الخطة",
+      "accessibleModules": "الوحدات المتاحة",
+      "deselectAll": "إلغاء تحديد الكل",
+      "selectAll": "تحديد الكل",
+      "noModules": "لا توجد وحدات متاحة",
+      "noModulesReadOnly": "جميع الوحدات (بدون قيود)"
+    },
+    "placeholders": {
+      "companyName": "Tech Solutions SARL",
+      "ice": "123456789000000",
+      "address": "12 rue de la Paix",
+      "city": "الدار البيضاء",
+      "postalCode": "75001",
+      "phone": "+33612345678",
+      "email": "contact@techsolutions.fr",
+      "firstName": "جون",
+      "lastName": "دو",
+      "adminEmail": "admin@example.com",
+      "password": "StrongPassword123",
+      "adminPhone": "+212612345678",
+      "position": "مدير الموارد البشرية"
+    },
+    "billingCycle": {
+      "monthly": "شهر",
+      "annual": "سنة",
+      "oneTime": "مرة واحدة"
+    },
+    "moduleCount": "{count, plural, one {# وحدة محددة} two {# وحدتان محددتان} few {# وحدات محددة} other {# وحدة محددة}}",
+    "noModuleSelected": "لم يتم تحديد أي وحدة — وصول كامل",
+    "buttons": {
+      "close": "إغلاق",
+      "cancel": "إلغاء",
+      "add": "إضافة",
+      "edit": "تعديل",
+      "saving": "جارٍ الحفظ..."
+    }
+  },
+  "featuresModal": {
+    "title": "الوحدات — {companyName}",
+    "subtitle": "اختر الوحدات التي يمكن لهذه الشركة استخدامها",
+    "toolbar": {
+      "selectedCount": "{selected} / {total} وحدة محددة",
+      "selectAll": "تحديد الكل",
+      "deselectAll": "إلغاء تحديد الكل"
+    },
+    "loading": "جارٍ تحميل الوحدات...",
+    "emptyState": "لا توجد وحدات متاحة",
+    "error": "خطأ أثناء الحفظ. يرجى المحاولة مرة أخرى.",
+    "footer": {
+      "noneSelected": "لم يتم تحديد أي وحدة — وصول كامل",
+      "selectedCount": "{count, plural, one {# وحدة ممنوحة} two {# وحدتان ممنوحتان} few {# وحدات ممنوحة} other {# وحدة ممنوحة}}",
+      "saving": "جارٍ الحفظ..."
+    }
+  }
+}

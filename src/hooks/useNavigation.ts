@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import { useTranslations } from "next-intl";
 import type { RootState } from "@/lib/store";
 import { usePermissions } from "./usePermissions";
 import { NAV_CONFIG } from "@/layout/nav-config";
@@ -9,6 +10,7 @@ import type { NavItem } from "@/layout/nav-config";
 // ----------------------------------------------------------------------
 
 export function useNavigation() {
+  const t = useTranslations("layout.nav");
   const { features, canAccessPath } = usePermissions();
   const user = useSelector((state: RootState) => state.auth.user);
   const isSuperAdmin = user?.role?.code === "super_admin";
@@ -43,7 +45,7 @@ export function useNavigation() {
     // Statistiques : masquée pour les espaces client (uniquement RH / super admin)
     const statsConfig = NAV_CONFIG["/statistics"];
     if (statsConfig && !isClientSpace) {
-      items.push({ title: statsConfig.title, path: "/statistics", icon: statsConfig.icon, group: statsConfig.group });
+      items.push({ title: t(`items./statistics`), path: "/statistics", icon: statsConfig.icon, group: statsConfig.group });
       seenPaths.add("/statistics");
     }
 
@@ -58,7 +60,7 @@ export function useNavigation() {
         if (canAccessPath(path)) {
           const config = NAV_CONFIG[path];
           if (config) {
-            items.push({ title: config.title, path, icon: config.icon, group: config.group });
+            items.push({ title: t(`items.${path}`), path, icon: config.icon, group: config.group });
             seenPaths.add(path);
           }
         }
@@ -68,17 +70,17 @@ export function useNavigation() {
     // Injecter /subscriptions uniquement pour le super admin
     if (isSuperAdmin && !items.find((i) => i.path === "/subscriptions")) {
       const subConfig = NAV_CONFIG["/subscriptions"];
-      if (subConfig) items.push({ title: subConfig.title, path: "/subscriptions", icon: subConfig.icon, group: subConfig.group });
+      if (subConfig) items.push({ title: t(`items./subscriptions`), path: "/subscriptions", icon: subConfig.icon, group: subConfig.group });
     }
 
     // Site vitrine (landing) — super admin uniquement
     if (isSuperAdmin && !items.find((i) => i.path === "/settings/landing")) {
       const lc = NAV_CONFIG["/settings/landing"];
-      if (lc) items.push({ title: lc.title, path: "/settings/landing", icon: lc.icon, group: lc.group });
+      if (lc) items.push({ title: t(`items./settings/landing`), path: "/settings/landing", icon: lc.icon, group: lc.group });
     }
 
     return items;
-  }, [features, canAccessPath, isSuperAdmin, isClientSpace]);
+  }, [features, canAccessPath, isSuperAdmin, isClientSpace, t]);
 
   return navItems;
 }

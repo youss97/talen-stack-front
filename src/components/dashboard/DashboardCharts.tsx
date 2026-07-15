@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useTranslations } from "next-intl";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -29,15 +30,15 @@ ChartJS.register(
   Filler
 );
 
-const STATUS_LABELS: Record<string, string> = {
-  in_progress: "En cours",
-  standby: "Standby",
-  abandoned: "Abandonnée",
-  filled: "Comblée",
-  open: "Ouverte",
-  archived: "Archivée",
-  completed: "Terminée",
-  failed: "Échouée",
+const STATUS_LABEL_KEYS: Record<string, string> = {
+  in_progress: "inProgress",
+  standby: "standby",
+  abandoned: "abandoned",
+  filled: "filled",
+  open: "open",
+  archived: "archived",
+  completed: "completed",
+  failed: "failed",
 };
 
 const BRAND = "#8AB925";
@@ -89,12 +90,20 @@ function MonthlyBarChart({
   );
 }
 
-function StatusDoughnut({ data, title }: { data: StatusCount[]; title: string }) {
+function StatusDoughnut({
+  data,
+  title,
+  getStatusLabel,
+}: {
+  data: StatusCount[];
+  title: string;
+  getStatusLabel: (status: string) => string;
+}) {
   if (!data || data.length === 0) return null;
   return (
     <Doughnut
       data={{
-        labels: data.map((d) => STATUS_LABELS[d.status] ?? d.status),
+        labels: data.map((d) => getStatusLabel(d.status)),
         datasets: [
           {
             data: data.map((d) => d.count),
@@ -127,7 +136,7 @@ function TopBar({ items, valueKey, title }: { items: TopItem[]; valueKey: keyof 
           <div key={i}>
             <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
               <span className="truncate">{item.name}</span>
-              <span className="font-semibold ml-2">{item[valueKey] as number}</span>
+              <span className="font-semibold ms-2">{item[valueKey] as number}</span>
             </div>
             <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
               <div
@@ -151,8 +160,14 @@ interface Props {
 }
 
 export default function DashboardCharts({ stats, isSuperAdmin }: Props) {
+  const t = useTranslations("dashboard");
   const monthlyData = isSuperAdmin ? stats.monthlyApplications : stats.applicationsByMonth;
   const monthlyRequests = isSuperAdmin ? stats.monthlyRequests : undefined;
+
+  const getStatusLabel = (status: string) => {
+    const key = STATUS_LABEL_KEYS[status];
+    return key ? t(`charts.statusLabels.${key}`) : status;
+  };
 
   return (
     <div className="space-y-6">
@@ -161,18 +176,18 @@ export default function DashboardCharts({ stats, isSuperAdmin }: Props) {
         {monthlyData && monthlyData.length > 0 && (
           <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
-              Candidatures / mois (6 derniers mois)
+              {t("charts.applicationsPerMonth")}
             </h3>
-            <MonthlyBarChart data={monthlyData} label="Candidatures" color={BRAND} />
+            <MonthlyBarChart data={monthlyData} label={t("cards.applications")} color={BRAND} />
           </div>
         )}
 
         {isSuperAdmin && monthlyRequests && monthlyRequests.length > 0 && (
           <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
-              Demandes / mois (6 derniers mois)
+              {t("charts.requestsPerMonth")}
             </h3>
-            <MonthlyBarChart data={monthlyRequests} label="Demandes" color="#739c1e" />
+            <MonthlyBarChart data={monthlyRequests} label={t("cards.requests")} color="#739c1e" />
           </div>
         )}
       </div>
@@ -182,7 +197,11 @@ export default function DashboardCharts({ stats, isSuperAdmin }: Props) {
         {stats.requestsByStatus && stats.requestsByStatus.length > 0 && (
           <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] flex items-center justify-center">
             <div className="w-full max-w-[240px]">
-              <StatusDoughnut data={stats.requestsByStatus} title="Demandes par statut" />
+              <StatusDoughnut
+                data={stats.requestsByStatus}
+                title={t("charts.requestsByStatus")}
+                getStatusLabel={getStatusLabel}
+              />
             </div>
           </div>
         )}
@@ -190,7 +209,11 @@ export default function DashboardCharts({ stats, isSuperAdmin }: Props) {
         {stats.integrationsByStatus && stats.integrationsByStatus.length > 0 && (
           <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] flex items-center justify-center">
             <div className="w-full max-w-[240px]">
-              <StatusDoughnut data={stats.integrationsByStatus} title="Intégrations par statut" />
+              <StatusDoughnut
+                data={stats.integrationsByStatus}
+                title={t("charts.integrationsByStatus")}
+                getStatusLabel={getStatusLabel}
+              />
             </div>
           </div>
         )}
@@ -200,14 +223,14 @@ export default function DashboardCharts({ stats, isSuperAdmin }: Props) {
             <TopBar
               items={stats.topCompanies}
               valueKey="clientsCount"
-              title="Top sociétés (nb clients)"
+              title={t("charts.topCompanies")}
             />
           )}
           {!isSuperAdmin && stats.topClients && (
             <TopBar
               items={stats.topClients}
               valueKey="requestsCount"
-              title="Top clients (nb demandes)"
+              title={t("charts.topClients")}
             />
           )}
         </div>

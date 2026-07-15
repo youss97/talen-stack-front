@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import type { PublicJobOfferStats } from "@/types/publicJobOffer";
 
 interface OfferStatsProps {
@@ -7,11 +8,12 @@ interface OfferStatsProps {
 }
 
 export default function OfferStats({ stats, brandColor = "#3B82F6" }: OfferStatsProps) {
+  const t = useTranslations("publicOffers.stats");
   const sourceLabels: Record<string, string> = {
-    qr: "QR Code",
-    direct: "Lien direct",
-    linkedin: "LinkedIn",
-    other: "Autre",
+    qr: t("sourceLabels.qr"),
+    direct: t("sourceLabels.direct"),
+    linkedin: t("sourceLabels.linkedin"),
+    other: t("sourceLabels.other"),
   };
 
   const sourceIcons: Record<string, string> = {
@@ -26,19 +28,19 @@ export default function OfferStats({ stats, brandColor = "#3B82F6" }: OfferStats
       {/* Métriques principales */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatCard
-          title="Vues"
+          title={t("views")}
           value={stats.views}
           icon="👁️"
           color="blue"
         />
         <StatCard
-          title="Candidatures"
+          title={t("applications")}
           value={stats.applications}
           icon="📝"
           color="green"
         />
         <StatCard
-          title="Taux de conversion"
+          title={t("conversionRate")}
           value={`${stats.conversionRate}%`}
           icon="📊"
           color="purple"
@@ -49,7 +51,7 @@ export default function OfferStats({ stats, brandColor = "#3B82F6" }: OfferStats
       {Object.keys(stats.sourceStats).length > 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-            Sources des candidatures
+            {t("sources")}
           </h3>
           <div className="space-y-3">
             {Object.entries(stats.sourceStats).map(([source, count]) => {

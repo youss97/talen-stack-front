@@ -1,0 +1,155 @@
+{
+  "list": {
+    "title": "Mes Offres de Recrutement",
+    "subtitle": "Gérez vos offres et consultez les candidats proposés",
+    "newOffer": "+ Nouvelle offre",
+    "searchPlaceholder": "Rechercher par titre, référence...",
+    "allStatuses": "Tous les statuts",
+    "allContracts": "Tous les contrats",
+    "status": {
+      "in_progress": "En cours",
+      "standby": "Standby",
+      "filled": "Comblée",
+      "abandoned": "Abandonnée",
+      "archived": "Archivée",
+      "open": "Ouverte"
+    },
+    "priority": {
+      "urgent": "Urgent",
+      "high": "Haute",
+      "normal": "Normale",
+      "low": "Basse"
+    },
+    "empty": {
+      "title": "Aucune offre trouvée",
+      "filtered": "Essayez de modifier vos filtres",
+      "noOffers": "Aucune offre de recrutement pour le moment"
+    },
+    "reference": "Référence: {ref}",
+    "years": "ans",
+    "candidatesCount": "{count, plural, one {Candidat} other {Candidats}}",
+    "viewCandidates": "Voir les candidats",
+    "edit": "Modifier",
+    "archive": "Archiver",
+    "toast": {
+      "success": "Succès",
+      "error": "Erreur",
+      "createSuccess": "Offre créée avec succès",
+      "createError": "Erreur lors de la création de l'offre",
+      "editSuccess": "Offre modifiée avec succès",
+      "editError": "Erreur lors de la modification",
+      "archiveSuccess": "Offre archivée",
+      "archiveError": "Erreur lors de l'archivage"
+    }
+  },
+  "candidates": {
+    "backToOffers": "Retour aux offres",
+    "title": "Candidats Proposés",
+    "subtitle": "Consultez les candidats et ajoutez vos commentaires",
+    "offerDetails": "Détails de l'offre",
+    "editOffer": "Modifier l'offre",
+    "refresh": "Actualiser",
+    "searchPlaceholder": "Rechercher par nom, email...",
+    "allStatuses": "Tous les statuts",
+    "empty": {
+      "title": "Aucun candidat trouvé",
+      "filtered": "Essayez de modifier vos filtres",
+      "noCandidates": "Aucun candidat n'a encore été proposé pour cette offre"
+    },
+    "years": "ans",
+    "skillsLabel": "Compétences:",
+    "feedback": {
+      "hrEvaluations": "Évaluations RH ({count})",
+      "myFeedbacks": "Mes feedbacks ({count})",
+      "viewAll": "Voir tous"
+    },
+    "addFeedback": "Ajouter un feedback",
+    "consultApplication": "Consulter la candidature",
+    "viewCv": "Voir le CV",
+    "downloadCv": "Télécharger le CV",
+    "errors": {
+      "cvOpenFailed": "Impossible d'ouvrir le CV",
+      "cvDownloadFailed": "Impossible de télécharger le CV",
+      "cvDownloadError": "Erreur lors du téléchargement du CV: {message}"
+    }
+  },
+  "form": {
+    "createTitle": "Nouvelle offre de recrutement",
+    "editTitle": "Modifier l'offre de recrutement",
+    "createSubtitle": "Décrivez le profil que vous recherchez",
+    "editSubtitle": "Modifiez les informations de votre offre",
+    "titleLabel": "Titre du poste",
+    "titlePlaceholder": "Ex: Développeur Full Stack React",
+    "titleRequired": "Le titre est requis",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Décrivez le poste, les responsabilités, le profil recherché...",
+    "descriptionRequired": "La description est requise",
+    "skillsLabel": "Compétences requises",
+    "skillsPlaceholder": "Ex: React, Node.js...",
+    "add": "Ajouter",
+    "skillsHint": "Ajoutez au moins une compétence requise",
+    "softSkillsLabel": "Softskills",
+    "softSkillsPlaceholder": "Ex: Leadership, Travail en équipe...",
+    "contractTypesLabel": "Types de contrat",
+    "currencyLabel": "Devise",
+    "currencies": {
+      "MAD": "MAD — Dirham marocain",
+      "EUR": "EUR — Euro (€)",
+      "USD": "USD — Dollar ($)",
+      "GBP": "GBP — Livre (£)",
+      "TND": "TND — Dinar tunisien",
+      "DZD": "DZD — Dinar algérien",
+      "AED": "AED — Dirham des EAU",
+      "SAR": "SAR — Riyal saoudien"
+    },
+    "salarySection": "Prétentions salariales ({symbol}/mois)",
+    "salaryMin": "Salaire min",
+    "salaryMax": "Salaire max",
+    "packageCurrent": "Package actuel ({symbol})",
+    "packageDesired": "Package souhaité ({symbol})",
+    "tjmSection": "TJM souhaité ({symbol}/jour)",
+    "tjmMin": "TJM min",
+    "tjmMax": "TJM max",
+    "workType": "Mode de travail",
+    "workTypes": {
+      "on_site": "Présentiel",
+      "remote": "Télétravail",
+      "hybrid": "Hybride"
+    },
+    "country": "Pays",
+    "countryRequired": "Le pays est requis",
+    "city": "Ville",
+    "citySelectPlaceholder": "Sélectionnez une ville",
+    "cityPlaceholder": "Nom de la ville",
+    "cityRequired": "La ville est requise",
+    "minExperience": "Expérience min (années)",
+    "maxExperience": "Expérience max (années)",
+    "priority": "Priorité",
+    "priorities": {
+      "low": "Basse",
+      "normal": "Normale",
+      "high": "Haute",
+      "urgent": "Urgent"
+    },
+    "numberOfProfiles": "Nombre de profils",
+    "languagesLabel": "Langues requises",
+    "desiredStartDate": "Date de début souhaitée",
+    "benefits": "Avantages",
+    "benefitsPlaceholder": "Mutuelle, tickets restaurant, véhicule de fonction...",
+    "bonuses": "Primes",
+    "bonusesPlaceholder": "Prime de performance, 13ème mois...",
+    "note": "Note",
+    "notePlaceholder": "Informations complémentaires pour l'équipe RH...",
+    "noteHint": "Visible par vous et l'équipe RH",
+    "cancel": "Annuler",
+    "saving": "Enregistrement...",
+    "createSubmit": "Créer l'offre",
+    "editSubmit": "Modifier l'offre",
+    "defaultWorkflowSteps": {
+      "proposed": "Proposé",
+      "hrInterview": "Entretien RH",
+      "clientInterview": "Entretien client",
+      "offer": "Offre"
+    }
+  }
+}

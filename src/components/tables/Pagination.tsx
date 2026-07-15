@@ -1,3 +1,6 @@
+"use client";
+import { useTranslations } from "next-intl";
+
 type PaginationProps = {
   currentPage: number;
   totalPages: number;
@@ -17,6 +20,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onItemsPerPageChange,
   pageSizeOptions = [5, 10, 20, 50],
 }) => {
+  const t = useTranslations("common");
   // Fenêtre de pages bornée à [1, totalPages] — évite d'afficher des pages vides
   const windowSize = Math.min(3, totalPages);
   let windowStart = Math.max(currentPage - 1, 1);
@@ -36,12 +40,12 @@ const Pagination: React.FC<PaginationProps> = ({
       <div className="flex items-center gap-4">
         {totalItems !== undefined && (
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Affichage de {startItem} à {endItem} sur {totalItems} résultats
+            {t("pagination.showing", { from: startItem, to: endItem, total: totalItems })}
           </p>
         )}
         {onItemsPerPageChange && (
           <label className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <span>Par page</span>
+            <span>{t("pagination.rowsPerPage")}</span>
             <select
               value={itemsPerPage}
               onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
@@ -58,9 +62,9 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="mr-2.5 flex items-center h-10 justify-center rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-gray-700 shadow-theme-xs hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] text-sm"
+          className="me-2.5 flex items-center h-10 justify-center rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-gray-700 shadow-theme-xs hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] text-sm"
         >
-          Précédent
+          {t("actions.previous")}
         </button>
         <div className="flex items-center gap-2">
           {windowStart > 1 && <span className="px-2">...</span>}
@@ -82,9 +86,9 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages || totalPages === 0}
-          className="ml-2.5 flex items-center justify-center rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-gray-700 shadow-theme-xs text-sm hover:bg-gray-50 h-10 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
+          className="ms-2.5 flex items-center justify-center rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-gray-700 shadow-theme-xs text-sm hover:bg-gray-50 h-10 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
         >
-          Suivant
+          {t("actions.next")}
         </button>
       </div>
     </div>

@@ -1,0 +1,84 @@
+{
+  "page": {
+    "title": "إدارة التكليفات",
+    "subtitle": "قم بتكليف المسؤولين بالمواهب والترشيحات وطلبات التوظيف"
+  },
+  "stats": {
+    "unassignedCvs": "{count} سيرة ذاتية غير مكلفة",
+    "applications": "{count} ترشيح",
+    "requests": "{count} طلب"
+  },
+  "tabs": {
+    "cvs": "المواهب (السير الذاتية)",
+    "applications": "الترشيحات",
+    "requests": "الطلبات"
+  },
+  "filters": {
+    "searchCvs": "البحث بالاسم، المنصب...",
+    "searchApplications": "البحث بالمرشح، المنصب...",
+    "searchRequests": "البحث بالعنوان، المرجع...",
+    "unassignedOnly": "غير المكلفين فقط"
+  },
+  "columns": {
+    "candidate": "المرشح",
+    "position": "المنصب الحالي",
+    "experience": "الخبرة",
+    "experienceYears": "{count} سنة",
+    "skills": "المهارات",
+    "responsible": "المسؤول",
+    "titleOrRequest": "المنصب / الطلب",
+    "client": "العميل",
+    "reqTitle": "العنوان",
+    "contract": "العقد",
+    "priority": "الأولوية"
+  },
+  "priority": {
+    "urgent": "عاجل",
+    "high": "عالية",
+    "normal": "عادية",
+    "low": "منخفضة"
+  },
+  "responsible": {
+    "unassigned": "غير مكلف"
+  },
+  "entities": {
+    "cvSingular": "موهبة",
+    "cvPlural": "مواهب",
+    "applicationSingular": "ترشيح",
+    "applicationPlural": "ترشيحات",
+    "requestSingular": "طلب",
+    "requestPlural": "طلبات"
+  },
+  "modal": {
+    "singleCv": "هذه الموهبة",
+    "singleApplication": "هذا الترشيح",
+    "singleRequest": "هذا الطلب",
+    "bulk": "هذه {count} {entity}"
+  },
+  "emptyState": {
+    "cvs": "لم يتم العثور على أي موهبة",
+    "applications": "لم يتم العثور على أي ترشيح",
+    "requests": "لم يتم العثور على أي طلب"
+  },
+  "actions": {
+    "assign": "تكليف",
+    "unassign": "إلغاء التكليف",
+    "assignSelected": "تكليف {count} عنصر محدد",
+    "cancelSelection": "إلغاء التحديد"
+  },
+  "bulkBar": {
+    "selectedCv": "{count} موهبة محددة",
+    "selectedApplication": "{count} ترشيح محدد",
+    "selectedRequest": "{count} طلب محدد"
+  },
+  "toasts": {
+    "assignSuccess": "تم تكليف المسؤول",
+    "unassignSuccess": "تم إلغاء التكليف",
+    "assignError": "خطأ أثناء التكليف",
+    "bulkSuccess": "{count} عنصر تم تكليفه",
+    "bulkPartialTitle": "جزئي",
+    "bulkPartial": "{success} ناجح، {error} فاشل",
+    "deassignSuccessTitle": "تم إلغاء التكليف",
+    "deassignSuccess": "{count} عنصر تم إلغاء تكليفه"
+  }
+}

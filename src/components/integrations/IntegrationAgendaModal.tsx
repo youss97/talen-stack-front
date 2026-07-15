@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useGetIntegrationByIdQuery, useUpdateIntegrationMutation } from '@/lib/services/integrationApi';
 import { ContractType, IntegrationStatus, TrialPeriodStatus } from '@/types/integration';
 import { Modal } from '@/components/ui/modal';
@@ -21,6 +22,9 @@ export default function IntegrationAgendaModal({
   onClose,
   onSuccess,
 }: IntegrationAgendaModalProps) {
+  const t = useTranslations('integrations.agendaModal');
+  const tInt = useTranslations('integrations');
+  const tc = useTranslations('common');
   const [error, setError] = useState<string | null>(null);
   // 6.3 — Marquer l'intégration Réussie/Échouée avec un motif
   const [outcomeMode, setOutcomeMode] = useState<null | 'completed' | 'failed'>(null);
@@ -49,7 +53,7 @@ export default function IntegrationAgendaModal({
   const submitOutcome = async () => {
     if (!outcomeMode || !integration) return;
     if (!motif.trim()) {
-      setError('Veuillez saisir un motif.');
+      setError(t('outcome.motifRequiredError'));
       return;
     }
     setError(null);
@@ -64,7 +68,7 @@ export default function IntegrationAgendaModal({
       onSuccess?.();
       onClose();
     } catch (err) {
-      setError(getApiErrorMessage(err, "Erreur lors de la mise à jour de l'intégration"));
+      setError(getApiErrorMessage(err, t('outcome.updateErrorDefault')));
     }
   };
 
@@ -76,9 +80,9 @@ export default function IntegrationAgendaModal({
     };
 
     const labels = {
-      in_progress: 'En cours',
-      completed: 'Terminée',
-      failed: 'Échec',
+      in_progress: tInt('statuses.in_progress'),
+      completed: tInt('statuses.completed'),
+      failed: tInt('statuses.failed'),
     };
 
     return (
@@ -100,9 +104,9 @@ export default function IntegrationAgendaModal({
     };
 
     const labels = {
-      in_progress: 'En cours',
-      validated: 'Validée',
-      not_validated: 'Non validée',
+      in_progress: tInt('trialStatuses.in_progress'),
+      validated: tInt('trialStatuses.validated'),
+      not_validated: tInt('trialStatuses.not_validated'),
     };
 
     return (
@@ -129,7 +133,7 @@ export default function IntegrationAgendaModal({
         <div className="flex-1 flex items-center justify-center p-6">
           <div className="text-center">
             <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-gray-600 dark:text-gray-400">Chargement des détails...</p>
+            <p className="text-gray-600 dark:text-gray-400">{t('loading')}</p>
           </div>
         </div>
       </Modal>
@@ -141,7 +145,7 @@ export default function IntegrationAgendaModal({
       <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
         <div className="flex-1 flex items-center justify-center p-6">
           <div className="text-center">
-            <p className="text-red-600 dark:text-red-400">Intégration non trouvée</p>
+            <p className="text-red-600 dark:text-red-400">{t('notFound')}</p>
           </div>
         </div>
       </Modal>
@@ -155,7 +159,7 @@ export default function IntegrationAgendaModal({
           <div className="flex items-center gap-3">
             <span className="text-2xl">🔗</span>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-              Détails de l'intégration
+              {t('title')}
             </h2>
           </div>
           <div className="flex items-center gap-2">
@@ -173,37 +177,37 @@ export default function IntegrationAgendaModal({
             </div>
           </div>
         )}
-        
+
         {/* Vue en lecture seule avec actions spécifiques */}
         <div className="space-y-6">
           {/* Informations candidat */}
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
             <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
               <span>👤</span>
-              Candidat
+              {t('candidateSection.title')}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-blue-700 dark:text-blue-300 font-medium">Nom:</span>
-                <span className="ml-2 text-blue-900 dark:text-blue-100">
+                <span className="text-blue-700 dark:text-blue-300 font-medium">{t('candidateSection.name')}</span>
+                <span className="ms-2 text-blue-900 dark:text-blue-100">
                   {integration.application?.cv?.candidate_first_name || integration.application?.cv?.first_name} {integration.application?.cv?.candidate_last_name || integration.application?.cv?.last_name}
                 </span>
               </div>
               <div>
-                <span className="text-blue-700 dark:text-blue-300 font-medium">Email:</span>
-                <span className="ml-2 text-blue-900 dark:text-blue-100">
+                <span className="text-blue-700 dark:text-blue-300 font-medium">{t('candidateSection.email')}</span>
+                <span className="ms-2 text-blue-900 dark:text-blue-100">
                   {integration.application?.cv?.candidate_email || integration.application?.cv?.email}
                 </span>
               </div>
               <div>
-                <span className="text-blue-700 dark:text-blue-300 font-medium">Recrutement:</span>
-                <span className="ml-2 text-blue-900 dark:text-blue-100">
+                <span className="text-blue-700 dark:text-blue-300 font-medium">{t('candidateSection.recruitment')}</span>
+                <span className="ms-2 text-blue-900 dark:text-blue-100">
                   {integration.application?.request?.title}
                 </span>
               </div>
               <div>
-                <span className="text-blue-700 dark:text-blue-300 font-medium">Client:</span>
-                <span className="ml-2 text-blue-900 dark:text-blue-100">
+                <span className="text-blue-700 dark:text-blue-300 font-medium">{t('candidateSection.client')}</span>
+                <span className="ms-2 text-blue-900 dark:text-blue-100">
                   {integration.client?.name}
                 </span>
               </div>
@@ -214,37 +218,37 @@ export default function IntegrationAgendaModal({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
-                <h4 className="font-medium text-gray-900 dark:text-white mb-3">💼 Poste</h4>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-3">💼 {t('positionSection.title')}</h4>
                 <div className="space-y-2 text-sm">
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Position:</span>
-                    <span className="ml-2 font-medium">{integration.position}</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('positionSection.position')}</span>
+                    <span className="ms-2 font-medium">{integration.position}</span>
                   </div>
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Type de contrat:</span>
-                    <span className="ml-2 font-medium">{integration.contract_type?.toUpperCase()}</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('positionSection.contractType')}</span>
+                    <span className="ms-2 font-medium">{integration.contract_type?.toUpperCase()}</span>
                   </div>
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Date d'intégration:</span>
-                    <span className="ml-2 font-medium">
+                    <span className="text-gray-600 dark:text-gray-400">{t('positionSection.integrationDate')}</span>
+                    <span className="ms-2 font-medium">
                       {integration.integration_date ? (() => { const d = new Date(integration.integration_date); return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('fr-FR'); })() : '-'}
                     </span>
                   </div>
                 </div>
               </div>
               <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
-                <h4 className="font-medium text-gray-900 dark:text-white mb-3">💰 Rémunération</h4>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-3">💰 {t('salarySection.title')}</h4>
                 <div className="space-y-2 text-sm">
                   {integration.salary && (
                     <div>
-                      <span className="text-gray-600 dark:text-gray-400">Salaire mensuel:</span>
-                      <span className="ml-2 font-medium">{formatCurrency(integration.salary, integration.currency)}</span>
+                      <span className="text-gray-600 dark:text-gray-400">{t('salarySection.monthlySalary')}</span>
+                      <span className="ms-2 font-medium">{formatCurrency(integration.salary, integration.currency)}</span>
                     </div>
                   )}
                   {integration.daily_rate && (
                     <div>
-                      <span className="text-gray-600 dark:text-gray-400">TJM:</span>
-                      <span className="ml-2 font-medium">{formatCurrency(integration.daily_rate, integration.currency)}/jour</span>
+                      <span className="text-gray-600 dark:text-gray-400">{t('salarySection.dailyRate')}</span>
+                      <span className="ms-2 font-medium">{formatCurrency(integration.daily_rate, integration.currency)}{t('salarySection.perDay')}</span>
                     </div>
                   )}
                 </div>
@@ -253,21 +257,21 @@ export default function IntegrationAgendaModal({
 
             <div className="space-y-4">
               <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
-                <h4 className="font-medium text-gray-900 dark:text-white mb-3">📊 Statuts</h4>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-3">📊 {t('statusesSection.title')}</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Intégration:</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('statusesSection.integration')}</span>
                     {getStatusBadge(integration.status)}
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Période d'essai:</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('statusesSection.trialPeriod')}</span>
                     {getTrialStatusBadge(integration.trial_period_status)}
                   </div>
                   {integration.is_renewed && (
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Renouvellement:</span>
+                      <span className="text-gray-600 dark:text-gray-400">{t('statusesSection.renewal')}</span>
                       <Badge variant="light" color="info" size="sm">
-                        Renouvelée
+                        {t('statusesSection.renewed')}
                       </Badge>
                     </div>
                   )}
@@ -277,11 +281,11 @@ export default function IntegrationAgendaModal({
               {/* Évaluations et notes */}
               {(integration.evaluation_notes || integration.performance_rating) && (
                 <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
-                  <h4 className="font-medium text-gray-900 dark:text-white mb-3">📊 Évaluation</h4>
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-3">📊 {t('evaluationSection.title')}</h4>
                   <div className="space-y-2 text-sm">
                     {integration.performance_rating && (
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-600 dark:text-gray-400">Performance:</span>
+                        <span className="text-gray-600 dark:text-gray-400">{t('evaluationSection.performance')}</span>
                         <div className="flex items-center gap-1">
                           <span className="text-yellow-500">
                             {'⭐'.repeat(integration.performance_rating)}
@@ -295,10 +299,10 @@ export default function IntegrationAgendaModal({
                     )}
                     {integration.evaluation_notes && (
                       <div>
-                        <span className="text-gray-600 dark:text-gray-400">Notes:</span>
+                        <span className="text-gray-600 dark:text-gray-400">{t('evaluationSection.notes')}</span>
                         <p className="mt-1 text-gray-900 dark:text-white text-xs bg-white dark:bg-gray-800 p-2 rounded border">
-                          {integration.evaluation_notes.length > 100 
-                            ? `${integration.evaluation_notes.substring(0, 100)}...` 
+                          {integration.evaluation_notes.length > 100
+                            ? `${integration.evaluation_notes.substring(0, 100)}...`
                             : integration.evaluation_notes
                           }
                         </p>
@@ -312,7 +316,7 @@ export default function IntegrationAgendaModal({
 
           {integration.notes && (
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-900 dark:text-white mb-3">📝 Notes</h4>
+              <h4 className="font-medium text-gray-900 dark:text-white mb-3">📝 {t('notesSection.title')}</h4>
               <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                 {integration.notes}
               </p>
@@ -320,43 +324,43 @@ export default function IntegrationAgendaModal({
           )}
         </div>
       </div>
-      
+
       {/* 6.3 — Actions : marquer Réussie / Échouée avec motif */}
       <div className="flex-shrink-0 border-t border-gray-100 dark:border-gray-800 p-4 sm:p-6">
         {outcomeMode ? (
           <div className="space-y-3">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Motif {outcomeMode === 'completed' ? '(intégration réussie)' : '(intégration échouée)'}
+              {t('outcome.motifLabel')} {outcomeMode === 'completed' ? t('outcome.motifCompletedSuffix') : t('outcome.motifFailedSuffix')}
               <span className="text-error-500"> *</span>
             </label>
             <textarea
               value={motif}
               onChange={(e) => setMotif(e.target.value)}
               rows={3}
-              placeholder="Saisissez le motif..."
+              placeholder={t('outcome.motifPlaceholder')}
               className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
             />
             <div className="flex justify-end gap-3">
               <Button variant="outline" onClick={() => { setOutcomeMode(null); setMotif(''); setError(null); }} disabled={isSaving}>
-                Annuler
+                {tc('actions.cancel')}
               </Button>
               <Button onClick={submitOutcome} disabled={isSaving}>
-                {isSaving ? 'Enregistrement...' : 'Confirmer'}
+                {isSaving ? t('outcome.saving') : t('outcome.confirm')}
               </Button>
             </div>
           </div>
         ) : integration.status === IntegrationStatus.IN_PROGRESS ? (
           <div className="flex flex-col sm:flex-row justify-end gap-3">
             <Button variant="outline" onClick={() => { setOutcomeMode('failed'); setError(null); }}>
-              ❌ Marquer échouée
+              {t('outcome.markFailed')}
             </Button>
             <Button onClick={() => { setOutcomeMode('completed'); setError(null); }}>
-              ✓ Marquer réussie
+              {t('outcome.markCompleted')}
             </Button>
           </div>
         ) : (
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-right">
-            Intégration {integration.status === IntegrationStatus.COMPLETED ? 'réussie' : 'échouée'} — clôturée.
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-end">
+            {integration.status === IntegrationStatus.COMPLETED ? t('outcome.closedCompleted') : t('outcome.closedFailed')}
           </p>
         )}
       </div>

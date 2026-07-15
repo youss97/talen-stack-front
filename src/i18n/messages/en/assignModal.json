@@ -1,0 +1,11 @@
+{
+  "title": "Assign responsibles",
+  "subtitle": "Select one or more users to take charge of {entityLabel}.",
+  "defaultEntityLabel": "this item",
+  "addResponsible": "Add a responsible",
+  "searchPlaceholder": "Search for a user...",
+  "emptyResults": "No user found",
+  "clearAll": "Remove all assignments",
+  "assign": "Assign",
+  "assigning": "Assigning..."
+}

@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
@@ -30,6 +31,7 @@ export default function ApplicationStatusFormModal({
   isLoading = false,
   readOnly = false,
 }: ApplicationStatusFormModalProps) {
+  const t = useTranslations("settings.applicationStatusesPage.formModal");
   const isEditing = !!applicationStatus && !readOnly;
 
   const {
@@ -82,17 +84,17 @@ export default function ApplicationStatusFormModal({
       <div className="p-6 sm:p-8 pb-0">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
           {readOnly
-            ? "Détails du statut de candidature"
+            ? t("detailTitle")
             : isEditing
-            ? "Modifier le statut de candidature"
-            : "Ajouter un statut de candidature"}
+            ? t("editTitle")
+            : t("createTitle")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {readOnly
-            ? "Consultez les informations du statut de candidature"
+            ? t("detailSubtitle")
             : isEditing
-            ? "Modifiez les informations du statut de candidature"
-            : "Remplissez les informations pour créer un nouveau statut de candidature"}
+            ? t("editSubtitle")
+            : t("createSubtitle")}
         </p>
       </div>
 
@@ -101,7 +103,7 @@ export default function ApplicationStatusFormModal({
           <div className="flex flex-col items-center gap-3">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600 dark:border-gray-700 dark:border-t-blue-500"></div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Chargement des données...
+              {t("loading")}
             </p>
           </div>
         </div>
@@ -111,10 +113,10 @@ export default function ApplicationStatusFormModal({
             <div className="space-y-5">
               <div>
                 <Label>
-                  Nom {!readOnly && <span className="text-error-500">*</span>}
+                  {t("nameLabel")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
-                  placeholder="En attente, Accepté, Refusé..."
+                  placeholder={t("namePlaceholder")}
                   {...register("name")}
                   error={!!errors.name}
                   disabled={readOnly}
@@ -128,10 +130,10 @@ export default function ApplicationStatusFormModal({
 
               <div>
                 <Label>
-                  Description {!readOnly && <span className="text-error-500">*</span>}
+                  {t("descriptionLabel")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <TextArea
-                  placeholder="Description du statut de candidature..."
+                  placeholder={t("descriptionPlaceholder")}
                   {...register("description")}
                   error={!!errors.description}
                   disabled={readOnly}
@@ -145,7 +147,7 @@ export default function ApplicationStatusFormModal({
               </div>
 
               <div>
-                <Label>Couleur</Label>
+                <Label>{t("colorLabel")}</Label>
                 <Input
                   type="color"
                   placeholder="#000000"
@@ -161,7 +163,7 @@ export default function ApplicationStatusFormModal({
               </div>
 
               <div>
-                <Label>Ordre d'affichage</Label>
+                <Label>{t("orderLabel")}</Label>
                 <Input
                   type="number"
                   placeholder="0"
@@ -185,7 +187,7 @@ export default function ApplicationStatusFormModal({
                   className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                 />
                 <Label htmlFor="is_active" className="mb-0">
-                  Actif
+                  {t("activeLabel")}
                 </Label>
               </div>
 
@@ -198,7 +200,7 @@ export default function ApplicationStatusFormModal({
                   className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                 />
                 <Label htmlFor="is_final" className="mb-0">
-                  Statut final
+                  {t("finalLabel")}
                 </Label>
               </div>
             </div>
@@ -207,19 +209,19 @@ export default function ApplicationStatusFormModal({
           <div className="flex justify-end gap-3 p-6 sm:p-8 pt-0 border-t border-gray-100 dark:border-gray-800">
             {readOnly ? (
               <Button variant="outline" onClick={onClose}>
-                Fermer
+                {t("close")}
               </Button>
             ) : (
               <>
                 <Button variant="outline" onClick={onClose} disabled={isLoading}>
-                  Annuler
+                  {t("cancel")}
                 </Button>
                 <Button disabled={isLoading}>
                   {isLoading
-                    ? "Enregistrement..."
+                    ? t("saving")
                     : isEditing
-                    ? "Modifier"
-                    : "Ajouter"}
+                    ? t("edit")
+                    : t("add")}
                 </Button>
               </>
             )}

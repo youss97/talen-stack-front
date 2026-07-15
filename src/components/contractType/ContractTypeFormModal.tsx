@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
@@ -30,6 +31,7 @@ export default function ContractTypeFormModal({
   isLoading = false,
   readOnly = false,
 }: ContractTypeFormModalProps) {
+  const t = useTranslations("settings.contractTypesPage.formModal");
   const isEditing = !!contractType && !readOnly;
 
   const {
@@ -76,17 +78,17 @@ export default function ContractTypeFormModal({
       <div className="p-6 sm:p-8 pb-0">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
           {readOnly
-            ? "Détails du type de contrat"
+            ? t("detailTitle")
             : isEditing
-            ? "Modifier le type de contrat"
-            : "Ajouter un type de contrat"}
+            ? t("editTitle")
+            : t("createTitle")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {readOnly
-            ? "Consultez les informations du type de contrat"
+            ? t("detailSubtitle")
             : isEditing
-            ? "Modifiez les informations du type de contrat"
-            : "Remplissez les informations pour créer un nouveau type de contrat"}
+            ? t("editSubtitle")
+            : t("createSubtitle")}
         </p>
       </div>
 
@@ -95,7 +97,7 @@ export default function ContractTypeFormModal({
           <div className="flex flex-col items-center gap-3">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600 dark:border-gray-700 dark:border-t-blue-500"></div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Chargement des données...
+              {t("loading")}
             </p>
           </div>
         </div>
@@ -105,10 +107,10 @@ export default function ContractTypeFormModal({
             <div className="space-y-5">
               <div>
                 <Label>
-                  Nom {!readOnly && <span className="text-error-500">*</span>}
+                  {t("nameLabel")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
-                  placeholder="CDI, CDD, Stage..."
+                  placeholder={t("namePlaceholder")}
                   {...register("name")}
                   error={!!errors.name}
                   disabled={readOnly}
@@ -122,10 +124,10 @@ export default function ContractTypeFormModal({
 
               <div>
                 <Label>
-                  Description {!readOnly && <span className="text-error-500">*</span>}
+                  {t("descriptionLabel")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <TextArea
-                  placeholder="Description du type de contrat..."
+                  placeholder={t("descriptionPlaceholder")}
                   {...register("description")}
                   error={!!errors.description}
                   disabled={readOnly}
@@ -139,7 +141,7 @@ export default function ContractTypeFormModal({
               </div>
 
               <div>
-                <Label>Ordre d'affichage</Label>
+                <Label>{t("orderLabel")}</Label>
                 <Input
                   type="number"
                   placeholder="0"
@@ -163,7 +165,7 @@ export default function ContractTypeFormModal({
                   className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                 />
                 <Label htmlFor="is_active" className="mb-0">
-                  Actif
+                  {t("activeLabel")}
                 </Label>
               </div>
             </div>
@@ -172,19 +174,19 @@ export default function ContractTypeFormModal({
           <div className="flex justify-end gap-3 p-6 sm:p-8 pt-0 border-t border-gray-100 dark:border-gray-800">
             {readOnly ? (
               <Button variant="outline" onClick={onClose}>
-                Fermer
+                {t("close")}
               </Button>
             ) : (
               <>
                 <Button variant="outline" onClick={onClose} disabled={isLoading}>
-                  Annuler
+                  {t("cancel")}
                 </Button>
                 <Button disabled={isLoading}>
                   {isLoading
-                    ? "Enregistrement..."
+                    ? t("saving")
                     : isEditing
-                    ? "Modifier"
-                    : "Ajouter"}
+                    ? t("edit")
+                    : t("add")}
                 </Button>
               </>
             )}

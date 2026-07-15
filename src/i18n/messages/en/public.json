@@ -1,0 +1,207 @@
+{
+  "poweredBy": "Powered by TalentStack",
+  "jobsMeta": {
+    "title": "Job offer",
+    "description": "View this job offer and apply."
+  },
+  "applyMeta": {
+    "title": "Job offer",
+    "description": "View this job offer and apply."
+  },
+  "apply": {
+    "badge": "OPEN POSITION",
+    "loading": "Loading job offer…",
+    "notFound": {
+      "title": "Job offer not found",
+      "message": "This offer doesn't exist or is no longer available."
+    },
+    "hero": {
+      "experience": "{count, plural, one {# yr exp.} other {# yrs exp.}}",
+      "cta": "Apply for this position"
+    },
+    "success": {
+      "title": "Application sent successfully!",
+      "message": "Our HR team will get back to you as soon as possible."
+    },
+    "sections": {
+      "description": "Job description",
+      "skills": "Required skills",
+      "details": "Job details"
+    },
+    "sidebar": {
+      "reference": "Reference",
+      "contract": "Contract",
+      "location": "Location",
+      "experience": "Experience",
+      "experienceValue": "{count, plural, one {# year minimum} other {# years minimum}}",
+      "salary": "Salary",
+      "salaryFrom": "From {value}",
+      "salaryTo": "Up to {value}",
+      "duration": "Duration",
+      "remote": "Remote work",
+      "remoteYes": "Possible",
+      "remoteNo": "No",
+      "deadline": "Application deadline",
+      "startDate": "Desired start date",
+      "industry": "Industry"
+    },
+    "mobileCta": {
+      "prompt": "Interested in this position?",
+      "button": "Apply now"
+    },
+    "sidebarCta": "Apply now",
+    "modal": {
+      "title": "Apply",
+      "firstName": "First name",
+      "firstNamePlaceholder": "John",
+      "lastName": "Last name",
+      "lastNamePlaceholder": "Smith",
+      "email": "Email",
+      "emailPlaceholder": "john@example.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+212 6 00 00 00 00",
+      "cv": "Resume (PDF, DOC, DOCX — max 5 MB)",
+      "cvDropActive": "Drop the file here",
+      "cvDropIdle": "Drag and drop or click to upload your resume",
+      "message": "Cover letter",
+      "optional": "(optional)",
+      "messagePlaceholder": "Tell us about yourself and your motivation for this position…",
+      "cancel": "Cancel",
+      "submitting": "Sending…",
+      "submit": "Send my application",
+      "errors": {
+        "invalidFileType": "PDF, DOC or DOCX only",
+        "fileTooLarge": "File too large (max 5 MB)",
+        "dropRejected": "PDF, DOC or DOCX only (max 5 MB)",
+        "requiredFields": "Please fill in all required fields",
+        "cvRequired": "Please attach your resume",
+        "generic": "An error occurred while sending. Please try again."
+      }
+    },
+    "footer": {
+      "rightsWithName": "© {year} {name}. All rights reserved.",
+      "rightsNoName": "© {year}. All rights reserved."
+    }
+  },
+  "company": {
+    "loading": "Loading…",
+    "notFound": "Company not found",
+    "spontaneousCta": "Spontaneous application",
+    "spontaneousModalTitle": "Spontaneous application",
+    "spontaneousModalSubtitle": "Send your profile to {name}",
+    "successBanner": "Your spontaneous application has been sent successfully. Thank you!",
+    "filters": {
+      "contractType": "Contract type",
+      "countryAll": "Country (all)",
+      "cityAll": "City (all)",
+      "maxExperience": "Max experience (years)"
+    },
+    "offersTitle": "Job openings",
+    "offersCount": "{count, plural, one {# opening} other {# openings}}",
+    "experienceYears": "{count, plural, one {# year of experience} other {# years of experience}}",
+    "viewDetails": "View details",
+    "noOffers": "No openings available for these criteria.",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "form": {
+      "firstNamePlaceholder": "First name",
+      "lastNamePlaceholder": "Last name",
+      "emailPlaceholder": "Email",
+      "phonePlaceholder": "Phone",
+      "cv": "Resume (PDF, DOC, DOCX — max 5 MB)",
+      "cvDropActive": "Drop the file here",
+      "cvDropIdle": "Drag and drop or click to upload your resume",
+      "messagePlaceholder": "Message (optional)",
+      "cancel": "Cancel",
+      "sending": "Sending…",
+      "send": "Send",
+      "errors": {
+        "invalidFileType": "PDF, DOC or DOCX only",
+        "fileTooLarge": "File too large (max 5 MB)",
+        "dropRejected": "PDF, DOC or DOCX only (max 5 MB)",
+        "requiredFields": "Please fill in all required fields",
+        "cvRequired": "Please attach your resume",
+        "generic": "An error occurred while sending. Please try again."
+      }
+    },
+    "footer": {
+      "copyright": "© {year} {name}"
+    }
+  },
+  "jobs": {
+    "badge": "OPEN POSITION",
+    "loading": "Loading job offer…",
+    "notFound": {
+      "title": "Job offer not found",
+      "message": "This offer doesn't exist or has expired."
+    },
+    "hero": {
+      "experience": "{count, plural, one {# yr exp.} other {# yrs exp.}}"
+    },
+    "sections": {
+      "about": "About the position",
+      "skills": "Required skills",
+      "apply": "Apply for this position"
+    },
+    "info": {
+      "contract": "Contract",
+      "location": "Location",
+      "salary": "Salary",
+      "experience": "Experience",
+      "deadline": "Application deadline"
+    },
+    "details": "Job details",
+    "form": {
+      "firstName": "First name",
+      "firstNamePlaceholder": "John",
+      "lastName": "Last name",
+      "lastNamePlaceholder": "Smith",
+      "email": "Email",
+      "emailPlaceholder": "john@example.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+212 6 00 00 00 00",
+      "cv": "Resume (PDF, DOC, DOCX — max 5 MB)",
+      "cvDropIdle": "Drag and drop or click to upload your resume",
+      "message": "Cover message",
+      "messagePlaceholder": "Tell us about yourself and your motivation for this position…",
+      "submitting": "Sending…",
+      "submit": "Send my application",
+      "errors": {
+        "fileTooLargeTitle": "File too large",
+        "fileTooLargeMessage": "Your resume must not exceed 5 MB",
+        "errorTitle": "Error",
+        "requiredFields": "Please fill in all required fields",
+        "submitFailed": "An error occurred while submitting your application"
+      }
+    },
+    "success": {
+      "title": "Application sent!",
+      "message": "Thank you for your application. Our HR team will get back to you as soon as possible."
+    },
+    "applyShortcut": "Apply now →",
+    "footer": {
+      "rightsWithName": "© {year} {name}. All rights reserved.",
+      "rightsNoName": "© {year}. All rights reserved."
+    }
+  },
+  "track": {
+    "loading": "Loading…",
+    "notFound": "Application not found",
+    "genericError": "Error",
+    "title": "Application tracking",
+    "status": "Status: {status}",
+    "step": "Step: {step}",
+    "receivedOn": "Application received on {date}",
+    "history": "History"
+  },
+  "card": {
+    "loading": "Loading…",
+    "notFound": "Card not found",
+    "call": "Call",
+    "email": "Send an email",
+    "addToContacts": "Add to contacts",
+    "link": "Link"
+  }
+}

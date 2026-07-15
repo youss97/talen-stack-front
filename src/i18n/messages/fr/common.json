@@ -1,0 +1,55 @@
+{
+  "actions": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "search": "Rechercher",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter",
+    "view": "Voir",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "download": "Télécharger",
+    "export": "Exporter",
+    "filter": "Filtrer",
+    "reset": "Réinitialiser",
+    "create": "Créer",
+    "update": "Mettre à jour",
+    "submit": "Envoyer",
+    "loadMore": "Charger plus"
+  },
+  "status": {
+    "loading": "Chargement...",
+    "noData": "Aucune donnée",
+    "noResults": "Aucun résultat",
+    "success": "Succès",
+    "error": "Erreur",
+    "warning": "Attention",
+    "info": "Information"
+  },
+  "labels": {
+    "actions": "Actions",
+    "status": "Statut",
+    "date": "Date",
+    "name": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "description": "Description",
+    "type": "Type",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "pagination": {
+    "page": "Page",
+    "of": "sur",
+    "showing": "Affichage de {from} à {to} sur {total}",
+    "rowsPerPage": "Lignes par page"
+  },
+  "confirmDialog": {
+    "deleteTitle": "Confirmer la suppression",
+    "deleteMessage": "Cette action est irréversible. Voulez-vous continuer ?"
+  }
+}

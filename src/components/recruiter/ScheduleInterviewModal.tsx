@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import DatePicker from "@/components/ui/datepicker/DatePicker";
@@ -24,6 +25,8 @@ export default function ScheduleInterviewModal({
   candidateName,
   existingInterview,
 }: ScheduleInterviewModalProps) {
+  const t = useTranslations("interviewModals.scheduleInterview");
+  const tc = useTranslations("common");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState(60);
@@ -74,7 +77,7 @@ export default function ScheduleInterviewModal({
     if (email && !invitees.includes(email)) {
       // Validation email simple
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        setError("Email invalide");
+        setError(t("invalidEmail"));
         return;
       }
       setInvitees([...invitees, email]);
@@ -92,31 +95,31 @@ export default function ScheduleInterviewModal({
     setError("");
 
     if (!date || !time) {
-      setError("La date et l'heure sont requises");
+      setError(t("dateTimeRequiredError"));
       return;
     }
 
     if (duration < 15) {
-      setError("La durée minimale est de 15 minutes");
+      setError(t("minDurationError"));
       return;
     }
 
     if (type === 'presential' && !location.trim()) {
-      setError("Le lieu est requis pour un entretien présentiel");
+      setError(t("locationRequiredError"));
       return;
     }
 
     if (type === 'online' && !meetingLink.trim()) {
-      setError("Le lien de réunion est requis pour un entretien en ligne");
+      setError(t("meetingLinkRequiredError"));
       return;
     }
 
     // Combiner date et heure
     const scheduledDate = new Date(`${date}T${time}`);
-    
+
     // Vérifier que la date est dans le futur
     if (scheduledDate <= new Date()) {
-      setError("La date de l'entretien doit être dans le futur");
+      setError(t("futureDateError"));
       return;
     }
 
@@ -150,7 +153,7 @@ export default function ScheduleInterviewModal({
         setInvitees([]);
         setSendEmail(true);
       } catch (err) {
-        setError("Erreur lors de la modification de l'entretien");
+        setError(t("updateError"));
       }
     } else {
       // Payload pour la création (CreateInterviewRequest)
@@ -182,7 +185,7 @@ export default function ScheduleInterviewModal({
         setInvitees([]);
         setSendEmail(true);
       } catch (err) {
-        setError("Erreur lors de la création de l'entretien");
+        setError(t("createError"));
       }
     }
   };
@@ -192,11 +195,11 @@ export default function ScheduleInterviewModal({
       <form onSubmit={handleSubmit}>
         <div className="p-6 sm:p-8 pb-0">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-            {existingInterview ? "✏️ Modifier l'entretien" : "📅 Organiser un entretien"}
+            {existingInterview ? `✏️ ${t("editTitle")}` : `📅 ${t("createTitle")}`}
           </h2>
           {candidateName && (
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              Avec {candidateName} ({candidateEmail})
+              {t("withCandidate", { name: candidateName, email: candidateEmail || "" })}
             </p>
           )}
         </div>
@@ -212,19 +215,19 @@ export default function ScheduleInterviewModal({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Date <span className="text-red-500">*</span>
+                {t("dateLabel")} <span className="text-red-500">*</span>
               </label>
               <DatePicker
                 value={date}
                 onChange={setDate}
-                placeholder="Sélectionner une date"
+                placeholder={t("datePlaceholder")}
                 minDate={new Date().toISOString().split('T')[0]}
                 required
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Heure <span className="text-red-500">*</span>
+                {t("timeLabel")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="time"
@@ -239,7 +242,7 @@ export default function ScheduleInterviewModal({
           {/* Durée */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Durée (minutes) <span className="text-red-500">*</span>
+              {t("durationLabel")} <span className="text-red-500">*</span>
             </label>
             <input
               type="number"
@@ -255,24 +258,24 @@ export default function ScheduleInterviewModal({
           {/* Titre */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Titre de l'entretien (optionnel)
+              {t("titleFieldLabel")}
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Ex: Entretien technique - Développeur Full Stack"
+              placeholder={t("titleFieldPlaceholder")}
               className="w-full h-11 appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
             />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Le titre sera utilisé dans l'objet de l'email d'invitation
+              {t("titleFieldHint")}
             </p>
           </div>
 
           {/* Type */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Type d'entretien <span className="text-red-500">*</span>
+              {t("typeLabel")} <span className="text-red-500">*</span>
             </label>
             <div className="flex gap-4">
               <label className="flex items-center cursor-pointer">
@@ -284,8 +287,8 @@ export default function ScheduleInterviewModal({
                   onChange={(e) => setType(e.target.value as 'online')}
                   className="w-4 h-4 text-brand-600 focus:ring-brand-500"
                 />
-                <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                  🌐 En ligne
+                <span className="ms-2 text-sm text-gray-700 dark:text-gray-300">
+                  🌐 {t("online")}
                 </span>
               </label>
               <label className="flex items-center cursor-pointer">
@@ -297,8 +300,8 @@ export default function ScheduleInterviewModal({
                   onChange={(e) => setType(e.target.value as 'presential')}
                   className="w-4 h-4 text-brand-600 focus:ring-brand-500"
                 />
-                <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                  📍 Présentiel
+                <span className="ms-2 text-sm text-gray-700 dark:text-gray-300">
+                  📍 {t("presential")}
                 </span>
               </label>
             </div>
@@ -308,13 +311,13 @@ export default function ScheduleInterviewModal({
           {type === 'presential' && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Lieu <span className="text-red-500">*</span>
+                {t("locationLabel")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="Ex: 123 Rue de la Paix, Paris"
+                placeholder={t("locationPlaceholder")}
                 className="w-full h-11 appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                 required={type === 'presential'}
               />
@@ -325,13 +328,13 @@ export default function ScheduleInterviewModal({
           {type === 'online' && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Lien de réunion <span className="text-red-500">*</span>
+                {t("meetingLinkLabel")} <span className="text-red-500">*</span>
               </label>
               <input
                 type="url"
                 value={meetingLink}
                 onChange={(e) => setMeetingLink(e.target.value)}
-                placeholder="Ex: https://meet.google.com/abc-defg-hij"
+                placeholder={t("meetingLinkPlaceholder")}
                 className="w-full h-11 appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                 required={type === 'online'}
               />
@@ -341,13 +344,13 @@ export default function ScheduleInterviewModal({
           {/* Notes */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Notes (optionnel)
+              {t("notesLabel")}
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              placeholder="Ex: Entretien technique avec l'équipe de développement"
+              placeholder={t("notesPlaceholder")}
               className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
             />
           </div>
@@ -355,19 +358,19 @@ export default function ScheduleInterviewModal({
           {/* Notes internes (visibles seulement par l'équipe RH) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Notes internes - Équipe RH uniquement (optionnel)
+              {t("internalNotesLabel")}
             </label>
             <textarea
               value={internalNotes}
               onChange={(e) => setInternalNotes(e.target.value)}
               rows={3}
-              placeholder="Ex: Candidat recommandé par le manager, profil prioritaire..."
+              placeholder={t("internalNotesPlaceholder")}
               className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
             />
             <div className="flex items-start gap-2 mt-2">
               <span className="text-amber-600 dark:text-amber-400 text-sm">🔒</span>
               <p className="text-xs text-amber-700 dark:text-amber-300">
-                Ces notes ne sont visibles que par l'équipe RH et ne seront pas partagées avec le candidat ou les invités.
+                {t("internalNotesHint")}
               </p>
             </div>
           </div>
@@ -375,7 +378,7 @@ export default function ScheduleInterviewModal({
           {/* Invités */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Inviter des personnes (optionnel)
+              {t("inviteesLabel")}
             </label>
             <div className="flex gap-2">
               <input
@@ -383,11 +386,11 @@ export default function ScheduleInterviewModal({
                 value={inviteesInput}
                 onChange={(e) => setInviteesInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddInvitee())}
-                placeholder="Email de la personne à inviter"
+                placeholder={t("inviteesPlaceholder")}
                 className="flex-1 h-11 appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
               />
               <Button type="button" onClick={handleAddInvitee} variant="outline">
-                Ajouter
+                {tc("actions.add")}
               </Button>
             </div>
             {invitees.length > 0 && (
@@ -421,8 +424,8 @@ export default function ScheduleInterviewModal({
                 onChange={(e) => setSendEmail(e.target.checked)}
                 className="w-4 h-4 text-brand-600 focus:ring-brand-500 rounded"
               />
-              <label htmlFor="sendEmail" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                Envoyer automatiquement un email au candidat
+              <label htmlFor="sendEmail" className="ms-2 text-sm text-gray-700 dark:text-gray-300">
+                {t("sendEmailLabel")}
               </label>
             </div>
           )}
@@ -430,12 +433,12 @@ export default function ScheduleInterviewModal({
 
         <div className="flex justify-end gap-3 p-6 sm:p-8 pt-4 border-t border-gray-100 dark:border-gray-800">
           <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-            Annuler
+            {tc("actions.cancel")}
           </Button>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? 
-              (existingInterview ? "Modification..." : "Création...") : 
-              (existingInterview ? "Modifier l'entretien" : "Organiser l'entretien")
+            {isLoading ?
+              (existingInterview ? t("updating") : t("creating")) :
+              (existingInterview ? t("updateButton") : t("createButton"))
             }
           </Button>
         </div>

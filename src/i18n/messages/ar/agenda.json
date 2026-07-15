@@ -1,0 +1,120 @@
+{
+  "page": {
+    "title": "📅 أجندة المقابلات والإدماج",
+    "eventsDisplayed": "{count, plural, =0 {لا توجد أحداث معروضة} one {# حدث معروض} two {حدثان معروضان} few {# أحداث معروضة} many {# حدثًا معروضًا} other {# حدث معروض}}"
+  },
+  "loading": {
+    "message": "جارٍ تحميل الأحداث لهذه الفترة...",
+    "range": "من {start} إلى {end}"
+  },
+  "loadError": {
+    "title": "خطأ أثناء تحميل البيانات",
+    "unknown": "خطأ غير معروف"
+  },
+  "cards": {
+    "interviews": {
+      "title": "المقابلات",
+      "subtitle": "إدارة مقابلات المرشحين",
+      "scheduled": "مُبرمجة",
+      "completed": "منتهية",
+      "rescheduled": "مؤجلة",
+      "cancelled": "ملغاة"
+    },
+    "integrations": {
+      "title": "الإدماج",
+      "subtitle": "متابعة إدماج المرشحين",
+      "inProgress": "قيد التنفيذ",
+      "completed": "منتهي",
+      "failed": "فاشل"
+    }
+  },
+  "filters": {
+    "label": "التصفية:",
+    "interviews": "المقابلات",
+    "integrations": "الإدماج",
+    "interviewStatus": "حالة المقابلات:",
+    "integrationStatus": "حالة الإدماج:",
+    "options": {
+      "all": "الكل",
+      "scheduled": "مُبرمجة",
+      "completed": "منتهية",
+      "cancelled": "ملغاة",
+      "rescheduled": "مؤجلة",
+      "inProgress": "قيد التنفيذ",
+      "integrationCompleted": "منتهي",
+      "failed": "فاشل"
+    },
+    "reset": "إعادة التعيين"
+  },
+  "calendar": {
+    "allDay": "طوال اليوم",
+    "previous": "السابق",
+    "next": "التالي",
+    "today": "اليوم",
+    "month": "شهر",
+    "week": "أسبوع",
+    "day": "يوم",
+    "agenda": "الأجندة",
+    "date": "التاريخ",
+    "time": "الوقت",
+    "event": "حدث",
+    "noEventsInRange": "لا توجد أحداث في هذه الفترة",
+    "showMore": "+ {total} أخرى"
+  },
+  "legend": {
+    "title": "مفتاح الألوان",
+    "interviews": {
+      "title": "المقابلات",
+      "scheduled": "مُبرمجة",
+      "completed": "منتهية",
+      "rescheduled": "مؤجلة",
+      "cancelled": "ملغاة"
+    },
+    "integrations": {
+      "title": "الإدماج",
+      "inProgress": "قيد التنفيذ",
+      "completed": "منتهي",
+      "failed": "فاشل"
+    }
+  },
+  "events": {
+    "candidateFallback": "مرشح",
+    "interviewTitle": "مقابلة - {candidateName}",
+    "integrationTitle": "إدماج - {candidateName} ({position})"
+  },
+  "toasts": {
+    "statusChanged": {
+      "title": "تم تعديل الحالة",
+      "message": "تم تغيير حالة المقابلة بنجاح"
+    },
+    "statusChangeError": {
+      "title": "خطأ",
+      "message": "تعذر تغيير حالة المقابلة"
+    },
+    "rescheduled": {
+      "title": "تم تأجيل المقابلة",
+      "message": "تم تأجيل المقابلة بنجاح. تم إرسال الإشعارات."
+    },
+    "rescheduleError": {
+      "title": "خطأ",
+      "message": "تعذر تأجيل المقابلة"
+    },
+    "deleted": {
+      "title": "تم حذف المقابلة",
+      "message": "تم حذف المقابلة بنجاح"
+    },
+    "deleteError": {
+      "title": "خطأ",
+      "message": "تعذر حذف المقابلة"
+    },
+    "integrationUpdated": {
+      "title": "تم تحديث الإدماج",
+      "message": "تم حفظ التعديلات بنجاح"
+    }
+  },
+  "deleteModal": {
+    "title": "حذف المقابلة",
+    "message": "هل أنت متأكد أنك تريد حذف هذه المقابلة؟ لا يمكن التراجع عن هذا الإجراء.",
+    "confirmText": "حذف"
+  }
+}

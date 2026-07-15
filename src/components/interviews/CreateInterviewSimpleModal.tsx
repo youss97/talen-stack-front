@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { Modal } from '@/components/ui/modal';
@@ -25,6 +26,8 @@ export default function CreateInterviewSimpleModal({
   application,
   isLoading = false,
 }: CreateInterviewSimpleModalProps) {
+  const t = useTranslations('interviewModals.createSimple');
+  const tc = useTranslations('common');
   const [formData, setFormData] = useState({
     scheduled_date: '',
     scheduled_time: '',
@@ -53,7 +56,7 @@ export default function CreateInterviewSimpleModal({
         type: 'online',
         location: '',
         meeting_link: '',
-        title: application ? `Entretien - ${application.request?.title || 'Poste'}` : '',
+        title: application ? `${t('defaultTitlePrefix')}${application.request?.title || t('defaultTitleFallback')}` : '',
         notes: '',
         internal_notes: '',
         invitees_emails: [],
@@ -72,7 +75,7 @@ export default function CreateInterviewSimpleModal({
     const email = inviteesInput.trim();
     if (email && !formData.invitees_emails.includes(email)) {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        setError("Email invalide");
+        setError(t('invalidEmail'));
         return;
       }
       setFormData(prev => ({
@@ -96,36 +99,36 @@ export default function CreateInterviewSimpleModal({
     setError(null);
 
     if (!application) {
-      setError('Aucune candidature sélectionnée');
+      setError(t('noApplicationSelected'));
       return;
     }
 
     if (!formData.scheduled_date || !formData.scheduled_time) {
-      setError('La date et l\'heure sont requises');
+      setError(t('dateTimeRequired'));
       return;
     }
 
     if (formData.duration_minutes < 15) {
-      setError('La durée minimale est de 15 minutes');
+      setError(t('minDurationError'));
       return;
     }
 
     if (formData.type === 'presential' && !formData.location.trim()) {
-      setError('Le lieu est requis pour un entretien présentiel');
+      setError(t('locationRequiredError'));
       return;
     }
 
     if (formData.type === 'online' && !formData.meeting_link.trim()) {
-      setError('Le lien de réunion est requis pour un entretien en ligne');
+      setError(t('meetingLinkRequiredError'));
       return;
     }
 
     // Combiner date et heure
     const scheduledDate = new Date(`${formData.scheduled_date}T${formData.scheduled_time}`);
-    
+
     // Vérifier que la date est dans le futur
     if (scheduledDate <= new Date()) {
-      setError('La date de l\'entretien doit être dans le futur');
+      setError(t('futureDateError'));
       return;
     }
 
@@ -143,12 +146,12 @@ export default function CreateInterviewSimpleModal({
         send_email_automatically: formData.send_email_automatically,
       };
 
-      console.log('Données entretien envoyées:', createData);
+      console.log('Interview data sent:', createData);
       await onSubmit(application.id, createData);
       onClose();
     } catch (error: any) {
-      console.error('Erreur:', error);
-      setError(error?.message || 'Erreur lors de la création de l\'entretien');
+      console.error('Error:', error);
+      setError(error?.message || t('genericCreateError'));
     }
   };
 
@@ -159,7 +162,7 @@ export default function CreateInterviewSimpleModal({
           <div className="flex items-center gap-3 mb-4 sm:mb-6">
             <span className="text-2xl">📅</span>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-              Organiser un entretien
+              {t('modalTitle')}
             </h2>
           </div>
 
@@ -177,31 +180,31 @@ export default function CreateInterviewSimpleModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>👤</span>
-                Candidature sélectionnée
+                {t('applicationSectionTitle')}
               </h3>
-              
+
               {application && (
                 <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
                   <div className="flex items-start gap-2">
                     <span className="text-blue-600 dark:text-blue-400 text-sm">ℹ️</span>
                     <div className="text-sm">
                       <p className="font-medium text-blue-900 dark:text-blue-100">
-                        Informations de la candidature
+                        {t('applicationInfoTitle')}
                       </p>
                       <p className="text-blue-700 dark:text-blue-300 mt-1">
-                        <strong>Candidat:</strong> {application.cv?.candidate_first_name} {application.cv?.candidate_last_name}
+                        <strong>{t('candidateLabel')}</strong> {application.cv?.candidate_first_name} {application.cv?.candidate_last_name}
                       </p>
                       <p className="text-blue-700 dark:text-blue-300">
-                        <strong>Email:</strong> {application.cv?.candidate_email}
+                        <strong>{t('emailLabel')}</strong> {application.cv?.candidate_email}
                       </p>
                       <p className="text-blue-700 dark:text-blue-300">
-                        <strong>Recrutement:</strong> {application.request?.title} ({application.request?.reference})
+                        <strong>{t('recruitmentLabel')}</strong> {application.request?.title} ({application.request?.reference})
                       </p>
                       <p className="text-blue-700 dark:text-blue-300">
-                        <strong>Client:</strong> {application.request?.client?.name}
+                        <strong>{t('clientLabel')}</strong> {application.request?.client?.name}
                       </p>
                       <p className="text-blue-700 dark:text-blue-300">
-                        <strong>Responsable RH:</strong> {currentUser?.first_name} {currentUser?.last_name} (utilisateur connecté)
+                        <strong>{t('hrManagerLabel')}</strong> {currentUser?.first_name} {currentUser?.last_name} {t('hrManagerSuffix')}
                       </p>
                     </div>
                   </div>
@@ -213,15 +216,15 @@ export default function CreateInterviewSimpleModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>📅</span>
-                Planification
+                {t('planningSectionTitle')}
               </h3>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div>
                   <DatePicker
                     id="scheduled_date"
-                    label="Date *"
-                    placeholder="Sélectionner une date"
+                    label={`${t('dateLabel')} *`}
+                    placeholder={t('datePlaceholder')}
                     onChange={handleDateChange}
                     defaultDate={formData.scheduled_date || undefined}
                   />
@@ -229,7 +232,7 @@ export default function CreateInterviewSimpleModal({
 
                 <div>
                   <Label htmlFor="scheduled_time">
-                    Heure <span className="text-red-500">*</span>
+                    {t('timeLabel')} <span className="text-red-500">*</span>
                   </Label>
                   <input
                     id="scheduled_time"
@@ -243,7 +246,7 @@ export default function CreateInterviewSimpleModal({
 
                 <div>
                   <Label htmlFor="duration_minutes">
-                    Durée (minutes) <span className="text-red-500">*</span>
+                    {t('durationLabel')} <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="duration_minutes"
@@ -263,20 +266,20 @@ export default function CreateInterviewSimpleModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>📝</span>
-                Titre et Description
+                {t('titleSectionTitle')}
               </h3>
-              
+
               <div>
-                <Label htmlFor="title">Titre de l'entretien</Label>
+                <Label htmlFor="title">{t('titleFieldLabel')}</Label>
                 <Input
                   id="title"
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Ex: Entretien technique - Développeur Full Stack"
+                  placeholder={t('titleFieldPlaceholder')}
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Le titre sera utilisé dans l'objet de l'email d'invitation
+                  {t('titleFieldHint')}
                 </p>
               </div>
             </div>
@@ -285,11 +288,11 @@ export default function CreateInterviewSimpleModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>📍</span>
-                Type et Lieu
+                {t('typeSectionTitle')}
               </h3>
-              
+
               <div>
-                <Label>Type d'entretien <span className="text-red-500">*</span></Label>
+                <Label>{t('typeLabel')} <span className="text-red-500">*</span></Label>
                 <div className="flex gap-4 mt-2">
                   <label className="flex items-center cursor-pointer">
                     <input
@@ -300,8 +303,8 @@ export default function CreateInterviewSimpleModal({
                       onChange={(e) => setFormData({ ...formData, type: e.target.value as 'online' })}
                       className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                      🌐 En ligne
+                    <span className="ms-2 text-sm text-gray-700 dark:text-gray-300">
+                      🌐 {t('online')}
                     </span>
                   </label>
                   <label className="flex items-center cursor-pointer">
@@ -313,8 +316,8 @@ export default function CreateInterviewSimpleModal({
                       onChange={(e) => setFormData({ ...formData, type: e.target.value as 'presential' })}
                       className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                      📍 Présentiel
+                    <span className="ms-2 text-sm text-gray-700 dark:text-gray-300">
+                      📍 {t('presential')}
                     </span>
                   </label>
                 </div>
@@ -323,7 +326,7 @@ export default function CreateInterviewSimpleModal({
               {formData.type === 'presential' ? (
                 <div>
                   <Label htmlFor="location">
-                    Lieu <span className="text-red-500">*</span>
+                    {t('locationLabel')} <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="location"
@@ -331,13 +334,13 @@ export default function CreateInterviewSimpleModal({
                     required={formData.type === 'presential'}
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    placeholder="Ex: 123 Rue de la Paix, Paris"
+                    placeholder={t('locationPlaceholder')}
                   />
                 </div>
               ) : (
                 <div>
                   <Label htmlFor="meeting_link">
-                    Lien de réunion <span className="text-red-500">*</span>
+                    {t('meetingLinkLabel')} <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="meeting_link"
@@ -345,7 +348,7 @@ export default function CreateInterviewSimpleModal({
                     required={formData.type === 'online'}
                     value={formData.meeting_link}
                     onChange={(e) => setFormData({ ...formData, meeting_link: e.target.value })}
-                    placeholder="Ex: https://meet.google.com/abc-defg-hij"
+                    placeholder={t('meetingLinkPlaceholder')}
                   />
                 </div>
               )}
@@ -355,35 +358,35 @@ export default function CreateInterviewSimpleModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>📋</span>
-                Notes
+                {t('notesSectionTitle')}
               </h3>
-              
+
               <div>
-                <Label htmlFor="notes">Notes (optionnel)</Label>
+                <Label htmlFor="notes">{t('notesFieldLabel')}</Label>
                 <textarea
                   id="notes"
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Ex: Entretien technique avec l'équipe de développement"
+                  placeholder={t('notesFieldPlaceholder')}
                 />
               </div>
 
               <div>
-                <Label htmlFor="internal_notes">Notes internes - Équipe RH uniquement (optionnel)</Label>
+                <Label htmlFor="internal_notes">{t('internalNotesFieldLabel')}</Label>
                 <textarea
                   id="internal_notes"
                   value={formData.internal_notes}
                   onChange={(e) => setFormData({ ...formData, internal_notes: e.target.value })}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Ex: Candidat recommandé par le manager, profil prioritaire..."
+                  placeholder={t('internalNotesFieldPlaceholder')}
                 />
                 <div className="flex items-start gap-2 mt-2">
                   <span className="text-amber-600 dark:text-amber-400 text-sm">🔒</span>
                   <p className="text-xs text-amber-700 dark:text-amber-300">
-                    Ces notes ne sont visibles que par l'équipe RH et ne seront pas partagées avec le candidat ou les invités.
+                    {t('internalNotesHint')}
                   </p>
                 </div>
               </div>
@@ -393,11 +396,11 @@ export default function CreateInterviewSimpleModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>👥</span>
-                Invités
+                {t('inviteesSectionTitle')}
               </h3>
-              
+
               <div>
-                <Label htmlFor="invitees_input">Inviter des personnes (optionnel)</Label>
+                <Label htmlFor="invitees_input">{t('inviteesFieldLabel')}</Label>
                 <div className="flex gap-2">
                   <input
                     id="invitees_input"
@@ -405,11 +408,11 @@ export default function CreateInterviewSimpleModal({
                     value={inviteesInput}
                     onChange={(e) => setInviteesInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddInvitee())}
-                    placeholder="Email de la personne à inviter"
+                    placeholder={t('inviteesFieldPlaceholder')}
                     className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                   <Button type="button" onClick={handleAddInvitee} variant="outline">
-                    Ajouter
+                    {tc('actions.add')}
                   </Button>
                 </div>
                 {formData.invitees_emails.length > 0 && (
@@ -438,9 +441,9 @@ export default function CreateInterviewSimpleModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>📧</span>
-                Notification
+                {t('notificationSectionTitle')}
               </h3>
-              
+
               <div className="flex items-center">
                 <input
                   type="checkbox"
@@ -449,23 +452,23 @@ export default function CreateInterviewSimpleModal({
                   onChange={(e) => setFormData({ ...formData, send_email_automatically: e.target.checked })}
                   className="w-4 h-4 text-blue-600 focus:ring-blue-500 rounded"
                 />
-                <label htmlFor="send_email_automatically" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                  Envoyer automatiquement un email au candidat et aux invités
+                <label htmlFor="send_email_automatically" className="ms-2 text-sm text-gray-700 dark:text-gray-300">
+                  {t('sendEmailLabel')}
                 </label>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
               <Button type="button" onClick={onClose} variant="outline" className="w-full sm:w-auto">
-                Annuler
+                {tc('actions.cancel')}
               </Button>
-              <Button 
-                type="submit" 
-                disabled={isLoading || !formData.scheduled_date || !application} 
+              <Button
+                type="submit"
+                disabled={isLoading || !formData.scheduled_date || !application}
                 variant="primary"
                 className="w-full sm:w-auto"
               >
-                {isLoading ? 'Création...' : 'Organiser l\'entretien'}
+                {isLoading ? t('creating') : t('submitButton')}
               </Button>
             </div>
           </form>

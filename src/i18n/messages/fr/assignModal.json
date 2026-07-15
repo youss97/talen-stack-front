@@ -1,0 +1,11 @@
+{
+  "title": "Affecter des responsables",
+  "subtitle": "Sélectionnez un ou plusieurs utilisateurs pour prendre en charge {entityLabel}.",
+  "defaultEntityLabel": "cet élément",
+  "addResponsible": "Ajouter un responsable",
+  "searchPlaceholder": "Rechercher un utilisateur...",
+  "emptyResults": "Aucun utilisateur trouvé",
+  "clearAll": "Retirer toutes les affectations",
+  "assign": "Affecter",
+  "assigning": "Affectation..."
+}

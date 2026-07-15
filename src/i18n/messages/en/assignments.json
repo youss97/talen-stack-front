@@ -1,0 +1,84 @@
+{
+  "page": {
+    "title": "Assignment Management",
+    "subtitle": "Assign responsibles to talents, applications and recruitment requests"
+  },
+  "stats": {
+    "unassignedCvs": "{count} unassigned CVs",
+    "applications": "{count} applications",
+    "requests": "{count} requests"
+  },
+  "tabs": {
+    "cvs": "Talents (CVs)",
+    "applications": "Applications",
+    "requests": "Requests"
+  },
+  "filters": {
+    "searchCvs": "Search by name, position...",
+    "searchApplications": "Search by candidate, position...",
+    "searchRequests": "Search by title, reference...",
+    "unassignedOnly": "Unassigned only"
+  },
+  "columns": {
+    "candidate": "Candidate",
+    "position": "Current Position",
+    "experience": "Experience",
+    "experienceYears": "{count} years",
+    "skills": "Skills",
+    "responsible": "Responsible",
+    "titleOrRequest": "Position / Request",
+    "client": "Client",
+    "reqTitle": "Title",
+    "contract": "Contract",
+    "priority": "Priority"
+  },
+  "priority": {
+    "urgent": "Urgent",
+    "high": "High",
+    "normal": "Normal",
+    "low": "Low"
+  },
+  "responsible": {
+    "unassigned": "Unassigned"
+  },
+  "entities": {
+    "cvSingular": "talent",
+    "cvPlural": "talents",
+    "applicationSingular": "application",
+    "applicationPlural": "applications",
+    "requestSingular": "request",
+    "requestPlural": "requests"
+  },
+  "modal": {
+    "singleCv": "this talent",
+    "singleApplication": "this application",
+    "singleRequest": "this request",
+    "bulk": "these {count} {entity}"
+  },
+  "emptyState": {
+    "cvs": "No talent found",
+    "applications": "No application found",
+    "requests": "No request found"
+  },
+  "actions": {
+    "assign": "Assign",
+    "unassign": "Unassign",
+    "assignSelected": "Assign {count} selected",
+    "cancelSelection": "Cancel selection"
+  },
+  "bulkBar": {
+    "selectedCv": "{count, plural, one {# talent selected} other {# talents selected}}",
+    "selectedApplication": "{count, plural, one {# application selected} other {# applications selected}}",
+    "selectedRequest": "{count, plural, one {# request selected} other {# requests selected}}"
+  },
+  "toasts": {
+    "assignSuccess": "Responsible assigned",
+    "unassignSuccess": "Assignment removed",
+    "assignError": "Error while assigning",
+    "bulkSuccess": "{count, plural, one {# item assigned} other {# items assigned}}",
+    "bulkPartialTitle": "Partial",
+    "bulkPartial": "{success, plural, one {# succeeded} other {# succeeded}}, {error, plural, one {# failed} other {# failed}}",
+    "deassignSuccessTitle": "Unassigned",
+    "deassignSuccess": "{count, plural, one {# item unassigned} other {# items unassigned}}"
+  }
+}

@@ -1,0 +1,960 @@
+"use client";
+import { useState, useCallback, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
+import { Controller, useForm } from "react-hook-form";
+import DataTableWithSelection from "@/components/tables/DataTableWithSelection";
+import ActionsMenu from "@/components/tables/ActionsMenu";
+import BulkActions from "@/components/tables/BulkActions";
+import Pagination from "@/components/tables/Pagination";
+import Button from "@/components/ui/button/Button";
+import Badge from "@/components/ui/badge/Badge";
+import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
+import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
+import ConfirmModal from "@/components/ui/modal/ConfirmModal";
+import RecruiterFormModal from "@/components/recruiter/RecruiterFormModal";
+import RecruiterDetailModal from "@/components/recruiter/RecruiterDetailModal";
+import BulkEmailModal from "@/components/recruiter/BulkEmailModal";
+import AssignRecruiterModal from "@/components/recruiter/AssignRecruiterModal";
+import AssignModal from "@/components/assign/AssignModal";
+import CreateInterviewSimpleModal from "@/components/interviews/CreateInterviewSimpleModal";
+import InfiniteSelect from "@/components/form/InfiniteSelect";
+import {
+  useGetRecruitersQuery,
+  useGetRecruiterByIdQuery,
+  useLazyGetRecruiterByIdQuery,
+  useCreateRecruiterMutation,
+  useUpdateRecruiterMutation,
+  useDeleteRecruiterMutation,
+  useActivateApplicationMutation,
+  useSendApplicationEmailMutation,
+  useAssignApplicationMutation,
+  useAssignApplicationResponsibleMutation,
+} from "@/lib/services/recruiterApi";
+import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
+import { useGetClientsForSelectInfiniteQuery } from "@/lib/services/clientApi";
+import { useGetApplicationRequestsForSelectInfiniteQuery } from "@/lib/services/applicationRequestApi";
+import { useCreateInterviewMutation } from "@/lib/services/interviewApi";
+import { useActions } from "@/hooks/useActions";
+import { exportCandidaturesToExcel, type ExportableCandidate } from "@/utils/excelExport";
+import { EmailIcon, CalendarIcon } from "@/components/tables/DataTableWithSelection";
+import type { Recruiter } from "@/types/recruiter";
+import type { CreateRecruiterRequest, UpdateRecruiterRequest, WorkflowStatus } from "@/types/recruiter";
+import type { CreateInterviewRequest } from "@/types/interview";
+import { getApiErrorMessage } from "@/utils/errorMessages";
+
+export default function ApplicationsPage() {
+  const t = useTranslations("applications");
+  const tc = useTranslations("common");
+  const { canCreate, canUpdate, canDelete } = useActions("/applications");
+  const canAssign = canUpdate;
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [workflowStatusFilter, setWorkflowStatusFilter] = useState<WorkflowStatus | "">("");
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  
+  // Form for filters
+  const { control, watch } = useForm({
+    defaultValues: {
+      clientFilter: "",
+      requestFilter: "",
+    },
+  });
+
+  const clientFilter = watch("clientFilter");
+  const requestFilter = watch("requestFilter");
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isBulkEmailModalOpen, setIsBulkEmailModalOpen] = useState(false);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [isInterviewModalOpen, setIsInterviewModalOpen] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState<Recruiter | null>(null);
+  const [detailApplicationId, setDetailApplicationId] = useState<string | null>(null);
+  const [interviewCandidate, setInterviewCandidate] = useState<Recruiter | null>(null);
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    application: Recruiter | null;
+  }>({ isOpen: false, application: null });
+  const [activateModal, setActivateModal] = useState<{
+    isOpen: boolean;
+    application: Recruiter | null;
+    action: 'activate' | 'deactivate';
+  }>({ isOpen: false, application: null, action: 'activate' });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isActivating, setIsActivating] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isAssigning, setIsAssigning] = useState(false);
+  const [assignResponsibleModal, setAssignResponsibleModal] = useState<{
+    isOpen: boolean;
+    application: Recruiter | null;
+  }>({ isOpen: false, application: null });
+  const [isAssigningResponsible, setIsAssigningResponsible] = useState(false);
+
+  const addToast = useCallback(
+    (
+      variant: "success" | "error" | "warning" | "info",
+      title: string,
+      message?: string
+    ) => {
+      const id = Date.now().toString();
+      setToasts((prev) => [...prev, { id, variant, title, message }]);
+    },
+    []
+  );
+
+  const removeToast = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  }, []);
+
+  const { data, isLoading, isFetching, refetch } = useGetRecruitersQuery({
+    page,
+    limit,
+    search: search || undefined,
+    status: statusFilter || undefined,
+    workflow_status: workflowStatusFilter || undefined,
+    client_id: clientFilter || undefined,
+    request_id: requestFilter || undefined,
+  });
+
+  // Récupérer les statuts de candidature
+  const { data: applicationStatusesData } = useGetApplicationStatusesQuery({
+    page: 1,
+    limit: 100,
+    is_active: true
+  });
+
+  const [createApplication, { isLoading: isCreating }] = useCreateRecruiterMutation();
+  const [updateApplication, { isLoading: isUpdating }] = useUpdateRecruiterMutation();
+  const [deleteApplication] = useDeleteRecruiterMutation();
+  const [activateApplication] = useActivateApplicationMutation();
+  const [sendApplicationEmail] = useSendApplicationEmailMutation();
+  const [assignApplication] = useAssignApplicationMutation();
+  const [assignApplicationResponsible] = useAssignApplicationResponsibleMutation();
+  const [createInterview, { isLoading: isCreatingInterview }] = useCreateInterviewMutation();
+  const [getApplicationById, { isLoading: isLoadingApplication }] = useLazyGetRecruiterByIdQuery();
+
+  const getErrorMessage = (error: unknown, defaultMessage: string): string =>
+    getApiErrorMessage(error, defaultMessage);
+
+  const applicationStatuses = applicationStatusesData?.data || [];
+
+  const getStatusLabel = (status: string) => resolveStatusLabel(status, applicationStatuses);
+
+  const getStatusColor = (status: string) => {
+    const statusObj = applicationStatuses.find(s => s.name === status);
+    if (!statusObj) return "light";
+    
+    // Mapper les couleurs selon le type de statut
+    switch (statusObj.color?.toLowerCase()) {
+      case "blue":
+      case "info":
+        return "info";
+      case "yellow":
+      case "warning":
+        return "warning";
+      case "green":
+      case "success":
+        return "success";
+      case "red":
+      case "error":
+      case "danger":
+        return "error";
+      default:
+        return "light";
+    }
+  };
+
+  // Nouvelles fonctions pour la multi-sélection
+  const handleSelectionChange = (selectedIds: string[]) => {
+    setSelectedItems(selectedIds);
+  };
+
+  const handleClearSelection = () => {
+    setSelectedItems([]);
+  };
+
+  const handleBulkDelete = async () => {
+    setIsBulkDeleting(true);
+    try {
+      // Supprimer chaque application individuellement
+      const results = await Promise.allSettled(
+        selectedItems.map(id => deleteApplication(id).unwrap())
+      );
+      
+      const successful = results.filter(r => r.status === 'fulfilled').length;
+      const failed = results.filter(r => r.status === 'rejected').length;
+      
+      if (failed > 0) {
+        addToast("warning", t("toast.bulkDeletePartialTitle"),
+          t("toast.bulkDeletePartialMessage", { successful, failed }));
+      } else {
+        addToast("success", tc("status.success"), t("toast.bulkDeleteSuccessMessage", { successful }));
+      }
+
+      setSelectedItems([]);
+    } catch (error) {
+      addToast("error", tc("status.error"), getErrorMessage(error, t("toast.bulkDeleteErrorMessage")));
+      throw error;
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
+  const handleBulkEmail = () => {
+    setIsBulkEmailModalOpen(true);
+  };
+
+  const handleSendBulkEmail = async (emailData: { subject: string; message: string; recipients: ('candidate' | 'client')[] }) => {
+    setIsSendingEmail(true);
+    try {
+      await Promise.all(
+        selectedItems.map(id => 
+          sendApplicationEmail({
+            id,
+            recipients: emailData.recipients,
+            subject: emailData.subject,
+            message: emailData.message,
+          }).unwrap()
+        )
+      );
+      addToast("success", tc("status.success"), t("toast.bulkEmailSuccessMessage", { count: selectedItems.length }));
+      setSelectedItems([]);
+    } catch (error) {
+      addToast("error", tc("status.error"), getErrorMessage(error, t("toast.bulkEmailErrorMessage")));
+      throw error;
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  const handleAssign = async (recruiterId: string, recruiterName: string) => {
+    setIsAssigning(true);
+    try {
+      const results = await Promise.allSettled(
+        selectedItems.map(id => assignApplication({ id, recruiter_id: recruiterId }).unwrap())
+      );
+      const successful = results.filter(r => r.status === 'fulfilled').length;
+      const failed = results.filter(r => r.status === 'rejected').length;
+      if (failed > 0) {
+        addToast("warning", t("toast.assignPartialTitle"), t("toast.assignPartialMessage", { successful, failed }));
+      } else {
+        addToast("success", tc("status.success"), t("toast.assignSuccessMessage", { successful, name: recruiterName }));
+      }
+      setSelectedItems([]);
+      setIsAssignModalOpen(false);
+    } catch (error) {
+      addToast("error", tc("status.error"), getErrorMessage(error, t("toast.assignErrorMessage")));
+    } finally {
+      setIsAssigning(false);
+    }
+  };
+
+  const handleAssignResponsibleClick = (application: Recruiter) => {
+    setAssignResponsibleModal({ isOpen: true, application });
+  };
+
+  const handleAssignResponsible = async (responsibleIds: string[]) => {
+    if (!assignResponsibleModal.application) return;
+    setIsAssigningResponsible(true);
+    try {
+      await assignApplicationResponsible({ id: assignResponsibleModal.application.id, responsible_ids: responsibleIds }).unwrap();
+      addToast("success", tc("status.success"), responsibleIds.length > 0 ? t("toast.assignResponsibleAddedMessage") : t("toast.assignResponsibleRemovedMessage"));
+    } catch (error) {
+      addToast("error", tc("status.error"), getErrorMessage(error, t("toast.assignErrorMessage")));
+    } finally {
+      setIsAssigningResponsible(false);
+    }
+  };
+
+  // Actions directes sur les lignes
+  const handleSendEmail = (application: Recruiter) => {
+    // Ouvrir le modal d'email pour une seule candidature
+    setSelectedItems([application.id]);
+    setIsBulkEmailModalOpen(true);
+  };
+
+  const handleScheduleInterview = (application: Recruiter) => {
+    setInterviewCandidate(application);
+    setIsInterviewModalOpen(true);
+  };
+
+  const handleCreateInterview = async (applicationId: string, data: CreateInterviewRequest) => {
+    try {
+      await createInterview({ applicationId, data }).unwrap();
+      addToast("success", tc("status.success"), t("toast.interviewCreatedMessage"));
+      setIsInterviewModalOpen(false);
+      setInterviewCandidate(null);
+    } catch (error: any) {
+      addToast("error", tc("status.error"), getErrorMessage(error, t("toast.interviewErrorMessage")));
+      throw error;
+    }
+  };
+
+  const columns = [
+    {
+      key: "cv" as keyof Recruiter,
+      header: t("list.columns.candidate"),
+      className: "min-w-[200px]",
+      render: (value: unknown) => {
+        const cv = value as { candidate_first_name: string; candidate_last_name: string; candidate_email: string };
+        return (
+          <div>
+            <div className="font-medium text-gray-900 dark:text-white">
+              {cv?.candidate_first_name} {cv?.candidate_last_name}
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">{cv?.candidate_email || "-"}</div>
+          </div>
+        );
+      },
+    },
+    {
+      id: "request",
+      key: "request" as keyof Recruiter,
+      header: t("list.columns.request"),
+      className: "min-w-[180px]",
+      render: (value: unknown) => {
+        const request = value as { title: string; reference: string };
+        return (
+          <div>
+            <div className="font-medium text-gray-900 dark:text-white truncate max-w-[180px]">{request?.title || "-"}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">{t("list.reference", { reference: request?.reference || "-" })}</div>
+          </div>
+        );
+      },
+    },
+    {
+      id: "client",
+      key: "request" as keyof Recruiter,
+      header: t("list.columns.client"),
+      className: "min-w-[150px]",
+      render: (_value: unknown, row: Recruiter) => {
+        const request = row.request as { client?: { name: string } } | undefined;
+        return (
+          <span className="text-sm text-gray-800 dark:text-gray-200 truncate block max-w-[150px]">
+            {request?.client?.name || "-"}
+          </span>
+        );
+      },
+    },
+    {
+      key: "workflow_status",
+      header: t("list.columns.workflow"),
+      className: "min-w-[120px]",
+      render: (value: any, row: Recruiter) => {
+        const status = (value as string) || 'draft';
+        const isActive = status === 'active';
+
+        return (
+          <div className="flex items-center gap-2">
+            {canUpdate ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleToggleWorkflowClick(row);
+                }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
+                  isActive
+                    ? 'bg-success-100 text-success-700 hover:bg-success-200 dark:bg-success-500/10 dark:text-success-400 dark:hover:bg-success-500/20'
+                    : 'bg-warning-100 text-warning-700 hover:bg-warning-200 dark:bg-warning-500/10 dark:text-warning-400 dark:hover:bg-warning-500/20'
+                }`}
+                title={isActive ? t("list.toggleDeactivate") : t("list.toggleActivate")}
+              >
+                {isActive ? `✓ ${t("list.workflowActive")}` : `○ ${t("list.workflowDraft")}`}
+              </button>
+            ) : (
+              <Badge color={isActive ? "success" : "warning"} variant="light" size="sm">
+                {isActive ? t("list.workflowActive") : t("list.workflowDraft")}
+              </Badge>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      key: "current_step",
+      header: t("list.columns.step"),
+      className: "min-w-[140px]",
+      render: (value: any, row: Recruiter) => {
+        const step = (value as string) || null;
+        const steps = (row.request as { workflow_steps?: Array<{ name: string; order: number }> } | undefined)?.workflow_steps || [];
+        const terminalColors: Record<string, "success" | "error" | "warning"> = {
+          "Accepté": "success",
+          "KO": "error",
+          "Désistement": "warning",
+        };
+        const total = steps.length;
+        const idx = step ? steps.findIndex((s) => s.name === step) : -1;
+        const color = step ? (terminalColors[step] || "info") : "light";
+        return (
+          <div className="flex flex-col gap-0.5">
+            <Badge color={color} variant="light" size="sm">
+              {step || t("list.notStarted")}
+            </Badge>
+            {idx >= 0 && total > 0 && (
+              <span className="text-[10px] text-gray-400 dark:text-gray-500">
+                {t("list.stepProgress", { current: idx + 1, total })}
+              </span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      key: "status",
+      header: t("list.columns.status"),
+      className: "min-w-[120px]",
+      render: (value: any) => (
+        <Badge
+          color={getStatusColor(value as string) as "success" | "error" | "warning" | "info" | "light"}
+          variant="light"
+          size="sm"
+        >
+          {getStatusLabel(value as string)}
+        </Badge>
+      ),
+    },
+    {
+      id: "created_by_recruiter",
+      key: "recruiter" as keyof Recruiter,
+      header: t("list.columns.createdBy"),
+      className: "min-w-[130px]",
+      render: (_value: unknown, row: Recruiter) => {
+        const r = row.recruiter as { first_name?: string; last_name?: string } | undefined;
+        const name = r ? `${r.first_name || ""} ${r.last_name || ""}`.trim() : "";
+        return (
+          <span className="text-sm text-gray-700 dark:text-gray-300 truncate block max-w-[130px]">
+            {name || "-"}
+          </span>
+        );
+      },
+    },
+    {
+      key: "recruiter_notes",
+      header: t("list.columns.notes"),
+      className: "min-w-[150px]",
+      render: (value: any) => (
+        <span className="truncate max-w-[150px] block text-sm">
+          {(value as string) || "-"}
+        </span>
+      ),
+    },
+  ];
+
+  const router = useRouter();
+  // 3.1 — Le détail est désormais une page dédiée
+  const handleRowClick = async (application: Recruiter) => {
+    router.push(`/applications/${application.id}`);
+  };
+
+  // Deep-link ?applicationId=... (ex: depuis l'agenda/entretien) → rediriger vers la page dédiée
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const appId = searchParams.get("applicationId");
+    if (appId) {
+      router.push(`/applications/${appId}`);
+    }
+  }, [searchParams, router]);
+
+  const handleAddClick = () => {
+    setSelectedApplication(null);
+    setFormError(null);
+    setIsFormModalOpen(true);
+  };
+
+  const handleEditClick = async (application: Recruiter) => {
+    // Charger les données complètes avant d'ouvrir le modal
+    setFormError(null);
+    setIsFormModalOpen(true);
+    setSelectedApplication(null); // Afficher un loading
+    try {
+      const fullData = await getApplicationById(application.id).unwrap();
+      setSelectedApplication(fullData);
+    } catch (error) {
+      console.error("Error loading application data:", error);
+      addToast("error", tc("status.error"), t("toast.loadApplicationErrorMessage"));
+      setIsFormModalOpen(false);
+      setSelectedApplication(null); // Réinitialiser pour éviter de bloquer
+    }
+  };
+
+  const handleDeleteClick = (application: Recruiter) => {
+    setConfirmModal({ isOpen: true, application });
+  };
+
+  const handleActivateClick = (application: Recruiter) => {
+    setActivateModal({ isOpen: true, application, action: 'activate' });
+  };
+
+  const handleToggleWorkflowClick = (application: Recruiter) => {
+    const isActive = application.workflow_status === 'active';
+    setActivateModal({ 
+      isOpen: true, 
+      application, 
+      action: isActive ? 'deactivate' : 'activate' 
+    });
+  };
+
+  const handleConfirmActivate = async () => {
+    if (!activateModal.application) return;
+
+    setIsActivating(true);
+    try {
+      if (activateModal.action === 'activate') {
+        await activateApplication(activateModal.application.id).unwrap();
+        addToast("success", tc("status.success"), t("toast.activateSuccessMessage"));
+      } else {
+        // Désactiver = remettre en brouillon
+        await updateApplication({
+          id: activateModal.application.id,
+          data: { workflow_status: 'draft' },
+        }).unwrap();
+        addToast("success", tc("status.success"), t("toast.deactivateSuccessMessage"));
+      }
+      setActivateModal({ isOpen: false, application: null, action: 'activate' });
+    } catch (error) {
+      const defaultMsg = activateModal.action === 'activate' ? t("toast.activateErrorMessage") : t("toast.deactivateErrorMessage");
+      addToast("error", tc("status.error"), getErrorMessage(error, defaultMsg));
+    } finally {
+      setIsActivating(false);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmModal.application) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteApplication(confirmModal.application.id).unwrap();
+      addToast("success", tc("status.success"), t("toast.deleteSuccessMessage"));
+      setConfirmModal({ isOpen: false, application: null });
+    } catch (error) {
+      addToast("error", tc("status.error"), getErrorMessage(error, t("toast.deleteErrorMessage")));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleFormSubmit = async (data: any) => {
+    try {
+      if (selectedApplication) {
+        await updateApplication({
+          id: selectedApplication.id,
+          data: data as UpdateRecruiterRequest,
+        }).unwrap();
+        addToast("success", tc("status.success"), t("toast.updateSuccessMessage"));
+      } else {
+        await createApplication(data as CreateRecruiterRequest).unwrap();
+        addToast("success", tc("status.success"), t("toast.createSuccessMessage"));
+      }
+      setIsFormModalOpen(false);
+      setSelectedApplication(null);
+    } catch (error) {
+      const defaultMsg = selectedApplication
+        ? t("toast.updateErrorMessage")
+        : t("toast.createErrorMessage");
+      const msg = getErrorMessage(error, defaultMsg);
+      setFormError(msg);
+      addToast("error", tc("status.error"), msg);
+    }
+  };
+
+  const handleExportExcel = () => {
+    if (!data?.data || data.data.length === 0) {
+      addToast("warning", t("toast.noDataTitle"), t("toast.noDataToExportMessage"));
+      return;
+    }
+
+    try {
+      // Convertir les données au format attendu par l'export
+      const exportableData: ExportableCandidate[] = data.data.map(application => ({
+        id: application.id,
+        cv: application.cv,
+        request: application.request,
+        status: application.status,
+        proposed_at: application.proposed_at,
+        recruiter: application.recruiter,
+        recruiter_notes: application.recruiter_notes,
+        feedbacks: application.feedbacks,
+      }));
+
+      const result = exportCandidaturesToExcel(exportableData, 'candidatures');
+      addToast("success", t("toast.exportSuccessTitle"), t("toast.exportSuccessMessage", { count: result.count, filename: result.filename }));
+    } catch (error) {
+      console.error('Erreur lors de l\'export:', error);
+      const errorMessage = error instanceof Error ? error.message : t("toast.exportErrorFallbackMessage");
+      addToast("error", t("toast.exportErrorTitle"), errorMessage);
+    }
+  };
+
+  return (
+    <div className="p-6">
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+
+      <div className="w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {t("list.title")}
+            </h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              {t("list.subtitle")}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <Button
+              onClick={handleExportExcel}
+              variant="outline"
+              disabled={!data?.data || data.data.length === 0}
+            >
+              📊 {t("list.exportButton")}
+            </Button>
+            {canCreate && (
+              <Button onClick={handleAddClick} startIcon={<PlusIcon />}>
+                {t("list.addButton")}
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div>
+              <input
+                type="text"
+                placeholder={t("list.filters.searchPlaceholder")}
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+              />
+            </div>
+            <div>
+              <Controller
+                name="clientFilter"
+                control={control}
+                render={({ field }) => (
+                  <InfiniteSelect
+                    label=""
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      setPage(1);
+                    }}
+                    useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
+                    itemLabelKey="name"
+                    itemValueKey="id"
+                    placeholder={t("list.filters.allClients")}
+                    emptyMessage={t("list.filters.noClientFound")}
+                  />
+                )}
+              />
+            </div>
+            <div>
+              <Controller
+                name="requestFilter"
+                control={control}
+                render={({ field }) => (
+                  <InfiniteSelect
+                    label=""
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      setPage(1);
+                    }}
+                    useInfiniteQuery={useGetApplicationRequestsForSelectInfiniteQuery}
+                    itemLabelKey="title"
+                    itemValueKey="id"
+                    placeholder={t("list.filters.allRequests")}
+                    emptyMessage={t("list.filters.noRequestFound")}
+                  />
+                )}
+              />
+            </div>
+            <div>
+              <select
+                value={workflowStatusFilter}
+                onChange={(e) => {
+                  setWorkflowStatusFilter(e.target.value as WorkflowStatus | "");
+                  setPage(1);
+                }}
+                className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+              >
+                <option value="">{t("list.filters.allWorkflows")}</option>
+                <option value="draft">{t("list.workflowDraft")}</option>
+                <option value="active">{t("list.workflowActive")}</option>
+                <option value="archived">{t("list.workflowArchived")}</option>
+              </select>
+            </div>
+            <div>
+              <select
+                value={statusFilter}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value);
+                  setPage(1);
+                }}
+                className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+              >
+                <option value="">{t("list.filters.allStatuses")}</option>
+                {applicationStatuses.map((status) => (
+                  <option key={status.id} value={status.name}>
+                    {status.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <BulkActions
+          selectedCount={selectedItems.length}
+          onClearSelection={handleClearSelection}
+          onBulkDelete={handleBulkDelete}
+          onBulkEmail={handleBulkEmail}
+          onBulkAssign={() => setIsAssignModalOpen(true)}
+          isDeleting={isBulkDeleting}
+        />
+
+        <div className="overflow-x-auto">
+          <DataTableWithSelection
+            columns={columns}
+            data={data?.data || []}
+            selectedItems={selectedItems}
+            onSelectionChange={handleSelectionChange}
+            isLoading={isLoading || isFetching}
+            onView={handleRowClick}
+            actions={(row: Recruiter) => (
+              <ActionsMenu
+                actions={[
+                  {
+                    label: t("actions.viewDetails"),
+                    icon: <ViewIcon />,
+                    onClick: () => handleRowClick(row),
+                    color: 'default',
+                  },
+                  ...(canUpdate ? [{
+                    label: t("actions.edit"),
+                    icon: <EditIcon />,
+                    onClick: () => handleEditClick(row),
+                    color: 'default' as const,
+                  }] : []),
+                  {
+                    label: t("actions.sendEmail"),
+                    icon: <EmailIcon />,
+                    onClick: () => handleSendEmail(row),
+                    color: 'primary' as const,
+                  },
+                  {
+                    label: t("actions.scheduleInterview"),
+                    icon: <CalendarIcon />,
+                    onClick: () => handleScheduleInterview(row),
+                    color: 'success' as const,
+                  },
+                  ...(canAssign ? [{
+                    label: t("actions.assign"),
+                    icon: <AssignIcon />,
+                    onClick: () => handleAssignResponsibleClick(row),
+                    color: 'default' as const,
+                  }] : []),
+                  ...(canDelete ? [{
+                    label: t("actions.delete"),
+                    icon: <TrashIcon />,
+                    onClick: () => handleDeleteClick(row),
+                    color: 'error' as const,
+                  }] : []),
+                ]}
+              />
+            )}
+            emptyMessage={t("list.emptyMessage")}
+        />
+        </div>
+
+        {data && data.pagination && (
+          <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+            <Pagination
+              currentPage={page}
+              totalPages={data.pagination.totalPages}
+              totalItems={data.pagination.total}
+              itemsPerPage={data.pagination.limit}
+              onPageChange={setPage}
+              onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
+            />
+          </div>
+        )}
+      </div>
+
+      <RecruiterFormModal
+        isOpen={isFormModalOpen}
+        onClose={() => {
+          setIsFormModalOpen(false);
+          setSelectedApplication(null);
+          setFormError(null);
+        }}
+        onSubmit={handleFormSubmit}
+        recruiter={selectedApplication}
+        isLoading={isCreating || isUpdating}
+        serverError={formError}
+      />
+
+      <RecruiterDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => {
+          setIsDetailModalOpen(false);
+          setDetailApplicationId(null);
+        }}
+        recruiterId={detailApplicationId}
+        isLoading={false}
+        canAddFeedback={true}
+      />
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false, application: null })}
+        onConfirm={handleConfirmDelete}
+        title={t("confirmModal.deleteTitle")}
+        message={t("confirmModal.deleteMessage")}
+        confirmText={tc("actions.delete")}
+        cancelText={tc("actions.cancel")}
+        variant="danger"
+        isLoading={isDeleting}
+      />
+
+      <ConfirmModal
+        isOpen={activateModal.isOpen}
+        onClose={() => setActivateModal({ isOpen: false, application: null, action: 'activate' })}
+        onConfirm={handleConfirmActivate}
+        title={activateModal.action === 'activate' ? t("confirmModal.activateTitle") : t("confirmModal.deactivateTitle")}
+        message={
+          activateModal.action === 'activate'
+            ? t("confirmModal.activateMessage")
+            : t("confirmModal.deactivateMessage")
+        }
+        confirmText={activateModal.action === 'activate' ? t("confirmModal.activateConfirm") : t("confirmModal.deactivateConfirm")}
+        cancelText={tc("actions.cancel")}
+        variant={activateModal.action === 'activate' ? "info" : "warning"}
+        isLoading={isActivating}
+      />
+
+      {/* Modal d'email groupé */}
+      <BulkEmailModal
+        isOpen={isBulkEmailModalOpen}
+        onClose={() => {
+          setIsBulkEmailModalOpen(false);
+          // Si on était en mode email individuel, nettoyer la sélection
+          if (selectedItems.length === 1) {
+            setSelectedItems([]);
+          }
+        }}
+        onSend={handleSendBulkEmail}
+        selectedCandidates={data?.data?.filter(a => selectedItems.includes(a.id)) || []}
+        isLoading={isSendingEmail}
+      />
+
+      {/* Modal d'affectation à un recruteur */}
+      <AssignRecruiterModal
+        isOpen={isAssignModalOpen}
+        onClose={() => setIsAssignModalOpen(false)}
+        onAssign={handleAssign}
+        applicationCount={selectedItems.length}
+        isLoading={isAssigning}
+      />
+
+      {/* Modal de planification d'entretien */}
+      {interviewCandidate && (
+        <CreateInterviewSimpleModal
+          isOpen={isInterviewModalOpen}
+          onClose={() => {
+            setIsInterviewModalOpen(false);
+            setInterviewCandidate(null);
+          }}
+          onSubmit={handleCreateInterview}
+          application={interviewCandidate}
+          isLoading={isCreatingInterview}
+        />
+      )}
+
+      <AssignModal
+        isOpen={assignResponsibleModal.isOpen}
+        onClose={() => setAssignResponsibleModal({ isOpen: false, application: null })}
+        onAssign={handleAssignResponsible}
+        currentResponsible={(assignResponsibleModal.application as any)?.responsible}
+        entityLabel={t("detailPage.entityLabel")}
+        isLoading={isAssigningResponsible}
+      />
+    </div>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10 4.16667V15.8333M4.16667 10H15.8333"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function AssignIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13.3333 17.5V15.8333C13.3333 14.9493 12.9821 14.1014 12.357 13.4763C11.7319 12.8512 10.884 12.5 10 12.5H4.16667C3.28261 12.5 2.43477 12.8512 1.80964 13.4763C1.18452 14.1014 0.833336 14.9493 0.833336 15.8333V17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M7.08333 9.16667C8.92428 9.16667 10.4167 7.67428 10.4167 5.83333C10.4167 3.99238 8.92428 2.5 7.08333 2.5C5.24238 2.5 3.75 3.99238 3.75 5.83333C3.75 7.67428 5.24238 9.16667 7.08333 9.16667Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M15.8333 6.66667V11.6667M13.3333 9.16667H18.3333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function ViewIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M1.5 9C1.5 9 3.75 3.75 9 3.75C14.25 3.75 16.5 9 16.5 9C16.5 9 14.25 14.25 9 14.25C3.75 14.25 1.5 9 1.5 9Z"
+        stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+      />
+      <path
+        d="M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z"
+        stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function EditIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M13.5 7.5L10.5 4.5M2.25 15.75L4.78312 15.4656C5.07382 15.4328 5.21917 15.4164 5.35519 15.3723C5.47596 15.3331 5.59123 15.2783 5.69827 15.209C5.81894 15.1309 5.92443 15.0254 6.13541 14.8144L15 6C15.8284 5.17157 15.8284 3.82843 15 3C14.1716 2.17157 12.8284 2.17157 12 3L3.13562 11.8644C2.92464 12.0754 2.81915 12.1809 2.74101 12.3015C2.67171 12.4086 2.61692 12.5238 2.57767 12.6446C2.53359 12.7806 2.51719 12.926 2.48438 13.2167L2.25 15.75Z"
+        stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M6.75 2.25H11.25M2.25 4.5H15.75M14.25 4.5L13.724 12.3895C13.6451 13.5732 13.6057 14.165 13.3537 14.6138C13.1317 15.0088 12.794 15.3265 12.3861 15.5241C11.9211 15.75 11.328 15.75 10.1419 15.75H7.85811C6.67198 15.75 6.07892 15.75 5.61387 15.5241C5.20596 15.3265 4.86828 15.0088 4.64631 14.6138C4.39426 14.165 4.35485 13.5732 4.27602 12.3895L3.75 4.5M7.5 7.875V11.625M10.5 7.875V11.625"
+        stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

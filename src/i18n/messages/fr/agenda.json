@@ -1,0 +1,120 @@
+{
+  "page": {
+    "title": "📅 Agenda des entretiens et intégrations",
+    "eventsDisplayed": "{count, plural, =0 {Aucun événement affiché} one {# événement affiché} other {# événements affichés}}"
+  },
+  "loading": {
+    "message": "Chargement des événements pour la période...",
+    "range": "{start} au {end}"
+  },
+  "loadError": {
+    "title": "Erreur lors du chargement des données",
+    "unknown": "Erreur inconnue"
+  },
+  "cards": {
+    "interviews": {
+      "title": "Entretiens",
+      "subtitle": "Gestion des entretiens candidats",
+      "scheduled": "Planifiés",
+      "completed": "Terminés",
+      "rescheduled": "Reportés",
+      "cancelled": "Annulés"
+    },
+    "integrations": {
+      "title": "Intégrations",
+      "subtitle": "Suivi des intégrations candidats",
+      "inProgress": "En cours",
+      "completed": "Terminées",
+      "failed": "Échouées"
+    }
+  },
+  "filters": {
+    "label": "Filtres:",
+    "interviews": "Entretiens",
+    "integrations": "Intégrations",
+    "interviewStatus": "Statut entretiens:",
+    "integrationStatus": "Statut intégrations:",
+    "options": {
+      "all": "Tous",
+      "scheduled": "Planifiés",
+      "completed": "Terminés",
+      "cancelled": "Annulés",
+      "rescheduled": "Reportés",
+      "inProgress": "En cours",
+      "integrationCompleted": "Terminées",
+      "failed": "Échouées"
+    },
+    "reset": "Réinitialiser"
+  },
+  "calendar": {
+    "allDay": "Toute la journée",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "today": "Aujourd'hui",
+    "month": "Mois",
+    "week": "Semaine",
+    "day": "Jour",
+    "agenda": "Agenda",
+    "date": "Date",
+    "time": "Heure",
+    "event": "Événement",
+    "noEventsInRange": "Aucun événement dans cette période",
+    "showMore": "+ {total} de plus"
+  },
+  "legend": {
+    "title": "Légende des couleurs",
+    "interviews": {
+      "title": "Entretiens",
+      "scheduled": "Planifié",
+      "completed": "Terminé",
+      "rescheduled": "Reporté",
+      "cancelled": "Annulé"
+    },
+    "integrations": {
+      "title": "Intégrations",
+      "inProgress": "En cours",
+      "completed": "Terminée",
+      "failed": "Échouée"
+    }
+  },
+  "events": {
+    "candidateFallback": "Candidat",
+    "interviewTitle": "Entretien - {candidateName}",
+    "integrationTitle": "Intégration - {candidateName} ({position})"
+  },
+  "toasts": {
+    "statusChanged": {
+      "title": "Statut modifié",
+      "message": "Le statut de l'entretien a été changé avec succès"
+    },
+    "statusChangeError": {
+      "title": "Erreur",
+      "message": "Impossible de changer le statut de l'entretien"
+    },
+    "rescheduled": {
+      "title": "Entretien reporté",
+      "message": "L'entretien a été reporté avec succès. Les notifications ont été envoyées."
+    },
+    "rescheduleError": {
+      "title": "Erreur",
+      "message": "Impossible de reporter l'entretien"
+    },
+    "deleted": {
+      "title": "Entretien supprimé",
+      "message": "L'entretien a été supprimé avec succès"
+    },
+    "deleteError": {
+      "title": "Erreur",
+      "message": "Impossible de supprimer l'entretien"
+    },
+    "integrationUpdated": {
+      "title": "Intégration mise à jour",
+      "message": "Les modifications ont été sauvegardées avec succès"
+    }
+  },
+  "deleteModal": {
+    "title": "Supprimer l'entretien",
+    "message": "Êtes-vous sûr de vouloir supprimer cet entretien ? Cette action est irréversible.",
+    "confirmText": "Supprimer"
+  }
+}

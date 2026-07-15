@@ -2,6 +2,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
@@ -56,15 +57,7 @@ const CITIES_BY_COUNTRY: Record<string, string[]> = {
   Portugal: ["Lisbonne", "Porto", "Braga", "Coimbra", "Faro"],
 };
 
-const LANGUAGES = [
-  { value: "FR", label: "Français" },
-  { value: "EN", label: "Anglais" },
-  { value: "AR", label: "Arabe" },
-  { value: "ES", label: "Espagnol" },
-  { value: "DE", label: "Allemand" },
-  { value: "IT", label: "Italien" },
-  { value: "Autres", label: "Autres" },
-];
+const LANGUAGE_VALUES = ["FR", "EN", "AR", "ES", "DE", "IT", "Autres"] as const;
 
 export default function ApplicationRequestFormModal({
   isOpen,
@@ -74,6 +67,11 @@ export default function ApplicationRequestFormModal({
   isLoading = false,
   serverError = null,
 }: ApplicationRequestFormModalProps) {
+  const t = useTranslations("recruitmentRequests");
+  const LANGUAGES = useMemo(
+    () => LANGUAGE_VALUES.map((v) => ({ value: v, label: t(`form.languageOptions.${v}`) })),
+    [t]
+  );
   const isEditing = !!applicationRequest;
   const [skillInput, setSkillInput] = useState("");
   const [softSkillInput, setSoftSkillInput] = useState("");
@@ -203,10 +201,10 @@ export default function ApplicationRequestFormModal({
           validSteps.length > 0
             ? validSteps
             : [
-                { name: "Proposé", order: 0 },
-                { name: "Entretien RH", order: 1 },
-                { name: "Entretien client", order: 2 },
-                { name: "Offre", order: 3 },
+                { name: t("form.defaultWorkflowSteps.proposed"), order: 0 },
+                { name: t("form.defaultWorkflowSteps.hrInterview"), order: 1 },
+                { name: t("form.defaultWorkflowSteps.clientInterview"), order: 2 },
+                { name: t("form.defaultWorkflowSteps.offer"), order: 3 },
               ],
         );
       }
@@ -250,10 +248,10 @@ export default function ApplicationRequestFormModal({
       setLanguageLevels({});
       // Étapes par défaut : une nouvelle demande a toujours un workflow concret (personnalisable)
       setWorkflowSteps([
-        { name: "Proposé", order: 0 },
-        { name: "Entretien RH", order: 1 },
-        { name: "Entretien client", order: 2 },
-        { name: "Offre", order: 3 },
+        { name: t("form.defaultWorkflowSteps.proposed"), order: 0 },
+        { name: t("form.defaultWorkflowSteps.hrInterview"), order: 1 },
+        { name: t("form.defaultWorkflowSteps.clientInterview"), order: 2 },
+        { name: t("form.defaultWorkflowSteps.offer"), order: 3 },
       ]);
       setSelectedCountry("France");
       // Réinitialiser le formulaire en mode création
@@ -367,12 +365,12 @@ export default function ApplicationRequestFormModal({
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-5xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          {isEditing ? "Modifier la demande de recrutement" : "Créer une demande de recrutement"}
+          {isEditing ? t("form.titleEdit") : t("form.titleCreate")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {isEditing
-            ? "Modifiez les informations de la demande"
-            : "Remplissez tous les champs pour créer une nouvelle demande"}
+            ? t("form.subtitleEdit")
+            : t("form.subtitleCreate")}
         </p>
       </div>
 
@@ -398,12 +396,12 @@ export default function ApplicationRequestFormModal({
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar">
           {serverError && (
             <div className="mb-4 p-3 rounded-lg bg-error-50 border border-error-200 dark:bg-error-500/10 dark:border-error-500/30 text-error-600 dark:text-error-400 text-sm">
-              <span className="mr-1">⚠️</span>{serverError}
+              <span className="me-1">⚠️</span>{serverError}
             </div>
           )}
           {Object.keys(errors).length > 0 && (
             <div className="mb-4 p-3 rounded-lg bg-error-50 border border-error-200 dark:bg-error-500/10 dark:border-error-500/30 text-error-700 dark:text-error-400 text-sm">
-              Veuillez corriger les {Object.keys(errors).length} erreur(s) avant de soumettre le formulaire.
+              {t("form.validationErrors", { count: Object.keys(errors).length })}
             </div>
           )}
           <div className="space-y-8">
@@ -411,19 +409,19 @@ export default function ApplicationRequestFormModal({
             {/* Section 1: Informations Générales */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                1. Informations Générales
+                {t("form.sections.general")}
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
                   <InfiniteSelect<Client>
-                    label={<>Client <span className="text-error-500">*</span></>}
+                    label={<>{t("form.fields.client")} <span className="text-error-500">*</span></>}
                     value={clientId}
                     onChange={handleClientChange}
                     useInfiniteQuery={useGetClientsForSelectInfiniteQuery}
                     itemLabelKey="name"
                     itemValueKey="id"
-                    placeholder="Sélectionner un client..."
-                    emptyMessage="Aucun client trouvé"
+                    placeholder={t("form.fields.clientPlaceholder")}
+                    emptyMessage={t("form.fields.clientEmpty")}
                     error={!!errors.client_id}
                     initialSelectedItems={initialClient}
                   />
@@ -434,15 +432,15 @@ export default function ApplicationRequestFormModal({
 
                 <div>
                   <InfiniteSelect<Manager>
-                    label={<>Manager <span className="text-error-500">*</span></>}
+                    label={<>{t("form.fields.manager")} <span className="text-error-500">*</span></>}
                     value={managerId}
                     onChange={(value) => setValue("manager_id", value)}
                     useInfiniteQuery={useGetClientManagersForSelectInfiniteQuery}
                     queryArg={managerQueryArg}
                     itemLabelKey="displayName"
                     itemValueKey="id"
-                    placeholder={clientId ? "Sélectionner un manager..." : "Sélectionner d'abord un client"}
-                    emptyMessage="Aucun manager trouvé"
+                    placeholder={clientId ? t("form.fields.managerPlaceholder") : t("form.fields.managerPlaceholderNoClient")}
+                    emptyMessage={t("form.fields.managerEmpty")}
                     error={!!errors.manager_id}
                     disabled={!clientId}
                     initialSelectedItems={initialManager}
@@ -453,9 +451,9 @@ export default function ApplicationRequestFormModal({
                 </div>
 
                 <div className="sm:col-span-2">
-                  <Label>Titre du poste <span className="text-error-500">*</span></Label>
+                  <Label>{t("form.fields.title")} <span className="text-error-500">*</span></Label>
                   <Input
-                    placeholder="Ex: Développeur Full Stack React/Node.js"
+                    placeholder={t("form.fields.titlePlaceholder")}
                     {...register("title")}
                     error={!!errors.title}
                   />
@@ -465,9 +463,9 @@ export default function ApplicationRequestFormModal({
                 </div>
 
                 <div className="sm:col-span-2">
-                  <Label>Description <span className="text-error-500">*</span></Label>
+                  <Label>{t("form.fields.description")} <span className="text-error-500">*</span></Label>
                   <TextArea
-                    placeholder="Description détaillée du poste et des missions..."
+                    placeholder={t("form.fields.descriptionPlaceholder")}
                     {...register("description")}
                     error={!!errors.description}
                     rows={4}
@@ -482,14 +480,14 @@ export default function ApplicationRequestFormModal({
             {/* Section 2: Compétences */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                2. Compétences Requises
+                {t("form.sections.skills")}
               </h3>
               <div>
-                <Label>Compétences <span className="text-error-500">*</span></Label>
+                <Label>{t("form.fields.skills")} <span className="text-error-500">*</span></Label>
                 <div className="flex gap-2">
                   <div className="flex-1">
                     <Input
-                      placeholder="Ajouter une compétence (ex: React, Node.js)..."
+                      placeholder={t("form.fields.skillsPlaceholder")}
                       value={skillInput}
                       onChange={(e) => setSkillInput(e.target.value)}
                       onKeyDown={handleKeyDown}
@@ -497,7 +495,7 @@ export default function ApplicationRequestFormModal({
                     />
                   </div>
                   <Button type="button" onClick={handleAddSkill}>
-                    Ajouter
+                    {t("form.fields.addButton")}
                   </Button>
                 </div>
                 {errors.required_skills && (
@@ -538,21 +536,21 @@ export default function ApplicationRequestFormModal({
             {/* Section Softskills */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                3. Softskills
+                {t("form.sections.softSkills")}
               </h3>
               <div>
-                <Label>Compétences comportementales</Label>
+                <Label>{t("form.fields.softSkillsLabel")}</Label>
                 <div className="flex gap-2">
                   <div className="flex-1">
                     <Input
-                      placeholder="Ex: Leadership, Communication, Adaptabilité..."
+                      placeholder={t("form.fields.softSkillsPlaceholder")}
                       value={softSkillInput}
                       onChange={(e) => setSoftSkillInput(e.target.value)}
                       onKeyDown={handleSoftSkillKeyDown}
                     />
                   </div>
                   <Button type="button" onClick={handleAddSoftSkill}>
-                    Ajouter
+                    {t("form.fields.addButton")}
                   </Button>
                 </div>
                 {softSkills.length > 0 && (
@@ -580,11 +578,11 @@ export default function ApplicationRequestFormModal({
             {/* Section 4: Expérience */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                4. Expérience
+                {t("form.sections.experience")}
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
-                  <Label>Expérience minimum (années)</Label>
+                  <Label>{t("form.fields.minExperience")}</Label>
                   <Input
                     type="number"
                     placeholder="3"
@@ -597,7 +595,7 @@ export default function ApplicationRequestFormModal({
                 </div>
 
                 <div>
-                  <Label>Expérience maximum (années)</Label>
+                  <Label>{t("form.fields.maxExperience")}</Label>
                   <Input
                     type="number"
                     placeholder="7"
@@ -614,12 +612,12 @@ export default function ApplicationRequestFormModal({
             {/* Section 5: Type de Contrat */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                4. Type de Contrat
+                {t("form.sections.contractType")}
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
                   <MultiSelect
-                    label="Type(s) de contrat *"
+                    label={t("form.fields.contractTypes")}
                     options={availableContractTypes.map((type) => ({
                       value: type.name,
                       text: type.name,
@@ -627,7 +625,7 @@ export default function ApplicationRequestFormModal({
                     }))}
                     defaultSelected={contractTypes}
                     onChange={(selected) => setValue("contract_types", selected, { shouldValidate: true })}
-                    placeholder="Sélectionner un ou plusieurs types..."
+                    placeholder={t("form.fields.contractTypesPlaceholder")}
                   />
                   {errors.contract_types && (
                     <p className="mt-1 text-sm text-error-500">{errors.contract_types.message}</p>
@@ -637,7 +635,7 @@ export default function ApplicationRequestFormModal({
                 {isFreelance && (
                   <>
                     <div>
-                      <Label>Durée de mission (mois) <span className="text-error-500">*</span></Label>
+                      <Label>{t("form.fields.missionDuration")} <span className="text-error-500">*</span></Label>
                       <Input
                         type="number"
                         placeholder="6"
@@ -657,7 +655,7 @@ export default function ApplicationRequestFormModal({
                         className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                       />
                       <Label htmlFor="mission_renewable" className="mb-0">
-                        Mission renouvelable
+                        {t("form.fields.missionRenewable")}
                       </Label>
                     </div>
                   </>
@@ -668,33 +666,33 @@ export default function ApplicationRequestFormModal({
             {/* Section 5: Budget */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                5. Budget
+                {t("form.sections.budget")}
               </h3>
 
               {/* Sélecteur de devise */}
               <div className="mb-4">
-                <Label>Devise</Label>
+                <Label>{t("form.fields.currency")}</Label>
                 <select
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value)}
                   className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
                 >
-                  <option value="MAD">MAD — Dirham marocain (د.م.)</option>
-                  <option value="EUR">EUR — Euro (€)</option>
-                  <option value="USD">USD — Dollar américain ($)</option>
-                  <option value="GBP">GBP — Livre sterling (£)</option>
-                  <option value="TND">TND — Dinar tunisien (د.ت)</option>
-                  <option value="DZD">DZD — Dinar algérien (د.ج)</option>
-                  <option value="AED">AED — Dirham des EAU (د.إ)</option>
-                  <option value="SAR">SAR — Riyal saoudien (﷼)</option>
+                  <option value="MAD">{t("form.currencyOptions.MAD")}</option>
+                  <option value="EUR">{t("form.currencyOptions.EUR")}</option>
+                  <option value="USD">{t("form.currencyOptions.USD")}</option>
+                  <option value="GBP">{t("form.currencyOptions.GBP")}</option>
+                  <option value="TND">{t("form.currencyOptions.TND")}</option>
+                  <option value="DZD">{t("form.currencyOptions.DZD")}</option>
+                  <option value="AED">{t("form.currencyOptions.AED")}</option>
+                  <option value="SAR">{t("form.currencyOptions.SAR")}</option>
                 </select>
               </div>
 
               {hasSalary && (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 mb-4">
-                  {isFreelance && <div className="sm:col-span-2 text-xs font-semibold text-green-700 dark:text-green-400 uppercase tracking-wide border-b border-green-200 dark:border-green-800 pb-1">Rémunération CDI / Salarié</div>}
+                  {isFreelance && <div className="sm:col-span-2 text-xs font-semibold text-green-700 dark:text-green-400 uppercase tracking-wide border-b border-green-200 dark:border-green-800 pb-1">{t("form.fields.salaryCdiHeader")}</div>}
                   <div>
-                    <Label>Salaire minimum ({currencySymbol}/mois)</Label>
+                    <Label>{t("form.fields.minSalary", { symbol: currencySymbol })}</Label>
                     <Input
                       type="number"
                       placeholder="45000"
@@ -707,7 +705,7 @@ export default function ApplicationRequestFormModal({
                   </div>
 
                   <div>
-                    <Label>Salaire maximum ({currencySymbol}/mois)</Label>
+                    <Label>{t("form.fields.maxSalary", { symbol: currencySymbol })}</Label>
                     <Input
                       type="number"
                       placeholder="55000"
@@ -723,9 +721,9 @@ export default function ApplicationRequestFormModal({
 
               {isFreelance && (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  {hasSalary && <div className="sm:col-span-2 text-xs font-semibold text-purple-700 dark:text-purple-400 uppercase tracking-wide border-b border-purple-200 dark:border-purple-800 pb-1">Rémunération Freelance / TJM</div>}
+                  {hasSalary && <div className="sm:col-span-2 text-xs font-semibold text-purple-700 dark:text-purple-400 uppercase tracking-wide border-b border-purple-200 dark:border-purple-800 pb-1">{t("form.fields.freelanceHeader")}</div>}
                   <div>
-                    <Label>TJM minimum ({currencySymbol})</Label>
+                    <Label>{t("form.fields.minDailyRate", { symbol: currencySymbol })}</Label>
                     <Input
                       type="number"
                       placeholder="400"
@@ -738,7 +736,7 @@ export default function ApplicationRequestFormModal({
                   </div>
 
                   <div>
-                    <Label>TJM maximum ({currencySymbol})</Label>
+                    <Label>{t("form.fields.maxDailyRate", { symbol: currencySymbol })}</Label>
                     <Input
                       type="number"
                       placeholder="600"
@@ -755,7 +753,7 @@ export default function ApplicationRequestFormModal({
               {!hasSalary && !isFreelance && (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div>
-                    <Label>Salaire minimum ({currencySymbol}/mois)</Label>
+                    <Label>{t("form.fields.minSalary", { symbol: currencySymbol })}</Label>
                     <Input
                       type="number"
                       placeholder="45000"
@@ -768,7 +766,7 @@ export default function ApplicationRequestFormModal({
                   </div>
 
                   <div>
-                    <Label>Salaire maximum ({currencySymbol}/mois)</Label>
+                    <Label>{t("form.fields.maxSalary", { symbol: currencySymbol })}</Label>
                     <Input
                       type="number"
                       placeholder="55000"
@@ -786,14 +784,14 @@ export default function ApplicationRequestFormModal({
             {/* Section 6: Localisation */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                6. Localisation
+                {t("form.sections.location")}
               </h3>
               <div className="grid grid-cols-1 gap-5">
                 <div>
-                  <Label>Pays <span className="text-error-500">*</span></Label>
+                  <Label>{t("form.fields.country")} <span className="text-error-500">*</span></Label>
                   <input
                     list="countries-datalist"
-                    placeholder="Tapez pour rechercher un pays..."
+                    placeholder={t("form.fields.countryPlaceholder")}
                     autoComplete="off"
                     {...register("country", {
                       onChange: (e) => {
@@ -810,10 +808,10 @@ export default function ApplicationRequestFormModal({
                 </div>
 
                 <div>
-                  <Label>Ville <span className="text-error-500">*</span></Label>
+                  <Label>{t("form.fields.city")} <span className="text-error-500">*</span></Label>
                   <input
                     list="cities-datalist"
-                    placeholder="Tapez pour rechercher une ville..."
+                    placeholder={t("form.fields.cityPlaceholder")}
                     autoComplete="off"
                     {...register("location")}
                     className={`h-11 w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-none focus:ring-3 bg-white dark:bg-gray-900 dark:text-white/90 ${errors.location ? "border-error-500 focus:ring-error-500/10" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
@@ -829,11 +827,11 @@ export default function ApplicationRequestFormModal({
             {/* Section 7: Type de Travail */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                7. Type de Travail
+                {t("form.sections.workType")}
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
-                  <Label>Mode de travail <span className="text-error-500">*</span></Label>
+                  <Label>{t("form.fields.workMode")} <span className="text-error-500">*</span></Label>
                   <select
                     {...register("work_type")}
                     className={`h-11 w-full appearance-none rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 ${
@@ -842,9 +840,9 @@ export default function ApplicationRequestFormModal({
                         : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"
                     }`}
                   >
-                    <option value="on_site">Présentiel</option>
-                    <option value="remote">Télétravail</option>
-                    <option value="hybrid">Hybride</option>
+                    <option value="on_site">{t("form.fields.workModeOnSite")}</option>
+                    <option value="remote">{t("form.fields.workModeRemote")}</option>
+                    <option value="hybrid">{t("form.fields.workModeHybrid")}</option>
                   </select>
                   {errors.work_type && (
                     <p className="mt-1 text-sm text-error-500">{errors.work_type.message}</p>
@@ -853,7 +851,7 @@ export default function ApplicationRequestFormModal({
 
                 {isHybrid && (
                   <div>
-                    <Label>Jours de télétravail par semaine <span className="text-error-500">*</span></Label>
+                    <Label>{t("form.fields.remoteDays")} <span className="text-error-500">*</span></Label>
                     <Input
                       type="number"
                       placeholder="2"
@@ -873,10 +871,10 @@ export default function ApplicationRequestFormModal({
             {/* Section 8: Langues */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                8. Langues Requises
+                {t("form.sections.languages")}
               </h3>
               <div>
-                <Label>Langues <span className="text-error-500">*</span></Label>
+                <Label>{t("form.fields.languagesLabel")} <span className="text-error-500">*</span></Label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
                   {LANGUAGES.map((lang) => (
                     <button
@@ -919,7 +917,7 @@ export default function ApplicationRequestFormModal({
             {/* Section 8b: Workflow / étapes (1.2) */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                Workflow du recrutement
+                {t("form.sections.workflow")}
               </h3>
               <WorkflowStepsEditor value={workflowSteps} onChange={setWorkflowSteps} />
             </div>
@@ -927,13 +925,13 @@ export default function ApplicationRequestFormModal({
             {/* Section 9: Avantages */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                9. Avantages et Primes
+                {t("form.sections.benefits")}
               </h3>
               <div className="grid grid-cols-1 gap-5">
                 <div>
-                  <Label>Avantages sociaux</Label>
+                  <Label>{t("form.fields.benefitsLabel")}</Label>
                   <TextArea
-                    placeholder="Ex: Tickets restaurant, mutuelle, RTT..."
+                    placeholder={t("form.fields.benefitsPlaceholder")}
                     {...register("benefits")}
                     error={!!errors.benefits}
                     rows={2}
@@ -941,9 +939,9 @@ export default function ApplicationRequestFormModal({
                 </div>
 
                 <div>
-                  <Label>Primes</Label>
+                  <Label>{t("form.fields.bonusesLabel")}</Label>
                   <TextArea
-                    placeholder="Ex: Prime annuelle sur objectifs..."
+                    placeholder={t("form.fields.bonusesPlaceholder")}
                     {...register("bonuses")}
                     error={!!errors.bonuses}
                     rows={2}
@@ -951,9 +949,9 @@ export default function ApplicationRequestFormModal({
                 </div>
 
                 <div>
-                  <Label>Part variable</Label>
+                  <Label>{t("form.fields.variablesLabel")}</Label>
                   <TextArea
-                    placeholder="Ex: Variable trimestrielle sur CA..."
+                    placeholder={t("form.fields.variablesPlaceholder")}
                     {...register("variables")}
                     error={!!errors.variables}
                     rows={2}
@@ -965,11 +963,11 @@ export default function ApplicationRequestFormModal({
             {/* Section 10: Priorité et Statut */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                10. Priorité et Statut
+                {t("form.sections.priorityStatus")}
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
-                  <Label>Priorité <span className="text-error-500">*</span></Label>
+                  <Label>{t("form.fields.priority")} <span className="text-error-500">*</span></Label>
                   <select
                     {...register("priority")}
                     className={`h-11 w-full appearance-none rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 ${
@@ -978,10 +976,10 @@ export default function ApplicationRequestFormModal({
                         : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"
                     }`}
                   >
-                    <option value="low">Basse</option>
-                    <option value="normal">Normale</option>
-                    <option value="high">Haute</option>
-                    <option value="urgent">Urgente</option>
+                    <option value="low">{t("form.priorityOptions.low")}</option>
+                    <option value="normal">{t("form.priorityOptions.normal")}</option>
+                    <option value="high">{t("form.priorityOptions.high")}</option>
+                    <option value="urgent">{t("form.priorityOptions.urgent")}</option>
                   </select>
                   {errors.priority && (
                     <p className="mt-1 text-sm text-error-500">{errors.priority.message}</p>
@@ -989,15 +987,15 @@ export default function ApplicationRequestFormModal({
                 </div>
 
                 <div>
-                  <Label>Statut</Label>
+                  <Label>{t("form.fields.status")}</Label>
                   <select
                     {...register("status")}
                     className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                   >
-                    <option value="in_progress">En cours</option>
-                    <option value="standby">Standby</option>
-                    <option value="abandoned">Abandonnée</option>
-                    <option value="filled">Comblée</option>
+                    <option value="in_progress">{t("form.statusOptions.in_progress")}</option>
+                    <option value="standby">{t("form.statusOptions.standby")}</option>
+                    <option value="abandoned">{t("form.statusOptions.abandoned")}</option>
+                    <option value="filled">{t("form.statusOptions.filled")}</option>
                   </select>
                 </div>
               </div>
@@ -1006,7 +1004,7 @@ export default function ApplicationRequestFormModal({
             {/* Section 11: Dates et Profils */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                11. Dates et Nombre de Profils
+                {t("form.sections.datesProfiles")}
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
@@ -1016,8 +1014,8 @@ export default function ApplicationRequestFormModal({
                     render={({ field }) => (
                       <DatePicker
                         id="desired_start_date"
-                        label="Date de début souhaitée"
-                        placeholder="Sélectionner une date"
+                        label={t("form.fields.startDate")}
+                        placeholder={t("form.fields.startDatePlaceholder")}
                         defaultDate={field.value || undefined}
                         onChange={(selectedDates) => {
                           if (selectedDates && selectedDates.length > 0) {
@@ -1034,7 +1032,7 @@ export default function ApplicationRequestFormModal({
                 </div>
 
                 <div>
-                  <Label>Nombre de profils souhaités <span className="text-error-500">*</span></Label>
+                  <Label>{t("form.fields.numberOfProfiles")} <span className="text-error-500">*</span></Label>
                   <Input
                     type="number"
                     placeholder="1"
@@ -1052,26 +1050,26 @@ export default function ApplicationRequestFormModal({
             {/* Notes */}
             <div className="p-4 sm:p-6 bg-gray-50 dark:bg-gray-800/30 rounded-xl mt-2">
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                Notes
+                {t("form.sections.notes")}
               </h3>
               <div className="space-y-4">
                 <div>
-                  <Label>Note client</Label>
+                  <Label>{t("form.fields.noteClient")}</Label>
                   <TextArea
-                    placeholder="Note visible par le client et l'équipe RH..."
+                    placeholder={t("form.fields.noteClientPlaceholder")}
                     {...register("note_client" as any)}
                     rows={3}
                   />
-                  <p className="mt-1 text-xs text-gray-400">Visible par le client et l'équipe RH</p>
+                  <p className="mt-1 text-xs text-gray-400">{t("form.fields.noteClientHelp")}</p>
                 </div>
                 <div>
-                  <Label>Note interne</Label>
+                  <Label>{t("form.fields.noteInterne")}</Label>
                   <TextArea
-                    placeholder="Note interne (non visible par le client)..."
+                    placeholder={t("form.fields.noteInternePlaceholder")}
                     {...register("note_interne" as any)}
                     rows={3}
                   />
-                  <p className="mt-1 text-xs text-gray-400">Uniquement visible par l'équipe RH</p>
+                  <p className="mt-1 text-xs text-gray-400">{t("form.fields.noteInterneHelp")}</p>
                 </div>
               </div>
             </div>
@@ -1081,10 +1079,10 @@ export default function ApplicationRequestFormModal({
 
         <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
           <Button variant="outline" onClick={onClose} disabled={isLoading}>
-            Annuler
+            {t("form.buttons.cancel")}
           </Button>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Enregistrement..." : isEditing ? "Modifier" : "Créer"}
+            {isLoading ? t("form.buttons.saving") : isEditing ? t("form.buttons.update") : t("form.buttons.create")}
           </Button>
         </div>
       </form>

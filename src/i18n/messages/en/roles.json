@@ -1,0 +1,110 @@
+{
+  "list": {
+    "title": "Roles and permissions",
+    "subtitle": "Manage roles and their permissions",
+    "addButton": "Add a role",
+    "searchPlaceholder": "Search for a role...",
+    "emptyMessage": "No roles found",
+    "columns": {
+      "usersCount": "Users",
+      "createdAt": "Created on"
+    },
+    "status": {
+      "protected": "🔒 Protected",
+      "editable": "✏️ Editable"
+    }
+  },
+  "toasts": {
+    "unauthorizedTitle": "Action not allowed",
+    "unauthorizedEditMessage": "This role is protected and cannot be modified.",
+    "unauthorizedDeleteMessage": "This role is protected and cannot be deleted.",
+    "cannotDeleteTitle": "Deletion not possible",
+    "cannotDeleteMessage": "This role is assigned to {count} user(s). Remove it from these users first.",
+    "deleteSuccess": "Role deleted successfully",
+    "deleteErrorDefault": "Error while deleting the role",
+    "updateSuccess": "Role updated successfully",
+    "createSuccess": "Role created successfully",
+    "updateErrorDefault": "Error while updating the role",
+    "createErrorDefault": "Error while creating the role"
+  },
+  "confirmDelete": {
+    "title": "Delete role",
+    "message": "Are you sure you want to delete the role \"{name}\"? This action is irreversible."
+  },
+  "form": {
+    "titleEdit": "Edit role",
+    "titleAdd": "Add a role",
+    "subtitleEdit": "Edit the role's information",
+    "subtitleAdd": "Fill in the information to create a new role",
+    "nameLabel": "Role name",
+    "namePlaceholder": "Administrator",
+    "descriptionPlaceholder": "Role description...",
+    "permissionsLabel": "Permissions",
+    "permissionsSubtitle": "Select the modules, pages and actions accessible for this role",
+    "saving": "Saving...",
+    "dataScope": {
+      "title": "Data scope",
+      "subtitle": "For each resource, choose whether the user sees only <strong>their own items</strong> (those they created or that are assigned to them) or <strong>the whole company</strong>.",
+      "own": "Their own",
+      "company": "Whole company"
+    }
+  },
+  "detail": {
+    "defaultTitle": "Role details",
+    "createdOn": "Created on {date}",
+    "dataScopeTitle": "Data scope",
+    "scopeTooltipCompany": "Sees the whole company",
+    "scopeTooltipOwn": "Sees only their own items",
+    "permissionsTitle": "Assigned permissions",
+    "noPermissions": "No permissions assigned"
+  },
+  "resources": {
+    "applications": "Applications",
+    "requests": "Recruitment requests",
+    "cvs": "Talent pool (CVs)",
+    "clients": "Clients",
+    "emails": "Emails",
+    "integrations": "Integrations"
+  },
+  "permissionsSelector": {
+    "globalSelection": "Global selection:",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "modules": {
+      "title": "Modules",
+      "none": "None",
+      "all": "All",
+      "empty": "No module",
+      "removeAllPages": "Remove all pages",
+      "selectAllPages": "Select all pages"
+    },
+    "pages": {
+      "title": "Pages",
+      "none": "None",
+      "all": "All",
+      "selectModuleFirst": "Select a module",
+      "empty": "No pages available"
+    },
+    "actionsColumn": {
+      "title": "Actions",
+      "minimum": "Minimum",
+      "all": "All",
+      "selectPageFirst": "Select a page",
+      "empty": "No actions"
+    },
+    "required": "Required",
+    "actions": {
+      "read": "View",
+      "import": "Import",
+      "approve": "Approve",
+      "reject": "Reject",
+      "archive": "Archive",
+      "send": "Send",
+      "assign": "Assign",
+      "manage": "Manage",
+      "resend": "Resend",
+      "stats": "Statistics",
+      "updateStatus": "Change status"
+    }
+  }
+}

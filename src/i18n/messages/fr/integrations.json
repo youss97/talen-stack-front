@@ -1,0 +1,393 @@
+{
+  "page": {
+    "title": "Gestion des Intégrations",
+    "subtitle": "Suivez les intégrations des candidats embauchés et leur période d'essai",
+    "newIntegration": "Nouvelle intégration",
+    "stats": {
+      "total": "Total intégrations",
+      "inProgress": "En cours",
+      "completed": "Terminées",
+      "trialSuccessRate": "Taux de réussite PE"
+    },
+    "filters": {
+      "allStatuses": "Tous les statuts",
+      "statusInProgress": "🔄 En cours",
+      "statusCompleted": "✅ Terminée",
+      "statusFailed": "❌ Échec",
+      "allTrialPeriods": "Toutes les périodes",
+      "trialInProgress": "⏳ En cours",
+      "trialValidated": "✅ Validée",
+      "trialNotValidated": "❌ Non validée",
+      "reset": "🔄 Réinitialiser"
+    },
+    "table": {
+      "candidate": "Candidat",
+      "client": "Client",
+      "position": "Poste",
+      "date": "Date",
+      "salary": "Salaire/TJM",
+      "trialPeriod": "Période d'essai",
+      "status": "Statut",
+      "draft": "Brouillon",
+      "empty": "Aucune intégration trouvée"
+    },
+    "toasts": {
+      "createSuccess": "Intégration créée avec succès",
+      "actionSuccess": "Action effectuée avec succès",
+      "editSuccess": "Intégration modifiée avec succès"
+    }
+  },
+  "statuses": {
+    "in_progress": "En cours",
+    "completed": "Terminée",
+    "failed": "Échec"
+  },
+  "trialStatuses": {
+    "in_progress": "En cours",
+    "validated": "Validée",
+    "not_validated": "Non validée"
+  },
+  "contractTypes": {
+    "cdi": "CDI",
+    "cdd": "CDD",
+    "freelance": "Freelance",
+    "interim": "Intérim",
+    "stage": "Stage",
+    "alternance": "Alternance"
+  },
+  "ratingLabels": {
+    "1": "Très insatisfaisant",
+    "2": "Insatisfaisant",
+    "3": "Satisfaisant",
+    "4": "Très satisfaisant",
+    "5": "Excellent"
+  },
+  "modals": {
+    "create": {
+      "title": "Nouvelle intégration",
+      "errors": {
+        "noApplication": "Veuillez sélectionner une candidature",
+        "noClient": "Impossible de récupérer les informations du client. Veuillez sélectionner une autre candidature.",
+        "createFailed": "Erreur lors de la création de l'intégration"
+      },
+      "applicationSection": {
+        "title": "Candidature",
+        "label": "Sélectionner une candidature",
+        "searchPlaceholder": "Rechercher un candidat...",
+        "noOptionsMessage": "Aucune candidature trouvée",
+        "searchInputPlaceholder": "Tapez le nom du candidat ou le poste...",
+        "helper": "Seules les candidatures actives sont affichées. Le recrutement et le client seront automatiquement déduits.",
+        "autoInfoTitle": "Informations automatiques",
+        "partialInfoTitle": "Informations partielles",
+        "candidate": "Candidat:",
+        "recruitment": "Recrutement:",
+        "client": "Client:",
+        "idAvailable": "✓ ID disponible",
+        "idMissing": "⚠️ ID manquant",
+        "hrManager": "Responsable RH:",
+        "connectedUser": "(utilisateur connecté)",
+        "clientInfoMissing": "Certaines informations du client ne sont pas disponibles. Veuillez sélectionner une autre candidature si le problème persiste."
+      },
+      "positionSection": {
+        "title": "Informations du Poste",
+        "position": "Poste",
+        "positionPlaceholder": "Ex: Développeur Full Stack",
+        "contractType": "Type de contrat",
+        "integrationDate": "Date d'intégration *",
+        "datePlaceholder": "Sélectionner une date"
+      },
+      "salarySection": {
+        "title": "Rémunération",
+        "salaryType": "Type de rémunération",
+        "monthlyOption": "💼 Salaire mensuel",
+        "dailyOption": "🔄 TJM (Freelance)",
+        "currency": "Devise",
+        "currencyPlaceholder": "Sélectionner une devise",
+        "monthlySalary": "Salaire mensuel",
+        "salaryPlaceholder": "3750",
+        "dailyRate": "TJM",
+        "dailyRatePlaceholder": "500",
+        "perDay": "/jour",
+        "preview": "Aperçu: "
+      },
+      "trialSection": {
+        "title": "Période d'essai",
+        "duration": "Durée (jours)",
+        "durationPlaceholder": "90",
+        "endDate": "Date de fin"
+      },
+      "notesSection": {
+        "title": "Notes",
+        "label": "Notes sur l'intégration",
+        "placeholder": "Notes sur l'intégration, objectifs, points d'attention..."
+      },
+      "creating": "Création...",
+      "create": "Créer"
+    },
+    "edit": {
+      "title": "Modifier l'intégration",
+      "loading": "Chargement des détails...",
+      "notFound": "Intégration non trouvée",
+      "updateFailed": "Erreur lors de la mise à jour de l'intégration",
+      "candidateSection": {
+        "title": "Candidat",
+        "name": "Nom:",
+        "email": "Email:",
+        "recruitment": "Recrutement:",
+        "client": "Client:"
+      },
+      "positionSection": {
+        "title": "Informations du Poste",
+        "position": "Poste *",
+        "contractType": "Type de contrat *",
+        "integrationDate": "Date d'intégration *",
+        "datePlaceholder": "Sélectionner une date"
+      },
+      "salarySection": {
+        "title": "Rémunération",
+        "salaryType": "Type de rémunération",
+        "monthlyOption": "💼 Salaire mensuel",
+        "dailyOption": "🔄 TJM (Freelance)",
+        "monthlySalary": "Salaire mensuel",
+        "salaryPlaceholder": "3750",
+        "dailyRate": "TJM",
+        "dailyRatePlaceholder": "500",
+        "currency": "Devise"
+      },
+      "statusSection": {
+        "title": "Statuts",
+        "integrationStatus": "Statut d'intégration",
+        "trialStatus": "Statut période d'essai"
+      },
+      "trialSection": {
+        "title": "Période d'essai",
+        "duration": "Durée (jours)",
+        "durationPlaceholder": "90",
+        "endDate": "Date de fin"
+      },
+      "notesSection": {
+        "title": "Notes",
+        "label": "Notes sur l'intégration",
+        "placeholder": "Notes sur l'intégration, objectifs, points d'attention..."
+      },
+      "updating": "Mise à jour...",
+      "save": "Sauvegarder"
+    },
+    "detail": {
+      "loading": "Chargement...",
+      "title": "Détails de l'intégration",
+      "generalSection": {
+        "title": "Informations générales",
+        "candidate": "Candidat:",
+        "client": "Client:",
+        "position": "Poste:",
+        "integrationDate": "Date d'intégration:",
+        "contractType": "Type de contrat:",
+        "status": "Statut:"
+      },
+      "salarySection": {
+        "title": "Rémunération",
+        "monthlySalary": "Salaire mensuel:",
+        "dailyRate": "TJM:",
+        "perDay": "/jour",
+        "hrManager": "Responsable RH:"
+      },
+      "trialSection": {
+        "title": "Période d'essai",
+        "duration": "Durée:",
+        "days": "jours",
+        "endDate": "Date de fin:",
+        "status": "Statut:",
+        "notes": "Notes:"
+      },
+      "notesSection": {
+        "title": "Notes"
+      },
+      "departureSection": {
+        "title": "Départ",
+        "date": "Date:",
+        "reason": "Raison:"
+      },
+      "evaluationSection": {
+        "title": "Évaluations",
+        "performance": "Performance:",
+        "evaluationNotes": "Notes d'évaluation:",
+        "finalRating": "Note finale:",
+        "finalEvaluation": "Évaluation finale:"
+      },
+      "renewalSection": {
+        "title": "Renouvellement",
+        "renewalDate": "Date de renouvellement:",
+        "period": "Période:",
+        "months": "mois",
+        "newEndDate": "Nouvelle date de fin:",
+        "notes": "Notes:"
+      },
+      "actions": {
+        "trialPeriod": "⏱️ Période d'essai",
+        "evaluationNotes": "📝 Notes d'évaluation",
+        "renew": "🔄 Renouveler",
+        "complete": "✅ Terminer",
+        "departure": "📤 Départ",
+        "delete": "🗑️ Supprimer"
+      },
+      "deleteConfirm": {
+        "title": "Supprimer l'intégration",
+        "message": "Êtes-vous sûr de vouloir supprimer cette intégration ?"
+      },
+      "toasts": {
+        "deleteSuccess": "Intégration supprimée avec succès",
+        "deleteError": "Erreur lors de la suppression",
+        "trialValidated": "Période d'essai validée avec succès",
+        "trialInvalidated": "Période d'essai invalidée avec succès",
+        "trialError": "Erreur lors de la validation",
+        "completeSuccess": "Intégration marquée comme terminée",
+        "completeError": "Erreur lors de la finalisation",
+        "departureSuccess": "Départ enregistré avec succès",
+        "departureError": "Erreur lors de l'enregistrement du départ",
+        "renewSuccess": "Intégration renouvelée avec succès",
+        "renewError": "Erreur lors du renouvellement",
+        "evaluationSuccess": "Notes d'évaluation mises à jour avec succès",
+        "evaluationError": "Erreur lors de la mise à jour des notes"
+      },
+      "validateTrialModal": {
+        "title": "Validation de la période d'essai",
+        "notesLabel": "Notes sur la période d'essai",
+        "notesPlaceholder": "Évaluation de la période d'essai, points forts, axes d'amélioration...",
+        "invalidate": "❌ Invalider",
+        "validate": "✅ Valider"
+      },
+      "completeModal": {
+        "title": "Marquer comme terminée",
+        "finalRatingLabel": "Note finale (sur 5)",
+        "finalEvaluationLabel": "Évaluation finale",
+        "finalEvaluationPlaceholder": "Bilan de l'intégration, points forts, axes d'amélioration...",
+        "confirm": "✅ Marquer comme terminée"
+      },
+      "departureModal": {
+        "title": "Enregistrer un départ",
+        "dateLabel": "Date de départ",
+        "reasonLabel": "Raison du départ",
+        "reasonPlaceholder": "Démission, licenciement, fin de contrat, mutation...",
+        "confirm": "📤 Enregistrer le départ"
+      }
+    },
+    "renew": {
+      "title": "Renouveler l'intégration",
+      "errors": {
+        "noEndDate": "Veuillez sélectionner une nouvelle date de fin",
+        "pastDate": "La nouvelle date de fin doit être dans le futur",
+        "renewFailed": "Erreur lors du renouvellement"
+      },
+      "currentPeriodSection": {
+        "title": "Période actuelle",
+        "integrationDate": "Date d'intégration:",
+        "currentEndDate": "Date de fin actuelle:",
+        "currentDuration": "Durée actuelle:",
+        "months": "mois"
+      },
+      "renewalPeriodSection": {
+        "title": "Période de renouvellement",
+        "durationLabel": "Durée du renouvellement",
+        "monthsOption": "{count} mois",
+        "customLabel": "mois (personnalisé)",
+        "newEndDateLabel": "Nouvelle date de fin *",
+        "newEndDatePlaceholder": "Sélectionner la nouvelle date de fin",
+        "newEndDateHelper": "Cette date sera la nouvelle échéance de l'intégration"
+      },
+      "notesSection": {
+        "title": "Notes de renouvellement",
+        "label": "Notes (optionnel)",
+        "placeholder": "Raisons du renouvellement, conditions particulières, objectifs pour la nouvelle période..."
+      },
+      "warning": {
+        "title": "Attention : Renouvellement unique",
+        "text": "Cette intégration ne peut être renouvelée qu'une seule fois. Assurez-vous que les dates et la période correspondent à vos besoins."
+      },
+      "renewing": "Renouvellement...",
+      "renew": "🔄 Renouveler"
+    },
+    "evaluationNotes": {
+      "defaultTitle": "Notes d'évaluation",
+      "errors": {
+        "noNotes": "Veuillez saisir des notes d'évaluation",
+        "saveFailed": "Erreur lors de la sauvegarde des notes"
+      },
+      "performanceSection": {
+        "title": "Évaluation de performance",
+        "ratingLabel": "Note de performance",
+        "dateLabel": "Date d'évaluation"
+      },
+      "notesSection": {
+        "title": "Notes détaillées",
+        "label": "Notes d'évaluation",
+        "placeholder": "Évaluez les performances du candidat intégré :\n\n• Points forts observés\n• Axes d'amélioration identifiés\n• Adaptation à l'équipe et à la culture d'entreprise\n• Atteinte des objectifs fixés\n• Recommandations pour la suite\n• Commentaires généraux sur l'intégration",
+        "helper": "Soyez précis et constructif dans votre évaluation",
+        "characterCount": "{count} caractères"
+      },
+      "tipsSection": {
+        "title": "Conseils pour une évaluation complète",
+        "tip1": "• Évaluez les compétences techniques et comportementales",
+        "tip2": "• Mentionnez l'adaptation à l'équipe et aux processus",
+        "tip3": "• Indiquez les objectifs atteints et ceux à améliorer",
+        "tip4": "• Proposez des recommandations constructives",
+        "tip5": "• Soyez objectif et factuel dans vos observations"
+      },
+      "saving": "Sauvegarde...",
+      "save": "💾 Sauvegarder"
+    }
+  },
+  "agendaModal": {
+    "title": "Détails de l'intégration",
+    "loading": "Chargement des détails...",
+    "notFound": "Intégration non trouvée",
+    "candidateSection": {
+      "title": "Candidat",
+      "name": "Nom:",
+      "email": "Email:",
+      "recruitment": "Recrutement:",
+      "client": "Client:"
+    },
+    "positionSection": {
+      "title": "Poste",
+      "position": "Position:",
+      "contractType": "Type de contrat:",
+      "integrationDate": "Date d'intégration:"
+    },
+    "salarySection": {
+      "title": "Rémunération",
+      "monthlySalary": "Salaire mensuel:",
+      "dailyRate": "TJM:",
+      "perDay": "/jour"
+    },
+    "statusesSection": {
+      "title": "Statuts",
+      "integration": "Intégration:",
+      "trialPeriod": "Période d'essai:",
+      "renewal": "Renouvellement:",
+      "renewed": "Renouvelée"
+    },
+    "evaluationSection": {
+      "title": "Évaluation",
+      "performance": "Performance:",
+      "notes": "Notes:"
+    },
+    "notesSection": {
+      "title": "Notes"
+    },
+    "outcome": {
+      "motifLabel": "Motif",
+      "motifCompletedSuffix": "(intégration réussie)",
+      "motifFailedSuffix": "(intégration échouée)",
+      "motifPlaceholder": "Saisissez le motif...",
+      "motifRequiredError": "Veuillez saisir un motif.",
+      "updateErrorDefault": "Erreur lors de la mise à jour de l'intégration",
+      "confirm": "Confirmer",
+      "saving": "Enregistrement...",
+      "markFailed": "❌ Marquer échouée",
+      "markCompleted": "✓ Marquer réussie",
+      "closedCompleted": "Intégration réussie — clôturée.",
+      "closedFailed": "Intégration échouée — clôturée."
+    }
+  }
+}

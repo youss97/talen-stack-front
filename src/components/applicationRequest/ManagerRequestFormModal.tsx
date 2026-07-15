@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
@@ -71,18 +72,9 @@ interface ManagerRequestFormModalProps {
 
 const CONTRACT_TYPES = ["CDI", "CDD", "Freelance", "Stage", "Alternance"];
 
-const WORK_TYPES = [
-  { value: "on_site", label: "Présentiel" },
-  { value: "remote", label: "Télétravail" },
-  { value: "hybrid", label: "Hybride" },
-];
+const WORK_TYPE_VALUES = ["on_site", "remote", "hybrid"] as const;
 
-const PRIORITIES = [
-  { value: "low", label: "Basse" },
-  { value: "normal", label: "Normale" },
-  { value: "high", label: "Haute" },
-  { value: "urgent", label: "Urgent" },
-];
+const PRIORITY_VALUES = ["low", "normal", "high", "urgent"] as const;
 
 const LANGUAGES = ["Français", "Anglais", "Arabe", "Espagnol", "Allemand", "Portugais"];
 
@@ -186,6 +178,7 @@ export default function ManagerRequestFormModal({
   initialData,
   isLoading = false,
 }: ManagerRequestFormModalProps) {
+  const t = useTranslations("myRequests.form");
   const isEditing = !!initialData;
   const [skillInput, setSkillInput] = useState("");
   const [skills, setSkills] = useState<SkillWithLevel[]>([]);
@@ -296,10 +289,10 @@ export default function ManagerRequestFormModal({
       setCurrency("MAD");
       // Étapes par défaut : une nouvelle demande a toujours un workflow concret (personnalisable)
       setWorkflowSteps([
-        { name: "Proposé", order: 0 },
-        { name: "Entretien RH", order: 1 },
-        { name: "Entretien client", order: 2 },
-        { name: "Offre", order: 3 },
+        { name: t("defaultWorkflowSteps.proposed"), order: 0 },
+        { name: t("defaultWorkflowSteps.hrInterview"), order: 1 },
+        { name: t("defaultWorkflowSteps.clientInterview"), order: 2 },
+        { name: t("defaultWorkflowSteps.offer"), order: 3 },
       ]);
     }
   }, [isOpen, initialData]);
@@ -384,10 +377,10 @@ export default function ManagerRequestFormModal({
     <Modal isOpen={isOpen} onClose={handleClose} className="max-w-2xl mx-4 my-4 max-h-[95vh] flex flex-col">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          {isEditing ? "Modifier l'offre de recrutement" : "Nouvelle offre de recrutement"}
+          {isEditing ? t("editTitle") : t("createTitle")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          {isEditing ? "Modifiez les informations de votre offre" : "Décrivez le profil que vous recherchez"}
+          {isEditing ? t("editSubtitle") : t("createSubtitle")}
         </p>
       </div>
 
@@ -396,10 +389,10 @@ export default function ManagerRequestFormModal({
 
           {/* Titre */}
           <div>
-            <Label>Titre du poste <span className="text-error-500">*</span></Label>
+            <Label>{t("titleLabel")} <span className="text-error-500">*</span></Label>
             <Input
-              placeholder="Ex: Développeur Full Stack React"
-              {...register("title", { required: "Le titre est requis" })}
+              placeholder={t("titlePlaceholder")}
+              {...register("title", { required: t("titleRequired") })}
               error={!!errors.title}
             />
             {errors.title && <p className="mt-1 text-sm text-error-500">{errors.title.message}</p>}
@@ -407,10 +400,10 @@ export default function ManagerRequestFormModal({
 
           {/* Description */}
           <div>
-            <Label>Description <span className="text-error-500">*</span></Label>
+            <Label>{t("descriptionLabel")} <span className="text-error-500">*</span></Label>
             <TextArea
-              placeholder="Décrivez le poste, les responsabilités, le profil recherché..."
-              {...register("description", { required: "La description est requise" })}
+              placeholder={t("descriptionPlaceholder")}
+              {...register("description", { required: t("descriptionRequired") })}
               rows={4}
               error={!!errors.description}
             />
@@ -419,17 +412,17 @@ export default function ManagerRequestFormModal({
 
           {/* Compétences requises */}
           <div>
-            <Label>Compétences requises <span className="text-error-500">*</span></Label>
+            <Label>{t("skillsLabel")} <span className="text-error-500">*</span></Label>
             <div className="flex gap-2">
               <input
                 type="text"
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSkill(); } }}
-                placeholder="Ex: React, Node.js..."
+                placeholder={t("skillsPlaceholder")}
                 className="h-11 flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
               />
-              <Button type="button" variant="outline" onClick={addSkill}>Ajouter</Button>
+              <Button type="button" variant="outline" onClick={addSkill}>{t("add")}</Button>
             </div>
             {skills.length > 0 && (
               <div className="mt-3 flex flex-col gap-2">
@@ -445,30 +438,30 @@ export default function ManagerRequestFormModal({
               </div>
             )}
             {skills.length === 0 && (
-              <p className="mt-1 text-xs text-gray-400">Ajoutez au moins une compétence requise</p>
+              <p className="mt-1 text-xs text-gray-400">{t("skillsHint")}</p>
             )}
           </div>
 
           {/* Softskills */}
           <div>
-            <Label>Softskills</Label>
+            <Label>{t("softSkillsLabel")}</Label>
             <div className="flex gap-2">
               <input
                 type="text"
                 value={softSkillInput}
                 onChange={(e) => setSoftSkillInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSoftSkill(); } }}
-                placeholder="Ex: Leadership, Travail en équipe..."
+                placeholder={t("softSkillsPlaceholder")}
                 className="h-11 flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
               />
-              <Button type="button" variant="outline" onClick={addSoftSkill}>Ajouter</Button>
+              <Button type="button" variant="outline" onClick={addSoftSkill}>{t("add")}</Button>
             </div>
             {softSkills.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
                 {softSkills.map((skill) => (
                   <span key={skill} className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border border-purple-200 dark:border-purple-500/30">
                     {skill}
-                    <button type="button" onClick={() => removeSoftSkill(skill)} className="ml-1 text-purple-500 hover:text-purple-700 text-base leading-none">×</button>
+                    <button type="button" onClick={() => removeSoftSkill(skill)} className="ms-1 text-purple-500 hover:text-purple-700 text-base leading-none">×</button>
                   </span>
                 ))}
               </div>
@@ -477,7 +470,7 @@ export default function ManagerRequestFormModal({
 
           {/* Types de contrat */}
           <div>
-            <Label>Types de contrat <span className="text-error-500">*</span></Label>
+            <Label>{t("contractTypesLabel")} <span className="text-error-500">*</span></Label>
             <div className="flex flex-wrap gap-2 mt-1">
               {CONTRACT_TYPES.map((type) => (
                 <button
@@ -499,16 +492,16 @@ export default function ManagerRequestFormModal({
           {/* Devise */}
           {(showSalary || showTJM) && (
             <div>
-              <Label>Devise</Label>
+              <Label>{t("currencyLabel")}</Label>
               <select value={currency} onChange={(e) => setCurrency(e.target.value)} className={selectClass}>
-                <option value="MAD">MAD — Dirham marocain</option>
-                <option value="EUR">EUR — Euro (€)</option>
-                <option value="USD">USD — Dollar ($)</option>
-                <option value="GBP">GBP — Livre (£)</option>
-                <option value="TND">TND — Dinar tunisien</option>
-                <option value="DZD">DZD — Dinar algérien</option>
-                <option value="AED">AED — Dirham des EAU</option>
-                <option value="SAR">SAR — Riyal saoudien</option>
+                <option value="MAD">{t("currencies.MAD")}</option>
+                <option value="EUR">{t("currencies.EUR")}</option>
+                <option value="USD">{t("currencies.USD")}</option>
+                <option value="GBP">{t("currencies.GBP")}</option>
+                <option value="TND">{t("currencies.TND")}</option>
+                <option value="DZD">{t("currencies.DZD")}</option>
+                <option value="AED">{t("currencies.AED")}</option>
+                <option value="SAR">{t("currencies.SAR")}</option>
               </select>
             </div>
           )}
@@ -516,22 +509,22 @@ export default function ManagerRequestFormModal({
           {/* Budget conditionnel */}
           {showSalary && (
             <div className="rounded-lg border border-green-200 dark:border-green-800 p-4 space-y-3">
-              <p className="text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wide">Prétentions salariales ({currencySymbol}/mois)</p>
+              <p className="text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wide">{t("salarySection", { symbol: currencySymbol })}</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Salaire min</Label>
+                  <Label>{t("salaryMin")}</Label>
                   <Input type="number" placeholder="0" {...register("min_salary", { valueAsNumber: true, min: 0 })} />
                 </div>
                 <div>
-                  <Label>Salaire max</Label>
+                  <Label>{t("salaryMax")}</Label>
                   <Input type="number" placeholder="0" {...register("max_salary", { valueAsNumber: true, min: 0 })} />
                 </div>
                 <div>
-                  <Label>Package actuel ({currencySymbol})</Label>
+                  <Label>{t("packageCurrent", { symbol: currencySymbol })}</Label>
                   <Input type="number" placeholder="0" {...register("package_current", { valueAsNumber: true, min: 0 })} />
                 </div>
                 <div>
-                  <Label>Package souhaité ({currencySymbol})</Label>
+                  <Label>{t("packageDesired", { symbol: currencySymbol })}</Label>
                   <Input type="number" placeholder="0" {...register("package_desired", { valueAsNumber: true, min: 0 })} />
                 </div>
               </div>
@@ -540,14 +533,14 @@ export default function ManagerRequestFormModal({
 
           {showTJM && (
             <div className="rounded-lg border border-purple-200 dark:border-purple-800 p-4 space-y-3">
-              <p className="text-xs font-medium text-purple-700 dark:text-purple-400 uppercase tracking-wide">TJM souhaité ({currencySymbol}/jour)</p>
+              <p className="text-xs font-medium text-purple-700 dark:text-purple-400 uppercase tracking-wide">{t("tjmSection", { symbol: currencySymbol })}</p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>TJM min</Label>
+                  <Label>{t("tjmMin")}</Label>
                   <Input type="number" placeholder="0" {...register("daily_rate_min", { valueAsNumber: true, min: 0 })} />
                 </div>
                 <div>
-                  <Label>TJM max</Label>
+                  <Label>{t("tjmMax")}</Label>
                   <Input type="number" placeholder="0" {...register("daily_rate_max", { valueAsNumber: true, min: 0 })} />
                 </div>
               </div>
@@ -557,17 +550,17 @@ export default function ManagerRequestFormModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {/* Mode de travail */}
             <div>
-              <Label>Mode de travail <span className="text-error-500">*</span></Label>
+              <Label>{t("workType")} <span className="text-error-500">*</span></Label>
               <select {...register("work_type")} className={selectClass}>
-                {WORK_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+                {WORK_TYPE_VALUES.map((v) => <option key={v} value={v}>{t(`workTypes.${v}`)}</option>)}
               </select>
             </div>
 
             {/* Pays */}
             <div>
-              <Label>Pays <span className="text-error-500">*</span></Label>
+              <Label>{t("country")} <span className="text-error-500">*</span></Label>
               <select
-                {...register("country", { required: "Le pays est requis" })}
+                {...register("country", { required: t("countryRequired") })}
                 className={selectClass}
                 onChange={(e) => {
                   setValue("country", e.target.value);
@@ -582,21 +575,21 @@ export default function ManagerRequestFormModal({
 
             {/* Ville */}
             <div>
-              <Label>Ville <span className="text-error-500">*</span></Label>
+              <Label>{t("city")} <span className="text-error-500">*</span></Label>
               {citiesForCountry.length > 0 ? (
                 <select
-                  {...register("location", { required: "La ville est requise" })}
+                  {...register("location", { required: t("cityRequired") })}
                   className={selectClass}
                 >
-                  <option value="">Sélectionnez une ville</option>
+                  <option value="">{t("citySelectPlaceholder")}</option>
                   {citiesForCountry.map((city) => (
                     <option key={city} value={city}>{city}</option>
                   ))}
                 </select>
               ) : (
                 <Input
-                  placeholder="Nom de la ville"
-                  {...register("location", { required: "La ville est requise" })}
+                  placeholder={t("cityPlaceholder")}
+                  {...register("location", { required: t("cityRequired") })}
                   error={!!errors.location}
                 />
               )}
@@ -605,7 +598,7 @@ export default function ManagerRequestFormModal({
 
             {/* Expérience min */}
             <div>
-              <Label>Expérience min (années)</Label>
+              <Label>{t("minExperience")}</Label>
               <Input
                 type="number"
                 placeholder="0"
@@ -615,7 +608,7 @@ export default function ManagerRequestFormModal({
 
             {/* Expérience max */}
             <div>
-              <Label>Expérience max (années)</Label>
+              <Label>{t("maxExperience")}</Label>
               <Input
                 type="number"
                 placeholder="10"
@@ -625,15 +618,15 @@ export default function ManagerRequestFormModal({
 
             {/* Priorité */}
             <div>
-              <Label>Priorité</Label>
+              <Label>{t("priority")}</Label>
               <select {...register("priority")} className={selectClass}>
-                {PRIORITIES.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
+                {PRIORITY_VALUES.map((v) => <option key={v} value={v}>{t(`priorities.${v}`)}</option>)}
               </select>
             </div>
 
             {/* Nombre de profils */}
             <div>
-              <Label>Nombre de profils <span className="text-error-500">*</span></Label>
+              <Label>{t("numberOfProfiles")} <span className="text-error-500">*</span></Label>
               <Input
                 type="number"
                 placeholder="1"
@@ -645,7 +638,7 @@ export default function ManagerRequestFormModal({
 
           {/* Langues */}
           <div>
-            <Label>Langues requises</Label>
+            <Label>{t("languagesLabel")}</Label>
             <div className="flex flex-wrap gap-2 mt-1">
               {LANGUAGES.map((lang) => (
                 <button
@@ -685,7 +678,7 @@ export default function ManagerRequestFormModal({
 
           {/* Date de début souhaitée */}
           <div>
-            <Label>Date de début souhaitée</Label>
+            <Label>{t("desiredStartDate")}</Label>
             <Input
               type="date"
               {...register("desired_start_date")}
@@ -695,17 +688,17 @@ export default function ManagerRequestFormModal({
           {/* Avantages & Primes */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <Label>Avantages</Label>
+              <Label>{t("benefits")}</Label>
               <TextArea
-                placeholder="Mutuelle, tickets restaurant, véhicule de fonction..."
+                placeholder={t("benefitsPlaceholder")}
                 {...register("benefits")}
                 rows={3}
               />
             </div>
             <div>
-              <Label>Primes</Label>
+              <Label>{t("bonuses")}</Label>
               <TextArea
-                placeholder="Prime de performance, 13ème mois..."
+                placeholder={t("bonusesPlaceholder")}
                 {...register("bonuses")}
                 rows={3}
               />
@@ -714,22 +707,22 @@ export default function ManagerRequestFormModal({
 
           {/* Note pour l'entreprise */}
           <div>
-            <Label>Note</Label>
+            <Label>{t("note")}</Label>
             <TextArea
-              placeholder="Informations complémentaires pour l'équipe RH..."
+              placeholder={t("notePlaceholder")}
               {...register("note_client")}
               rows={3}
             />
-            <p className="mt-1 text-xs text-gray-400">Visible par vous et l'équipe RH</p>
+            <p className="mt-1 text-xs text-gray-400">{t("noteHint")}</p>
           </div>
         </div>
 
         <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
           <Button variant="outline" onClick={handleClose} disabled={isLoading}>
-            Annuler
+            {t("cancel")}
           </Button>
           <Button type="submit" disabled={isLoading || skills.length === 0}>
-            {isLoading ? "Enregistrement..." : isEditing ? "Modifier l'offre" : "Créer l'offre"}
+            {isLoading ? t("saving") : isEditing ? t("editSubmit") : t("createSubmit")}
           </Button>
         </div>
       </form>

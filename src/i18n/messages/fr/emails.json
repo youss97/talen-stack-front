@@ -1,0 +1,140 @@
+{
+  "page": {
+    "title": "Gestion des Emails",
+    "subtitle": "Envoyez des emails en masse aux candidats, clients, utilisateurs et managers",
+    "newEmail": "Nouvel Email"
+  },
+  "filters": {
+    "searchPlaceholder": "Rechercher par sujet...",
+    "allStatuses": "Tous les statuts"
+  },
+  "status": {
+    "draft": "Brouillon",
+    "sent": "Envoyé",
+    "failed": "Échoué",
+    "scheduled": "Programmé"
+  },
+  "table": {
+    "columns": {
+      "sender": "Expéditeur",
+      "recipients": "Destinataires",
+      "status": "Statut",
+      "sentAt": "Date d'envoi",
+      "createdAt": "Créé le"
+    },
+    "recipientsCount": "{count} destinataire(s)",
+    "sentFailedCount": "Envoyés: {sent} | Échoués: {failed}",
+    "scheduledFor": "Programmé : {date}",
+    "emptyMessage": "Aucun email trouvé"
+  },
+  "actions": {
+    "edit": "Modifier",
+    "sendNow": "Envoyer maintenant",
+    "cancelSchedule": "Annuler la programmation"
+  },
+  "toast": {
+    "deleteSuccessTitle": "Succès",
+    "deleteSuccessMessage": "Email supprimé avec succès",
+    "deleteErrorTitle": "Erreur",
+    "deleteErrorMessage": "Erreur lors de la suppression de l'email",
+    "sendSuccessTitle": "Succès",
+    "sendSuccessMessage": "Email envoyé avec succès",
+    "sendErrorTitle": "Erreur",
+    "sendErrorMessage": "Erreur lors de l'envoi de l'email",
+    "cancelSuccessTitle": "Succès",
+    "cancelSuccessMessage": "Programmation annulée — email repassé en brouillon",
+    "cancelErrorTitle": "Erreur",
+    "cancelErrorMessage": "Erreur lors de l'annulation"
+  },
+  "deleteModal": {
+    "title": "Supprimer l'email",
+    "message": "Êtes-vous sûr de vouloir supprimer l'email \"{subject}\" ? Cette action est irréversible.",
+    "confirmText": "Supprimer",
+    "cancelText": "Annuler"
+  },
+  "detailModal": {
+    "title": "Détails de l'email",
+    "sender": "Expéditeur",
+    "stats": {
+      "totalRecipients": "Total destinataires",
+      "sent": "Envoyés",
+      "failed": "Échoués"
+    },
+    "recipients": "Destinataires ({count})",
+    "cc": "CC ({count})",
+    "bcc": "BCC ({count})",
+    "message": "Message",
+    "errorMessage": "Message d'erreur",
+    "createdAt": "Date de création",
+    "sentAt": "Date d'envoi"
+  },
+  "formModal": {
+    "titleAdd": "Envoyer un email",
+    "titleEdit": "Modifier le brouillon",
+    "subtitle": "Sélectionnez les destinataires et composez votre message",
+    "sendSuccess": "Email envoyé avec succès !",
+    "errors": {
+      "noRecipient": "Veuillez sélectionner au moins un destinataire.",
+      "noScheduleDate": "Veuillez choisir une date et heure d'envoi.",
+      "scheduleDateFuture": "La date d'envoi doit être dans le futur.",
+      "sendFailed": "Erreur lors de l'envoi de l'email. Vérifiez les destinataires et réessayez."
+    },
+    "to": {
+      "badge": "À",
+      "title": "Destinataires principaux",
+      "selectedCount": "{count} sélectionné(s)",
+      "candidates": "Candidats",
+      "candidatesPlaceholder": "Rechercher des candidats...",
+      "clients": "Clients",
+      "clientsPlaceholder": "Rechercher des clients...",
+      "clientNoEmail": "{name} (pas d'email)",
+      "users": "Utilisateurs",
+      "usersPlaceholder": "Rechercher des utilisateurs...",
+      "managers": "Managers",
+      "selectClientFirst": "Sélectionner un client d'abord...",
+      "managersPlaceholder": "Rechercher des managers...",
+      "manualEmails": "Adresses email manuelles",
+      "manualEmailsPlaceholder": "exemple@email.com, appuyez sur Entrée..."
+    },
+    "cc": {
+      "showLabel": "Ajouter une copie (CC)",
+      "hideLabel": "Masquer la copie",
+      "selectedCount": "{count} sélectionné(s)",
+      "candidates": "Candidats (CC)",
+      "candidatesPlaceholder": "Rechercher des candidats en copie...",
+      "clients": "Clients (CC)",
+      "clientsPlaceholder": "Rechercher des clients en copie...",
+      "managers": "Managers (CC)",
+      "managersPlaceholder": "Rechercher des managers en copie...",
+      "manualEmails": "Adresses CC manuelles",
+      "manualEmailsPlaceholder": "cc@email.com, appuyez sur Entrée..."
+    },
+    "bcc": {
+      "showLabel": "Ajouter une copie cachée (CCI)",
+      "hideLabel": "Masquer la copie cachée",
+      "selectedCount": "{count} sélectionné(s)",
+      "manualEmails": "Adresses CCI",
+      "manualEmailsPlaceholder": "cci@email.com, appuyez sur Entrée..."
+    },
+    "subject": "Sujet",
+    "subjectPlaceholder": "Entrez le sujet de l'email",
+    "subjectRequired": "Le sujet est requis",
+    "message": "Message",
+    "messagePlaceholder": "Entrez le contenu de l'email",
+    "messageRequired": "Le message est requis",
+    "addButton": "Ajouter",
+    "footer": {
+      "recipientsCount": "{count} destinataire(s)",
+      "ccCount": "{count} CC",
+      "bccCount": "{count} CCI",
+      "scheduleEnabled": "Programmation activée",
+      "scheduleSend": "Programmer l'envoi",
+      "draft": "Brouillon",
+      "programSchedule": "Programmer",
+      "send": "Envoyer",
+      "sending": "Envoi en cours...",
+      "saving": "Enregistrement...",
+      "saveChanges": "Enregistrer les modifications"
+    }
+  }
+}

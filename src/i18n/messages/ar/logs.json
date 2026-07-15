@@ -1,0 +1,24 @@
+{
+  "page": {
+    "title": "سجلات التدقيق",
+    "subtitle": "اطّلع على سجلات النظام"
+  },
+  "filters": {
+    "action": "الإجراء",
+    "allActions": "جميع الإجراءات",
+    "table": "الجدول",
+    "tablePlaceholder": "تصفية حسب الجدول..."
+  },
+  "table": {
+    "columns": {
+      "action": "الإجراء",
+      "table": "الجدول",
+      "user": "المستخدم",
+      "company": "الشركة",
+      "date": "التاريخ"
+    },
+    "unknownUser": "مستخدم غير معروف",
+    "system": "النظام",
+    "emptyState": "لم يتم العثور على أي سجل"
+  }
+}

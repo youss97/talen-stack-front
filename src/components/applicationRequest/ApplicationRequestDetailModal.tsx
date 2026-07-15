@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
@@ -13,14 +14,15 @@ const StarIcon = ({ filled }: { filled: boolean }) => (
 );
 
 const SkillsList = ({ skills }: { skills: unknown[] | null | undefined }) => {
+  const t = useTranslations("recruitmentRequests.detailModal");
   const validSkills = (skills || []).filter(
     (s: any) => s && !Array.isArray(s) && (typeof s === 'string' ? s.trim() : s?.name?.trim())
   );
   return (
     <div>
-      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Compétences requises</h4>
+      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">{t("requiredSkillsTitle")}</h4>
       {validSkills.length === 0 ? (
-        <p className="text-sm text-gray-400 dark:text-gray-500 italic">Aucune compétence renseignée</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 italic">{t("noSkills")}</p>
       ) : (
         <div className="flex flex-col gap-2">
           {validSkills.map((skill: any, index: number) => {
@@ -56,6 +58,8 @@ export default function ApplicationRequestDetailModal({
   isLoading = false,
   onStatusUpdate,
 }: ApplicationRequestDetailModalProps) {
+  const t = useTranslations("recruitmentRequests");
+  const tc = useTranslations("common");
   const [isEditingStatus, setIsEditingStatus] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
@@ -74,7 +78,7 @@ export default function ApplicationRequestDetailModal({
 
   const handleSaveStatus = async () => {
     if (!applicationRequest || !onStatusUpdate) return;
-    
+
     setIsUpdatingStatus(true);
     try {
       await onStatusUpdate(applicationRequest.id, selectedStatus);
@@ -89,15 +93,15 @@ export default function ApplicationRequestDetailModal({
   const getStatusLabel = (status: string) => {
     switch (status) {
       case "in_progress":
-        return "En cours";
+        return t("list.statusOptions.in_progress");
       case "standby":
-        return "Standby";
+        return t("list.statusOptions.standby");
       case "abandoned":
-        return "Abandonnée";
+        return t("list.statusOptions.abandoned");
       case "filled":
-        return "Comblée";
+        return t("list.statusOptions.filled");
       case "open":
-        return "Ouverte";
+        return t("list.statusOptions.open");
       default:
         return status;
     }
@@ -136,15 +140,15 @@ export default function ApplicationRequestDetailModal({
   const getUrgencyLabel = (urgency: string) => {
     switch (urgency) {
       case "urgent":
-        return "Urgente";
+        return t("list.urgencyLabels.urgent");
       case "high":
-        return "Haute";
+        return t("list.urgencyLabels.high");
       case "normal":
-        return "Normale";
+        return t("list.urgencyLabels.normal");
       case "low":
-        return "Basse";
+        return t("list.urgencyLabels.low");
       default:
-        return "Basse";
+        return t("list.urgencyLabels.low");
     }
   };
 
@@ -152,10 +156,10 @@ export default function ApplicationRequestDetailModal({
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          Détails de la demande
+          {t("detailModal.title")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Informations complètes de la demande de recrutement
+          {t("detailModal.subtitle")}
         </p>
       </div>
 
@@ -173,7 +177,7 @@ export default function ApplicationRequestDetailModal({
                   {applicationRequest.title}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Réf: {applicationRequest.reference}
+                  {t("list.columns.reference", { ref: applicationRequest.reference })}
                 </p>
               </div>
               <Badge
@@ -188,17 +192,17 @@ export default function ApplicationRequestDetailModal({
             {applicationRequest.client && (
               <div>
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Client
+                  {t("detailModal.clientTitle")}
                 </h4>
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-2">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Nom</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{tc("labels.name")}</p>
                       <p className="text-sm text-gray-900 dark:text-white">{applicationRequest.client.name || "-"}</p>
                     </div>
                     {applicationRequest.client.contact_email && (
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Email</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{tc("labels.email")}</p>
                         <p className="text-sm text-gray-900 dark:text-white">{applicationRequest.client.contact_email}</p>
                       </div>
                     )}
@@ -211,24 +215,24 @@ export default function ApplicationRequestDetailModal({
             {applicationRequest.manager && (
               <div>
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Manager
+                  {t("detailModal.managerTitle")}
                 </h4>
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-2">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Nom</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{tc("labels.name")}</p>
                       <p className="text-sm text-gray-900 dark:text-white">
                         {`${applicationRequest.manager.first_name || ""} ${applicationRequest.manager.last_name || ""}`.trim() || "-"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Email</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{tc("labels.email")}</p>
                       <p className="text-sm text-gray-900 dark:text-white">{applicationRequest.manager.email || "-"}</p>
                     </div>
                   </div>
                   {applicationRequest.manager.role && (
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Rôle</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{t("detailModal.role")}</p>
                       <p className="text-sm text-gray-900 dark:text-white">{applicationRequest.manager.role.name || "-"}</p>
                     </div>
                   )}
@@ -239,7 +243,7 @@ export default function ApplicationRequestDetailModal({
             {/* Description */}
             <div>
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Description
+                {t("detailModal.descriptionTitle")}
               </h4>
               <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
                 {applicationRequest.description}
@@ -253,7 +257,7 @@ export default function ApplicationRequestDetailModal({
             {applicationRequest.soft_skills && (applicationRequest.soft_skills as string[]).length > 0 && (
               <div>
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Softskills
+                  {t("detailModal.softSkillsTitle")}
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {(applicationRequest.soft_skills as string[]).map((skill, index) => (
@@ -272,7 +276,7 @@ export default function ApplicationRequestDetailModal({
             {applicationRequest.languages && applicationRequest.languages.length > 0 && (
               <div>
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Langues requises
+                  {t("detailModal.languagesTitle")}
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {applicationRequest.languages.map((lang, index) => {
@@ -300,17 +304,17 @@ export default function ApplicationRequestDetailModal({
               const steps = hasCustom
                 ? customSteps
                 : [
-                    { name: "Proposé", order: 0 },
-                    { name: "Entretien RH", order: 1 },
-                    { name: "Entretien client", order: 2 },
-                    { name: "Offre", order: 3 },
+                    { name: t("form.defaultWorkflowSteps.proposed"), order: 0 },
+                    { name: t("form.defaultWorkflowSteps.hrInterview"), order: 1 },
+                    { name: t("form.defaultWorkflowSteps.clientInterview"), order: 2 },
+                    { name: t("form.defaultWorkflowSteps.offer"), order: 3 },
                   ];
               return (
                 <div>
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Workflow du recrutement
+                    {t("detailModal.workflowTitle")}
                     {!hasCustom && (
-                      <span className="ml-2 text-xs font-normal text-gray-400">(étapes par défaut)</span>
+                      <span className="ms-2 text-xs font-normal text-gray-400">{t("detailModal.defaultStepsBadge")}</span>
                     )}
                   </h4>
                   <div className="flex flex-wrap items-center gap-2">
@@ -330,25 +334,25 @@ export default function ApplicationRequestDetailModal({
             {/* Informations du poste */}
             <div>
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Informations du poste
+                {t("detailModal.jobInfoTitle")}
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type de contrat</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.contractType")}</p>
                   <p className="mt-1 text-sm text-gray-900 dark:text-white">{applicationRequest.contract_type || "-"}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Mode de travail</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.workMode")}</p>
                   <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                    {applicationRequest.work_type === "remote" ? "Télétravail"
-                      : applicationRequest.work_type === "hybrid" ? "Hybride"
-                      : applicationRequest.work_type === "on_site" ? "Présentiel"
+                    {applicationRequest.work_type === "remote" ? t("form.fields.workModeRemote")
+                      : applicationRequest.work_type === "hybrid" ? t("form.fields.workModeHybrid")
+                      : applicationRequest.work_type === "on_site" ? t("form.fields.workModeOnSite")
                       : "-"}
                   </p>
                 </div>
                 {applicationRequest.location && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Localisation</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.location")}</p>
                     <p className="mt-1 text-sm text-gray-900 dark:text-white">
                       {[applicationRequest.location, applicationRequest.country].filter(Boolean).join(", ")}
                     </p>
@@ -356,46 +360,61 @@ export default function ApplicationRequestDetailModal({
                 )}
                 {applicationRequest.number_of_profiles && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nombre de profils</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.numberOfProfiles")}</p>
                     <p className="mt-1 text-sm text-gray-900 dark:text-white">{applicationRequest.number_of_profiles}</p>
                   </div>
                 )}
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Expérience</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.experience")}</p>
                   <p className="mt-1 text-sm text-gray-900 dark:text-white">
                     {applicationRequest.min_experience != null && applicationRequest.max_experience != null
-                      ? `${applicationRequest.min_experience} – ${applicationRequest.max_experience} ans`
+                      ? t("detailModal.experienceRange", { min: applicationRequest.min_experience, max: applicationRequest.max_experience })
                       : applicationRequest.min_experience != null
-                      ? `Min. ${applicationRequest.min_experience} ans`
+                      ? t("detailModal.experienceMin", { count: applicationRequest.min_experience })
                       : "-"}
                   </p>
                 </div>
                 {(applicationRequest.min_salary != null || applicationRequest.max_salary != null) && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Salaire</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.salary")}</p>
                     <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                      {applicationRequest.min_salary != null && applicationRequest.max_salary != null
-                        ? `${applicationRequest.min_salary.toLocaleString("fr-FR")} – ${applicationRequest.max_salary.toLocaleString("fr-FR")} ${applicationRequest.currency || "MAD"}`
-                        : applicationRequest.min_salary != null
-                        ? `Min. ${applicationRequest.min_salary.toLocaleString("fr-FR")} ${applicationRequest.currency || "MAD"}`
-                        : `Max. ${applicationRequest.max_salary?.toLocaleString("fr-FR")} ${applicationRequest.currency || "MAD"}`}
+                      {(() => {
+                        const currency: string = (applicationRequest.currency as string | undefined) || "MAD";
+                        if (applicationRequest.min_salary != null && applicationRequest.max_salary != null) {
+                          const min: string = applicationRequest.min_salary.toLocaleString("fr-FR");
+                          const max: string = applicationRequest.max_salary.toLocaleString("fr-FR");
+                          return t("detailModal.salaryRange", { min, max, currency });
+                        }
+                        if (applicationRequest.min_salary != null) {
+                          const amount: string = applicationRequest.min_salary.toLocaleString("fr-FR");
+                          return t("detailModal.salaryMinOnly", { amount, currency });
+                        }
+                        const amount: string = (applicationRequest.max_salary ?? 0).toLocaleString("fr-FR");
+                        return t("detailModal.salaryMaxOnly", { amount, currency });
+                      })()}
                     </p>
                   </div>
                 )}
                 {(applicationRequest.daily_rate_min != null || applicationRequest.daily_rate_max != null) && (
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">TJM (Freelance)</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.dailyRate")}</p>
                     <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                      {applicationRequest.daily_rate_min != null && applicationRequest.daily_rate_max != null
-                        ? `${applicationRequest.daily_rate_min} – ${applicationRequest.daily_rate_max} ${applicationRequest.currency || "MAD"}/j`
-                        : applicationRequest.daily_rate_min != null
-                        ? `Min. ${applicationRequest.daily_rate_min} ${applicationRequest.currency || "MAD"}/j`
-                        : `Max. ${applicationRequest.daily_rate_max} ${applicationRequest.currency || "MAD"}/j`}
+                      {(() => {
+                        const currency: string = (applicationRequest.currency as string | undefined) || "MAD";
+                        if (applicationRequest.daily_rate_min != null && applicationRequest.daily_rate_max != null) {
+                          return t("detailModal.dailyRateRange", { min: applicationRequest.daily_rate_min, max: applicationRequest.daily_rate_max, currency });
+                        }
+                        if (applicationRequest.daily_rate_min != null) {
+                          return t("detailModal.dailyRateMinOnly", { amount: applicationRequest.daily_rate_min, currency });
+                        }
+                        const amount: number = applicationRequest.daily_rate_max ?? 0;
+                        return t("detailModal.dailyRateMaxOnly", { amount, currency });
+                      })()}
                     </p>
                   </div>
                 )}
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date de début souhaitée</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.startDate")}</p>
                   <p className="mt-1 text-sm text-gray-900 dark:text-white">
                     {applicationRequest.desired_start_date
                       ? new Date(applicationRequest.desired_start_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
@@ -409,24 +428,24 @@ export default function ApplicationRequestDetailModal({
             {(applicationRequest.benefits || applicationRequest.bonuses || applicationRequest.variables) && (
               <div>
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Rémunération & Avantages
+                  {t("detailModal.compensationTitle")}
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {applicationRequest.benefits && (
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Avantages</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.benefits")}</p>
                       <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{applicationRequest.benefits}</p>
                     </div>
                   )}
                   {applicationRequest.bonuses && (
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Primes</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.bonuses")}</p>
                       <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{applicationRequest.bonuses}</p>
                     </div>
                   )}
                   {applicationRequest.variables && (
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">Variables</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.variables")}</p>
                       <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{applicationRequest.variables}</p>
                     </div>
                   )}
@@ -437,7 +456,7 @@ export default function ApplicationRequestDetailModal({
             {/* Statut de la demande */}
             <div>
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Statut de la demande
+                {t("detailModal.statusTitle")}
               </h4>
               {!isEditingStatus ? (
                 <div className="flex items-center gap-3">
@@ -453,7 +472,7 @@ export default function ApplicationRequestDetailModal({
                       size="sm"
                       onClick={handleStartEditStatus}
                     >
-                      Modifier le statut
+                      {t("detailModal.editStatusButton")}
                     </Button>
                   )}
                 </div>
@@ -465,11 +484,11 @@ export default function ApplicationRequestDetailModal({
                     className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
                     disabled={isUpdatingStatus}
                   >
-                    <option value="in_progress">En cours</option>
-                    <option value="standby">Standby</option>
-                    <option value="abandoned">Abandonnée</option>
-                    <option value="filled">Comblée</option>
-                    <option value="open">Ouverte</option>
+                    <option value="in_progress">{t("list.statusOptions.in_progress")}</option>
+                    <option value="standby">{t("list.statusOptions.standby")}</option>
+                    <option value="abandoned">{t("list.statusOptions.abandoned")}</option>
+                    <option value="filled">{t("list.statusOptions.filled")}</option>
+                    <option value="open">{t("list.statusOptions.open")}</option>
                   </select>
                   <div className="flex gap-2">
                     <Button
@@ -477,7 +496,7 @@ export default function ApplicationRequestDetailModal({
                       onClick={handleSaveStatus}
                       disabled={isUpdatingStatus}
                     >
-                      {isUpdatingStatus ? "Enregistrement..." : "Enregistrer"}
+                      {isUpdatingStatus ? t("detailModal.saving") : tc("actions.save")}
                     </Button>
                     <Button
                       variant="outline"
@@ -485,7 +504,7 @@ export default function ApplicationRequestDetailModal({
                       onClick={handleCancelEditStatus}
                       disabled={isUpdatingStatus}
                     >
-                      Annuler
+                      {tc("actions.cancel")}
                     </Button>
                   </div>
                 </div>
@@ -496,13 +515,13 @@ export default function ApplicationRequestDetailModal({
             {(applicationRequest.created_at || applicationRequest.updated_at) && (
               <div>
                 <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Historique
+                  {t("detailModal.historyTitle")}
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {applicationRequest.created_at && (
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                        Créé le
+                        {t("detailModal.createdAt")}
                       </p>
                       <p className="mt-1 text-sm text-gray-900 dark:text-white">
                         {new Date(applicationRequest.created_at).toLocaleDateString("fr-FR", {
@@ -518,7 +537,7 @@ export default function ApplicationRequestDetailModal({
                   {applicationRequest.updated_at && (
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                        Modifié le
+                        {t("detailModal.updatedAt")}
                       </p>
                       <p className="mt-1 text-sm text-gray-900 dark:text-white">
                         {new Date(applicationRequest.updated_at).toLocaleDateString("fr-FR", {
@@ -540,7 +559,7 @@ export default function ApplicationRequestDetailModal({
 
       <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
         <Button variant="outline" onClick={onClose}>
-          Fermer
+          {tc("actions.close")}
         </Button>
       </div>
     </Modal>

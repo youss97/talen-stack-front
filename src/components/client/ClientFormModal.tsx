@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import FormErrorBanner from "@/components/common/FormErrorBanner";
 import Button from "@/components/ui/button/Button";
@@ -41,6 +42,8 @@ export default function ClientFormModal({
   hiddenFields = [],
   serverError = null,
 }: ClientFormModalProps) {
+  const t = useTranslations("clients.form");
+  const tl = useTranslations("clients.list");
   const isEditing = !!client && !readOnly;
   // 8.5 — masquer un champ uniquement en consultation (jamais en édition)
   const isHidden = (key: string) => readOnly && hiddenFields.includes(key);
@@ -195,14 +198,14 @@ export default function ClientFormModal({
       {/* Header */}
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          {readOnly ? "Détails du client" : isEditing ? "Modifier le client" : "Ajouter un client"}
+          {readOnly ? t("titles.view") : isEditing ? t("titles.edit") : t("titles.add")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {readOnly
-            ? "Consultez les informations du client"
+            ? t("subtitles.view")
             : isEditing
-            ? "Modifiez les informations du client"
-            : "Remplissez les informations pour créer un nouveau client"}
+            ? t("subtitles.edit")
+            : t("subtitles.add")}
         </p>
       </div>
 
@@ -215,13 +218,13 @@ export default function ClientFormModal({
           {/* ── Section Informations de la société ── */}
           <section>
             <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-              Informations de la société
+              {t("sections.company")}
             </h3>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               {/* Logo */}
               <div className="sm:col-span-2">
                 <CloudinaryImageUpload
-                  label="Logo du client"
+                  label={t("fields.logo")}
                   preview={logoPreview}
                   shape="square"
                   disabled={readOnly}
@@ -230,17 +233,17 @@ export default function ClientFormModal({
                   entityId={client?.id || "new"}
                   autoUpload={true}
                   accept="image/jpeg,image/png,image/gif,image/webp"
-                  helperText="Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)"
+                  helperText={t("fields.logoHelper")}
                 />
               </div>
 
               {/* Raison sociale */}
               <div className="sm:col-span-2">
                 <Label>
-                  Raison sociale {!readOnly && <span className="text-error-500">*</span>}
+                  {t("fields.name")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
-                  placeholder="Tech Solutions SARL"
+                  placeholder={t("fields.namePlaceholder")}
                   {...register("name")}
                   error={!!errors.name}
                   disabled={readOnly}
@@ -252,10 +255,10 @@ export default function ClientFormModal({
               {!isHidden("ice") && (
               <div>
                 <Label>
-                  ICE {!readOnly && <span className="text-error-500">*</span>}
+                  {t("fields.ice")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
-                  placeholder="123456789012345"
+                  placeholder={t("fields.icePlaceholder")}
                   maxLength={15}
                   {...register("ice")}
                   error={!!errors.ice}
@@ -263,7 +266,7 @@ export default function ClientFormModal({
                 />
                 {errors.ice && <p className="mt-1 text-sm text-error-500">{errors.ice.message}</p>}
                 {!readOnly && (
-                  <p className="mt-1 text-xs text-gray-400">Identifiant Commun de l'Entreprise · 15 chiffres</p>
+                  <p className="mt-1 text-xs text-gray-400">{t("fields.iceHelper")}</p>
                 )}
               </div>
               )}
@@ -272,7 +275,7 @@ export default function ClientFormModal({
               {!isHidden("country") && (
               <div>
                 <Label>
-                  Pays {!readOnly && <span className="text-error-500">*</span>}
+                  {t("fields.country")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 {readOnly ? (
                   <Input value={client?.company_country || client?.country || ""} disabled />
@@ -291,10 +294,10 @@ export default function ClientFormModal({
               {!isHidden("address") && (
               <div className="sm:col-span-2">
                 <Label>
-                  Adresse {!readOnly && <span className="text-error-500">*</span>}
+                  {t("fields.address")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
-                  placeholder="12 rue de la Paix"
+                  placeholder={t("fields.addressPlaceholder")}
                   {...register("address")}
                   error={!!errors.address}
                   disabled={readOnly}
@@ -307,10 +310,10 @@ export default function ClientFormModal({
               {!isHidden("city") && (
               <div>
                 <Label>
-                  Ville {!readOnly && <span className="text-error-500">*</span>}
+                  {t("fields.city")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
-                  placeholder="Casablanca"
+                  placeholder={t("fields.cityPlaceholder")}
                   {...register("city")}
                   error={!!errors.city}
                   disabled={readOnly}
@@ -322,9 +325,9 @@ export default function ClientFormModal({
               {/* Code postal */}
               {!isHidden("postal_code") && (
               <div>
-                <Label>Code postal</Label>
+                <Label>{t("fields.postalCode")}</Label>
                 <Input
-                  placeholder="20000"
+                  placeholder={t("fields.postalCodePlaceholder")}
                   {...register("postal_code")}
                   error={!!errors.postal_code}
                   disabled={readOnly}
@@ -335,18 +338,18 @@ export default function ClientFormModal({
               {/* Statut */}
               <div>
                 <Label>
-                  Statut {!readOnly && <span className="text-error-500">*</span>}
+                  {t("fields.status")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 {readOnly ? (
                   <div className="mt-2">
                     <Badge color={client?.status === "active" ? "success" : "error"} variant="light">
-                      {client?.status === "active" ? "Actif" : "Inactif"}
+                      {client?.status === "active" ? tl("status.active") : tl("status.inactive")}
                     </Badge>
                   </div>
                 ) : (
                   <select {...register("status")} className={selectClass(!!errors.status)}>
-                    <option value="active">Actif</option>
-                    <option value="inactive">Inactif</option>
+                    <option value="active">{tl("status.active")}</option>
+                    <option value="inactive">{tl("status.inactive")}</option>
                   </select>
                 )}
                 {errors.status && <p className="mt-1 text-sm text-error-500">{errors.status.message}</p>}
@@ -357,18 +360,18 @@ export default function ClientFormModal({
           {/* ── Section Contact ── */}
           <section>
             <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-              Contact
+              {t("sections.contact")}
             </h3>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               {/* Téléphone */}
               {!isHidden("phone") && (
               <div>
                 <Label>
-                  Téléphone {!readOnly && <span className="text-error-500">*</span>}
+                  {t("fields.phone")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
                   type="tel"
-                  placeholder="+212612345678"
+                  placeholder={t("fields.phonePlaceholder")}
                   {...register("phone")}
                   error={!!errors.phone}
                   disabled={readOnly}
@@ -381,11 +384,11 @@ export default function ClientFormModal({
               {!isHidden("email") && (
               <div>
                 <Label>
-                  Email {!readOnly && <span className="text-error-500">*</span>}
+                  {t("fields.email")} {!readOnly && <span className="text-error-500">*</span>}
                 </Label>
                 <Input
                   type="email"
-                  placeholder="contact@techsolutions.ma"
+                  placeholder={t("fields.emailPlaceholder")}
                   {...register("email")}
                   error={!!errors.email}
                   disabled={readOnly}
@@ -400,36 +403,36 @@ export default function ClientFormModal({
           {readOnly && client?.managers && client.managers.length > 0 && (
             <section>
               <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-                Administrateur du client
+                {t("sections.admin")}
               </h3>
               {client.managers.map((assignment: any) => {
                 const mgr = assignment.manager;
                 return (
                   <div key={assignment.id} className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div className="sm:col-span-2">
-                      <ImageUpload label="Photo" preview={getImageUrl(mgr.photo_path)} shape="circle" disabled />
+                      <ImageUpload label={t("fields.photo")} preview={getImageUrl(mgr.photo_path)} shape="circle" disabled />
                     </div>
                     <div>
-                      <Label>Prénom</Label>
+                      <Label>{t("fields.firstName")}</Label>
                       <Input value={mgr.first_name} disabled />
                     </div>
                     <div>
-                      <Label>Nom</Label>
+                      <Label>{t("fields.lastName")}</Label>
                       <Input value={mgr.last_name} disabled />
                     </div>
                     <div>
-                      <Label>Email</Label>
+                      <Label>{t("fields.email")}</Label>
                       <Input type="email" value={mgr.email} disabled />
                     </div>
                     <div>
-                      <Label>Téléphone</Label>
-                      <Input value={mgr.phone || "Non renseigné"} disabled />
+                      <Label>{t("fields.phone")}</Label>
+                      <Input value={mgr.phone || t("fields.notProvided")} disabled />
                     </div>
                     <div className="sm:col-span-2">
-                      <Label>Statut</Label>
+                      <Label>{t("fields.status")}</Label>
                       <div className="mt-2">
                         <Badge color={mgr.status === "active" ? "success" : "error"} variant="light">
-                          {mgr.status === "active" ? "Actif" : "Inactif"}
+                          {mgr.status === "active" ? tl("status.active") : tl("status.inactive")}
                         </Badge>
                       </div>
                     </div>
@@ -443,30 +446,30 @@ export default function ClientFormModal({
           {readOnly && client && (client.industry || client.company_size || client.vat_rate || client.payment_terms) && (
             <section>
               <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-                Informations supplémentaires
+                {t("sections.extra")}
               </h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {client.industry && (
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Secteur</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t("fields.industry")}</p>
                     <p className="text-sm text-gray-900 dark:text-white">{client.industry}</p>
                   </div>
                 )}
                 {client.company_size && (
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Taille</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t("fields.companySize")}</p>
                     <p className="text-sm text-gray-900 dark:text-white">{client.company_size}</p>
                   </div>
                 )}
                 {client.vat_rate && (
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Taux TVA</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t("fields.vatRate")}</p>
                     <p className="text-sm text-gray-900 dark:text-white">{client.vat_rate}%</p>
                   </div>
                 )}
                 {client.payment_terms && (
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Conditions de paiement</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t("fields.paymentTerms")}</p>
                     <p className="text-sm text-gray-900 dark:text-white">{client.payment_terms}</p>
                   </div>
                 )}
@@ -478,12 +481,12 @@ export default function ClientFormModal({
           {!isEditing && !readOnly && (
             <section>
               <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-                Administrateur du client
+                {t("sections.admin")}
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <ImageUpload
-                    label="Photo de l'administrateur"
+                    label={t("fields.adminPhoto")}
                     preview={adminPhotoPreview}
                     shape="circle"
                     onChange={handleAdminPhotoChange}
@@ -491,41 +494,41 @@ export default function ClientFormModal({
                 </div>
 
                 <div>
-                  <Label>Prénom <span className="text-error-500">*</span></Label>
-                  <Input placeholder="John" {...register("adminFirstName")} error={!!errors.adminFirstName} />
+                  <Label>{t("fields.firstName")} <span className="text-error-500">*</span></Label>
+                  <Input placeholder={t("fields.adminFirstNamePlaceholder")} {...register("adminFirstName")} error={!!errors.adminFirstName} />
                   {errors.adminFirstName && <p className="mt-1 text-sm text-error-500">{errors.adminFirstName.message}</p>}
                 </div>
 
                 <div>
-                  <Label>Nom <span className="text-error-500">*</span></Label>
-                  <Input placeholder="Doe" {...register("adminLastName")} error={!!errors.adminLastName} />
+                  <Label>{t("fields.lastName")} <span className="text-error-500">*</span></Label>
+                  <Input placeholder={t("fields.adminLastNamePlaceholder")} {...register("adminLastName")} error={!!errors.adminLastName} />
                   {errors.adminLastName && <p className="mt-1 text-sm text-error-500">{errors.adminLastName.message}</p>}
                 </div>
 
                 <div>
-                  <Label>Email <span className="text-error-500">*</span></Label>
-                  <Input type="email" placeholder="admin@example.com" {...register("adminEmail")} error={!!errors.adminEmail} />
+                  <Label>{t("fields.email")} <span className="text-error-500">*</span></Label>
+                  <Input type="email" placeholder={t("fields.adminEmailPlaceholder")} {...register("adminEmail")} error={!!errors.adminEmail} />
                   {errors.adminEmail && <p className="mt-1 text-sm text-error-500">{errors.adminEmail.message}</p>}
                 </div>
 
                 <div>
-                  <Label>Téléphone <span className="text-error-500">*</span></Label>
-                  <Input type="tel" placeholder="+212612345678" {...register("adminPhone")} error={!!errors.adminPhone} />
+                  <Label>{t("fields.phone")} <span className="text-error-500">*</span></Label>
+                  <Input type="tel" placeholder={t("fields.phonePlaceholder")} {...register("adminPhone")} error={!!errors.adminPhone} />
                   {errors.adminPhone && <p className="mt-1 text-sm text-error-500">{errors.adminPhone.message}</p>}
                 </div>
 
                 <div>
-                  <Label>Mot de passe <span className="text-error-500">*</span></Label>
+                  <Label>{t("fields.password")} <span className="text-error-500">*</span></Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      placeholder="Min. 8 caractères"
+                      placeholder={t("fields.passwordPlaceholder")}
                       {...register("adminPassword")}
                       error={!!errors.adminPassword}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                      className="absolute z-30 -translate-y-1/2 cursor-pointer end-4 top-1/2"
                     >
                       {showPassword ? (
                         <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
@@ -538,8 +541,8 @@ export default function ClientFormModal({
                 </div>
 
                 <div>
-                  <Label>Position</Label>
-                  <Input placeholder="Directeur Général" {...register("adminPosition")} error={!!errors.adminPosition} />
+                  <Label>{t("fields.position")}</Label>
+                  <Input placeholder={t("fields.positionPlaceholder")} {...register("adminPosition")} error={!!errors.adminPosition} />
                 </div>
               </div>
             </section>
@@ -553,12 +556,12 @@ export default function ClientFormModal({
         {/* Footer */}
         <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
           {readOnly ? (
-            <Button variant="outline" onClick={onClose}>Fermer</Button>
+            <Button variant="outline" onClick={onClose}>{t("buttons.close")}</Button>
           ) : (
             <>
-              <Button variant="outline" onClick={onClose} disabled={isLoading}>Annuler</Button>
+              <Button variant="outline" onClick={onClose} disabled={isLoading}>{t("buttons.cancel")}</Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Enregistrement..." : isEditing ? "Modifier" : "Ajouter"}
+                {isLoading ? t("buttons.saving") : isEditing ? t("buttons.edit") : t("buttons.add")}
               </Button>
             </>
           )}

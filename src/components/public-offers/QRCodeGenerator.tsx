@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
+import { useTranslations } from "next-intl";
 import Button from "@/components/ui/button/Button";
 
 interface QRCodeGeneratorProps {
@@ -10,6 +11,7 @@ interface QRCodeGeneratorProps {
 }
 
 export default function QRCodeGenerator({ url, size = 300, brandColor = "#3B82F6" }: QRCodeGeneratorProps) {
+  const t = useTranslations("publicOffers.qrCode");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -63,10 +65,10 @@ export default function QRCodeGenerator({ url, size = 300, brandColor = "#3B82F6
         disabled={isGenerating}
         startIcon={<DownloadIcon />}
       >
-        {isGenerating ? "Téléchargement..." : "Télécharger QR Code"}
+        {isGenerating ? t("downloading") : t("download")}
       </Button>
       <p className="text-xs text-gray-500 dark:text-gray-400 text-center max-w-xs">
-        Scannez ce QR code pour accéder directement à l'offre d'emploi
+        {t("hint")}
       </p>
     </div>
   );

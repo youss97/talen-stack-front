@@ -1,0 +1,393 @@
+{
+  "page": {
+    "title": "إدارة الإدماجات",
+    "subtitle": "تابع إدماج المرشحين الموظفين وفترة تجربتهم",
+    "newIntegration": "إدماج جديد",
+    "stats": {
+      "total": "إجمالي الإدماجات",
+      "inProgress": "قيد التنفيذ",
+      "completed": "منتهية",
+      "trialSuccessRate": "معدل نجاح فترة التجربة"
+    },
+    "filters": {
+      "allStatuses": "جميع الحالات",
+      "statusInProgress": "🔄 قيد التنفيذ",
+      "statusCompleted": "✅ منتهية",
+      "statusFailed": "❌ فشل",
+      "allTrialPeriods": "جميع فترات التجربة",
+      "trialInProgress": "⏳ قيد التنفيذ",
+      "trialValidated": "✅ مُصادق عليها",
+      "trialNotValidated": "❌ غير مُصادق عليها",
+      "reset": "🔄 إعادة تعيين"
+    },
+    "table": {
+      "candidate": "المرشح",
+      "client": "العميل",
+      "position": "المنصب",
+      "date": "التاريخ",
+      "salary": "الراتب/الأجرة اليومية",
+      "trialPeriod": "فترة التجربة",
+      "status": "الحالة",
+      "draft": "مسودة",
+      "empty": "لم يتم العثور على أي إدماج"
+    },
+    "toasts": {
+      "createSuccess": "تم إنشاء الإدماج بنجاح",
+      "actionSuccess": "تم تنفيذ الإجراء بنجاح",
+      "editSuccess": "تم تعديل الإدماج بنجاح"
+    }
+  },
+  "statuses": {
+    "in_progress": "قيد التنفيذ",
+    "completed": "منتهية",
+    "failed": "فشل"
+  },
+  "trialStatuses": {
+    "in_progress": "قيد التنفيذ",
+    "validated": "مُصادق عليها",
+    "not_validated": "غير مُصادق عليها"
+  },
+  "contractTypes": {
+    "cdi": "عقد غير محدد المدة",
+    "cdd": "عقد محدد المدة",
+    "freelance": "عمل حر",
+    "interim": "عمل مؤقت",
+    "stage": "تدريب",
+    "alternance": "تدريب بالتناوب"
+  },
+  "ratingLabels": {
+    "1": "غير مُرضٍ إطلاقًا",
+    "2": "غير مُرضٍ",
+    "3": "مُرضٍ",
+    "4": "مُرضٍ جدًا",
+    "5": "ممتاز"
+  },
+  "modals": {
+    "create": {
+      "title": "إدماج جديد",
+      "errors": {
+        "noApplication": "يرجى اختيار طلب ترشيح",
+        "noClient": "تعذر استرداد معلومات العميل. يرجى اختيار طلب ترشيح آخر.",
+        "createFailed": "حدث خطأ أثناء إنشاء الإدماج"
+      },
+      "applicationSection": {
+        "title": "طلب الترشيح",
+        "label": "اختيار طلب ترشيح",
+        "searchPlaceholder": "ابحث عن مرشح...",
+        "noOptionsMessage": "لم يتم العثور على أي طلب ترشيح",
+        "searchInputPlaceholder": "اكتب اسم المرشح أو المنصب...",
+        "helper": "تُعرض فقط طلبات الترشيح النشطة. سيتم استنتاج التوظيف والعميل تلقائيًا.",
+        "autoInfoTitle": "معلومات تلقائية",
+        "partialInfoTitle": "معلومات جزئية",
+        "candidate": "المرشح:",
+        "recruitment": "التوظيف:",
+        "client": "العميل:",
+        "idAvailable": "✓ المعرف متوفر",
+        "idMissing": "⚠️ المعرف مفقود",
+        "hrManager": "مسؤول الموارد البشرية:",
+        "connectedUser": "(المستخدم المتصل)",
+        "clientInfoMissing": "بعض معلومات العميل غير متوفرة. يرجى اختيار طلب ترشيح آخر إذا استمرت المشكلة."
+      },
+      "positionSection": {
+        "title": "معلومات المنصب",
+        "position": "المنصب",
+        "positionPlaceholder": "مثال: مطور Full Stack",
+        "contractType": "نوع العقد",
+        "integrationDate": "تاريخ الإدماج *",
+        "datePlaceholder": "اختر تاريخًا"
+      },
+      "salarySection": {
+        "title": "الأجر",
+        "salaryType": "نوع الأجر",
+        "monthlyOption": "💼 راتب شهري",
+        "dailyOption": "🔄 أجرة يومية (عمل حر)",
+        "currency": "العملة",
+        "currencyPlaceholder": "اختر عملة",
+        "monthlySalary": "الراتب الشهري",
+        "salaryPlaceholder": "3750",
+        "dailyRate": "الأجرة اليومية",
+        "dailyRatePlaceholder": "500",
+        "perDay": "/يوم",
+        "preview": "معاينة: "
+      },
+      "trialSection": {
+        "title": "فترة التجربة",
+        "duration": "المدة (بالأيام)",
+        "durationPlaceholder": "90",
+        "endDate": "تاريخ الانتهاء"
+      },
+      "notesSection": {
+        "title": "ملاحظات",
+        "label": "ملاحظات حول الإدماج",
+        "placeholder": "ملاحظات حول الإدماج، الأهداف، نقاط الانتباه..."
+      },
+      "creating": "جارٍ الإنشاء...",
+      "create": "إنشاء"
+    },
+    "edit": {
+      "title": "تعديل الإدماج",
+      "loading": "جارٍ تحميل التفاصيل...",
+      "notFound": "الإدماج غير موجود",
+      "updateFailed": "حدث خطأ أثناء تحديث الإدماج",
+      "candidateSection": {
+        "title": "المرشح",
+        "name": "الاسم:",
+        "email": "البريد الإلكتروني:",
+        "recruitment": "التوظيف:",
+        "client": "العميل:"
+      },
+      "positionSection": {
+        "title": "معلومات المنصب",
+        "position": "المنصب *",
+        "contractType": "نوع العقد *",
+        "integrationDate": "تاريخ الإدماج *",
+        "datePlaceholder": "اختر تاريخًا"
+      },
+      "salarySection": {
+        "title": "الأجر",
+        "salaryType": "نوع الأجر",
+        "monthlyOption": "💼 راتب شهري",
+        "dailyOption": "🔄 أجرة يومية (عمل حر)",
+        "monthlySalary": "الراتب الشهري",
+        "salaryPlaceholder": "3750",
+        "dailyRate": "الأجرة اليومية",
+        "dailyRatePlaceholder": "500",
+        "currency": "العملة"
+      },
+      "statusSection": {
+        "title": "الحالات",
+        "integrationStatus": "حالة الإدماج",
+        "trialStatus": "حالة فترة التجربة"
+      },
+      "trialSection": {
+        "title": "فترة التجربة",
+        "duration": "المدة (بالأيام)",
+        "durationPlaceholder": "90",
+        "endDate": "تاريخ الانتهاء"
+      },
+      "notesSection": {
+        "title": "ملاحظات",
+        "label": "ملاحظات حول الإدماج",
+        "placeholder": "ملاحظات حول الإدماج، الأهداف، نقاط الانتباه..."
+      },
+      "updating": "جارٍ التحديث...",
+      "save": "حفظ"
+    },
+    "detail": {
+      "loading": "جارٍ التحميل...",
+      "title": "تفاصيل الإدماج",
+      "generalSection": {
+        "title": "معلومات عامة",
+        "candidate": "المرشح:",
+        "client": "العميل:",
+        "position": "المنصب:",
+        "integrationDate": "تاريخ الإدماج:",
+        "contractType": "نوع العقد:",
+        "status": "الحالة:"
+      },
+      "salarySection": {
+        "title": "الأجر",
+        "monthlySalary": "الراتب الشهري:",
+        "dailyRate": "الأجرة اليومية:",
+        "perDay": "/يوم",
+        "hrManager": "مسؤول الموارد البشرية:"
+      },
+      "trialSection": {
+        "title": "فترة التجربة",
+        "duration": "المدة:",
+        "days": "أيام",
+        "endDate": "تاريخ الانتهاء:",
+        "status": "الحالة:",
+        "notes": "ملاحظات:"
+      },
+      "notesSection": {
+        "title": "ملاحظات"
+      },
+      "departureSection": {
+        "title": "المغادرة",
+        "date": "التاريخ:",
+        "reason": "السبب:"
+      },
+      "evaluationSection": {
+        "title": "التقييمات",
+        "performance": "الأداء:",
+        "evaluationNotes": "ملاحظات التقييم:",
+        "finalRating": "التقييم النهائي:",
+        "finalEvaluation": "التقييم الختامي:"
+      },
+      "renewalSection": {
+        "title": "التجديد",
+        "renewalDate": "تاريخ التجديد:",
+        "period": "المدة:",
+        "months": "أشهر",
+        "newEndDate": "تاريخ الانتهاء الجديد:",
+        "notes": "ملاحظات:"
+      },
+      "actions": {
+        "trialPeriod": "⏱️ فترة التجربة",
+        "evaluationNotes": "📝 ملاحظات التقييم",
+        "renew": "🔄 تجديد",
+        "complete": "✅ إنهاء",
+        "departure": "📤 مغادرة",
+        "delete": "🗑️ حذف"
+      },
+      "deleteConfirm": {
+        "title": "حذف الإدماج",
+        "message": "هل أنت متأكد من رغبتك في حذف هذا الإدماج؟"
+      },
+      "toasts": {
+        "deleteSuccess": "تم حذف الإدماج بنجاح",
+        "deleteError": "حدث خطأ أثناء الحذف",
+        "trialValidated": "تم المصادقة على فترة التجربة بنجاح",
+        "trialInvalidated": "تم إبطال فترة التجربة بنجاح",
+        "trialError": "حدث خطأ أثناء المصادقة",
+        "completeSuccess": "تم وضع علامة على الإدماج كمنتهٍ",
+        "completeError": "حدث خطأ أثناء الإنهاء",
+        "departureSuccess": "تم تسجيل المغادرة بنجاح",
+        "departureError": "حدث خطأ أثناء تسجيل المغادرة",
+        "renewSuccess": "تم تجديد الإدماج بنجاح",
+        "renewError": "حدث خطأ أثناء التجديد",
+        "evaluationSuccess": "تم تحديث ملاحظات التقييم بنجاح",
+        "evaluationError": "حدث خطأ أثناء تحديث الملاحظات"
+      },
+      "validateTrialModal": {
+        "title": "المصادقة على فترة التجربة",
+        "notesLabel": "ملاحظات حول فترة التجربة",
+        "notesPlaceholder": "تقييم فترة التجربة، نقاط القوة، محاور التحسين...",
+        "invalidate": "❌ إبطال",
+        "validate": "✅ مصادقة"
+      },
+      "completeModal": {
+        "title": "وضع علامة كمنتهٍ",
+        "finalRatingLabel": "التقييم النهائي (من 5)",
+        "finalEvaluationLabel": "التقييم الختامي",
+        "finalEvaluationPlaceholder": "حصيلة الإدماج، نقاط القوة، محاور التحسين...",
+        "confirm": "✅ وضع علامة كمنتهٍ"
+      },
+      "departureModal": {
+        "title": "تسجيل مغادرة",
+        "dateLabel": "تاريخ المغادرة",
+        "reasonLabel": "سبب المغادرة",
+        "reasonPlaceholder": "استقالة، فصل، نهاية العقد، انتقال...",
+        "confirm": "📤 تسجيل المغادرة"
+      }
+    },
+    "renew": {
+      "title": "تجديد الإدماج",
+      "errors": {
+        "noEndDate": "يرجى اختيار تاريخ انتهاء جديد",
+        "pastDate": "يجب أن يكون تاريخ الانتهاء الجديد في المستقبل",
+        "renewFailed": "حدث خطأ أثناء التجديد"
+      },
+      "currentPeriodSection": {
+        "title": "الفترة الحالية",
+        "integrationDate": "تاريخ الإدماج:",
+        "currentEndDate": "تاريخ الانتهاء الحالي:",
+        "currentDuration": "المدة الحالية:",
+        "months": "أشهر"
+      },
+      "renewalPeriodSection": {
+        "title": "فترة التجديد",
+        "durationLabel": "مدة التجديد",
+        "monthsOption": "{count} أشهر",
+        "customLabel": "أشهر (مخصص)",
+        "newEndDateLabel": "تاريخ الانتهاء الجديد *",
+        "newEndDatePlaceholder": "اختر تاريخ الانتهاء الجديد",
+        "newEndDateHelper": "سيكون هذا التاريخ الموعد النهائي الجديد للإدماج"
+      },
+      "notesSection": {
+        "title": "ملاحظات التجديد",
+        "label": "ملاحظات (اختياري)",
+        "placeholder": "أسباب التجديد، شروط خاصة، أهداف الفترة الجديدة..."
+      },
+      "warning": {
+        "title": "تنبيه: تجديد لمرة واحدة",
+        "text": "لا يمكن تجديد هذا الإدماج إلا مرة واحدة. تأكد من أن التواريخ والفترة تتوافق مع احتياجاتك."
+      },
+      "renewing": "جارٍ التجديد...",
+      "renew": "🔄 تجديد"
+    },
+    "evaluationNotes": {
+      "defaultTitle": "ملاحظات التقييم",
+      "errors": {
+        "noNotes": "يرجى إدخال ملاحظات التقييم",
+        "saveFailed": "حدث خطأ أثناء حفظ الملاحظات"
+      },
+      "performanceSection": {
+        "title": "تقييم الأداء",
+        "ratingLabel": "تقييم الأداء",
+        "dateLabel": "تاريخ التقييم"
+      },
+      "notesSection": {
+        "title": "ملاحظات مفصلة",
+        "label": "ملاحظات التقييم",
+        "placeholder": "قيّم أداء المرشح المُدمج:\n\n• نقاط القوة الملحوظة\n• محاور التحسين المحددة\n• التكيف مع الفريق وثقافة الشركة\n• تحقيق الأهداف المحددة\n• توصيات للمستقبل\n• تعليقات عامة حول الإدماج",
+        "helper": "كن دقيقًا وبنّاءً في تقييمك",
+        "characterCount": "{count} حرفًا"
+      },
+      "tipsSection": {
+        "title": "نصائح لتقييم شامل",
+        "tip1": "• قيّم المهارات التقنية والسلوكية",
+        "tip2": "• اذكر التكيف مع الفريق والعمليات",
+        "tip3": "• أشر إلى الأهداف المحققة وتلك التي تحتاج إلى تحسين",
+        "tip4": "• اقترح توصيات بنّاءة",
+        "tip5": "• كن موضوعيًا وواقعيًا في ملاحظاتك"
+      },
+      "saving": "جارٍ الحفظ...",
+      "save": "💾 حفظ"
+    }
+  },
+  "agendaModal": {
+    "title": "تفاصيل الإدماج",
+    "loading": "جارٍ تحميل التفاصيل...",
+    "notFound": "الإدماج غير موجود",
+    "candidateSection": {
+      "title": "المرشح",
+      "name": "الاسم:",
+      "email": "البريد الإلكتروني:",
+      "recruitment": "التوظيف:",
+      "client": "العميل:"
+    },
+    "positionSection": {
+      "title": "المنصب",
+      "position": "المنصب:",
+      "contractType": "نوع العقد:",
+      "integrationDate": "تاريخ الإدماج:"
+    },
+    "salarySection": {
+      "title": "الأجر",
+      "monthlySalary": "الراتب الشهري:",
+      "dailyRate": "الأجرة اليومية:",
+      "perDay": "/يوم"
+    },
+    "statusesSection": {
+      "title": "الحالات",
+      "integration": "الإدماج:",
+      "trialPeriod": "فترة التجربة:",
+      "renewal": "التجديد:",
+      "renewed": "تم التجديد"
+    },
+    "evaluationSection": {
+      "title": "التقييم",
+      "performance": "الأداء:",
+      "notes": "ملاحظات:"
+    },
+    "notesSection": {
+      "title": "ملاحظات"
+    },
+    "outcome": {
+      "motifLabel": "السبب",
+      "motifCompletedSuffix": "(إدماج ناجح)",
+      "motifFailedSuffix": "(إدماج فاشل)",
+      "motifPlaceholder": "أدخل السبب...",
+      "motifRequiredError": "يرجى إدخال السبب.",
+      "updateErrorDefault": "حدث خطأ أثناء تحديث الإدماج",
+      "confirm": "تأكيد",
+      "saving": "جارٍ الحفظ...",
+      "markFailed": "❌ وضع علامة كفاشل",
+      "markCompleted": "✓ وضع علامة كناجح",
+      "closedCompleted": "الإدماج ناجح — مغلق.",
+      "closedFailed": "الإدماج فاشل — مغلق."
+    }
+  }
+}

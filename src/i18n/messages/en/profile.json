@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "editButton": "Edit profile",
+    "photoAlt": "Profile photo"
+  },
+  "sections": {
+    "personalInfo": "Personal information",
+    "address": "Address & Location",
+    "social": "Social networks",
+    "company": "Company"
+  },
+  "fields": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone",
+    "position": "Position",
+    "role": "Role",
+    "bio": "Bio",
+    "country": "Country",
+    "city": "City",
+    "postalCode": "Postal code",
+    "taxId": "Tax ID",
+    "companyName": "Name"
+  },
+  "modal": {
+    "title": "Edit my profile",
+    "subtitle": "Update your personal information",
+    "tabs": {
+      "info": "Information",
+      "social": "Social networks",
+      "address": "Address",
+      "security": "Security"
+    },
+    "photoLabel": "Profile photo",
+    "choosePhoto": "Choose a photo",
+    "photoHint": "JPEG, PNG, WebP · max 5MB",
+    "photoPreviewAlt": "Preview",
+    "firstNameRequired": "First name *",
+    "lastNameRequired": "Last name *",
+    "firstNamePlaceholder": "First name",
+    "lastNamePlaceholder": "Last name",
+    "phone": "Phone",
+    "phonePlaceholder": "+212 6 12 34 56 78",
+    "position": "Job title / Position",
+    "positionPlaceholder": "E.g. Full Stack Developer",
+    "bio": "Bio",
+    "bioPlaceholder": "A few words about you...",
+    "country": "Country",
+    "countryPlaceholder": "E.g. Morocco",
+    "city": "City",
+    "cityPlaceholder": "E.g. Casablanca",
+    "postalCode": "Postal code",
+    "postalCodePlaceholder": "E.g. 20000",
+    "taxId": "Tax ID",
+    "taxIdPlaceholder": "E.g. TAX-123456",
+    "securityHint": "Leave these fields blank if you don't want to change your password.",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "passwordHint": "8+ characters, uppercase, number and special character",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving..."
+  },
+  "validation": {
+    "required": "Required"
+  }
+}

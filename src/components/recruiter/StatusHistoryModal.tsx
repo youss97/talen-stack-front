@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
@@ -21,11 +22,13 @@ export default function StatusHistoryModal({
   getStatusLabel,
   getStatusColor,
 }: StatusHistoryModalProps) {
+  const t = useTranslations("recruiterModals");
+  const tc = useTranslations("common");
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl">
       <div className="p-6 sm:p-8 pb-0">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          Historique des statuts
+          {t("statusHistory.title")}
         </h2>
       </div>
 
@@ -39,9 +42,9 @@ export default function StatusHistoryModal({
             {history.map((item, index) => (
               <div
                 key={item.id}
-                className="relative pl-8 pb-4 border-l-2 border-gray-200 dark:border-gray-700 last:border-l-0 last:pb-0"
+                className="relative ps-8 pb-4 border-s-2 border-gray-200 dark:border-gray-700 last:border-s-0 last:pb-0"
               >
-                <div className="absolute left-0 top-0 -translate-x-1/2 w-4 h-4 rounded-full bg-brand-500 border-2 border-white dark:border-gray-900" />
+                <div className="absolute start-0 top-0 -translate-x-1/2 w-4 h-4 rounded-full bg-brand-500 border-2 border-white dark:border-gray-900" />
                 
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
                   <div className="flex items-start justify-between mb-2">
@@ -84,7 +87,7 @@ export default function StatusHistoryModal({
                   )}
 
                   <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                    <span>Par:</span>
+                    <span>{t("statusHistory.changedBy")}</span>
                     <span className="font-medium">
                       {item.changed_by.first_name} {item.changed_by.last_name}
                     </span>
@@ -102,7 +105,7 @@ export default function StatusHistoryModal({
         ) : (
           <div className="text-center py-12">
             <p className="text-gray-500 dark:text-gray-400">
-              Aucun historique disponible
+              {t("statusHistory.noHistory")}
             </p>
           </div>
         )}
@@ -110,7 +113,7 @@ export default function StatusHistoryModal({
 
       <div className="flex justify-end gap-3 p-6 sm:p-8 pt-4 border-t border-gray-100 dark:border-gray-800">
         <Button variant="outline" onClick={onClose}>
-          Fermer
+          {tc("actions.close")}
         </Button>
       </div>
     </Modal>

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import Label from "@/components/form/Label";
 
 export interface WorkflowStep {
@@ -11,9 +12,15 @@ interface Props {
   onChange: (steps: WorkflowStep[]) => void;
 }
 
-const DEFAULT_SUGGESTIONS = ["Proposé", "Entretien RH", "Entretien client", "Offre", "Recruté"];
-
 export default function WorkflowStepsEditor({ value, onChange }: Props) {
+  const t = useTranslations("recruitmentRequests.workflowStepsEditor");
+  const DEFAULT_SUGGESTIONS = [
+    t("suggestions.proposed"),
+    t("suggestions.hrInterview"),
+    t("suggestions.clientInterview"),
+    t("suggestions.offer"),
+    t("suggestions.recruited"),
+  ];
   const steps = [...(value || [])].sort((a, b) => a.order - b.order);
 
   const commit = (next: WorkflowStep[]) => {
@@ -37,9 +44,9 @@ export default function WorkflowStepsEditor({ value, onChange }: Props) {
 
   return (
     <div>
-      <Label>Étapes du workflow</Label>
+      <Label>{t("label")}</Label>
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-        Définissez les étapes que suivront les candidatures de cette demande (ex. Entretien RH → Entretien client → Offre).
+        {t("help")}
       </p>
 
       {steps.length === 0 && (
@@ -66,7 +73,7 @@ export default function WorkflowStepsEditor({ value, onChange }: Props) {
             <input
               value={step.name}
               onChange={(e) => updateName(i, e.target.value)}
-              placeholder={`Étape ${i + 1}`}
+              placeholder={t("stepPlaceholder", { index: i + 1 })}
               className="h-10 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
             />
             <button type="button" onClick={() => move(i, -1)} disabled={i === 0}
@@ -84,7 +91,7 @@ export default function WorkflowStepsEditor({ value, onChange }: Props) {
         onClick={() => addStep()}
         className="mt-3 text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400"
       >
-        + Ajouter une étape
+        {t("addStep")}
       </button>
     </div>
   );

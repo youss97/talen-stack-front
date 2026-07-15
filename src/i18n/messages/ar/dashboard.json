@@ -1,0 +1,40 @@
+{
+  "title": {
+    "superAdmin": "لوحة التحكم العامة — TalentStack",
+    "client": "مساحة العميل الخاصة بي",
+    "default": "لوحة التحكم"
+  },
+  "subtitle": {
+    "superAdmin": "نظرة عامة على جميع الشركات",
+    "client": "طلباتك وترشيحاتك",
+    "default": "إحصائيات شركتك"
+  },
+  "cards": {
+    "companies": "الشركات",
+    "clients": "العملاء",
+    "candidates": "المرشحون (المجمع)",
+    "requests": "الطلبات",
+    "applications": "الترشيحات",
+    "integrations": "عمليات الدمج",
+    "users": "المستخدمون",
+    "cvPool": "مجمع السير الذاتية"
+  },
+  "charts": {
+    "applicationsPerMonth": "الترشيحات / شهر (آخر 6 أشهر)",
+    "requestsPerMonth": "الطلبات / شهر (آخر 6 أشهر)",
+    "requestsByStatus": "الطلبات حسب الحالة",
+    "integrationsByStatus": "عمليات الدمج حسب الحالة",
+    "topCompanies": "أفضل الشركات (عدد العملاء)",
+    "topClients": "أفضل العملاء (عدد الطلبات)",
+    "statusLabels": {
+      "inProgress": "قيد التنفيذ",
+      "standby": "قيد الانتظار",
+      "abandoned": "متروكة",
+      "filled": "مكتملة",
+      "open": "مفتوحة",
+      "archived": "مؤرشفة",
+      "completed": "منتهية",
+      "failed": "فاشلة"
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "list": {
+    "title": "الأدوار والصلاحيات",
+    "subtitle": "إدارة الأدوار وصلاحياتها",
+    "addButton": "إضافة دور",
+    "searchPlaceholder": "البحث عن دور...",
+    "emptyMessage": "لا يوجد أي دور",
+    "columns": {
+      "usersCount": "المستخدمون",
+      "createdAt": "تاريخ الإنشاء"
+    },
+    "status": {
+      "protected": "🔒 محمي",
+      "editable": "✏️ قابل للتعديل"
+    }
+  },
+  "toasts": {
+    "unauthorizedTitle": "إجراء غير مسموح به",
+    "unauthorizedEditMessage": "هذا الدور محمي ولا يمكن تعديله.",
+    "unauthorizedDeleteMessage": "هذا الدور محمي ولا يمكن حذفه.",
+    "cannotDeleteTitle": "تعذر الحذف",
+    "cannotDeleteMessage": "هذا الدور مسند إلى {count} مستخدم(ين). قم بإزالته من هؤلاء المستخدمين أولاً.",
+    "deleteSuccess": "تم حذف الدور بنجاح",
+    "deleteErrorDefault": "خطأ أثناء حذف الدور",
+    "updateSuccess": "تم تعديل الدور بنجاح",
+    "createSuccess": "تم إنشاء الدور بنجاح",
+    "updateErrorDefault": "خطأ أثناء تعديل الدور",
+    "createErrorDefault": "خطأ أثناء إنشاء الدور"
+  },
+  "confirmDelete": {
+    "title": "حذف الدور",
+    "message": "هل أنت متأكد من رغبتك في حذف الدور \"{name}\"؟ هذا الإجراء لا رجعة فيه."
+  },
+  "form": {
+    "titleEdit": "تعديل الدور",
+    "titleAdd": "إضافة دور",
+    "subtitleEdit": "قم بتعديل معلومات الدور",
+    "subtitleAdd": "املأ المعلومات لإنشاء دور جديد",
+    "nameLabel": "اسم الدور",
+    "namePlaceholder": "مسؤول",
+    "descriptionPlaceholder": "وصف الدور...",
+    "permissionsLabel": "الصلاحيات",
+    "permissionsSubtitle": "حدد الوحدات والصفحات والإجراءات التي يمكن الوصول إليها لهذا الدور",
+    "saving": "جارٍ الحفظ...",
+    "dataScope": {
+      "title": "نطاق البيانات",
+      "subtitle": "لكل مورد، اختر ما إذا كان المستخدم يرى فقط <strong>عناصره الخاصة</strong> (التي أنشأها أو المسندة إليه) أو <strong>الشركة بأكملها</strong>.",
+      "own": "عناصره الخاصة",
+      "company": "الشركة بأكملها"
+    }
+  },
+  "detail": {
+    "defaultTitle": "تفاصيل الدور",
+    "createdOn": "أُنشئ في {date}",
+    "dataScopeTitle": "نطاق البيانات",
+    "scopeTooltipCompany": "يرى الشركة بأكملها",
+    "scopeTooltipOwn": "يرى فقط عناصره الخاصة",
+    "permissionsTitle": "الصلاحيات المسندة",
+    "noPermissions": "لا توجد صلاحيات مسندة"
+  },
+  "resources": {
+    "applications": "الترشيحات",
+    "requests": "طلبات التوظيف",
+    "cvs": "قاعدة السير الذاتية",
+    "clients": "العملاء",
+    "emails": "البريد الإلكتروني",
+    "integrations": "التكاملات"
+  },
+  "permissionsSelector": {
+    "globalSelection": "التحديد العام:",
+    "selectAll": "تحديد الكل",
+    "deselectAll": "إلغاء تحديد الكل",
+    "modules": {
+      "title": "الوحدات",
+      "none": "لا شيء",
+      "all": "الكل",
+      "empty": "لا توجد وحدة",
+      "removeAllPages": "إزالة جميع الصفحات",
+      "selectAllPages": "تحديد جميع الصفحات"
+    },
+    "pages": {
+      "title": "الصفحات",
+      "none": "لا شيء",
+      "all": "الكل",
+      "selectModuleFirst": "اختر وحدة",
+      "empty": "لا توجد صفحات متاحة"
+    },
+    "actionsColumn": {
+      "title": "الإجراءات",
+      "minimum": "الحد الأدنى",
+      "all": "الكل",
+      "selectPageFirst": "اختر صفحة",
+      "empty": "لا توجد إجراءات"
+    },
+    "required": "إلزامي",
+    "actions": {
+      "read": "عرض",
+      "import": "استيراد",
+      "approve": "الموافقة",
+      "reject": "رفض",
+      "archive": "أرشفة",
+      "send": "إرسال",
+      "assign": "إسناد",
+      "manage": "إدارة",
+      "resend": "إعادة الإرسال",
+      "stats": "الإحصائيات",
+      "updateStatus": "تغيير الحالة"
+    }
+  }
+}

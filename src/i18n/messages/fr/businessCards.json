@@ -1,0 +1,65 @@
+{
+  "title": "Cartes de visite",
+  "subtitle": "Cartes de visite QR partageables (RH, Client, Employé)",
+  "backToSettings": "Retour aux paramètres",
+  "createMyCard": "Créer ma carte",
+  "noCards": "Aucune carte.",
+  "ownerTypes": {
+    "rh": "RH",
+    "client": "Client",
+    "employee": "Employé"
+  },
+  "templates": {
+    "snow": "Clair (Snow)",
+    "dark": "Sombre",
+    "brand": "Couleur de marque",
+    "gradient": "Dégradé",
+    "mint": "Pastel"
+  },
+  "card": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "qrAndCard": "QR & Carte",
+    "preview": "Aperçu",
+    "link": "Lien",
+    "deactivate": "Désactiver",
+    "activate": "Activer"
+  },
+  "form": {
+    "editTitle": "Modifier ma carte",
+    "createTitle": "Ma carte de visite",
+    "photoFromProfile": "Photo issue de votre profil",
+    "fullNamePlaceholder": "Nom complet *",
+    "positionPlaceholder": "Fonction / Poste",
+    "companyPlaceholder": "Société",
+    "phonePlaceholder": "Téléphone",
+    "linkedinPlaceholder": "LinkedIn (URL)",
+    "websitePlaceholder": "Site web (URL)",
+    "customFieldsLabel": "Champs personnalisés (liens / texte)",
+    "addField": "+ Ajouter",
+    "typeLink": "Lien",
+    "typeText": "Texte",
+    "labelPlaceholder": "Libellé",
+    "urlPlaceholder": "URL",
+    "valuePlaceholder": "Valeur",
+    "saving": "..."
+  },
+  "qrModal": {
+    "title": "Carte de visite à partager",
+    "altText": "Carte de visite",
+    "scanHint": "Un scan du QR ouvre la carte interactive.",
+    "print": "Imprimer",
+    "download": "Télécharger (PNG)",
+    "fileNamePrefix": "carte",
+    "printTitle": "Carte {name}"
+  },
+  "confirmDelete": "Supprimer la carte de {name} ?",
+  "toasts": {
+    "cardUpdated": "Carte modifiée",
+    "cardCreated": "Carte créée",
+    "saveError": "Erreur lors de l'enregistrement",
+    "cardDeleted": "Carte supprimée",
+    "linkCopied": "Lien copié",
+    "linkCopiedMessage": "Lien de la carte copié"
+  }
+}

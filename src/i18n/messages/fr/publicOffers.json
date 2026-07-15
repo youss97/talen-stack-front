@@ -1,0 +1,156 @@
+{
+  "list": {
+    "title": "Offres Publiques",
+    "subtitle": "Gérez vos offres d'emploi publiques",
+    "viewRecruitmentRequests": "Voir les demandes de recrutement",
+    "searchPlaceholder": "Rechercher par titre...",
+    "notAvailable": "N/A",
+    "emptyMessage": "Aucune offre publique trouvée",
+    "columns": {
+      "title": "Titre",
+      "client": "Client",
+      "location": "Localisation",
+      "contractType": "Type de contrat",
+      "status": "Statut",
+      "views": "Vues",
+      "createdAt": "Date de création"
+    },
+    "statusPublic": "Publique",
+    "statusPrivate": "Privée",
+    "actions": {
+      "detailsAndApplications": "Détails & candidatures",
+      "viewOffer": "Voir l'offre",
+      "copyLink": "Copier lien",
+      "configure": "Configurer l'offre publique",
+      "toggleStatus": "Basculer statut"
+    },
+    "toast": {
+      "success": "Succès",
+      "error": "Erreur",
+      "attention": "Attention",
+      "madePublic": "rendue publique",
+      "madePrivate": "rendue privée",
+      "toggleSuccess": "Offre {status} avec succès",
+      "toggleError": "Erreur lors de la modification",
+      "linkCopied": "Lien copié",
+      "linkCopiedMessage": "Le lien a été copié dans le presse-papier",
+      "notPublicWarning": "Cette offre n'est pas publique ou n'a pas de slug",
+      "configSaved": "Configuration de l'offre publique enregistrée"
+    }
+  },
+  "detail": {
+    "notFound": "Offre non trouvée ou non publique",
+    "notAvailable": "N/A",
+    "backToList": "Retour à la liste",
+    "back": "Retour",
+    "offerDetails": "Détails de l'offre",
+    "publicBadge": "Publique",
+    "description": "Description",
+    "salary": "Salaire",
+    "salaryRange": "{min} {symbol} - {max} {symbol}",
+    "salaryFrom": "À partir de {amount} {symbol}",
+    "salaryUpTo": "Jusqu'à {amount} {symbol}",
+    "experience": "Expérience requise",
+    "experienceMin": "{years} ans minimum",
+    "skills": "Compétences requises",
+    "deadline": "Date limite",
+    "stats": "Statistiques",
+    "views": "Vues",
+    "publishedDate": "Date de publication",
+    "publicLink": "Lien public",
+    "copyLink": "Copier le lien",
+    "preview": "Prévisualiser",
+    "receivedApplications": "Candidatures reçues (offre publique)",
+    "deleteApplication": {
+      "title": "Supprimer la candidature",
+      "message": "Êtes-vous sûr de vouloir supprimer la candidature de {name} ? Cette action est irréversible.",
+      "confirm": "Supprimer",
+      "cancel": "Annuler"
+    },
+    "toast": {
+      "success": "Succès",
+      "error": "Erreur",
+      "convertedWithWarning": "Transformée (extraction du CV incomplète)",
+      "converted": "Transformée",
+      "convertedMessage": "Candidat ajouté au vivier et candidature créée.",
+      "convertError": "Échec de la transformation",
+      "deleted": "Supprimée",
+      "deletedMessage": "La candidature a été supprimée.",
+      "deleteError": "Échec de la suppression",
+      "linkCopied": "Lien copié",
+      "linkCopiedMessage": "Le lien a été copié dans le presse-papier"
+    }
+  },
+  "config": {
+    "title": "Configurer l'offre publique",
+    "subtitle": "Sélectionnez les champs à afficher sur la page publique de l'offre. Le titre et le formulaire de candidature sont toujours visibles.",
+    "brandColorNote": "La couleur de vos offres publiques est définie une seule fois dans {settingsPath} et s'applique à toutes vos offres.",
+    "settingsPath": "Paramètres → Site public & branding",
+    "fieldsShown": "Champs affichés",
+    "deselectAll": "Tout désélectionner",
+    "selectAll": "Sélectionner tout",
+    "visible": "Visible",
+    "hidden": "Masqué",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "saveError": "Erreur lors de l'enregistrement de la configuration",
+    "fields": {
+      "client": "Nom du client",
+      "description": "Description du poste",
+      "required_skills": "Compétences requises",
+      "location": "Lieu",
+      "contract_type": "Type de contrat",
+      "contract_duration": "Durée du contrat",
+      "min_experience": "Expérience requise",
+      "salary": "Salaire",
+      "remote_possible": "Télétravail",
+      "deadline": "Date limite",
+      "desired_start_date": "Début souhaité",
+      "reference": "Référence",
+      "industry": "Secteur d'activité"
+    }
+  },
+  "applications": {
+    "count": "{count, plural, one {# candidature} other {# candidatures}}",
+    "table": {
+      "candidate": "Candidat",
+      "contact": "Contact",
+      "receivedOn": "Reçue le",
+      "actions": "Actions"
+    },
+    "cv": "CV",
+    "convert": "→ Candidature",
+    "converted": "Transformée",
+    "delete": "Supprimer",
+    "empty": "Aucune candidature pour ce filtre"
+  },
+  "conversion": {
+    "title": "Transformation en candidature…",
+    "subtitle": "Merci de patienter, ne fermez pas cette fenêtre.",
+    "steps": {
+      "extract": "Extraction du CV du candidat",
+      "save": "Enregistrement dans le vivier de talents",
+      "create": "Création de la candidature"
+    }
+  },
+  "stats": {
+    "views": "Vues",
+    "applications": "Candidatures",
+    "conversionRate": "Taux de conversion",
+    "sources": "Sources des candidatures",
+    "sourceLabels": {
+      "qr": "QR Code",
+      "direct": "Lien direct",
+      "linkedin": "LinkedIn",
+      "other": "Autre"
+    }
+  },
+  "qrCode": {
+    "download": "Télécharger QR Code",
+    "downloading": "Téléchargement...",
+    "hint": "Scannez ce QR code pour accéder directement à l'offre d'emploi",
+    "viewQrCode": "Voir le QR Code",
+    "views": "{count} vues"
+  }
+}

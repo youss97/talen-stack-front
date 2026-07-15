@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useForm, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Modal } from "@/components/ui/modal";
@@ -28,6 +29,8 @@ export default function RoleFormModal({
   role,
   isLoading = false,
 }: RoleFormModalProps) {
+  const t = useTranslations("roles");
+  const tc = useTranslations("common");
   const isEditing = !!role;
 
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
@@ -119,24 +122,24 @@ export default function RoleFormModal({
 
   // Lignes de la section "Portée des données"
   const scopeRows: { key: keyof typeof scopes; label: string; note?: string }[] = [
-    { key: "applications", label: "Candidatures" },
-    { key: "requests", label: "Demandes de recrutement" },
-    { key: "cvs", label: "Vivier de talents (CVs)" },
-    { key: "clients", label: "Clients" },
-    { key: "emails", label: "Emails" },
-    { key: "integrations", label: "Intégrations" },
+    { key: "applications", label: t("resources.applications") },
+    { key: "requests", label: t("resources.requests") },
+    { key: "cvs", label: t("resources.cvs") },
+    { key: "clients", label: t("resources.clients") },
+    { key: "emails", label: t("resources.emails") },
+    { key: "integrations", label: t("resources.integrations") },
   ];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-5xl mx-4 my-2 h-[96vh] flex flex-col modal-responsive">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          {isEditing ? "Modifier le rôle" : "Ajouter un rôle"}
+          {isEditing ? t("form.titleEdit") : t("form.titleAdd")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {isEditing
-            ? "Modifiez les informations du rôle"
-            : "Remplissez les informations pour créer un nouveau rôle"}
+            ? t("form.subtitleEdit")
+            : t("form.subtitleAdd")}
         </p>
       </div>
 
@@ -144,9 +147,9 @@ export default function RoleFormModal({
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar">
           <div className="grid grid-cols-1 gap-5">
             <div>
-              <Label>Nom du rôle</Label>
+              <Label>{t("form.nameLabel")}</Label>
               <input
-                placeholder="Administrateur"
+                placeholder={t("form.namePlaceholder")}
                 {...register("name")}
                 className={`h-11 w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 ${
                   errors.name
@@ -162,9 +165,9 @@ export default function RoleFormModal({
             </div>
 
             <div>
-              <Label>Description</Label>
+              <Label>{tc("labels.description")}</Label>
               <textarea
-                placeholder="Description du rôle..."
+                placeholder={t("form.descriptionPlaceholder")}
                 {...register("description")}
                 rows={3}
                 className={`w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 ${
@@ -181,9 +184,9 @@ export default function RoleFormModal({
             </div>
 
             <div className="border-t border-gray-200 dark:border-gray-700 pt-5">
-              <Label>Permissions</Label>
+              <Label>{t("form.permissionsLabel")}</Label>
               <p className="text-sm text-gray-500 mb-4">
-                Sélectionnez les modules, pages et actions accessibles pour ce rôle
+                {t("form.permissionsSubtitle")}
               </p>
               <PermissionsSelector
                 selectedFeatures={selectedFeatures}
@@ -197,10 +200,11 @@ export default function RoleFormModal({
 
             {/* Portée des données */}
             <div className="border-t border-gray-200 dark:border-gray-700 pt-5">
-              <Label>Portée des données</Label>
+              <Label>{t("form.dataScope.title")}</Label>
               <p className="text-sm text-gray-500 mb-4">
-                Pour chaque ressource, choisissez si l&apos;utilisateur voit uniquement <strong>ses propres éléments</strong>{" "}
-                (ceux qu&apos;il a créés ou qui lui sont affectés) ou <strong>toute l&apos;entreprise</strong>.
+                {t.rich("form.dataScope.subtitle", {
+                  strong: (chunks) => <strong>{chunks}</strong>,
+                })}
               </p>
               <div className="space-y-2">
                 {scopeRows.map((row) => (
@@ -224,7 +228,7 @@ export default function RoleFormModal({
                             : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
                         }`}
                       >
-                        Les siennes
+                        {t("form.dataScope.own")}
                       </button>
                       <button
                         type="button"
@@ -235,7 +239,7 @@ export default function RoleFormModal({
                             : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
                         }`}
                       >
-                        Toute l&apos;entreprise
+                        {t("form.dataScope.company")}
                       </button>
                     </div>
                   </div>
@@ -247,14 +251,14 @@ export default function RoleFormModal({
 
         <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
           <Button variant="outline" onClick={onClose} disabled={isLoading}>
-            Annuler
+            {tc("actions.cancel")}
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading
-              ? "Enregistrement..."
+              ? t("form.saving")
               : isEditing
-              ? "Modifier"
-              : "Ajouter"}
+              ? tc("actions.edit")
+              : tc("actions.add")}
           </Button>
         </div>
       </form>

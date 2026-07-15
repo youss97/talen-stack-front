@@ -1,0 +1,155 @@
+{
+  "list": {
+    "title": "My Recruitment Offers",
+    "subtitle": "Manage your offers and review proposed candidates",
+    "newOffer": "+ New offer",
+    "searchPlaceholder": "Search by title, reference...",
+    "allStatuses": "All statuses",
+    "allContracts": "All contracts",
+    "status": {
+      "in_progress": "In progress",
+      "standby": "Standby",
+      "filled": "Filled",
+      "abandoned": "Abandoned",
+      "archived": "Archived",
+      "open": "Open"
+    },
+    "priority": {
+      "urgent": "Urgent",
+      "high": "High",
+      "normal": "Normal",
+      "low": "Low"
+    },
+    "empty": {
+      "title": "No offers found",
+      "filtered": "Try adjusting your filters",
+      "noOffers": "No recruitment offers yet"
+    },
+    "reference": "Reference: {ref}",
+    "years": "years",
+    "candidatesCount": "{count, plural, one {Candidate} other {Candidates}}",
+    "viewCandidates": "View candidates",
+    "edit": "Edit",
+    "archive": "Archive",
+    "toast": {
+      "success": "Success",
+      "error": "Error",
+      "createSuccess": "Offer created successfully",
+      "createError": "Error creating the offer",
+      "editSuccess": "Offer updated successfully",
+      "editError": "Error updating the offer",
+      "archiveSuccess": "Offer archived",
+      "archiveError": "Error archiving the offer"
+    }
+  },
+  "candidates": {
+    "backToOffers": "Back to offers",
+    "title": "Proposed Candidates",
+    "subtitle": "Review candidates and add your comments",
+    "offerDetails": "Offer details",
+    "editOffer": "Edit offer",
+    "refresh": "Refresh",
+    "searchPlaceholder": "Search by name, email...",
+    "allStatuses": "All statuses",
+    "empty": {
+      "title": "No candidates found",
+      "filtered": "Try adjusting your filters",
+      "noCandidates": "No candidate has been proposed for this offer yet"
+    },
+    "years": "years",
+    "skillsLabel": "Skills:",
+    "feedback": {
+      "hrEvaluations": "HR evaluations ({count})",
+      "myFeedbacks": "My feedback ({count})",
+      "viewAll": "View all"
+    },
+    "addFeedback": "Add feedback",
+    "consultApplication": "View application",
+    "viewCv": "View CV",
+    "downloadCv": "Download CV",
+    "errors": {
+      "cvOpenFailed": "Unable to open the CV",
+      "cvDownloadFailed": "Unable to download the CV",
+      "cvDownloadError": "Error downloading the CV: {message}"
+    }
+  },
+  "form": {
+    "createTitle": "New recruitment offer",
+    "editTitle": "Edit recruitment offer",
+    "createSubtitle": "Describe the profile you are looking for",
+    "editSubtitle": "Update your offer's information",
+    "titleLabel": "Job title",
+    "titlePlaceholder": "e.g. Full Stack React Developer",
+    "titleRequired": "Title is required",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Describe the position, responsibilities, and desired profile...",
+    "descriptionRequired": "Description is required",
+    "skillsLabel": "Required skills",
+    "skillsPlaceholder": "e.g. React, Node.js...",
+    "add": "Add",
+    "skillsHint": "Add at least one required skill",
+    "softSkillsLabel": "Soft skills",
+    "softSkillsPlaceholder": "e.g. Leadership, Teamwork...",
+    "contractTypesLabel": "Contract type(s)",
+    "currencyLabel": "Currency",
+    "currencies": {
+      "MAD": "MAD — Moroccan Dirham",
+      "EUR": "EUR — Euro (€)",
+      "USD": "USD — US Dollar ($)",
+      "GBP": "GBP — Pound Sterling (£)",
+      "TND": "TND — Tunisian Dinar",
+      "DZD": "DZD — Algerian Dinar",
+      "AED": "AED — UAE Dirham",
+      "SAR": "SAR — Saudi Riyal"
+    },
+    "salarySection": "Salary expectations ({symbol}/month)",
+    "salaryMin": "Min salary",
+    "salaryMax": "Max salary",
+    "packageCurrent": "Current package ({symbol})",
+    "packageDesired": "Desired package ({symbol})",
+    "tjmSection": "Desired daily rate ({symbol}/day)",
+    "tjmMin": "Min daily rate",
+    "tjmMax": "Max daily rate",
+    "workType": "Work mode",
+    "workTypes": {
+      "on_site": "On-site",
+      "remote": "Remote",
+      "hybrid": "Hybrid"
+    },
+    "country": "Country",
+    "countryRequired": "Country is required",
+    "city": "City",
+    "citySelectPlaceholder": "Select a city",
+    "cityPlaceholder": "City name",
+    "cityRequired": "City is required",
+    "minExperience": "Min experience (years)",
+    "maxExperience": "Max experience (years)",
+    "priority": "Priority",
+    "priorities": {
+      "low": "Low",
+      "normal": "Normal",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "numberOfProfiles": "Number of profiles",
+    "languagesLabel": "Required languages",
+    "desiredStartDate": "Desired start date",
+    "benefits": "Benefits",
+    "benefitsPlaceholder": "Health insurance, meal vouchers, company car...",
+    "bonuses": "Bonuses",
+    "bonusesPlaceholder": "Performance bonus, 13th month...",
+    "note": "Note",
+    "notePlaceholder": "Additional information for the HR team...",
+    "noteHint": "Visible to you and the HR team",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "createSubmit": "Create offer",
+    "editSubmit": "Update offer",
+    "defaultWorkflowSteps": {
+      "proposed": "Proposed",
+      "hrInterview": "HR interview",
+      "clientInterview": "Client interview",
+      "offer": "Offer"
+    }
+  }
+}

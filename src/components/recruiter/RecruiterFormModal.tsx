@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useForm, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Label from "@/components/form/Label";
@@ -40,6 +41,8 @@ export default function RecruiterFormModal({
   isLoading = false,
   serverError = null,
 }: RecruiterFormModalProps) {
+  const t = useTranslations("applications.form");
+  const tc = useTranslations("common");
   const isEditing = !!recruiter;
   const [selectedCV, setSelectedCV] = useState<CV | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<ApplicationRequest | null>(null);
@@ -270,28 +273,28 @@ export default function RecruiterFormModal({
     setValue("languages", newLanguages);
   };
 
-  // Libellés FR des champs (pour le bandeau "champs manquants")
+  // Libellés des champs (pour le bandeau "champs manquants")
   const FIELD_LABELS: Record<string, string> = {
-    request_id: "Offre",
-    cv_id: "CV du candidat",
-    currently_employed: "Situation professionnelle",
-    current_contract_type: "Type de contrat actuel",
-    current_salary: "Salaire actuel",
-    daily_rate: "TJM actuel",
-    salary_expectation: "Prétention salariale",
-    daily_rate_expectation: "TJM souhaité",
-    currency: "Devise",
-    offer_contract_types: "Types de contrat souhaités",
-    availability_type: "Disponibilité",
-    availability_reason: "Motif de disponibilité",
-    availability_days: "Délai de disponibilité",
-    availability_custom_value: "Valeur de disponibilité",
-    availability_custom_unit: "Unité de disponibilité",
-    adjusted_experience: "Expérience ajustée",
-    qualification_report: "Rapport de qualification",
-    recruiter_interview_date: "Date d'entretien recruteur",
-    status: "Statut",
-    languages: "Langues",
+    request_id: t("fieldLabels.request_id"),
+    cv_id: t("fieldLabels.cv_id"),
+    currently_employed: t("fieldLabels.currently_employed"),
+    current_contract_type: t("fieldLabels.current_contract_type"),
+    current_salary: t("fieldLabels.current_salary"),
+    daily_rate: t("fieldLabels.daily_rate"),
+    salary_expectation: t("fieldLabels.salary_expectation"),
+    daily_rate_expectation: t("fieldLabels.daily_rate_expectation"),
+    currency: t("fieldLabels.currency"),
+    offer_contract_types: t("fieldLabels.offer_contract_types"),
+    availability_type: t("fieldLabels.availability_type"),
+    availability_reason: t("fieldLabels.availability_reason"),
+    availability_days: t("fieldLabels.availability_days"),
+    availability_custom_value: t("fieldLabels.availability_custom_value"),
+    availability_custom_unit: t("fieldLabels.availability_custom_unit"),
+    adjusted_experience: t("fieldLabels.adjusted_experience"),
+    qualification_report: t("fieldLabels.qualification_report"),
+    recruiter_interview_date: t("fieldLabels.recruiter_interview_date"),
+    status: t("fieldLabels.status"),
+    languages: t("fieldLabels.languages"),
   };
 
   const handleFormSubmit = (data: CreateRecruiterFormData) => {
@@ -319,32 +322,19 @@ export default function RecruiterFormModal({
   const getAvailabilityLabel = () => {
     if (!selectedCV) return "";
     const type = availabilityType;
-    switch (type) {
-      case "immediate":
-        return "Immédiate";
-      case "less_than_one_month":
-        return "< 1 mois";
-      case "one_month":
-        return "1 mois";
-      case "two_months":
-        return "2 mois";
-      case "three_months":
-        return "3 mois";
-      default:
-        return "";
-    }
+    return t.has(`availabilityOptions.${type}`) ? t(`availabilityOptions.${type}`) : "";
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl">
       <div className="p-6 sm:p-8 pb-0">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          {isEditing ? "Modifier la candidature" : "Créer une nouvelle candidature"}
+          {isEditing ? t("editTitle") : t("createTitle")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {isEditing
-            ? "Modifiez les informations de la candidature"
-            : "Remplissez les informations pour créer une nouvelle candidature"}
+            ? t("editSubtitle")
+            : t("createSubtitle")}
         </p>
       </div>
 
@@ -369,20 +359,20 @@ export default function RecruiterFormModal({
             {/* Section 1: Sélection de Base */}
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                Sélection
+                {t("sections.selection")}
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <InfiniteSelect<ApplicationRequest>
-                    label="Offre"
+                    label={t("offer")}
                     value={requestId}
                     onChange={(value) => setValue("request_id", value)}
                     useInfiniteQuery={useGetApplicationRequestsForSelectInfiniteQuery}
                     itemLabelKey="title"
                     itemValueKey="id"
-                    placeholder="Sélectionner une offre..."
-                    emptyMessage="Aucune offre trouvée"
+                    placeholder={t("offerPlaceholder")}
+                    emptyMessage={t("noOfferFound")}
                     error={!!errors.request_id}
                     initialSelectedItems={initialRequest}
                   />
@@ -395,7 +385,7 @@ export default function RecruiterFormModal({
 
                 <div>
                   <CVInfiniteSelect
-                    label="CV (Nom + Prénom + Titre)"
+                    label={t("cvLabel")}
                     value={cvId}
                     onChange={(value, selectedItem) => {
                       console.log("CV Selected - Value:", value, "Item:", selectedItem);
@@ -413,8 +403,8 @@ export default function RecruiterFormModal({
                       }
                     }}
                     useInfiniteQuery={useGetCVsForSelectInfiniteQuery}
-                    placeholder="Sélectionner un CV..."
-                    emptyMessage="Aucun CV trouvé"
+                    placeholder={t("cvPlaceholder")}
+                    emptyMessage={t("noCvFound")}
                     error={!!errors.cv_id}
                     initialSelectedItems={initialCV}
                   />
@@ -431,13 +421,13 @@ export default function RecruiterFormModal({
                 <div className="space-y-3">
                   <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      <span className="font-medium">Années d'expérience totale (CV):</span> {selectedCV.total_experience} ans
+                      {t("totalExperience", { years: selectedCV.total_experience })}
                     </p>
                   </div>
-                  
+
                   {/* Champ pour ajuster l'expérience */}
                   <div>
-                    <Label>Expérience ajustée (optionnel)</Label>
+                    <Label>{t("adjustedExperienceLabel")}</Label>
                     <input
                       type="number"
                       {...register("adjusted_experience")}
@@ -446,7 +436,7 @@ export default function RecruiterFormModal({
                       className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                     />
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      Modifiez l'expérience si elle diffère du CV (ex: expérience pertinente uniquement)
+                      {t("adjustedExperienceHelp")}
                     </p>
                     {errors.adjusted_experience && (
                       <p className="mt-1 text-sm text-error-500">
@@ -461,9 +451,9 @@ export default function RecruiterFormModal({
               {selectedCV && !selectedCV.total_experience && (
                 <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
                   <p className="text-xs text-yellow-700 dark:text-yellow-300">
-                    CV sélectionné: {selectedCV.candidate_first_name} {selectedCV.candidate_last_name} ({selectedCV.candidate_email})
+                    {t("cvSelectedDebug", { name: `${selectedCV.candidate_first_name} ${selectedCV.candidate_last_name}`, email: selectedCV.candidate_email || "" })}
                     <br />
-                    <span className="text-yellow-600 dark:text-yellow-400">Note: Ce CV n'a pas d'expérience totale renseignée</span>
+                    <span className="text-yellow-600 dark:text-yellow-400">{t("cvNoExperienceNote")}</span>
                   </p>
                 </div>
               )}
@@ -472,9 +462,9 @@ export default function RecruiterFormModal({
             {/* Section 2: Situation Actuelle */}
             <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                Situation Actuelle
+                {t("sections.currentSituation")}
               </h3>
-              
+
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -483,13 +473,13 @@ export default function RecruiterFormModal({
                   className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
                 />
                 <label htmlFor="currently_employed" className="text-sm text-gray-700 dark:text-gray-300">
-                  Actuellement en poste
+                  {t("currentlyEmployedCheckbox")}
                 </label>
               </div>
 
               <div>
                 <Label>
-                  Type de contrat actuel ou dernier <span className="text-error-500">*</span>
+                  {t("currentContractTypeLabel")} <span className="text-error-500">*</span>
                 </Label>
                 <select
                   {...register("current_contract_type")}
@@ -499,7 +489,7 @@ export default function RecruiterFormModal({
                       : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700 dark:focus:border-brand-800"
                   }`}
                 >
-                  <option value="">Sélectionner...</option>
+                  <option value="">{t("selectPlaceholder")}</option>
                   {contractTypes.map((type) => (
                     <option key={type.id} value={type.name}>
                       {type.name}
@@ -517,51 +507,51 @@ export default function RecruiterFormModal({
             {/* Section 3: Rémunération (Dynamique) */}
             <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                Rémunération {currentlyEmployed ? "(Actuelle)" : "(Dernière)"}
+                {currentlyEmployed ? t("sections.remunerationCurrent") : t("sections.remunerationLast")}
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {currentContractType === "Freelance" ? (
                   <div>
-                    <Label>TJM</Label>
+                    <Label>{t("dailyRateLabel")}</Label>
                     <input
                       type="number"
                       {...register("daily_rate")}
                       disabled={salaryConfidential}
-                      placeholder={salaryConfidential ? "Confidentiel" : "500"}
+                      placeholder={salaryConfidential ? t("confidentialPlaceholder") : "500"}
                       className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:disabled:bg-gray-800"
                     />
                   </div>
                 ) : currentContractType === "Forfait" ? (
                   <div>
-                    <Label>Forfait</Label>
+                    <Label>{t("packageLabel")}</Label>
                     <input
                       type="number"
                       {...register("package_rate")}
                       disabled={salaryConfidential}
-                      placeholder={salaryConfidential ? "Confidentiel" : "50000"}
+                      placeholder={salaryConfidential ? t("confidentialPlaceholder") : "50000"}
                       className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:disabled:bg-gray-800"
                     />
                   </div>
                 ) : (
                   <div>
-                    <Label>Salaire mensuel</Label>
+                    <Label>{t("monthlySalaryLabel")}</Label>
                     <input
                       type="number"
                       {...register("current_salary")}
                       disabled={salaryConfidential}
-                      placeholder={salaryConfidential ? "Confidentiel" : "45000"}
+                      placeholder={salaryConfidential ? t("confidentialPlaceholder") : "45000"}
                       className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:disabled:bg-gray-800"
                     />
                   </div>
                 )}
 
                 <div>
-                  <Label>Devise</Label>
+                  <Label>{t("currencyLabel")}</Label>
                   <CurrencySelector
                     value={watch("currency") || "MAD"}
                     onChange={(currencyCode) => setValue("currency", currencyCode)}
-                    placeholder="Sélectionner une devise..."
+                    placeholder={t("currencyPlaceholder")}
                     className="h-11"
                     showPopular={true}
                     showRegions={true}
@@ -587,17 +577,17 @@ export default function RecruiterFormModal({
                   className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                 />
                 <span className="text-sm text-gray-700 dark:text-gray-300">
-                  🔒 Salaire confidentiel (le candidat ne souhaite pas le communiquer)
+                  {t("salaryConfidentialCheckbox")}
                 </span>
               </label>
 
               {/* Package actuel (texte libre) */}
               <div>
-                <Label>Package actuel</Label>
+                <Label>{t("currentPackageLabel")}</Label>
                 <input
                   type="text"
                   {...register("package_current")}
-                  placeholder="Ex: 13e mois, carte carburant, mutuelle..."
+                  placeholder={t("currentPackagePlaceholder")}
                   className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                 />
               </div>
@@ -606,9 +596,9 @@ export default function RecruiterFormModal({
             {/* Section 4: Type de Contrat de l'Offre */}
             <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                Type(s) de contrat souhaité(s)
+                {t("sections.desiredContractTypes")}
               </h3>
-              
+
               <div>
                 <MultiSelect
                   label=""
@@ -622,7 +612,7 @@ export default function RecruiterFormModal({
                 />
                 {contractTypes.length === 0 && (
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Chargement des types de contrats...
+                    {t("loadingContractTypes")}
                   </p>
                 )}
               </div>
@@ -631,13 +621,13 @@ export default function RecruiterFormModal({
             {/* Section 4bis: Prétentions salariales / souhaitées */}
             <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                Prétentions salariales / souhaitées
+                {t("sections.desiredExpectations")}
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {wantsSalaryExpectation && (
                   <div>
-                    <Label>Salaire mensuel souhaité</Label>
+                    <Label>{t("desiredMonthlySalaryLabel")}</Label>
                     <input
                       type="number"
                       {...register("salary_expectation")}
@@ -648,7 +638,7 @@ export default function RecruiterFormModal({
                 )}
                 {wantsTjmExpectation && (
                   <div>
-                    <Label>TJM souhaité</Label>
+                    <Label>{t("desiredDailyRateLabel")}</Label>
                     <input
                       type="number"
                       {...register("daily_rate_expectation")}
@@ -661,11 +651,11 @@ export default function RecruiterFormModal({
 
               {/* Package souhaité (texte libre) */}
               <div>
-                <Label>Package souhaité</Label>
+                <Label>{t("desiredPackageLabel")}</Label>
                 <input
                   type="text"
                   {...register("package_desired")}
-                  placeholder="Ex: primes aïd, prime scolarité enfants, bonus annuel..."
+                  placeholder={t("desiredPackagePlaceholder")}
                   className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                 />
               </div>
@@ -674,35 +664,35 @@ export default function RecruiterFormModal({
             {/* Section 5: Disponibilité */}
             <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                Disponibilité
+                {t("sections.availability")}
               </h3>
-              
+
               <div>
                 <Label>
-                  Type de disponibilité <span className="text-error-500">*</span>
+                  {t("availabilityTypeLabel")} <span className="text-error-500">*</span>
                 </Label>
                 <select
                   {...register("availability_type")}
                   className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                 >
-                  <option value="immediate">Immédiate</option>
-                  <option value="less_than_one_month">{"< 1 mois"}</option>
-                  <option value="one_month">1 mois</option>
-                  <option value="two_months">2 mois</option>
-                  <option value="three_months">3 mois</option>
-                  <option value="other">Autres</option>
+                  <option value="immediate">{t("availabilityOptions.immediate")}</option>
+                  <option value="less_than_one_month">{t("availabilityOptions.less_than_one_month")}</option>
+                  <option value="one_month">{t("availabilityOptions.one_month")}</option>
+                  <option value="two_months">{t("availabilityOptions.two_months")}</option>
+                  <option value="three_months">{t("availabilityOptions.three_months")}</option>
+                  <option value="other">{t("availabilityOptions.other")}</option>
                 </select>
               </div>
 
               {availabilityType === "immediate" && (
                 <div>
                   <Label>
-                    Raison de la disponibilité immédiate <span className="text-error-500">*</span>
+                    {t("immediateReasonLabel")} <span className="text-error-500">*</span>
                   </Label>
                   <input
                     type="text"
                     {...register("availability_reason")}
-                    placeholder="Ex: Fin de mission, recherche active..."
+                    placeholder={t("immediateReasonPlaceholder")}
                     className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                   />
                   {errors.availability_reason && (
@@ -716,7 +706,7 @@ export default function RecruiterFormModal({
               {availabilityType === "less_than_one_month" && (
                 <div>
                   <Label>
-                    Nombre de jours <span className="text-error-500">*</span>
+                    {t("daysCountLabel")} <span className="text-error-500">*</span>
                   </Label>
                   <input
                     type="number"
@@ -738,12 +728,12 @@ export default function RecruiterFormModal({
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>
-                      Valeur <span className="text-error-500">*</span>
+                      {t("valueLabel")} <span className="text-error-500">*</span>
                     </Label>
                     <input
                       type="number"
                       {...register("availability_custom_value")}
-                      placeholder="Ex: 4"
+                      placeholder={t("valuePlaceholder")}
                       min="1"
                       className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                     />
@@ -755,14 +745,14 @@ export default function RecruiterFormModal({
                   </div>
                   <div>
                     <Label>
-                      Unité <span className="text-error-500">*</span>
+                      {t("unitLabel")} <span className="text-error-500">*</span>
                     </Label>
                     <select
                       {...register("availability_custom_unit")}
                       className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                     >
-                      <option value="days">Jours</option>
-                      <option value="months">Mois</option>
+                      <option value="days">{t("unitDays")}</option>
+                      <option value="months">{t("unitMonths")}</option>
                     </select>
                     {errors.availability_custom_unit && (
                       <p className="mt-1 text-sm text-error-500">
@@ -783,18 +773,18 @@ export default function RecruiterFormModal({
                     className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
                   />
                   <label htmlFor="availability_negotiable" className="text-sm text-gray-700 dark:text-gray-300">
-                    Disponibilité négociable
+                    {t("negotiableCheckbox")}
                   </label>
                 </div>
               )}
 
               {availabilityNegotiable && availabilityType !== "immediate" && (
                 <div>
-                  <Label>Raison (optionnel)</Label>
+                  <Label>{t("optionalReasonLabel")}</Label>
                   <input
                     type="text"
                     {...register("availability_reason")}
-                    placeholder="Ex: Préavis flexible..."
+                    placeholder={t("optionalReasonPlaceholder")}
                     className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                   />
                 </div>
@@ -805,13 +795,13 @@ export default function RecruiterFormModal({
             <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                  Langues
+                  {t("sections.languages")}
                 </h3>
                 <Button type="button" variant="outline" size="sm" onClick={addLanguage}>
-                  + Ajouter
+                  {t("addLanguage")}
                 </Button>
               </div>
-              
+
               {languages.map((lang, index) => (
                 <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                   <div className="flex-1">
@@ -819,7 +809,7 @@ export default function RecruiterFormModal({
                       type="text"
                       value={lang.language ?? ""}
                       onChange={(e) => handleLanguageChange(index, 'language', e.target.value)}
-                      placeholder="Ex: Français"
+                      placeholder={t("languageNamePlaceholder")}
                       className="h-10 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                     />
                   </div>
@@ -858,7 +848,7 @@ export default function RecruiterFormModal({
 
               {languages.length === 0 && (
                 <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-                  Aucune langue ajoutée. Cliquez sur "+ Ajouter" pour commencer.
+                  {t("noLanguages")}
                 </p>
               )}
             </div>
@@ -866,15 +856,15 @@ export default function RecruiterFormModal({
             {/* Section 7: Compte Rendu de Qualification */}
             <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                Qualification
+                {t("sections.qualification")}
               </h3>
-              
+
               {/* Date entretien recruteur */}
               <div>
                 <DatePicker
                   id="recruiter_interview_date"
-                  label="Date d'entretien recruteur (optionnel)"
-                  placeholder="Sélectionner une date"
+                  label={t("interviewDateLabel")}
+                  placeholder={t("interviewDatePlaceholder")}
                   onChange={(dates: Date[], currentDateString: string) => {
                     setValue("recruiter_interview_date", currentDateString);
                   }}
@@ -889,12 +879,12 @@ export default function RecruiterFormModal({
               
               <div>
                 <Label>
-                  Compte rendu de qualification <span className="text-error-500">*</span>
+                  {t("qualificationReportLabel")} <span className="text-error-500">*</span>
                 </Label>
                 <textarea
                   {...register("qualification_report")}
                   rows={5}
-                  placeholder="Décrivez les points forts du candidat, sa motivation, son adéquation avec le poste..."
+                  placeholder={t("qualificationReportPlaceholder")}
                   className={`w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 resize-none ${
                     errors.qualification_report
                       ? "border-error-500 focus:border-error-500 focus:ring-error-500/10"
@@ -915,7 +905,7 @@ export default function RecruiterFormModal({
               </div>
 
               <div>
-                <Label>Statut de la candidature</Label>
+                <Label>{t("applicationStatusLabel")}</Label>
                 <select
                   {...register("status")}
                   className={`w-full h-11 rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 ${
@@ -924,7 +914,7 @@ export default function RecruiterFormModal({
                       : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"
                   }`}
                 >
-                  <option value="">Sélectionner un statut...</option>
+                  <option value="">{t("selectStatusPlaceholder")}</option>
                   {applicationStatuses.map((status) => (
                     <option key={status.id} value={status.name}>
                       {status.name}
@@ -939,11 +929,11 @@ export default function RecruiterFormModal({
               </div>
 
               <div>
-                <Label>Notes internes (optionnel)</Label>
+                <Label>{t("internalNotesLabel")}</Label>
                 <textarea
                   {...register("recruiter_notes")}
                   rows={3}
-                  placeholder="Notes visibles uniquement par les recruteurs..."
+                  placeholder={t("internalNotesPlaceholder")}
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 resize-none"
                   style={{ minHeight: '80px' }}
                   onInput={(e) => {
@@ -964,11 +954,10 @@ export default function RecruiterFormModal({
                 />
                 <div className="flex-1">
                   <label htmlFor="is_anonymized" className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
-                    Anonymiser cette candidature
+                    {t("anonymizeCheckbox")}
                   </label>
                   <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
-                    Les données personnelles (nom, prénom, email, téléphone) ne seront pas envoyées au client. 
-                    Seules les compétences et l'expérience seront visibles.
+                    {t("anonymizeHelp")}
                   </p>
                 </div>
               </div>
@@ -978,15 +967,15 @@ export default function RecruiterFormModal({
 
           {serverError && (
             <div className="mx-6 sm:mx-8 mb-3 rounded-lg border border-error-200 bg-error-50 px-4 py-3 text-sm text-error-600 dark:border-error-500/30 dark:bg-error-500/10 dark:text-error-400">
-              <span className="mr-1">⚠️</span>{serverError}
+              <span className="me-1">⚠️</span>{serverError}
             </div>
           )}
           {missingFields.length > 0 && (
             <div className="mx-6 sm:mx-8 mb-3 rounded-lg border border-error-200 bg-error-50 px-4 py-3 dark:border-error-500/30 dark:bg-error-500/10">
               <p className="text-sm font-medium text-error-600 dark:text-error-400">
-                Veuillez compléter ou corriger les champs suivants avant de publier :
+                {t("missingFieldsMessage")}
               </p>
-              <ul className="mt-1 list-disc pl-5 text-sm text-error-600 dark:text-error-400">
+              <ul className="mt-1 list-disc ps-5 text-sm text-error-600 dark:text-error-400">
                 {missingFields.map((f) => (
                   <li key={f}>{f}</li>
                 ))}
@@ -996,10 +985,10 @@ export default function RecruiterFormModal({
 
           <div className="flex justify-end gap-3 p-6 sm:p-8 pt-0 border-t border-gray-100 dark:border-gray-800">
             <Button variant="outline" onClick={onClose} disabled={isLoading}>
-              Annuler
+              {tc("actions.cancel")}
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={isLoading}
               onClick={() => {
                 // En mode création, définir le workflow_status à "draft"
@@ -1010,19 +999,19 @@ export default function RecruiterFormModal({
               }}
             >
               {isLoading
-                ? "Enregistrement..."
+                ? t("saving")
                 : isEditing
-                ? "Modifier"
-                : "Enregistrer brouillon"}
+                ? tc("actions.edit")
+                : t("saveDraft")}
             </Button>
             {!isEditing && (
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={isLoading}
                 onClick={() => setValue("workflow_status", "active")}
                 className="bg-green-600 hover:bg-green-700"
               >
-                {isLoading ? "Publication..." : "Publier"}
+                {isLoading ? t("publishing") : t("publish")}
               </Button>
             )}
           </div>

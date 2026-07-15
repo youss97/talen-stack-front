@@ -1,5 +1,6 @@
 "use client";
 import { useSelector } from "react-redux";
+import { useTranslations } from "next-intl";
 import type { RootState } from "@/lib/store";
 import { useGetFeaturesQuery } from "@/lib/services/roleApi";
 import { featureLabel, pageLabel } from "@/utils/featureLabels";
@@ -29,6 +30,8 @@ export default function PermissionsSelector({
   onPagesChange,
   onActionsChange,
 }: PermissionsSelectorProps) {
+  const t = useTranslations("roles.permissionsSelector");
+  const tc = useTranslations("common");
   const user = useSelector((state: RootState) => state.auth.user);
   const isSuperAdmin =
     user?.role?.code === "super_admin" ||
@@ -183,16 +186,16 @@ export default function PermissionsSelector({
     );
   }
 
-  // Humanize action code suffix → French label
+  // Humanize action code suffix → localized label
   const humanizeAction = (name: string, code: string): string => {
     if (name && name.toLowerCase() !== code.toLowerCase()) return name;
     const suffix = code.split(".").pop()?.toLowerCase() ?? code;
     const map: Record<string, string> = {
-      read: "Consulter", create: "Créer", update: "Modifier",
-      delete: "Supprimer", export: "Exporter", import: "Importer",
-      approve: "Approuver", reject: "Rejeter", archive: "Archiver",
-      send: "Envoyer", assign: "Assigner", manage: "Gérer",
-      resend: "Renvoyer", stats: "Statistiques", "update-status": "Changer le statut",
+      read: t("actions.read"), create: tc("actions.create"), update: tc("actions.edit"),
+      delete: tc("actions.delete"), export: tc("actions.export"), import: t("actions.import"),
+      approve: t("actions.approve"), reject: t("actions.reject"), archive: t("actions.archive"),
+      send: t("actions.send"), assign: t("actions.assign"), manage: t("actions.manage"),
+      resend: t("actions.resend"), stats: t("actions.stats"), "update-status": t("actions.updateStatus"),
     };
     return map[suffix] ?? name;
   };
@@ -206,9 +209,9 @@ export default function PermissionsSelector({
     <div className="space-y-2">
       {/* Global select-all bar */}
       <div className="flex items-center gap-3 px-1">
-        <span className="text-xs text-gray-500 font-medium">Sélection globale :</span>
+        <span className="text-xs text-gray-500 font-medium">{t("globalSelection")}</span>
         <button type="button" onClick={handleSelectAllFeatures} className={selectAllBtn}>
-          {allFeaturesSelected ? "Tout désélectionner" : "Tout sélectionner"}
+          {allFeaturesSelected ? t("deselectAll") : t("selectAll")}
         </button>
       </div>
 
@@ -218,16 +221,16 @@ export default function PermissionsSelector({
         <div className={colClass}>
           <div className={headerClass}>
             <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Modules
-              <span className="ml-2 text-xs text-gray-400">({selectedFeatures.length}/{allFeatures.length})</span>
+              {t("modules.title")}
+              <span className="ms-2 text-xs text-gray-400">({selectedFeatures.length}/{allFeatures.length})</span>
             </h4>
             <button type="button" onClick={handleSelectAllFeatures} className={selectAllBtn}>
-              {allFeaturesSelected ? "Aucun" : "Tous"}
+              {allFeaturesSelected ? t("modules.none") : t("modules.all")}
             </button>
           </div>
           <div className="flex-1 overflow-y-auto">
             {allFeatures.length === 0 ? (
-              <p className="p-4 text-sm text-gray-500 text-center">Aucun module</p>
+              <p className="p-4 text-sm text-gray-500 text-center">{t("modules.empty")}</p>
             ) : (
               <ul className="divide-y divide-gray-100 dark:divide-gray-800">
                 {allFeatures.map((feature) => {
@@ -267,7 +270,7 @@ export default function PermissionsSelector({
                             type="button"
                             onClick={() => handleSelectFeatureAll(feature)}
                             className={`${selectAllBtn} shrink-0 mt-0.5`}
-                            title={featureAllPages ? "Retirer toutes les pages" : "Sélectionner toutes les pages"}
+                            title={featureAllPages ? t("modules.removeAllPages") : t("modules.selectAllPages")}
                           >
                             {featureAllPages ? "−" : "+"}
                           </button>
@@ -285,20 +288,20 @@ export default function PermissionsSelector({
         <div className={colClass}>
           <div className={headerClass}>
             <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Pages
-              <span className="ml-2 text-xs text-gray-400">({selectedPages.length}/{visiblePages.length})</span>
+              {t("pages.title")}
+              <span className="ms-2 text-xs text-gray-400">({selectedPages.length}/{visiblePages.length})</span>
             </h4>
             {visiblePages.length > 0 && (
               <button type="button" onClick={handleSelectAllPages} className={selectAllBtn}>
-                {allPagesSelected ? "Aucune" : "Toutes"}
+                {allPagesSelected ? t("pages.none") : t("pages.all")}
               </button>
             )}
           </div>
           <div className="flex-1 overflow-y-auto">
             {selectedFeatures.length === 0 ? (
-              <p className="p-4 text-sm text-gray-500 text-center">Sélectionnez un module</p>
+              <p className="p-4 text-sm text-gray-500 text-center">{t("pages.selectModuleFirst")}</p>
             ) : visiblePages.length === 0 ? (
-              <p className="p-4 text-sm text-gray-500 text-center">Aucune page disponible</p>
+              <p className="p-4 text-sm text-gray-500 text-center">{t("pages.empty")}</p>
             ) : (
               <ul className="divide-y divide-gray-100 dark:divide-gray-800">
                 {visiblePages.map((page) => {
@@ -344,20 +347,20 @@ export default function PermissionsSelector({
         <div className={colClass}>
           <div className={headerClass}>
             <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Actions
-              <span className="ml-2 text-xs text-gray-400">({selectedActions.length}/{visibleActions.length})</span>
+              {t("actionsColumn.title")}
+              <span className="ms-2 text-xs text-gray-400">({selectedActions.length}/{visibleActions.length})</span>
             </h4>
             {visibleActions.length > 0 && (
               <button type="button" onClick={handleSelectAllActions} className={selectAllBtn}>
-                {allActionsSelected ? "Minimum" : "Toutes"}
+                {allActionsSelected ? t("actionsColumn.minimum") : t("actionsColumn.all")}
               </button>
             )}
           </div>
           <div className="flex-1 overflow-y-auto">
             {selectedPages.length === 0 ? (
-              <p className="p-4 text-sm text-gray-500 text-center">Sélectionnez une page</p>
+              <p className="p-4 text-sm text-gray-500 text-center">{t("actionsColumn.selectPageFirst")}</p>
             ) : visibleActions.length === 0 ? (
-              <p className="p-4 text-sm text-gray-500 text-center">Aucune action</p>
+              <p className="p-4 text-sm text-gray-500 text-center">{t("actionsColumn.empty")}</p>
             ) : (
               <div>
                 {Object.values(actionsByPage).map(({ page, actions }) => (
@@ -407,7 +410,7 @@ export default function PermissionsSelector({
                                   </p>
                                   {isRead && (
                                     <span className="text-xs text-amber-600 dark:text-amber-400 font-medium bg-amber-50 dark:bg-amber-500/10 px-1.5 py-0.5 rounded">
-                                      Obligatoire
+                                      {t("required")}
                                     </span>
                                   )}
                                 </div>

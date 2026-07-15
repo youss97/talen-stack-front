@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
 import { useCreateIntegrationMutation } from '@/lib/services/integrationApi';
@@ -26,6 +27,8 @@ export default function CreateIntegrationModal({
   onClose,
   onSuccess,
 }: CreateIntegrationModalProps) {
+  const t = useTranslations('integrations');
+  const tc = useTranslations('common');
   const [formData, setFormData] = useState({
     application_id: '',
     position: '',
@@ -183,14 +186,14 @@ export default function CreateIntegrationModal({
     setError(null);
 
     if (!selectedApplication) {
-      setError('Veuillez sélectionner une candidature');
+      setError(t('modals.create.errors.noApplication'));
       return;
     }
 
     // Vérifier que le client_id est disponible
     const clientId = selectedApplication.request?.client?.id;
     if (!clientId) {
-      setError('Impossible de récupérer les informations du client. Veuillez sélectionner une autre candidature.');
+      setError(t('modals.create.errors.noClient'));
       return;
     }
 
@@ -236,7 +239,7 @@ export default function CreateIntegrationModal({
       onClose();
     } catch (error: any) {
       console.error('Erreur:', error);
-      setError(error?.data?.message || 'Erreur lors de la création de l\'intégration');
+      setError(error?.data?.message || t('modals.create.errors.createFailed'));
     }
   };
 
@@ -254,7 +257,7 @@ export default function CreateIntegrationModal({
         <div className="flex items-center gap-3">
           <span className="text-2xl">🔗</span>
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-            Nouvelle intégration
+            {t('modals.create.title')}
           </h2>
         </div>
 
@@ -275,12 +278,12 @@ export default function CreateIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>👤</span>
-                Candidature
+                {t('modals.create.applicationSection.title')}
               </h3>
-              
+
               <div>
                 <Label htmlFor="application_id">
-                  Sélectionner une candidature <span className="text-red-500">*</span>
+                  {t('modals.create.applicationSection.label')} <span className="text-red-500">*</span>
                 </Label>
                 <AutocompletePaginated
                   onSearch={handleSearch}
@@ -323,15 +326,15 @@ export default function CreateIntegrationModal({
                       setSelectedApplication(null);
                     }
                   }}
-                  placeholder="Rechercher un candidat..."
+                  placeholder={t('modals.create.applicationSection.searchPlaceholder')}
                   required
-                  noOptionsMessage="Aucune candidature trouvée"
-                  searchPlaceholder="Tapez le nom du candidat ou le poste..."
+                  noOptionsMessage={t('modals.create.applicationSection.noOptionsMessage')}
+                  searchPlaceholder={t('modals.create.applicationSection.searchInputPlaceholder')}
                   minSearchLength={2}
                   pageSize={20}
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Seules les candidatures actives sont affichées. Le recrutement et le client seront automatiquement déduits.
+                  {t('modals.create.applicationSection.helper')}
                 </p>
               </div>
 
@@ -356,52 +359,52 @@ export default function CreateIntegrationModal({
                           ? 'text-blue-900 dark:text-blue-100' 
                           : 'text-yellow-900 dark:text-yellow-100'
                       }`}>
-                        {selectedApplication.request?.client?.id 
-                          ? 'Informations automatiques' 
-                          : 'Informations partielles'
+                        {selectedApplication.request?.client?.id
+                          ? t('modals.create.applicationSection.autoInfoTitle')
+                          : t('modals.create.applicationSection.partialInfoTitle')
                         }
                       </p>
                       <p className={`mt-1 ${
-                        selectedApplication.request?.client?.id 
-                          ? 'text-blue-700 dark:text-blue-300' 
+                        selectedApplication.request?.client?.id
+                          ? 'text-blue-700 dark:text-blue-300'
                           : 'text-yellow-700 dark:text-yellow-300'
                       }`}>
-                        <strong>Candidat:</strong> {selectedApplication.cv?.candidate_first_name} {selectedApplication.cv?.candidate_last_name}
+                        <strong>{t('modals.create.applicationSection.candidate')}</strong> {selectedApplication.cv?.candidate_first_name} {selectedApplication.cv?.candidate_last_name}
                       </p>
                       <p className={`${
-                        selectedApplication.request?.client?.id 
-                          ? 'text-blue-700 dark:text-blue-300' 
+                        selectedApplication.request?.client?.id
+                          ? 'text-blue-700 dark:text-blue-300'
                           : 'text-yellow-700 dark:text-yellow-300'
                       }`}>
-                        <strong>Recrutement:</strong> {selectedApplication.request?.title} ({selectedApplication.request?.reference})
+                        <strong>{t('modals.create.applicationSection.recruitment')}</strong> {selectedApplication.request?.title} ({selectedApplication.request?.reference})
                       </p>
                       <p className={`${
-                        selectedApplication.request?.client?.id 
-                          ? 'text-blue-700 dark:text-blue-300' 
+                        selectedApplication.request?.client?.id
+                          ? 'text-blue-700 dark:text-blue-300'
                           : 'text-yellow-700 dark:text-yellow-300'
                       }`}>
-                        <strong>Client:</strong> {selectedApplication.request?.client?.name}
+                        <strong>{t('modals.create.applicationSection.client')}</strong> {selectedApplication.request?.client?.name}
                         {selectedApplication.request?.client?.id && (
-                          <span className="ml-2 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-0.5 rounded">
-                            ✓ ID disponible
+                          <span className="ms-2 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-0.5 rounded">
+                            {t('modals.create.applicationSection.idAvailable')}
                           </span>
                         )}
                         {!selectedApplication.request?.client?.id && (
-                          <span className="ml-2 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 px-2 py-0.5 rounded">
-                            ⚠️ ID manquant
+                          <span className="ms-2 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 px-2 py-0.5 rounded">
+                            {t('modals.create.applicationSection.idMissing')}
                           </span>
                         )}
                       </p>
                       <p className={`${
-                        selectedApplication.request?.client?.id 
-                          ? 'text-blue-700 dark:text-blue-300' 
+                        selectedApplication.request?.client?.id
+                          ? 'text-blue-700 dark:text-blue-300'
                           : 'text-yellow-700 dark:text-yellow-300'
                       }`}>
-                        <strong>Responsable RH:</strong> {currentUser?.first_name} {currentUser?.last_name} (utilisateur connecté)
+                        <strong>{t('modals.create.applicationSection.hrManager')}</strong> {currentUser?.first_name} {currentUser?.last_name} {t('modals.create.applicationSection.connectedUser')}
                       </p>
                       {!selectedApplication.request?.client?.id && (
                         <p className="text-yellow-700 dark:text-yellow-300 text-xs mt-2 italic">
-                          Certaines informations du client ne sont pas disponibles. Veuillez sélectionner une autre candidature si le problème persiste.
+                          {t('modals.create.applicationSection.clientInfoMissing')}
                         </p>
                       )}
                     </div>
@@ -414,13 +417,13 @@ export default function CreateIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>💼</span>
-                Informations du Poste
+                {t('modals.create.positionSection.title')}
               </h3>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="position">
-                    Poste <span className="text-red-500">*</span>
+                    {t('modals.create.positionSection.position')} <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="position"
@@ -428,13 +431,13 @@ export default function CreateIntegrationModal({
                     required
                     value={formData.position}
                     onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                    placeholder="Ex: Développeur Full Stack"
+                    placeholder={t('modals.create.positionSection.positionPlaceholder')}
                   />
                 </div>
 
                 <div>
                   <Label htmlFor="contract_type">
-                    Type de contrat <span className="text-red-500">*</span>
+                    {t('modals.create.positionSection.contractType')} <span className="text-red-500">*</span>
                   </Label>
                   <select
                     id="contract_type"
@@ -443,12 +446,12 @@ export default function CreateIntegrationModal({
                     onChange={(e) => setFormData({ ...formData, contract_type: e.target.value as ContractType })}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="cdi">CDI</option>
-                    <option value="cdd">CDD</option>
-                    <option value="freelance">Freelance</option>
-                    <option value="interim">Intérim</option>
-                    <option value="stage">Stage</option>
-                    <option value="alternance">Alternance</option>
+                    <option value="cdi">{t('contractTypes.cdi')}</option>
+                    <option value="cdd">{t('contractTypes.cdd')}</option>
+                    <option value="freelance">{t('contractTypes.freelance')}</option>
+                    <option value="interim">{t('contractTypes.interim')}</option>
+                    <option value="stage">{t('contractTypes.stage')}</option>
+                    <option value="alternance">{t('contractTypes.alternance')}</option>
                   </select>
                 </div>
               </div>
@@ -456,8 +459,8 @@ export default function CreateIntegrationModal({
               <div>
                 <DatePicker
                   id="integration_date"
-                  label="Date d'intégration *"
-                  placeholder="Sélectionner une date"
+                  label={t('modals.create.positionSection.integrationDate')}
+                  placeholder={t('modals.create.positionSection.datePlaceholder')}
                   onChange={handleIntegrationDateChange}
                   defaultDate={formData.integration_date || undefined}
                 />
@@ -468,17 +471,17 @@ export default function CreateIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>💰</span>
-                Rémunération
+                {t('modals.create.salarySection.title')}
               </h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="salary_type">Type de rémunération</Label>
+                  <Label htmlFor="salary_type">{t('modals.create.salarySection.salaryType')}</Label>
                   <select
                     id="salary_type"
                     value={formData.salary_type}
-                    onChange={(e) => setFormData({ 
-                      ...formData, 
+                    onChange={(e) => setFormData({
+                      ...formData,
                       salary_type: e.target.value,
                       // Reset les valeurs quand on change de type
                       salary: '',
@@ -486,27 +489,27 @@ export default function CreateIntegrationModal({
                     })}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="monthly">💼 Salaire mensuel</option>
-                    <option value="daily">🔄 TJM (Freelance)</option>
+                    <option value="monthly">{t('modals.create.salarySection.monthlyOption')}</option>
+                    <option value="daily">{t('modals.create.salarySection.dailyOption')}</option>
                   </select>
                 </div>
 
                 <div>
-                  <Label htmlFor="currency">Devise</Label>
+                  <Label htmlFor="currency">{t('modals.create.salarySection.currency')}</Label>
                   <CurrencySelector
                     value={formData.currency}
                     onChange={(currencyCode) => setFormData({ ...formData, currency: currencyCode })}
-                    placeholder="Sélectionner une devise"
+                    placeholder={t('modals.create.salarySection.currencyPlaceholder')}
                     className="text-sm"
                   />
                 </div>
-                
+
                 {formData.salary_type === 'monthly' ? (
                   <div>
                     <Label htmlFor="salary">
-                      Salaire mensuel
+                      {t('modals.create.salarySection.monthlySalary')}
                       {formData.currency && (
-                        <span className="text-gray-500 text-xs ml-1">
+                        <span className="text-gray-500 text-xs ms-1">
                           ({formatCurrency(0, formData.currency).replace('0', '').trim()})
                         </span>
                       )}
@@ -518,20 +521,20 @@ export default function CreateIntegrationModal({
                       step="0.01"
                       value={formData.salary}
                       onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
-                      placeholder="3750"
+                      placeholder={t('modals.create.salarySection.salaryPlaceholder')}
                     />
                     {formData.salary && formData.currency && parseFloat(formData.salary) > 0 && (
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Aperçu: {formatCurrency(parseFloat(formData.salary), formData.currency)}
+                        {t('modals.create.salarySection.preview')}{formatCurrency(parseFloat(formData.salary), formData.currency)}
                       </p>
                     )}
                   </div>
                 ) : (
                   <div>
                     <Label htmlFor="daily_rate">
-                      TJM
+                      {t('modals.create.salarySection.dailyRate')}
                       {formData.currency && (
-                        <span className="text-gray-500 text-xs ml-1">
+                        <span className="text-gray-500 text-xs ms-1">
                           ({formatCurrency(0, formData.currency).replace('0', '').trim()})
                         </span>
                       )}
@@ -543,11 +546,11 @@ export default function CreateIntegrationModal({
                       step="0.01"
                       value={formData.daily_rate}
                       onChange={(e) => setFormData({ ...formData, daily_rate: e.target.value })}
-                      placeholder="500"
+                      placeholder={t('modals.create.salarySection.dailyRatePlaceholder')}
                     />
                     {formData.daily_rate && formData.currency && parseFloat(formData.daily_rate) > 0 && (
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Aperçu: {formatCurrency(parseFloat(formData.daily_rate), formData.currency)}/jour
+                        {t('modals.create.salarySection.preview')}{formatCurrency(parseFloat(formData.daily_rate), formData.currency)}{t('modals.create.salarySection.perDay')}
                       </p>
                     )}
                   </div>
@@ -559,26 +562,26 @@ export default function CreateIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>⏱️</span>
-                Période d'essai
+                {t('modals.create.trialSection.title')}
               </h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="trial_period_duration">Durée (jours)</Label>
+                  <Label htmlFor="trial_period_duration">{t('modals.create.trialSection.duration')}</Label>
                   <Input
                     id="trial_period_duration"
                     type="number"
                     min="0"
                     value={formData.trial_period_duration}
                     onChange={(e) => setFormData({ ...formData, trial_period_duration: e.target.value })}
-                    placeholder="90"
+                    placeholder={t('modals.create.trialSection.durationPlaceholder')}
                   />
                 </div>
                 <div>
                   <DatePicker
                     id="trial_period_end_date"
-                    label="Date de fin"
-                    placeholder="Sélectionner une date"
+                    label={t('modals.create.trialSection.endDate')}
+                    placeholder={t('modals.create.positionSection.datePlaceholder')}
                     onChange={handleTrialEndDateChange}
                     defaultDate={formData.trial_period_end_date || undefined}
                   />
@@ -590,18 +593,18 @@ export default function CreateIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>📝</span>
-                Notes
+                {t('modals.create.notesSection.title')}
               </h3>
-              
+
               <div>
-                <Label htmlFor="notes">Notes sur l'intégration</Label>
+                <Label htmlFor="notes">{t('modals.create.notesSection.label')}</Label>
                 <textarea
                   id="notes"
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Notes sur l'intégration, objectifs, points d'attention..."
+                  placeholder={t('modals.create.notesSection.placeholder')}
                 />
               </div>
             </div>
@@ -610,20 +613,20 @@ export default function CreateIntegrationModal({
 
         <div className="flex-shrink-0 flex flex-col sm:flex-row justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-200 dark:border-gray-700">
           <Button type="button" onClick={onClose} variant="outline" className="w-full sm:w-auto">
-            Annuler
+            {tc('actions.cancel')}
           </Button>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={
-              isLoading || 
-              !formData.integration_date || 
-              !formData.application_id || 
+              isLoading ||
+              !formData.integration_date ||
+              !formData.application_id ||
               !selectedApplication?.request?.client?.id
-            } 
+            }
             variant="primary"
             className="w-full sm:w-auto"
           >
-            {isLoading ? 'Création...' : 'Créer'}
+            {isLoading ? t('modals.create.creating') : t('modals.create.create')}
           </Button>
         </div>
       </form>

@@ -1,0 +1,84 @@
+{
+  "page": {
+    "title": "Subscriptions",
+    "subtitle": "Create subscription plans and assign them to companies to control their access",
+    "newPlan": "New plan"
+  },
+  "stats": {
+    "availablePlans": "Available plans",
+    "subscribedCompanies": "Subscribed companies",
+    "activePlans": "Active plans"
+  },
+  "emptyState": {
+    "title": "No plan created yet",
+    "subtitle": "Create your first subscription plan",
+    "cta": "Create a plan"
+  },
+  "billing": {
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "one_time": "One-time"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "card": {
+    "modules": "{count, plural, =0 {module} =1 {module} other {modules}}",
+    "noModuleSelected": "No module selected"
+  },
+  "toast": {
+    "deletedTitle": "Deleted",
+    "deletedMessage": "The plan \"{name}\" has been deleted",
+    "deleteErrorTitle": "Error",
+    "deleteErrorMessage": "Unable to delete this plan",
+    "savedTitle": "Success"
+  },
+  "deleteModal": {
+    "title": "Delete plan",
+    "message": "Are you sure you want to delete the plan \"{name}\"? Companies using it will lose their current access."
+  },
+  "planModal": {
+    "title": {
+      "edit": "Edit plan",
+      "new": "New subscription plan"
+    },
+    "subtitle": "Define the included modules and pricing",
+    "sections": {
+      "information": "Information",
+      "modulesIncluded": "Included modules"
+    },
+    "fields": {
+      "planName": "Plan name",
+      "planNamePlaceholder": "E.g: Starter, Pro, Enterprise...",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe this plan in a few words...",
+      "price": "Price",
+      "billingCycle": "Billing",
+      "planActive": "Active plan"
+    },
+    "modules": {
+      "selectAll": "Select all",
+      "deselectAll": "Deselect all",
+      "footnote": "* The Companies and Logs modules are reserved for Super Admin and are not available in subscriptions."
+    },
+    "errors": {
+      "nameRequired": "Plan name is required",
+      "updateError": "Error updating the plan",
+      "createError": "Error creating the plan"
+    },
+    "success": {
+      "updated": "Plan \"{name}\" updated successfully",
+      "created": "Plan \"{name}\" created successfully"
+    },
+    "buttons": {
+      "saving": "Saving...",
+      "createPlan": "Create plan"
+    }
+  },
+  "charts": {
+    "companiesPerPlan": "Companies per plan",
+    "noSubscribedCompany": "No subscribed company",
+    "companyCount": "{count, plural, =0 {company} =1 {company} other {companies}}"
+  }
+}

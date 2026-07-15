@@ -1,0 +1,114 @@
+{
+  "list": {
+    "title": "قائمة العملاء",
+    "subtitle": "إدارة عملائك ومسؤوليهم",
+    "addButton": "إضافة عميل",
+    "searchPlaceholder": "البحث بالاسم أو القطاع أو جهة الاتصال أو البريد الإلكتروني...",
+    "filters": {
+      "allStatuses": "جميع الحالات"
+    },
+    "columns": {
+      "name": "الاسم التجاري",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "city": "المدينة",
+      "country": "البلد",
+      "status": "الحالة"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "deleted": "محذوف"
+    },
+    "emptyState": "لم يتم العثور على أي عميل",
+    "rowActions": {
+      "deactivate": "تعطيل",
+      "activate": "تفعيل"
+    }
+  },
+  "toasts": {
+    "loadClientError": "تعذر تحميل بيانات العميل",
+    "toggleActivated": "تم تفعيل العميل بنجاح",
+    "toggleDeactivated": "تم تعطيل العميل بنجاح",
+    "toggleError": "خطأ أثناء تعديل الحالة",
+    "deleteSuccess": "تم حذف العميل بنجاح",
+    "deleteError": "خطأ أثناء الحذف",
+    "updateSuccess": "تم تعديل العميل بنجاح",
+    "createSuccess": "تم إنشاء العميل بنجاح",
+    "updateError": "خطأ أثناء تعديل العميل",
+    "createError": "خطأ أثناء إنشاء العميل"
+  },
+  "confirm": {
+    "deactivateTitle": "تعطيل العميل",
+    "activateTitle": "تفعيل العميل",
+    "deactivateMessage": "هل أنت متأكد أنك تريد تعطيل العميل \"{name}\"؟ سيتم أيضًا تعطيل جميع مسؤوليه ولن يتمكنوا من تسجيل الدخول.",
+    "activateMessage": "هل أنت متأكد أنك تريد تفعيل العميل \"{name}\"؟ سيتمكن من تسجيل الدخول.",
+    "deactivateConfirm": "تعطيل",
+    "activateConfirm": "تفعيل",
+    "deleteTitle": "حذف العميل",
+    "deleteMessage": "هل أنت متأكد أنك تريد حذف العميل \"{name}\"؟ سيتم حذف جميع مسؤوليه ولن يتمكنوا من تسجيل الدخول. هذا الإجراء لا رجعة فيه.",
+    "deleteConfirm": "حذف"
+  },
+  "form": {
+    "titles": {
+      "view": "تفاصيل العميل",
+      "edit": "تعديل العميل",
+      "add": "إضافة عميل"
+    },
+    "subtitles": {
+      "view": "اطّلع على معلومات العميل",
+      "edit": "عدّل معلومات العميل",
+      "add": "املأ المعلومات لإنشاء عميل جديد"
+    },
+    "sections": {
+      "company": "معلومات الشركة",
+      "contact": "جهة الاتصال",
+      "admin": "مسؤول العميل",
+      "extra": "معلومات إضافية"
+    },
+    "fields": {
+      "logo": "شعار العميل",
+      "logoHelper": "الصيغ المقبولة: JPEG، PNG، GIF، WebP (بحد أقصى 5 ميجابايت)",
+      "name": "الاسم التجاري",
+      "namePlaceholder": "Tech Solutions SARL",
+      "ice": "ICE",
+      "icePlaceholder": "123456789012345",
+      "iceHelper": "المعرف المشترك للمقاولة · 15 رقمًا",
+      "country": "البلد",
+      "address": "العنوان",
+      "addressPlaceholder": "12 rue de la Paix",
+      "city": "المدينة",
+      "cityPlaceholder": "الدار البيضاء",
+      "postalCode": "الرمز البريدي",
+      "postalCodePlaceholder": "20000",
+      "status": "الحالة",
+      "phone": "الهاتف",
+      "phonePlaceholder": "+212612345678",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "contact@techsolutions.ma",
+      "adminPhoto": "صورة المسؤول",
+      "photo": "الصورة",
+      "firstName": "الاسم الشخصي",
+      "lastName": "اسم العائلة",
+      "adminEmailPlaceholder": "admin@example.com",
+      "adminFirstNamePlaceholder": "John",
+      "adminLastNamePlaceholder": "Doe",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "8 أحرف على الأقل",
+      "position": "المنصب",
+      "positionPlaceholder": "مدير عام",
+      "notProvided": "غير محدد",
+      "industry": "القطاع",
+      "companySize": "الحجم",
+      "vatRate": "نسبة الضريبة على القيمة المضافة",
+      "paymentTerms": "شروط الدفع"
+    },
+    "buttons": {
+      "close": "إغلاق",
+      "cancel": "إلغاء",
+      "saving": "جارٍ الحفظ...",
+      "edit": "تعديل",
+      "add": "إضافة"
+    }
+  }
+}

@@ -1,40 +1,29 @@
 "use client";
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
-const stats = [
-  {
-    number: "95%",
-    label: "Réduction du temps de recrutement",
-    description: "Nos clients recrutent 95% plus rapidement qu'avec leurs anciens outils"
-  },
-  {
-    number: "500+",
-    label: "Entreprises satisfaites",
-    description: "De la startup à la grande entreprise, ils nous font confiance"
-  },
-  {
-    number: "50k+",
-    label: "Candidatures traitées",
-    description: "Plus de 50 000 candidatures gérées avec succès chaque mois"
-  },
-  {
-    number: "24h",
-    label: "Mise en place",
-    description: "Déployez Talent Stack en moins de 24 heures dans votre organisation"
-  },
-  {
-    number: "99.9%",
-    label: "Disponibilité",
-    description: "Infrastructure robuste avec une disponibilité garantie"
-  },
-  {
-    number: "4.9/5",
-    label: "Satisfaction client",
-    description: "Note moyenne basée sur plus de 1000 avis clients"
-  }
+const statKeys = [
+  { key: "speed", number: "95%" },
+  { key: "companies", number: "500+" },
+  { key: "applications", number: "50k+" },
+  { key: "setup", number: "24h" },
+  { key: "uptime", number: "99.9%" },
+  { key: "satisfaction", number: "4.9/5" },
+];
+
+const badgeKeys = [
+  { key: "leader", icon: "🏆" },
+  { key: "security", icon: "🔒" },
+  { key: "support", icon: "⚡" },
 ];
 
 export default function Stats() {
+  const t = useTranslations('landing.stats');
+  const stats = statKeys.map(({ key, number }) => ({
+    number,
+    label: t(`items.${key}.label`),
+    description: t(`items.${key}.description`),
+  }));
   return (
     <section id="stats" className="py-20 bg-gradient-to-br from-[var(--color-brand-500)] to-[var(--color-brand-800)]">
       <div className="landing-container">
@@ -47,10 +36,10 @@ export default function Stats() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Des résultats qui parlent d'eux-mêmes
+            {t('heading')}
           </h2>
           <p className="text-xl text-[var(--color-brand-100)] max-w-3xl mx-auto">
-            Rejoignez des centaines d'entreprises qui ont transformé leur processus de recrutement avec Talent Stack.
+            {t('subtitle')}
           </p>
         </motion.div>
 
@@ -87,19 +76,15 @@ export default function Stats() {
           className="mt-16 text-center"
         >
           <div className="inline-flex items-center space-x-8 p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20">
-            {[
-              { icon: "🏆", title: "Leader du marché", sub: "Reconnu par les experts RH" },
-              { icon: "🔒", title: "Sécurité garantie", sub: "Certifié ISO 27001" },
-              { icon: "⚡", title: "Support 24/7", sub: "Équipe dédiée" },
-            ].map((item, i) => (
+            {badgeKeys.map((item, i) => (
               <div key={i} className="flex items-center space-x-3">
-                {i > 0 && <div className="hidden md:block w-px h-12 bg-white/20 mr-8" />}
+                {i > 0 && <div className="hidden md:block w-px h-12 bg-white/20 me-8" />}
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
                   <span className="text-white text-xl">{item.icon}</span>
                 </div>
-                <div className="text-left">
-                  <div className="text-white font-semibold">{item.title}</div>
-                  <div className="text-[var(--color-brand-100)] text-sm">{item.sub}</div>
+                <div className="text-start">
+                  <div className="text-white font-semibold">{t(`badges.${item.key}.title`)}</div>
+                  <div className="text-[var(--color-brand-100)] text-sm">{t(`badges.${item.key}.sub`)}</div>
                 </div>
               </div>
             ))}

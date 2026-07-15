@@ -4,9 +4,9 @@ import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
 import { useSidebar } from "@/context/SidebarContext";
 import Image from "next/image";
-import Link from "next/link";
 import React, { useState ,useEffect,useRef} from "react";
 import GlobalSearch from "@/components/header/GlobalSearch";
+import LanguageSwitcher from "@/components/header/LanguageSwitcher";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -154,6 +154,8 @@ const AppHeader: React.FC = () => {
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
+
+            <LanguageSwitcher />
 
             <NotificationDropdown />
             {/* <!-- Notification Menu Area --> */}

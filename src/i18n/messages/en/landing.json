@@ -1,0 +1,168 @@
+{
+  "loadingRedirect": "Redirecting to the application...",
+  "navbar": {
+    "features": "Features",
+    "stats": "Stats",
+    "testimonials": "Testimonials",
+    "contact": "Contact",
+    "signIn": "Sign in",
+    "start": "Get started"
+  },
+  "hero": {
+    "badge": "The new generation of recruiting",
+    "titleDefault": "Revolutionize your",
+    "titleHighlight": "recruitment process",
+    "subtitleDefault": "Talent Stack streamlines applicant management, optimizes interviews, and speeds up onboarding. A complete platform for modern HR teams.",
+    "ctaPrimary": "🚀 Get started for free",
+    "ctaSecondary": "📹 Watch the demo",
+    "stat1Label": "Reduction in hiring time",
+    "stat2Label": "Companies trust us",
+    "stat3Label": "Average setup time",
+    "preview": {
+      "url": "talent-stack.com/dashboard",
+      "activeApplications": "Active applications",
+      "scheduledInterviews": "Scheduled interviews",
+      "ongoingOnboarding": "Onboardings in progress",
+      "candidate1Role": "Full Stack Developer",
+      "candidate1Status": "Interview",
+      "candidate1Time": "Today 2pm",
+      "candidate2Role": "UX/UI Designer",
+      "candidate2Status": "New",
+      "candidate2Time": "2h ago"
+    }
+  },
+  "features": {
+    "heading": "Everything you need to hire",
+    "subtitle": "A complete suite of tools designed to modernize and optimize every stage of your recruitment process.",
+    "bottomCta": "And there's so much more to discover...",
+    "items": {
+      "applications": {
+        "title": "Applicant Management",
+        "description": "Centralize all your applications, track their progress, and collaborate with your team in real time.",
+        "benefits": ["Customizable workflow", "Automatic notifications", "Full history"]
+      },
+      "interviews": {
+        "title": "Interview Scheduling",
+        "description": "Organize your interviews effortlessly with our built-in calendar system and automatic notifications.",
+        "benefits": ["Synced calendar", "Automatic invitations", "Smart reminders"]
+      },
+      "onboarding": {
+        "title": "Onboarding Tracking",
+        "description": "Support your new hires with a structured, personalized onboarding process.",
+        "benefits": ["Onboarding checklist", "Progress tracking", "Periodic reviews"]
+      },
+      "analytics": {
+        "title": "Analytics & Reporting",
+        "description": "Analyze your recruitment performance with detailed dashboards and key metrics.",
+        "benefits": ["Real-time metrics", "Custom reports", "Predictive insights"]
+      },
+      "automation": {
+        "title": "Smart Automation",
+        "description": "Automate repetitive tasks and focus on what truly matters: your candidates.",
+        "benefits": ["Automatic sorting", "Predefined replies", "Smart workflows"]
+      },
+      "security": {
+        "title": "Security & Compliance",
+        "description": "Protect sensitive data with our secure, regulation-compliant infrastructure.",
+        "benefits": ["End-to-end encryption", "GDPR compliant", "Full audit trail"]
+      }
+    }
+  },
+  "stats": {
+    "heading": "Results that speak for themselves",
+    "subtitle": "Join hundreds of companies that have transformed their recruitment process with Talent Stack.",
+    "items": {
+      "speed": { "label": "Reduction in hiring time", "description": "Our customers hire 95% faster than with their previous tools" },
+      "companies": { "label": "Satisfied companies", "description": "From startups to large enterprises, they trust us" },
+      "applications": { "label": "Applications processed", "description": "Over 50,000 applications successfully managed every month" },
+      "setup": { "label": "Setup time", "description": "Deploy Talent Stack across your organization in under 24 hours" },
+      "uptime": { "label": "Uptime", "description": "Robust infrastructure with guaranteed availability" },
+      "satisfaction": { "label": "Customer satisfaction", "description": "Average rating based on over 1,000 customer reviews" }
+    },
+    "badges": {
+      "leader": { "title": "Market leader", "sub": "Recognized by HR experts" },
+      "security": { "title": "Guaranteed security", "sub": "ISO 27001 certified" },
+      "support": { "title": "24/7 support", "sub": "Dedicated team" }
+    }
+  },
+  "testimonials": {
+    "heading": "What our customers say",
+    "subtitle": "See how Talent Stack transforms the daily work of HR teams at companies of all sizes.",
+    "defaultItems": [
+      { "name": "Marie Dubois", "role": "HR Director", "company": "TechCorp", "content": "Talent Stack has revolutionized our recruitment process. We cut our time-to-hire by 60% and significantly improved the candidate experience." },
+      { "name": "Pierre Martin", "role": "Talent Acquisition Manager", "company": "InnovateLab", "content": "The intuitive interface and automation features save us precious time. Our HR team is now more efficient than ever." },
+      { "name": "Sophie Laurent", "role": "CEO", "company": "StartupXYZ", "content": "As a fast-growing startup, we needed a scalable tool. Talent Stack fits our needs perfectly and grows right along with us." },
+      { "name": "Thomas Bernard", "role": "HR Manager", "company": "GlobalTech", "content": "The onboarding tracking feature is outstanding. Our new hires are now much better supported from day one." },
+      { "name": "Amélie Rousseau", "role": "HR Consultant", "company": "HR Solutions", "content": "I recommend Talent Stack to all my clients. It's the most complete and easiest-to-use tool I've seen in the HR space." },
+      { "name": "Nicolas Petit", "role": "Operations Director", "company": "ScaleUp Inc", "content": "The analytics and reporting give us full visibility into our recruitment performance. The insights are invaluable for optimizing our processes." }
+    ],
+    "bottomCta": {
+      "title": "Join over 500 satisfied companies",
+      "subtitle": "Start your free trial today and experience the difference.",
+      "trial": "14-day free trial",
+      "demo": "Request a demo"
+    }
+  },
+  "partners": {
+    "heading": "Trusted by",
+    "defaultAlt": "Partner"
+  },
+  "pricing": {
+    "heading": "Simple, transparent pricing",
+    "subtitle": "Choose the plan that fits your team.",
+    "popular": "Most popular",
+    "defaultCta": "Choose plan"
+  },
+  "contact": {
+    "heading": "Get in touch",
+    "subtitle": "Have a question or want a demo? Write to us.",
+    "sentMessage": "Thank you! Your message has been sent.",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "subject": "Subject",
+      "message": "Your message",
+      "sending": "Sending…",
+      "send": "Send"
+    }
+  },
+  "cta": {
+    "headingLine1": "Ready to transform",
+    "headingHighlight": "your recruitment?",
+    "subtitle": "Join hundreds of companies that have already revolutionized their HR process. Start your free trial now, no credit card required.",
+    "ctaPrimary": "🚀 Start your free trial",
+    "ctaSecondary": "📞 Talk to an expert",
+    "perks": ["14-day free trial", "24h setup", "Dedicated support included"],
+    "trustedTitle": "Already trusted by"
+  },
+  "footer": {
+    "tagline": "The next-generation recruitment platform that transforms your HR process and speeds up your hiring.",
+    "product": {
+      "heading": "Product",
+      "features": "Features",
+      "pricing": "Pricing",
+      "integrations": "Integrations",
+      "api": "API",
+      "security": "Security"
+    },
+    "support": {
+      "heading": "Support",
+      "helpCenter": "Help center",
+      "documentation": "Documentation",
+      "guides": "Guides",
+      "webinars": "Webinars",
+      "contact": "Contact"
+    },
+    "newsletter": {
+      "heading": "Stay in the loop",
+      "text": "Get our latest news and HR tips delivered straight to your inbox.",
+      "placeholder": "Your email address",
+      "submit": "Subscribe"
+    },
+    "copyright": "© {year} Talent Stack. All rights reserved.",
+    "privacy": "Privacy policy",
+    "terms": "Terms of service",
+    "cookies": "Cookies"
+  }
+}

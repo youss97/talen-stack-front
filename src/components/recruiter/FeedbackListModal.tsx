@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import FeedbackModal from "./FeedbackModal";
@@ -26,6 +27,8 @@ export default function FeedbackListModal({
   isCreating = false,
   canAddFeedback = true,
 }: FeedbackListModalProps) {
+  const t = useTranslations("recruiterModals");
+  const tc = useTranslations("common");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleCreateFeedback = async (title: string, description: string) => {
@@ -39,7 +42,7 @@ export default function FeedbackListModal({
         <div className="p-6 sm:p-8 pb-0">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-              Feedbacks
+              {t("feedbackList.title")}
             </h2>
             {canAddFeedback && (
               <Button
@@ -47,7 +50,7 @@ export default function FeedbackListModal({
                 size="sm"
                 onClick={() => setIsAddModalOpen(true)}
               >
-                Ajouter un feedback
+                {t("feedbackList.addButton")}
               </Button>
             )}
           </div>
@@ -63,13 +66,13 @@ export default function FeedbackListModal({
               {feedbacks.map((feedback) => (
                 <div
                   key={feedback.id}
-                  className={`rounded-lg p-4 border-l-4 ${getFeedbackCardColor(feedback)}`}
+                  className={`rounded-lg p-4 border-s-4 ${getFeedbackCardColor(feedback)}`}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="text-base font-medium text-gray-900 dark:text-white">
                       {feedback.title}
                     </h3>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ml-4">
+                    <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ms-4">
                       {formatDateTime(feedback.created_at)}
                     </span>
                   </div>
@@ -95,7 +98,7 @@ export default function FeedbackListModal({
           ) : (
             <div className="text-center py-12">
               <p className="text-gray-500 dark:text-gray-400">
-                Aucun feedback pour le moment. Cliquez sur "Ajouter un feedback" pour commencer.
+                {t("feedbackList.empty")}
               </p>
             </div>
           )}
@@ -103,7 +106,7 @@ export default function FeedbackListModal({
 
         <div className="flex justify-end gap-3 p-6 sm:p-8 pt-4 mt-4 border-t border-gray-100 dark:border-gray-800">
           <Button variant="outline" onClick={onClose}>
-            Fermer
+            {tc("actions.close")}
           </Button>
         </div>
       </Modal>

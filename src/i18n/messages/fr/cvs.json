@@ -1,0 +1,123 @@
+{
+  "status": {
+    "new": "Nouveau",
+    "reviewed": "Examiné",
+    "shortlisted": "Présélectionné",
+    "interviewed": "Interviewé",
+    "hired": "Embauché",
+    "rejected": "Rejeté",
+    "archived": "Archivé",
+    "approved": "Approuvé"
+  },
+  "detailModal": {
+    "defaultCandidateName": "Candidat",
+    "defaultTitle": "Détails du CV",
+    "yearsExperience": "{years} ans d'expérience",
+    "remoteWork": "Télétravail",
+    "sections": {
+      "information": "Informations",
+      "completeness": "Complétude du profil",
+      "summary": "Résumé professionnel",
+      "experiences": "Expériences professionnelles ({count})",
+      "formations": "Formations ({count})",
+      "technicalSkills": "Compétences techniques ({count})",
+      "softSkills": "Compétences transversales ({count})",
+      "skills": "Compétences ({count})",
+      "languages": "Langues ({count})",
+      "certifications": "Certifications ({count})",
+      "geographicMobility": "Mobilité géographique",
+      "contractTypes": "Types de contrat préférés",
+      "notes": "Notes",
+      "document": "Document CV"
+    },
+    "fields": {
+      "specialty": "Spécialité",
+      "sector": "Secteur",
+      "remote": "Télétravail",
+      "source": "Source",
+      "yes": "Oui",
+      "no": "Non"
+    },
+    "fallbacks": {
+      "positionNotSpecified": "Poste non spécifié",
+      "companyNotSpecified": "Entreprise non spécifiée",
+      "degreeNotSpecified": "Diplôme non spécifié",
+      "institutionNotSpecified": "Institution non spécifiée",
+      "levelNotSpecified": "Non spécifié",
+      "fileName": "CV.pdf"
+    },
+    "actions": {
+      "view": "👁️ Visualiser",
+      "download": "Télécharger le CV",
+      "close": "Fermer"
+    },
+    "errors": {
+      "openFailed": "Impossible d'ouvrir le CV",
+      "downloadFailed": "Impossible de télécharger le CV"
+    }
+  },
+  "formModal": {
+    "title": {
+      "edit": "Modifier le CV",
+      "add": "Ajouter un CV"
+    },
+    "subtitle": {
+      "edit": "Modifiez les informations du CV",
+      "add": "Remplissez les informations pour créer un nouveau CV"
+    },
+    "fields": {
+      "fileLabel": "Fichier CV (DOCX obligatoire, PDF supporté)",
+      "fileDropText": "Cliquez pour sélectionner un fichier",
+      "fileHint": "PDF, DOC, DOCX - Max 10MB",
+      "fileExtractionHint": "✨ Extraction locale gratuite (sans IA payante)",
+      "fileExtractionInfo": "💡 L'extraction utilise d'abord un algorithme local gratuit (regex + NLP), puis OpenAI si nécessaire. Aucune API payante par défaut.",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Jean",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Dupont",
+      "email": "Email",
+      "emailPlaceholder": "jean@example.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "+33 6 12 34 56 78",
+      "lastPosition": "Poste actuel",
+      "lastPositionPlaceholder": "Développeur Full Stack",
+      "totalExperience": "Années d'expérience",
+      "totalExperiencePlaceholder": "5",
+      "lastEducation": "Formation",
+      "lastEducationPlaceholder": "Master Informatique",
+      "specialty": "Spécialité pertinente",
+      "specialtyPlaceholder": "Ex: Développement web frontend",
+      "industryExperience": "Secteur d'activité",
+      "industryExperiencePlaceholder": "IT / Tech",
+      "skills": "Compétences (séparées par des virgules)",
+      "skillsPlaceholder": "React, Node.js, TypeScript",
+      "geographicMobility": "Mobilité géographique (séparées par des virgules)",
+      "geographicMobilityPlaceholder": "Paris, Lyon, Remote",
+      "contractTypes": "Types de contrat préférés (séparés par des virgules)",
+      "contractTypesPlaceholder": "CDI, CDD, Freelance",
+      "remotePreferred": "Ouvert uniquement au télétravail",
+      "status": "Statut",
+      "selectStatus": "Sélectionner..."
+    },
+    "buttons": {
+      "cancel": "Annuler",
+      "saving": "Enregistrement...",
+      "edit": "Modifier",
+      "add": "Ajouter"
+    }
+  },
+  "statusModal": {
+    "title": "Changer le statut du CV",
+    "newStatusLabel": "Nouveau statut",
+    "selectStatusPlaceholder": "Sélectionner un statut...",
+    "commentLabel": "Commentaire (optionnel)",
+    "commentPlaceholder": "Ajouter un commentaire sur ce changement de statut...",
+    "commentHint": "Ce commentaire sera enregistré dans l'historique du CV",
+    "changeLabel": "Changement :",
+    "buttons": {
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "updating": "Mise à jour..."
+    }
+  }
+}

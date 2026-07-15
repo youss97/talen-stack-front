@@ -1,0 +1,114 @@
+{
+  "list": {
+    "title": "Liste des clients",
+    "subtitle": "Gérez vos clients et leurs administrateurs",
+    "addButton": "Ajouter un client",
+    "searchPlaceholder": "Rechercher par nom, industrie, contact ou email...",
+    "filters": {
+      "allStatuses": "Tous les statuts"
+    },
+    "columns": {
+      "name": "Raison sociale",
+      "email": "Email",
+      "phone": "Téléphone",
+      "city": "Ville",
+      "country": "Pays",
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "deleted": "Supprimé"
+    },
+    "emptyState": "Aucun client trouvé",
+    "rowActions": {
+      "deactivate": "Désactiver",
+      "activate": "Activer"
+    }
+  },
+  "toasts": {
+    "loadClientError": "Impossible de charger les données du client",
+    "toggleActivated": "Client activé avec succès",
+    "toggleDeactivated": "Client désactivé avec succès",
+    "toggleError": "Erreur lors de la modification du statut",
+    "deleteSuccess": "Client supprimé avec succès",
+    "deleteError": "Erreur lors de la suppression",
+    "updateSuccess": "Client modifié avec succès",
+    "createSuccess": "Client créé avec succès",
+    "updateError": "Erreur lors de la modification du client",
+    "createError": "Erreur lors de la création du client"
+  },
+  "confirm": {
+    "deactivateTitle": "Désactiver le client",
+    "activateTitle": "Activer le client",
+    "deactivateMessage": "Êtes-vous sûr de vouloir désactiver le client \"{name}\" ? Tous ses managers seront également désactivés et ne pourront plus se connecter.",
+    "activateMessage": "Êtes-vous sûr de vouloir activer le client \"{name}\" ? Il pourra se connecter.",
+    "deactivateConfirm": "Désactiver",
+    "activateConfirm": "Activer",
+    "deleteTitle": "Supprimer le client",
+    "deleteMessage": "Êtes-vous sûr de vouloir supprimer le client \"{name}\" ? Tous ses managers seront supprimés et ne pourront plus se connecter. Cette action est irréversible.",
+    "deleteConfirm": "Supprimer"
+  },
+  "form": {
+    "titles": {
+      "view": "Détails du client",
+      "edit": "Modifier le client",
+      "add": "Ajouter un client"
+    },
+    "subtitles": {
+      "view": "Consultez les informations du client",
+      "edit": "Modifiez les informations du client",
+      "add": "Remplissez les informations pour créer un nouveau client"
+    },
+    "sections": {
+      "company": "Informations de la société",
+      "contact": "Contact",
+      "admin": "Administrateur du client",
+      "extra": "Informations supplémentaires"
+    },
+    "fields": {
+      "logo": "Logo du client",
+      "logoHelper": "Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)",
+      "name": "Raison sociale",
+      "namePlaceholder": "Tech Solutions SARL",
+      "ice": "ICE",
+      "icePlaceholder": "123456789012345",
+      "iceHelper": "Identifiant Commun de l'Entreprise · 15 chiffres",
+      "country": "Pays",
+      "address": "Adresse",
+      "addressPlaceholder": "12 rue de la Paix",
+      "city": "Ville",
+      "cityPlaceholder": "Casablanca",
+      "postalCode": "Code postal",
+      "postalCodePlaceholder": "20000",
+      "status": "Statut",
+      "phone": "Téléphone",
+      "phonePlaceholder": "+212612345678",
+      "email": "Email",
+      "emailPlaceholder": "contact@techsolutions.ma",
+      "adminPhoto": "Photo de l'administrateur",
+      "photo": "Photo",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "adminEmailPlaceholder": "admin@example.com",
+      "adminFirstNamePlaceholder": "John",
+      "adminLastNamePlaceholder": "Doe",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Min. 8 caractères",
+      "position": "Position",
+      "positionPlaceholder": "Directeur Général",
+      "notProvided": "Non renseigné",
+      "industry": "Secteur",
+      "companySize": "Taille",
+      "vatRate": "Taux TVA",
+      "paymentTerms": "Conditions de paiement"
+    },
+    "buttons": {
+      "close": "Fermer",
+      "cancel": "Annuler",
+      "saving": "Enregistrement...",
+      "edit": "Modifier",
+      "add": "Ajouter"
+    }
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useForm, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Modal } from "@/components/ui/modal";
@@ -41,6 +42,7 @@ export default function CompanyFormModal({
   readOnly = false,
   serverError = null,
 }: CompanyFormModalProps) {
+  const t = useTranslations("companies");
   const isEditing = !!company && !readOnly;
   const [showPassword, setShowPassword] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
@@ -199,14 +201,14 @@ export default function CompanyFormModal({
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl">
       <div className="px-6 sm:px-8 pt-6 pb-4 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-          {readOnly ? "Détails de l'entreprise" : isEditing ? "Modifier l'entreprise" : "Ajouter une entreprise"}
+          {readOnly ? t("form.titleView") : isEditing ? t("form.titleEdit") : t("form.titleAdd")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {readOnly
-            ? "Consultez les informations de l'entreprise"
+            ? t("form.subtitleView")
             : isEditing
-            ? "Modifiez les informations de l'entreprise et ses modules"
-            : "Créez l'entreprise, son administrateur et définissez ses modules accessibles"}
+            ? t("form.subtitleEdit")
+            : t("form.subtitleAdd")}
         </p>
       </div>
 
@@ -214,7 +216,7 @@ export default function CompanyFormModal({
         <div className="flex items-center justify-center py-20">
           <div className="flex flex-col items-center gap-3">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-brand-500 dark:border-gray-700" />
-            <p className="text-sm text-gray-500 dark:text-gray-400">Chargement...</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t("form.loading")}</p>
           </div>
         </div>
       ) : (
@@ -227,12 +229,12 @@ export default function CompanyFormModal({
             <div className={sectionClass}>
               <h3 className={sectionHeadClass}>
                 <span className={stepBadge}>1</span>
-                Informations de l&apos;entreprise
+                {t("form.sections.company")}
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <CloudinaryImageUpload
-                    label="Logo de l'entreprise"
+                    label={t("form.fields.logo")}
                     preview={logoPreview}
                     shape="square"
                     disabled={readOnly}
@@ -241,39 +243,39 @@ export default function CompanyFormModal({
                     entityId={company?.id || "new"}
                     autoUpload={true}
                     accept="image/jpeg,image/png,image/gif,image/webp"
-                    helperText="Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)"
+                    helperText={t("form.fields.logoHelper")}
                   />
                 </div>
 
                 <div>
-                  <Label>Raison sociale {!readOnly && <span className="text-error-500">*</span>}</Label>
-                  <Input placeholder="Tech Solutions SARL" {...register("name")} error={!!errors.name} disabled={readOnly} />
+                  <Label>{t("form.fields.companyName")} {!readOnly && <span className="text-error-500">*</span>}</Label>
+                  <Input placeholder={t("form.placeholders.companyName")} {...register("name")} error={!!errors.name} disabled={readOnly} />
                   {errors.name && <p className="mt-1 text-sm text-error-500">{errors.name.message}</p>}
                 </div>
 
                 <div>
-                  <Label>ICE</Label>
-                  <Input placeholder="123456789000000" {...register("ice")} error={!!errors.ice} disabled={readOnly} />
+                  <Label>{t("form.fields.ice")}</Label>
+                  <Input placeholder={t("form.placeholders.ice")} {...register("ice")} error={!!errors.ice} disabled={readOnly} />
                   {errors.ice && <p className="mt-1 text-sm text-error-500">{errors.ice.message}</p>}
                 </div>
 
                 <div className="sm:col-span-2">
-                  <Label>Adresse</Label>
-                  <Input placeholder="12 rue de la Paix" {...register("address")} error={!!errors.address} disabled={readOnly} />
+                  <Label>{t("form.fields.address")}</Label>
+                  <Input placeholder={t("form.placeholders.address")} {...register("address")} error={!!errors.address} disabled={readOnly} />
                 </div>
 
                 <div>
-                  <Label>Ville</Label>
-                  <Input placeholder="Paris" {...register("city")} error={!!errors.city} disabled={readOnly} />
+                  <Label>{t("form.fields.city")}</Label>
+                  <Input placeholder={t("form.placeholders.city")} {...register("city")} error={!!errors.city} disabled={readOnly} />
                 </div>
 
                 <div>
-                  <Label>Code postal</Label>
-                  <Input placeholder="75001" {...register("postal_code")} error={!!errors.postal_code} disabled={readOnly} />
+                  <Label>{t("form.fields.postalCode")}</Label>
+                  <Input placeholder={t("form.placeholders.postalCode")} {...register("postal_code")} error={!!errors.postal_code} disabled={readOnly} />
                 </div>
 
                 <div>
-                  <Label>Pays</Label>
+                  <Label>{t("form.fields.country")}</Label>
                   <select
                     {...register("country")}
                     disabled={readOnly}
@@ -283,7 +285,7 @@ export default function CompanyFormModal({
                         : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700 dark:focus:border-brand-800"
                     }`}
                   >
-                    <option value="">— Sélectionner un pays —</option>
+                    <option value="">{t("form.fields.selectCountry")}</option>
                     <option value="Maroc">Maroc</option>
                     <option value="Algérie">Algérie</option>
                     <option value="Tunisie">Tunisie</option>
@@ -314,7 +316,7 @@ export default function CompanyFormModal({
                 </div>
 
                 <div>
-                  <Label>Statut {!readOnly && <span className="text-error-500">*</span>}</Label>
+                  <Label>{t("form.fields.status")} {!readOnly && <span className="text-error-500">*</span>}</Label>
                   <select
                     {...register("status")}
                     disabled={readOnly}
@@ -324,8 +326,8 @@ export default function CompanyFormModal({
                         : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700 dark:focus:border-brand-800"
                     }`}
                   >
-                    <option value="active">Actif</option>
-                    <option value="inactive">Inactif</option>
+                    <option value="active">{t("list.status.active")}</option>
+                    <option value="inactive">{t("list.status.inactive")}</option>
                   </select>
                 </div>
               </div>
@@ -335,17 +337,17 @@ export default function CompanyFormModal({
             <div className={sectionClass}>
               <h3 className={sectionHeadClass}>
                 <span className={stepBadge}>2</span>
-                Informations de contact
+                {t("form.sections.contact")}
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
-                  <Label>Téléphone {!readOnly && <span className="text-error-500">*</span>}</Label>
-                  <Input type="tel" placeholder="+33612345678" {...register("phone")} error={!!errors.phone} disabled={readOnly} />
+                  <Label>{t("form.fields.phone")} {!readOnly && <span className="text-error-500">*</span>}</Label>
+                  <Input type="tel" placeholder={t("form.placeholders.phone")} {...register("phone")} error={!!errors.phone} disabled={readOnly} />
                   {errors.phone && <p className="mt-1 text-sm text-error-500">{errors.phone.message}</p>}
                 </div>
                 <div>
-                  <Label>Email {!readOnly && <span className="text-error-500">*</span>}</Label>
-                  <Input type="email" placeholder="contact@techsolutions.fr" {...register("email")} error={!!errors.email} disabled={readOnly} />
+                  <Label>{t("form.fields.email")} {!readOnly && <span className="text-error-500">*</span>}</Label>
+                  <Input type="email" placeholder={t("form.placeholders.email")} {...register("email")} error={!!errors.email} disabled={readOnly} />
                   {errors.email && <p className="mt-1 text-sm text-error-500">{errors.email.message}</p>}
                 </div>
               </div>
@@ -356,15 +358,15 @@ export default function CompanyFormModal({
               <div className={sectionClass}>
                 <h3 className={sectionHeadClass}>
                   <span className={stepBadge}>3</span>
-                  Administrateur de l&apos;entreprise
+                  {t("form.sections.admin")}
                   {isEditing && !readOnly && (
-                    <span className="ml-1 text-xs font-normal text-gray-400">(informations actuelles)</span>
+                    <span className="ms-1 text-xs font-normal text-gray-400">{t("form.fields.currentInfo")}</span>
                   )}
                 </h3>
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div className="sm:col-span-2">
                     <CloudinaryImageUpload
-                      label="Photo de l'administrateur"
+                      label={t("form.fields.adminPhoto")}
                       preview={adminPhotoPreview}
                       shape="circle"
                       onChange={readOnly ? undefined : handleAdminPhotoChange}
@@ -378,40 +380,40 @@ export default function CompanyFormModal({
                   </div>
 
                   <div>
-                    <Label>Prénom {!isEditing && !readOnly && <span className="text-error-500">*</span>}</Label>
-                    <Input placeholder="John" {...register("adminFirstName")} error={!!errors.adminFirstName} disabled={readOnly || isEditing} />
+                    <Label>{t("form.fields.firstName")} {!isEditing && !readOnly && <span className="text-error-500">*</span>}</Label>
+                    <Input placeholder={t("form.placeholders.firstName")} {...register("adminFirstName")} error={!!errors.adminFirstName} disabled={readOnly || isEditing} />
                     {errors.adminFirstName && !readOnly && <p className="mt-1 text-sm text-error-500">{errors.adminFirstName.message}</p>}
-                    {isEditing && !readOnly && <p className="mt-1 text-xs text-gray-400">Non modifiable</p>}
+                    {isEditing && !readOnly && <p className="mt-1 text-xs text-gray-400">{t("form.fields.notEditable")}</p>}
                   </div>
 
                   <div>
-                    <Label>Nom {!isEditing && !readOnly && <span className="text-error-500">*</span>}</Label>
-                    <Input placeholder="Doe" {...register("adminLastName")} error={!!errors.adminLastName} disabled={readOnly || isEditing} />
+                    <Label>{t("form.fields.lastName")} {!isEditing && !readOnly && <span className="text-error-500">*</span>}</Label>
+                    <Input placeholder={t("form.placeholders.lastName")} {...register("adminLastName")} error={!!errors.adminLastName} disabled={readOnly || isEditing} />
                     {errors.adminLastName && !readOnly && <p className="mt-1 text-sm text-error-500">{errors.adminLastName.message}</p>}
-                    {isEditing && !readOnly && <p className="mt-1 text-xs text-gray-400">Non modifiable</p>}
+                    {isEditing && !readOnly && <p className="mt-1 text-xs text-gray-400">{t("form.fields.notEditable")}</p>}
                   </div>
 
                   <div>
-                    <Label>Email {!isEditing && !readOnly && <span className="text-error-500">*</span>}</Label>
-                    <Input type="email" autoComplete="off" placeholder="admin@example.com" {...register("adminEmail")} error={!!errors.adminEmail} disabled={readOnly || isEditing} />
+                    <Label>{t("form.fields.adminEmail")} {!isEditing && !readOnly && <span className="text-error-500">*</span>}</Label>
+                    <Input type="email" autoComplete="off" placeholder={t("form.placeholders.adminEmail")} {...register("adminEmail")} error={!!errors.adminEmail} disabled={readOnly || isEditing} />
                     {errors.adminEmail && !readOnly && <p className="mt-1 text-sm text-error-500">{errors.adminEmail.message}</p>}
-                    {isEditing && !readOnly && <p className="mt-1 text-xs text-gray-400">Non modifiable</p>}
+                    {isEditing && !readOnly && <p className="mt-1 text-xs text-gray-400">{t("form.fields.notEditable")}</p>}
                   </div>
 
                   {!isEditing && !readOnly && (
                     <div>
-                      <Label>Mot de passe <span className="text-error-500">*</span></Label>
+                      <Label>{t("form.fields.password")} <span className="text-error-500">*</span></Label>
                       <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
                           autoComplete="new-password"
-                          placeholder="StrongPassword123"
+                          placeholder={t("form.placeholders.password")}
                           {...register("adminPassword")}
                           error={!!errors.adminPassword}
                         />
                         <span
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                          className="absolute z-30 -translate-y-1/2 cursor-pointer end-4 top-1/2"
                         >
                           {showPassword ? (
                             <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
@@ -425,14 +427,14 @@ export default function CompanyFormModal({
                   )}
 
                   <div>
-                    <Label>Téléphone de l&apos;administrateur</Label>
-                    <Input type="tel" placeholder="+212612345678" {...register("adminPhone")} error={!!errors.adminPhone} disabled={readOnly} />
+                    <Label>{t("form.fields.adminPhone")}</Label>
+                    <Input type="tel" placeholder={t("form.placeholders.adminPhone")} {...register("adminPhone")} error={!!errors.adminPhone} disabled={readOnly} />
                     {errors.adminPhone && <p className="mt-1 text-sm text-error-500">{errors.adminPhone.message}</p>}
                   </div>
 
                   <div>
-                    <Label>Poste / Position</Label>
-                    <Input placeholder="Directeur RH" {...register("adminPosition")} error={!!errors.adminPosition} disabled={readOnly} />
+                    <Label>{t("form.fields.position")}</Label>
+                    <Input placeholder={t("form.placeholders.position")} {...register("adminPosition")} error={!!errors.adminPosition} disabled={readOnly} />
                     {errors.adminPosition && <p className="mt-1 text-sm text-error-500">{errors.adminPosition.message}</p>}
                   </div>
                 </div>
@@ -444,27 +446,27 @@ export default function CompanyFormModal({
               <div className={sectionClass}>
                 <h3 className={sectionHeadClass}>
                   <span className={stepBadge}>4</span>
-                  Abonnement &amp; Modules
+                  {t("form.sections.subscription")}
                 </h3>
 
                 {/* Sélecteur de plan */}
                 <div className="mb-4">
-                  <Label>Plan d&apos;abonnement</Label>
+                  <Label>{t("form.fields.subscriptionPlan")}</Label>
                   <select
                     value={selectedPlanId}
                     onChange={(e) => handlePlanChange(e.target.value)}
                     className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white dark:border-gray-700"
                   >
-                    <option value="">— Aucun abonnement (sélection manuelle) —</option>
+                    <option value="">{t("form.fields.noSubscription")}</option>
                     {allPlans.filter((p: SubscriptionPlan) => p.is_active).map((p: SubscriptionPlan) => (
                       <option key={p.id} value={p.id}>
-                        {p.name} — {Number(p.price).toFixed(2)} {p.currency || "MAD"}/{p.billing_cycle === "monthly" ? "mois" : p.billing_cycle === "annual" ? "an" : "unique"}
+                        {p.name} — {Number(p.price).toFixed(2)} {p.currency || "MAD"}/{p.billing_cycle === "monthly" ? t("form.billingCycle.monthly") : p.billing_cycle === "annual" ? t("form.billingCycle.annual") : t("form.billingCycle.oneTime")}
                       </option>
                     ))}
                   </select>
                   {selectedPlanId && (
                     <p className="mt-1 text-xs text-brand-600 dark:text-brand-400">
-                      ✓ Les modules ci-dessous ont été pré-sélectionnés depuis ce plan
+                      {t("form.fields.planPrefilled")}
                     </p>
                   )}
                 </div>
@@ -472,20 +474,20 @@ export default function CompanyFormModal({
                 {/* Modules (pré-remplis par le plan ou sélection manuelle) */}
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                    Modules accessibles
-                    <span className="ml-2 inline-flex items-center rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-600 dark:bg-brand-900/30 dark:text-brand-400">
+                    {t("form.fields.accessibleModules")}
+                    <span className="ms-2 inline-flex items-center rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-600 dark:bg-brand-900/30 dark:text-brand-400">
                       {selectedFeatureIds.size}/{allFeatures.length}
                     </span>
                   </p>
                   {allFeatures.length > 0 && (
                     <button type="button" onClick={toggleAllFeatures} className="text-xs text-brand-600 dark:text-brand-400 hover:underline">
-                      {selectedFeatureIds.size === allFeatures.length ? "Tout désélectionner" : "Tout sélectionner"}
+                      {selectedFeatureIds.size === allFeatures.length ? t("form.fields.deselectAll") : t("form.fields.selectAll")}
                     </button>
                   )}
                 </div>
 
                 {allFeatures.length === 0 ? (
-                  <p className="text-sm text-gray-400 italic">Aucun module disponible</p>
+                  <p className="text-sm text-gray-400 italic">{t("form.fields.noModules")}</p>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {allFeatures.map((feature) => {
@@ -532,7 +534,7 @@ export default function CompanyFormModal({
               <div className={sectionClass}>
                 <h3 className={sectionHeadClass}>
                   <span className={stepBadge}>4</span>
-                  Abonnement &amp; Modules
+                  {t("form.sections.subscription")}
                 </h3>
                 {companyCurrentPlan && (
                   <div className="mb-3 rounded-lg bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 px-4 py-2.5 flex items-center gap-2">
@@ -544,7 +546,7 @@ export default function CompanyFormModal({
                   </div>
                 )}
                 {companyFeatures.length === 0 ? (
-                  <p className="text-sm text-gray-400 italic">Tous les modules (aucune restriction)</p>
+                  <p className="text-sm text-gray-400 italic">{t("form.fields.noModulesReadOnly")}</p>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {companyFeatures.map((f: Feature) => (
@@ -578,19 +580,19 @@ export default function CompanyFormModal({
             {!readOnly && (
               <p className="text-xs text-gray-400 dark:text-gray-500">
                 {selectedFeatureIds.size > 0
-                  ? `${selectedFeatureIds.size} module${selectedFeatureIds.size > 1 ? "s" : ""} sélectionné${selectedFeatureIds.size > 1 ? "s" : ""}`
-                  : "Aucun module sélectionné — accès complet"}
+                  ? t("form.moduleCount", { count: selectedFeatureIds.size })
+                  : t("form.noModuleSelected")}
               </p>
             )}
             {readOnly ? (
-              <div className="ml-auto">
-                <Button variant="outline" onClick={onClose}>Fermer</Button>
+              <div className="ms-auto">
+                <Button variant="outline" onClick={onClose}>{t("form.buttons.close")}</Button>
               </div>
             ) : (
               <div className="flex gap-3">
-                <Button variant="outline" onClick={onClose} disabled={isLoading}>Annuler</Button>
+                <Button variant="outline" onClick={onClose} disabled={isLoading}>{t("form.buttons.cancel")}</Button>
                 <Button type="submit" disabled={isLoading}>
-                  {isLoading ? "Enregistrement..." : isEditing ? "Modifier" : "Ajouter"}
+                  {isLoading ? t("form.buttons.saving") : isEditing ? t("form.buttons.edit") : t("form.buttons.add")}
                 </Button>
               </div>
             )}

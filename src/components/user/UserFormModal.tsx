@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useForm, Controller, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Modal } from "@/components/ui/modal";
@@ -39,6 +40,8 @@ export default function UserFormModal({
   readOnly = false,
   serverError = null,
 }: UserFormModalProps) {
+  const t = useTranslations("users");
+  const tc = useTranslations("common");
   const isEditing = !!user && !readOnly;
   const [showPassword, setShowPassword] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -132,17 +135,17 @@ export default function UserFormModal({
       <div className="flex-shrink-0 p-6 sm:p-8 pb-0">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
           {readOnly
-            ? "Détails de l'utilisateur"
+            ? t("form.titles.view")
             : isEditing
-            ? "Modifier l'utilisateur"
-            : "Ajouter un utilisateur"}
+            ? t("form.titles.edit")
+            : t("form.titles.add")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {readOnly
-            ? "Consultez les informations de l'utilisateur"
+            ? t("form.subtitles.view")
             : isEditing
-            ? "Modifiez les informations de l'utilisateur"
-            : "Remplissez les informations pour créer un nouvel utilisateur"}
+            ? t("form.subtitles.edit")
+            : t("form.subtitles.add")}
         </p>
       </div>
 
@@ -151,7 +154,7 @@ export default function UserFormModal({
           <div className="flex flex-col items-center gap-3">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600 dark:border-gray-700 dark:border-t-blue-500"></div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Chargement des données...
+              {t("form.loadingData")}
             </p>
           </div>
         </div>
@@ -162,7 +165,7 @@ export default function UserFormModal({
             {/* Photo de profil - En premier */}
             <div className="sm:col-span-2">
               <ImageUpload
-                label="Photo de profil"
+                label={t("form.photo")}
                 preview={photoPreview}
                 shape="circle"
                 onChange={readOnly ? undefined : handlePhotoChange}
@@ -172,10 +175,10 @@ export default function UserFormModal({
 
             <div>
               <Label>
-                Prénom {!readOnly && <span className="text-error-500">*</span>}
+                {t("form.fields.firstName")} {!readOnly && <span className="text-error-500">*</span>}
               </Label>
               <Input
-                placeholder="John"
+                placeholder={t("form.fields.firstNamePlaceholder")}
                 {...register("first_name")}
                 error={!!errors.first_name}
                 disabled={readOnly}
@@ -189,10 +192,10 @@ export default function UserFormModal({
 
             <div>
               <Label>
-                Nom {!readOnly && <span className="text-error-500">*</span>}
+                {t("form.fields.lastName")} {!readOnly && <span className="text-error-500">*</span>}
               </Label>
               <Input
-                placeholder="Doe"
+                placeholder={t("form.fields.lastNamePlaceholder")}
                 {...register("last_name")}
                 error={!!errors.last_name}
                 disabled={readOnly}
@@ -206,11 +209,11 @@ export default function UserFormModal({
 
             <div className="sm:col-span-2">
               <Label>
-                Email {!readOnly && <span className="text-error-500">*</span>}
+                {t("form.fields.email")} {!readOnly && <span className="text-error-500">*</span>}
               </Label>
               <Input
                 type="email"
-                placeholder="john.doe@example.com"
+                placeholder={t("form.fields.emailPlaceholder")}
                 autoComplete="off"
                 {...register("email")}
                 error={!!errors.email}
@@ -226,11 +229,11 @@ export default function UserFormModal({
             {!readOnly && (
               <div className="sm:col-span-2">
                 <Label>
-                  Mot de passe{" "}
+                  {t("form.fields.password")}{" "}
                   {!isEditing && <span className="text-error-500">*</span>}
                   {isEditing && (
                     <span className="text-gray-400 text-xs">
-                      (laisser vide pour ne pas modifier)
+                      {t("form.fields.passwordEditHint")}
                     </span>
                   )}
                 </Label>
@@ -240,14 +243,14 @@ export default function UserFormModal({
                   <input type="password" name="password" tabIndex={-1} autoComplete="new-password" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 0, height: 0, opacity: 0 }} />
                   <Input
                     type={showPassword ? "text" : "password"}
-                    placeholder="SecurePassword123!"
+                    placeholder={t("form.fields.passwordPlaceholder")}
                     autoComplete="new-password"
                     {...register("password")}
                     error={!!errors.password}
                   />
                   <span
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                    className="absolute z-30 -translate-y-1/2 cursor-pointer end-4 top-1/2"
                   >
                     {showPassword ? (
                       <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
@@ -270,14 +273,14 @@ export default function UserFormModal({
                 control={control}
                 render={({ field }) => (
                   <InfiniteSelect<Role>
-                    label={`Rôle ${!readOnly ? '*' : ''}`}
+                    label={`${t("form.fields.role")} ${!readOnly ? '*' : ''}`}
                     value={field.value}
                     onChange={(value) => field.onChange(value)}
                     useInfiniteQuery={useGetRolesForSelectInfiniteQuery}
                     itemLabelKey="name"
                     itemValueKey="id"
-                    placeholder="Sélectionner un rôle"
-                    emptyMessage="Aucun rôle trouvé"
+                    placeholder={t("form.fields.rolePlaceholder")}
+                    emptyMessage={t("form.fields.roleEmpty")}
                     error={!!errors.role_id}
                     initialSelectedItems={user?.role ? [user.role as Role] : []}
                     disabled={readOnly}
@@ -293,7 +296,7 @@ export default function UserFormModal({
 
             <div>
               <Label>
-                Statut {!readOnly && <span className="text-error-500">*</span>}
+                {t("form.fields.status")} {!readOnly && <span className="text-error-500">*</span>}
               </Label>
               <select
                 {...register("status")}
@@ -304,8 +307,8 @@ export default function UserFormModal({
                     : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700 dark:focus:border-brand-800"
                 }`}
               >
-                <option value="active">Actif</option>
-                <option value="inactive">Inactif</option>
+                <option value="active">{t("form.fields.statusActive")}</option>
+                <option value="inactive">{t("form.fields.statusInactive")}</option>
               </select>
               {errors.status && !readOnly && (
                 <p className="mt-1 text-sm text-error-500">
@@ -323,19 +326,19 @@ export default function UserFormModal({
         <div className="flex-shrink-0 flex justify-end gap-3 p-6 sm:p-8 pt-4 border-t border-gray-100 dark:border-gray-800">
           {readOnly ? (
             <Button variant="outline" onClick={onClose}>
-              Fermer
+              {tc("actions.close")}
             </Button>
           ) : (
             <>
               <Button variant="outline" onClick={onClose} disabled={isLoading}>
-                Annuler
+                {tc("actions.cancel")}
               </Button>
               <Button type="submit" disabled={isLoading}>
                 {isLoading
-                  ? "Enregistrement..."
+                  ? t("form.buttons.saving")
                   : isEditing
-                  ? "Modifier"
-                  : "Ajouter"}
+                  ? t("form.buttons.edit")
+                  : t("form.buttons.add")}
               </Button>
             </>
           )}

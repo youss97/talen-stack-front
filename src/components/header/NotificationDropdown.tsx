@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import {
   useGetNotificationsQuery,

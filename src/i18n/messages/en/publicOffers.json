@@ -1,0 +1,156 @@
+{
+  "list": {
+    "title": "Public Offers",
+    "subtitle": "Manage your public job offers",
+    "viewRecruitmentRequests": "View recruitment requests",
+    "searchPlaceholder": "Search by title...",
+    "notAvailable": "N/A",
+    "emptyMessage": "No public offer found",
+    "columns": {
+      "title": "Title",
+      "client": "Client",
+      "location": "Location",
+      "contractType": "Contract type",
+      "status": "Status",
+      "views": "Views",
+      "createdAt": "Creation date"
+    },
+    "statusPublic": "Public",
+    "statusPrivate": "Private",
+    "actions": {
+      "detailsAndApplications": "Details & applications",
+      "viewOffer": "View offer",
+      "copyLink": "Copy link",
+      "configure": "Configure public offer",
+      "toggleStatus": "Toggle status"
+    },
+    "toast": {
+      "success": "Success",
+      "error": "Error",
+      "attention": "Attention",
+      "madePublic": "made public",
+      "madePrivate": "made private",
+      "toggleSuccess": "Offer {status} successfully",
+      "toggleError": "Error updating the offer",
+      "linkCopied": "Link copied",
+      "linkCopiedMessage": "The link has been copied to the clipboard",
+      "notPublicWarning": "This offer is not public or has no slug",
+      "configSaved": "Public offer configuration saved"
+    }
+  },
+  "detail": {
+    "notFound": "Offer not found or not public",
+    "notAvailable": "N/A",
+    "backToList": "Back to list",
+    "back": "Back",
+    "offerDetails": "Offer details",
+    "publicBadge": "Public",
+    "description": "Description",
+    "salary": "Salary",
+    "salaryRange": "{min} {symbol} - {max} {symbol}",
+    "salaryFrom": "From {amount} {symbol}",
+    "salaryUpTo": "Up to {amount} {symbol}",
+    "experience": "Required experience",
+    "experienceMin": "{years} years minimum",
+    "skills": "Required skills",
+    "deadline": "Deadline",
+    "stats": "Statistics",
+    "views": "Views",
+    "publishedDate": "Publication date",
+    "publicLink": "Public link",
+    "copyLink": "Copy link",
+    "preview": "Preview",
+    "receivedApplications": "Applications received (public offer)",
+    "deleteApplication": {
+      "title": "Delete application",
+      "message": "Are you sure you want to delete the application from {name}? This action is irreversible.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "toast": {
+      "success": "Success",
+      "error": "Error",
+      "convertedWithWarning": "Converted (incomplete CV extraction)",
+      "converted": "Converted",
+      "convertedMessage": "Candidate added to the talent pool and application created.",
+      "convertError": "Conversion failed",
+      "deleted": "Deleted",
+      "deletedMessage": "The application has been deleted.",
+      "deleteError": "Deletion failed",
+      "linkCopied": "Link copied",
+      "linkCopiedMessage": "The link has been copied to the clipboard"
+    }
+  },
+  "config": {
+    "title": "Configure the public offer",
+    "subtitle": "Select the fields to display on the offer's public page. The title and application form are always visible.",
+    "brandColorNote": "The color of your public offers is set once in {settingsPath} and applies to all your offers.",
+    "settingsPath": "Settings → Public site & branding",
+    "fieldsShown": "Displayed fields",
+    "deselectAll": "Deselect all",
+    "selectAll": "Select all",
+    "visible": "Visible",
+    "hidden": "Hidden",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "saveError": "Error saving the configuration",
+    "fields": {
+      "client": "Client name",
+      "description": "Job description",
+      "required_skills": "Required skills",
+      "location": "Location",
+      "contract_type": "Contract type",
+      "contract_duration": "Contract duration",
+      "min_experience": "Required experience",
+      "salary": "Salary",
+      "remote_possible": "Remote work",
+      "deadline": "Deadline",
+      "desired_start_date": "Desired start date",
+      "reference": "Reference",
+      "industry": "Industry"
+    }
+  },
+  "applications": {
+    "count": "{count, plural, one {# application} other {# applications}}",
+    "table": {
+      "candidate": "Candidate",
+      "contact": "Contact",
+      "receivedOn": "Received on",
+      "actions": "Actions"
+    },
+    "cv": "CV",
+    "convert": "→ Application",
+    "converted": "Converted",
+    "delete": "Delete",
+    "empty": "No application for this filter"
+  },
+  "conversion": {
+    "title": "Converting to application…",
+    "subtitle": "Please wait, do not close this window.",
+    "steps": {
+      "extract": "Extracting candidate's CV",
+      "save": "Saving to the talent pool",
+      "create": "Creating the application"
+    }
+  },
+  "stats": {
+    "views": "Views",
+    "applications": "Applications",
+    "conversionRate": "Conversion rate",
+    "sources": "Application sources",
+    "sourceLabels": {
+      "qr": "QR Code",
+      "direct": "Direct link",
+      "linkedin": "LinkedIn",
+      "other": "Other"
+    }
+  },
+  "qrCode": {
+    "download": "Download QR Code",
+    "downloading": "Downloading...",
+    "hint": "Scan this QR code to access the job offer directly",
+    "viewQrCode": "View QR Code",
+    "views": "{count} views"
+  }
+}

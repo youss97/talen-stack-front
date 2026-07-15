@@ -1,0 +1,140 @@
+{
+  "page": {
+    "title": "Email Management",
+    "subtitle": "Send bulk emails to candidates, clients, users and managers",
+    "newEmail": "New Email"
+  },
+  "filters": {
+    "searchPlaceholder": "Search by subject...",
+    "allStatuses": "All statuses"
+  },
+  "status": {
+    "draft": "Draft",
+    "sent": "Sent",
+    "failed": "Failed",
+    "scheduled": "Scheduled"
+  },
+  "table": {
+    "columns": {
+      "sender": "Sender",
+      "recipients": "Recipients",
+      "status": "Status",
+      "sentAt": "Sent date",
+      "createdAt": "Created on"
+    },
+    "recipientsCount": "{count} recipient(s)",
+    "sentFailedCount": "Sent: {sent} | Failed: {failed}",
+    "scheduledFor": "Scheduled: {date}",
+    "emptyMessage": "No emails found"
+  },
+  "actions": {
+    "edit": "Edit",
+    "sendNow": "Send now",
+    "cancelSchedule": "Cancel schedule"
+  },
+  "toast": {
+    "deleteSuccessTitle": "Success",
+    "deleteSuccessMessage": "Email deleted successfully",
+    "deleteErrorTitle": "Error",
+    "deleteErrorMessage": "Error while deleting the email",
+    "sendSuccessTitle": "Success",
+    "sendSuccessMessage": "Email sent successfully",
+    "sendErrorTitle": "Error",
+    "sendErrorMessage": "Error while sending the email",
+    "cancelSuccessTitle": "Success",
+    "cancelSuccessMessage": "Schedule cancelled — email reverted to draft",
+    "cancelErrorTitle": "Error",
+    "cancelErrorMessage": "Error while cancelling the schedule"
+  },
+  "deleteModal": {
+    "title": "Delete email",
+    "message": "Are you sure you want to delete the email \"{subject}\"? This action cannot be undone.",
+    "confirmText": "Delete",
+    "cancelText": "Cancel"
+  },
+  "detailModal": {
+    "title": "Email details",
+    "sender": "Sender",
+    "stats": {
+      "totalRecipients": "Total recipients",
+      "sent": "Sent",
+      "failed": "Failed"
+    },
+    "recipients": "Recipients ({count})",
+    "cc": "CC ({count})",
+    "bcc": "BCC ({count})",
+    "message": "Message",
+    "errorMessage": "Error message",
+    "createdAt": "Created on",
+    "sentAt": "Sent date"
+  },
+  "formModal": {
+    "titleAdd": "Send an email",
+    "titleEdit": "Edit draft",
+    "subtitle": "Select recipients and compose your message",
+    "sendSuccess": "Email sent successfully!",
+    "errors": {
+      "noRecipient": "Please select at least one recipient.",
+      "noScheduleDate": "Please choose a send date and time.",
+      "scheduleDateFuture": "The send date must be in the future.",
+      "sendFailed": "Error while sending the email. Check the recipients and try again."
+    },
+    "to": {
+      "badge": "To",
+      "title": "Main recipients",
+      "selectedCount": "{count} selected",
+      "candidates": "Candidates",
+      "candidatesPlaceholder": "Search for candidates...",
+      "clients": "Clients",
+      "clientsPlaceholder": "Search for clients...",
+      "clientNoEmail": "{name} (no email)",
+      "users": "Users",
+      "usersPlaceholder": "Search for users...",
+      "managers": "Managers",
+      "selectClientFirst": "Select a client first...",
+      "managersPlaceholder": "Search for managers...",
+      "manualEmails": "Manual email addresses",
+      "manualEmailsPlaceholder": "example@email.com, press Enter..."
+    },
+    "cc": {
+      "showLabel": "Add a copy (CC)",
+      "hideLabel": "Hide copy",
+      "selectedCount": "{count} selected",
+      "candidates": "Candidates (CC)",
+      "candidatesPlaceholder": "Search for candidates to CC...",
+      "clients": "Clients (CC)",
+      "clientsPlaceholder": "Search for clients to CC...",
+      "managers": "Managers (CC)",
+      "managersPlaceholder": "Search for managers to CC...",
+      "manualEmails": "Manual CC addresses",
+      "manualEmailsPlaceholder": "cc@email.com, press Enter..."
+    },
+    "bcc": {
+      "showLabel": "Add a hidden copy (BCC)",
+      "hideLabel": "Hide hidden copy",
+      "selectedCount": "{count} selected",
+      "manualEmails": "BCC addresses",
+      "manualEmailsPlaceholder": "bcc@email.com, press Enter..."
+    },
+    "subject": "Subject",
+    "subjectPlaceholder": "Enter the email subject",
+    "subjectRequired": "Subject is required",
+    "message": "Message",
+    "messagePlaceholder": "Enter the email content",
+    "messageRequired": "Message is required",
+    "addButton": "Add",
+    "footer": {
+      "recipientsCount": "{count} recipient(s)",
+      "ccCount": "{count} CC",
+      "bccCount": "{count} BCC",
+      "scheduleEnabled": "Scheduling enabled",
+      "scheduleSend": "Schedule send",
+      "draft": "Draft",
+      "programSchedule": "Schedule",
+      "send": "Send",
+      "sending": "Sending...",
+      "saving": "Saving...",
+      "saveChanges": "Save changes"
+    }
+  }
+}

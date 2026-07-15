@@ -1,0 +1,114 @@
+{
+  "list": {
+    "title": "Client list",
+    "subtitle": "Manage your clients and their administrators",
+    "addButton": "Add a client",
+    "searchPlaceholder": "Search by name, industry, contact or email...",
+    "filters": {
+      "allStatuses": "All statuses"
+    },
+    "columns": {
+      "name": "Company name",
+      "email": "Email",
+      "phone": "Phone",
+      "city": "City",
+      "country": "Country",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleted": "Deleted"
+    },
+    "emptyState": "No clients found",
+    "rowActions": {
+      "deactivate": "Deactivate",
+      "activate": "Activate"
+    }
+  },
+  "toasts": {
+    "loadClientError": "Unable to load client data",
+    "toggleActivated": "Client activated successfully",
+    "toggleDeactivated": "Client deactivated successfully",
+    "toggleError": "Error updating status",
+    "deleteSuccess": "Client deleted successfully",
+    "deleteError": "Error deleting client",
+    "updateSuccess": "Client updated successfully",
+    "createSuccess": "Client created successfully",
+    "updateError": "Error updating client",
+    "createError": "Error creating client"
+  },
+  "confirm": {
+    "deactivateTitle": "Deactivate client",
+    "activateTitle": "Activate client",
+    "deactivateMessage": "Are you sure you want to deactivate the client \"{name}\"? All its managers will also be deactivated and will no longer be able to log in.",
+    "activateMessage": "Are you sure you want to activate the client \"{name}\"? They will be able to log in.",
+    "deactivateConfirm": "Deactivate",
+    "activateConfirm": "Activate",
+    "deleteTitle": "Delete client",
+    "deleteMessage": "Are you sure you want to delete the client \"{name}\"? All its managers will be deleted and will no longer be able to log in. This action is irreversible.",
+    "deleteConfirm": "Delete"
+  },
+  "form": {
+    "titles": {
+      "view": "Client details",
+      "edit": "Edit client",
+      "add": "Add a client"
+    },
+    "subtitles": {
+      "view": "View the client's information",
+      "edit": "Edit the client's information",
+      "add": "Fill in the information to create a new client"
+    },
+    "sections": {
+      "company": "Company information",
+      "contact": "Contact",
+      "admin": "Client administrator",
+      "extra": "Additional information"
+    },
+    "fields": {
+      "logo": "Client logo",
+      "logoHelper": "Accepted formats: JPEG, PNG, GIF, WebP (max 5MB)",
+      "name": "Company name",
+      "namePlaceholder": "Tech Solutions SARL",
+      "ice": "ICE",
+      "icePlaceholder": "123456789012345",
+      "iceHelper": "Common Company Identifier · 15 digits",
+      "country": "Country",
+      "address": "Address",
+      "addressPlaceholder": "12 rue de la Paix",
+      "city": "City",
+      "cityPlaceholder": "Casablanca",
+      "postalCode": "Postal code",
+      "postalCodePlaceholder": "20000",
+      "status": "Status",
+      "phone": "Phone",
+      "phonePlaceholder": "+212612345678",
+      "email": "Email",
+      "emailPlaceholder": "contact@techsolutions.ma",
+      "adminPhoto": "Administrator photo",
+      "photo": "Photo",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "adminEmailPlaceholder": "admin@example.com",
+      "adminFirstNamePlaceholder": "John",
+      "adminLastNamePlaceholder": "Doe",
+      "password": "Password",
+      "passwordPlaceholder": "Min. 8 characters",
+      "position": "Position",
+      "positionPlaceholder": "General Manager",
+      "notProvided": "Not provided",
+      "industry": "Industry",
+      "companySize": "Size",
+      "vatRate": "VAT rate",
+      "paymentTerms": "Payment terms"
+    },
+    "buttons": {
+      "close": "Close",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "edit": "Edit",
+      "add": "Add"
+    }
+  }
+}

@@ -1,0 +1,369 @@
+{
+  "hub": {
+    "title": "Paramètres",
+    "subtitle": "Gérez les paramètres de votre application",
+    "unauthorized": "Accès non autorisé. Redirection...",
+    "categories": {
+      "applicationStatuses": {
+        "title": "Statuts de Candidatures",
+        "description": "Gérer les statuts des candidatures (En attente, Accepté, Refusé, etc.)"
+      },
+      "contractTypes": {
+        "title": "Types de Contrats",
+        "description": "Gérer les types de contrats (CDI, CDD, Freelance, etc.)"
+      },
+      "sidebarOrder": {
+        "title": "Ordre de la sidebar",
+        "description": "Définir l'ordre d'affichage des modules (features) dans le menu latéral"
+      },
+      "publicSite": {
+        "title": "Site public & branding",
+        "description": "Personnaliser la page publique de l'entreprise (slug, présentation, couleur, « Powered by »)"
+      },
+      "landing": {
+        "title": "Landing page",
+        "description": "Gérer la page publique : textes, tarifs, témoignages, formulaire de contact (super admin)"
+      },
+      "cvSources": {
+        "title": "Gestion des sources de CV",
+        "description": "Gérer les sources de CV (Offre publique, Cooptation, LinkedIn, etc.)"
+      },
+      "emailTemplates": {
+        "title": "Templates emails",
+        "description": "Personnaliser le contenu des emails envoyés automatiquement par la plateforme (candidatures, entretiens, notifications)"
+      },
+      "businessCards": {
+        "title": "Cartes de visite",
+        "description": "Créer et gérer les cartes de visite QR (RH, Client, Employé)"
+      }
+    }
+  },
+  "applicationStatuses": {
+    "breadcrumb": "Statuts de Candidatures",
+    "title": "Statuts de Candidatures",
+    "subtitle": "Gérez les statuts des candidatures",
+    "searchPlaceholder": "Rechercher...",
+    "createButton": "Créer un statut",
+    "columns": { "name": "Nom", "status": "Statut" },
+    "active": "Actif",
+    "inactive": "Inactif",
+    "modal": {
+      "editTitle": "Modifier le statut",
+      "createTitle": "Créer un statut",
+      "nameLabel": "Nom",
+      "activeLabel": "Actif",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement..."
+    },
+    "deleteModal": {
+      "title": "Supprimer le statut",
+      "message": "Êtes-vous sûr de vouloir supprimer le statut \"{name}\" ?",
+      "confirmText": "Supprimer"
+    },
+    "toasts": {
+      "updated": "Statut modifié avec succès",
+      "created": "Statut créé avec succès",
+      "deleted": "Statut supprimé avec succès",
+      "genericError": "Une erreur est survenue",
+      "deleteError": "Erreur lors de la suppression"
+    }
+  },
+  "contractTypes": {
+    "breadcrumb": "Types de Contrats",
+    "title": "Types de Contrats",
+    "subtitle": "Gérez les types de contrats (CDI, CDD, Freelance, etc.)",
+    "searchPlaceholder": "Rechercher...",
+    "createButton": "Créer un type de contrat",
+    "columns": { "name": "Nom", "status": "Statut" },
+    "active": "Actif",
+    "inactive": "Inactif",
+    "modal": {
+      "editTitle": "Modifier le type de contrat",
+      "createTitle": "Créer un type de contrat",
+      "nameLabel": "Nom",
+      "namePlaceholder": "Ex: CDI, CDD, Freelance",
+      "activeLabel": "Actif",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement..."
+    },
+    "deleteModal": {
+      "title": "Supprimer le type de contrat",
+      "message": "Êtes-vous sûr de vouloir supprimer le type de contrat \"{name}\" ?",
+      "confirmText": "Supprimer"
+    },
+    "toasts": {
+      "updated": "Type de contrat modifié avec succès",
+      "created": "Type de contrat créé avec succès",
+      "deleted": "Type de contrat supprimé avec succès",
+      "genericError": "Une erreur est survenue",
+      "deleteError": "Erreur lors de la suppression"
+    }
+  },
+  "cvSources": {
+    "breadcrumb": "Gestion des sources de CV",
+    "title": "Gestion des sources de CV",
+    "subtitle": "Gérez les sources de CV (Offre publique, Cooptation, LinkedIn, etc.)",
+    "searchPlaceholder": "Rechercher...",
+    "createButton": "Créer une source de CV",
+    "columns": { "name": "Nom", "status": "Statut" },
+    "active": "Actif",
+    "inactive": "Inactif",
+    "modal": {
+      "editTitle": "Modifier la source de CV",
+      "createTitle": "Créer une source de CV",
+      "nameLabel": "Nom",
+      "namePlaceholder": "Ex: Offre publique, Cooptation, LinkedIn",
+      "activeLabel": "Actif",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement..."
+    },
+    "deleteModal": {
+      "title": "Supprimer la source de CV",
+      "message": "Êtes-vous sûr de vouloir supprimer la source de CV \"{name}\" ?",
+      "confirmText": "Supprimer"
+    },
+    "toasts": {
+      "updated": "Source de CV modifiée avec succès",
+      "created": "Source de CV créée avec succès",
+      "deleted": "Source de CV supprimée avec succès",
+      "genericError": "Une erreur est survenue",
+      "deleteError": "Erreur lors de la suppression"
+    }
+  },
+  "applicationStatusesPage": {
+    "title": "Statuts de candidature",
+    "subtitle": "Gérez les statuts de candidature de la plateforme",
+    "addButton": "Ajouter un statut",
+    "searchPlaceholder": "Rechercher un statut de candidature...",
+    "columns": { "name": "Nom", "description": "Description", "color": "Couleur", "order": "Ordre" },
+    "emptyMessage": "Aucun statut de candidature trouvé",
+    "toasts": {
+      "loadDetailError": "Erreur lors du chargement des détails du statut de candidature",
+      "deleted": "Statut de candidature supprimé avec succès",
+      "deleteError": "Erreur lors de la suppression du statut de candidature",
+      "updated": "Statut de candidature modifié avec succès",
+      "created": "Statut de candidature créé avec succès",
+      "updateError": "Erreur lors de la modification du statut de candidature",
+      "createError": "Erreur lors de la création du statut de candidature"
+    },
+    "deleteModal": {
+      "title": "Supprimer le statut de candidature",
+      "message": "Êtes-vous sûr de vouloir supprimer le statut de candidature \"{name}\" ? Cette action est irréversible.",
+      "confirmText": "Supprimer",
+      "cancelText": "Annuler"
+    },
+    "formModal": {
+      "detailTitle": "Détails du statut de candidature",
+      "editTitle": "Modifier le statut de candidature",
+      "createTitle": "Ajouter un statut de candidature",
+      "detailSubtitle": "Consultez les informations du statut de candidature",
+      "editSubtitle": "Modifiez les informations du statut de candidature",
+      "createSubtitle": "Remplissez les informations pour créer un nouveau statut de candidature",
+      "loading": "Chargement des données...",
+      "nameLabel": "Nom",
+      "namePlaceholder": "En attente, Accepté, Refusé...",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Description du statut de candidature...",
+      "colorLabel": "Couleur",
+      "orderLabel": "Ordre d'affichage",
+      "activeLabel": "Actif",
+      "finalLabel": "Statut final",
+      "close": "Fermer",
+      "cancel": "Annuler",
+      "saving": "Enregistrement...",
+      "edit": "Modifier",
+      "add": "Ajouter"
+    }
+  },
+  "contractTypesPage": {
+    "title": "Types de contrat",
+    "subtitle": "Gérez les types de contrat de la plateforme",
+    "addButton": "Ajouter un type de contrat",
+    "searchPlaceholder": "Rechercher un type de contrat...",
+    "columns": { "name": "Nom", "description": "Description" },
+    "emptyMessage": "Aucun type de contrat trouvé",
+    "toasts": {
+      "loadDetailError": "Erreur lors du chargement des détails du type de contrat",
+      "deleted": "Type de contrat supprimé avec succès",
+      "deleteError": "Erreur lors de la suppression du type de contrat",
+      "updated": "Type de contrat modifié avec succès",
+      "created": "Type de contrat créé avec succès",
+      "updateError": "Erreur lors de la modification du type de contrat",
+      "createError": "Erreur lors de la création du type de contrat"
+    },
+    "deleteModal": {
+      "title": "Supprimer le type de contrat",
+      "message": "Êtes-vous sûr de vouloir supprimer le type de contrat \"{name}\" ? Cette action est irréversible.",
+      "confirmText": "Supprimer",
+      "cancelText": "Annuler"
+    },
+    "formModal": {
+      "detailTitle": "Détails du type de contrat",
+      "editTitle": "Modifier le type de contrat",
+      "createTitle": "Ajouter un type de contrat",
+      "detailSubtitle": "Consultez les informations du type de contrat",
+      "editSubtitle": "Modifiez les informations du type de contrat",
+      "createSubtitle": "Remplissez les informations pour créer un nouveau type de contrat",
+      "loading": "Chargement des données...",
+      "nameLabel": "Nom",
+      "namePlaceholder": "CDI, CDD, Stage...",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Description du type de contrat...",
+      "orderLabel": "Ordre d'affichage",
+      "activeLabel": "Actif",
+      "close": "Fermer",
+      "cancel": "Annuler",
+      "saving": "Enregistrement...",
+      "edit": "Modifier",
+      "add": "Ajouter"
+    }
+  },
+  "publicSite": {
+    "backButton": "Retour aux paramètres",
+    "title": "Site public & branding",
+    "subtitle": "Personnalisez la page publique de votre entreprise (offres, candidature spontanée).",
+    "slugLabel": "Slug public (URL)",
+    "slugPlaceholder": "mon-entreprise",
+    "linkLabel": "Lien",
+    "descriptionLabel": "Présentation",
+    "descriptionPlaceholder": "Présentez votre entreprise aux candidats…",
+    "brandColorLabel": "Couleur de marque",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "toasts": {
+      "savedTitle": "Enregistré",
+      "savedMessage": "Configuration du site public mise à jour",
+      "errorTitle": "Erreur",
+      "errorMessage": "Échec de l'enregistrement"
+    }
+  },
+  "sidebarOrder": {
+    "backButton": "Retour aux paramètres",
+    "title": "Ordre de la sidebar",
+    "subtitle": "Réorganisez l'ordre des <strong>modules</strong> (sections) du menu latéral.",
+    "saveButton": "Enregistrer l'ordre",
+    "emptyState": "Aucun module.",
+    "moveUp": "Monter",
+    "moveDown": "Descendre",
+    "toasts": {
+      "savedTitle": "Succès",
+      "savedMessage": "Ordre des modules enregistré. Le menu est mis à jour."
+    }
+  },
+  "landing": {
+    "title": "Landing page",
+    "subtitle": "Gérez le contenu public : textes, tarifs, témoignages, contact.",
+    "preview": "Aperçu",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "tabs": {
+      "content": "Contenu",
+      "messages": "Messages",
+      "messagesWithCount": "Messages ({count})"
+    },
+    "identity": {
+      "title": "Identité (header)",
+      "siteNamePlaceholder": "Nom du site (ex: Talent Stack)",
+      "logoAlt": "logo",
+      "logoPlaceholder": "Logo",
+      "uploadLogo": "Uploader le logo",
+      "uploading": "Upload…",
+      "removeLogo": "Retirer"
+    },
+    "hero": {
+      "title": "Section Hero",
+      "titlePlaceholder": "Titre",
+      "subtitlePlaceholder": "Sous-titre",
+      "ctaTextPlaceholder": "Texte du bouton",
+      "ctaLinkPlaceholder": "Lien du bouton (#contact)",
+      "brandColorLabel": "Couleur de marque"
+    },
+    "about": {
+      "title": "Section « À propos »",
+      "titlePlaceholder": "Titre",
+      "textPlaceholder": "Texte"
+    },
+    "features": {
+      "title": "Fonctionnalités",
+      "addButton": "+ Ajouter",
+      "titlePlaceholder": "Titre",
+      "descriptionPlaceholder": "Description"
+    },
+    "pricing": {
+      "title": "Tarifs",
+      "addButton": "+ Ajouter un plan",
+      "planLabel": "Plan {index}",
+      "moveUp": "Monter",
+      "moveDown": "Descendre",
+      "deleteButton": "Supprimer",
+      "namePlaceholder": "Nom du plan",
+      "pricePlaceholder": "Prix (ex: 49)",
+      "currency": {
+        "eur": "€ (EUR)",
+        "usd": "$ (USD)",
+        "mad": "MAD",
+        "gbp": "£ (GBP)",
+        "none": "Aucune"
+      },
+      "cycle": {
+        "monthly": "/ mois",
+        "yearly": "/ an",
+        "oneTime": "Ponctuel / Sur devis"
+      },
+      "featuresPlaceholder": "Une fonctionnalité par ligne",
+      "highlightedLabel": "Plan populaire",
+      "ctaTextPlaceholder": "Texte du bouton"
+    },
+    "testimonials": {
+      "title": "Témoignages clients",
+      "addButton": "+ Ajouter",
+      "namePlaceholder": "Nom",
+      "rolePlaceholder": "Rôle",
+      "companyPlaceholder": "Société",
+      "ratingPlaceholder": "Note /5",
+      "avatarPlaceholder": "URL photo du client (ou uploader →)",
+      "upload": "Uploader",
+      "uploading": "Upload…",
+      "textPlaceholder": "Témoignage",
+      "photoAddedTitle": "Photo ajoutée",
+      "photoUploadErrorTitle": "Erreur",
+      "photoUploadErrorMessage": "Échec de l'upload de la photo"
+    },
+    "partners": {
+      "title": "Logos partenaires",
+      "addButton": "+ Ajouter",
+      "upload": "Uploader",
+      "uploading": "Upload…",
+      "namePlaceholder": "Nom du partenaire (optionnel)",
+      "emptyState": "Aucun partenaire. Cliquez sur « + Ajouter » pour insérer un logo.",
+      "logoAddedTitle": "Logo ajouté",
+      "logoUploadErrorTitle": "Erreur",
+      "logoUploadErrorMessage": "Échec de l'upload du logo"
+    },
+    "contact": {
+      "title": "Coordonnées & réseaux",
+      "emailPlaceholder": "Email",
+      "phonePlaceholder": "Téléphone",
+      "addressPlaceholder": "Adresse",
+      "linkedinPlaceholder": "LinkedIn (URL)",
+      "instagramPlaceholder": "Instagram (URL)"
+    },
+    "messages": {
+      "emptyState": "Aucun message.",
+      "newBadge": "Nouveau",
+      "markRead": "Marquer lu"
+    },
+    "toasts": {
+      "savedTitle": "Enregistré",
+      "savedMessage": "Landing page mise à jour",
+      "errorTitle": "Erreur",
+      "errorMessage": "Échec de l'enregistrement",
+      "logoAddedTitle": "Logo ajouté",
+      "logoAddedMessage": "N'oubliez pas d'enregistrer",
+      "logoErrorMessage": "Échec de l'upload du logo"
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "title": "بطاقات العمل",
+  "subtitle": "بطاقات عمل برمز QR قابلة للمشاركة (موارد بشرية، عميل، موظف)",
+  "backToSettings": "العودة إلى الإعدادات",
+  "createMyCard": "إنشاء بطاقتي",
+  "noCards": "لا توجد بطاقات.",
+  "ownerTypes": {
+    "rh": "موارد بشرية",
+    "client": "عميل",
+    "employee": "موظف"
+  },
+  "templates": {
+    "snow": "فاتح (Snow)",
+    "dark": "داكن",
+    "brand": "لون العلامة التجارية",
+    "gradient": "متدرج",
+    "mint": "باستيل"
+  },
+  "card": {
+    "active": "نشطة",
+    "inactive": "غير نشطة",
+    "qrAndCard": "رمز QR والبطاقة",
+    "preview": "معاينة",
+    "link": "رابط",
+    "deactivate": "تعطيل",
+    "activate": "تفعيل"
+  },
+  "form": {
+    "editTitle": "تعديل بطاقتي",
+    "createTitle": "بطاقة عملي",
+    "photoFromProfile": "الصورة مأخوذة من ملفك الشخصي",
+    "fullNamePlaceholder": "الاسم الكامل *",
+    "positionPlaceholder": "المنصب / الوظيفة",
+    "companyPlaceholder": "الشركة",
+    "phonePlaceholder": "الهاتف",
+    "linkedinPlaceholder": "لينكدإن (رابط)",
+    "websitePlaceholder": "الموقع الإلكتروني (رابط)",
+    "customFieldsLabel": "حقول مخصصة (روابط / نص)",
+    "addField": "+ إضافة",
+    "typeLink": "رابط",
+    "typeText": "نص",
+    "labelPlaceholder": "التسمية",
+    "urlPlaceholder": "الرابط",
+    "valuePlaceholder": "القيمة",
+    "saving": "..."
+  },
+  "qrModal": {
+    "title": "بطاقة عمل للمشاركة",
+    "altText": "بطاقة عمل",
+    "scanHint": "مسح رمز QR يفتح البطاقة التفاعلية.",
+    "print": "طباعة",
+    "download": "تنزيل (PNG)",
+    "fileNamePrefix": "بطاقة",
+    "printTitle": "بطاقة {name}"
+  },
+  "confirmDelete": "هل تريد حذف بطاقة {name}؟",
+  "toasts": {
+    "cardUpdated": "تم تعديل البطاقة",
+    "cardCreated": "تم إنشاء البطاقة",
+    "saveError": "خطأ أثناء الحفظ",
+    "cardDeleted": "تم حذف البطاقة",
+    "linkCopied": "تم نسخ الرابط",
+    "linkCopiedMessage": "تم نسخ رابط البطاقة"
+  }
+}

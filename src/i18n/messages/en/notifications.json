@@ -1,0 +1,25 @@
+{
+  "page": {
+    "title": "Notifications",
+    "description": "All your notifications and alerts"
+  },
+  "actions": {
+    "markAllRead": "Mark all as read"
+  },
+  "emptyState": {
+    "title": "No notifications",
+    "message": "You will be notified here about new applications and events."
+  },
+  "time": {
+    "now": "just now",
+    "minutesAgo": "{minutes} min ago",
+    "hoursAgo": "{hours} h ago",
+    "daysAgo": "{days} d ago"
+  },
+  "types": {
+    "application": "Application",
+    "recruitment": "Recruitment",
+    "integration": "Integration",
+    "system": "System"
+  }
+}

@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import InputField from "../form/input/InputField";
@@ -28,6 +29,7 @@ export default function ManagerFormModal({
   manager,
   isLoading = false,
 }: ManagerFormModalProps) {
+  const t = useTranslations("managers.formModal");
   const isEditing = !!manager;
   const [photoPreview, setPhotoPreview] = React.useState<string | null>(null);
 
@@ -119,14 +121,14 @@ export default function ManagerFormModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl m-4">
       <div className="relative w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
-        <div className="px-2 pr-14">
+        <div className="px-2 pe-14">
           <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-            {isEditing ? "Modifier le manager" : "Ajouter un manager"}
+            {isEditing ? t("editTitle") : t("addTitle")}
           </h4>
           <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
             {isEditing
-              ? "Modifiez les informations du manager"
-              : "Créez un nouveau manager pour ce client"}
+              ? t("editSubtitle")
+              : t("addSubtitle")}
           </p>
         </div>
 
@@ -134,7 +136,7 @@ export default function ManagerFormModal({
           <div className="custom-scrollbar max-h-[500px] overflow-y-auto px-2 pb-3">
             <div className="space-y-5">
               <div>
-                <Label>Photo de profil (optionnelle)</Label>
+                <Label>{t("photoLabel")}</Label>
                 <ImageUpload
                   label=""
                   preview={photoPreview}
@@ -145,7 +147,9 @@ export default function ManagerFormModal({
 
               <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                 <div>
-                  <Label htmlFor="first_name">Prénom *</Label>
+                  <Label htmlFor="first_name">
+                    {t("firstName")} <span className="text-error-500">*</span>
+                  </Label>
                   <InputField
                     id="first_name"
                     type="text"
@@ -157,7 +161,9 @@ export default function ManagerFormModal({
                 </div>
 
                 <div>
-                  <Label htmlFor="last_name">Nom *</Label>
+                  <Label htmlFor="last_name">
+                    {t("lastName")} <span className="text-error-500">*</span>
+                  </Label>
                   <InputField
                     id="last_name"
                     type="text"
@@ -170,7 +176,9 @@ export default function ManagerFormModal({
               </div>
 
               <div>
-                <Label htmlFor="email">Email *</Label>
+                <Label htmlFor="email">
+                  {t("email")} <span className="text-error-500">*</span>
+                </Label>
                 <InputField
                   id="email"
                   type="email"
@@ -183,7 +191,8 @@ export default function ManagerFormModal({
 
               <div>
                 <Label htmlFor="password">
-                  Mot de passe {isEditing ? "(laisser vide pour ne pas changer)" : "*"}
+                  {t("password")}{" "}
+                  {isEditing ? t("passwordEditHint") : <span className="text-error-500">*</span>}
                 </Label>
                 <InputField
                   id="password"
@@ -196,7 +205,7 @@ export default function ManagerFormModal({
               </div>
 
               <div>
-                <Label htmlFor="phone">Téléphone</Label>
+                <Label htmlFor="phone">{t("phone")}</Label>
                 <InputField
                   id="phone"
                   type="text"
@@ -208,11 +217,11 @@ export default function ManagerFormModal({
               </div>
 
               <div>
-                <Label htmlFor="position">Position</Label>
+                <Label htmlFor="position">{t("position")}</Label>
                 <InputField
                   id="position"
                   type="text"
-                  placeholder="Directeur des Ressources Humaines"
+                  placeholder={t("positionPlaceholder")}
                   {...register("position")}
                   error={!!errors.position}
                   hint={errors.position?.message}
@@ -228,16 +237,16 @@ export default function ManagerFormModal({
               onClick={onClose}
               disabled={isLoading}
             >
-              Annuler
+              {t("cancel")}
             </Button>
             <Button size="sm" type="submit" disabled={isLoading}>
               {isLoading
                 ? isEditing
-                  ? "Modification..."
-                  : "Création..."
+                  ? t("updating")
+                  : t("submitting")
                 : isEditing
-                ? "Modifier"
-                : "Créer le manager"}
+                ? t("submitUpdate")
+                : t("submitCreate")}
             </Button>
           </div>
         </form>

@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useCallback } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "@/i18n/navigation";
 import { useAppSelector } from "@/lib/hooks";
 import { usePermissions } from "@/hooks/usePermissions";
 

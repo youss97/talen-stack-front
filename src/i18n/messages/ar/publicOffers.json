@@ -1,0 +1,156 @@
+{
+  "list": {
+    "title": "العروض العامة",
+    "subtitle": "قم بإدارة عروض العمل العامة الخاصة بك",
+    "viewRecruitmentRequests": "عرض طلبات التوظيف",
+    "searchPlaceholder": "البحث حسب العنوان...",
+    "notAvailable": "غير متوفر",
+    "emptyMessage": "لم يتم العثور على أي عرض عام",
+    "columns": {
+      "title": "العنوان",
+      "client": "العميل",
+      "location": "الموقع",
+      "contractType": "نوع العقد",
+      "status": "الحالة",
+      "views": "المشاهدات",
+      "createdAt": "تاريخ الإنشاء"
+    },
+    "statusPublic": "عام",
+    "statusPrivate": "خاص",
+    "actions": {
+      "detailsAndApplications": "التفاصيل والترشيحات",
+      "viewOffer": "عرض الإعلان",
+      "copyLink": "نسخ الرابط",
+      "configure": "تهيئة العرض العام",
+      "toggleStatus": "تبديل الحالة"
+    },
+    "toast": {
+      "success": "نجاح",
+      "error": "خطأ",
+      "attention": "تنبيه",
+      "madePublic": "أصبح عامًا",
+      "madePrivate": "أصبح خاصًا",
+      "toggleSuccess": "تم تحويل العرض بنجاح: {status}",
+      "toggleError": "خطأ أثناء التعديل",
+      "linkCopied": "تم نسخ الرابط",
+      "linkCopiedMessage": "تم نسخ الرابط إلى الحافظة",
+      "notPublicWarning": "هذا العرض غير عام أو ليس له رابط مختصر",
+      "configSaved": "تم حفظ تهيئة العرض العام"
+    }
+  },
+  "detail": {
+    "notFound": "العرض غير موجود أو غير عام",
+    "notAvailable": "غير متوفر",
+    "backToList": "العودة إلى القائمة",
+    "back": "رجوع",
+    "offerDetails": "تفاصيل العرض",
+    "publicBadge": "عام",
+    "description": "الوصف",
+    "salary": "الراتب",
+    "salaryRange": "{min} {symbol} - {max} {symbol}",
+    "salaryFrom": "ابتداءً من {amount} {symbol}",
+    "salaryUpTo": "حتى {amount} {symbol}",
+    "experience": "الخبرة المطلوبة",
+    "experienceMin": "{years} سنوات كحد أدنى",
+    "skills": "المهارات المطلوبة",
+    "deadline": "الموعد النهائي",
+    "stats": "الإحصائيات",
+    "views": "المشاهدات",
+    "publishedDate": "تاريخ النشر",
+    "publicLink": "الرابط العام",
+    "copyLink": "نسخ الرابط",
+    "preview": "معاينة",
+    "receivedApplications": "الترشيحات المستلمة (عرض عام)",
+    "deleteApplication": {
+      "title": "حذف الترشيح",
+      "message": "هل أنت متأكد أنك تريد حذف ترشيح {name}؟ هذا الإجراء لا رجعة فيه.",
+      "confirm": "حذف",
+      "cancel": "إلغاء"
+    },
+    "toast": {
+      "success": "نجاح",
+      "error": "خطأ",
+      "convertedWithWarning": "تم التحويل (استخراج السيرة الذاتية غير مكتمل)",
+      "converted": "تم التحويل",
+      "convertedMessage": "تمت إضافة المرشح إلى مجمّع المواهب وإنشاء الترشيح.",
+      "convertError": "فشل التحويل",
+      "deleted": "تم الحذف",
+      "deletedMessage": "تم حذف الترشيح.",
+      "deleteError": "فشل الحذف",
+      "linkCopied": "تم نسخ الرابط",
+      "linkCopiedMessage": "تم نسخ الرابط إلى الحافظة"
+    }
+  },
+  "config": {
+    "title": "تهيئة العرض العام",
+    "subtitle": "اختر الحقول التي سيتم عرضها في صفحة العرض العامة. العنوان ونموذج الترشيح مرئيان دائمًا.",
+    "brandColorNote": "يتم تحديد لون عروضك العامة مرة واحدة فقط في {settingsPath} وينطبق على جميع عروضك.",
+    "settingsPath": "الإعدادات ← الموقع العام والهوية البصرية",
+    "fieldsShown": "الحقول المعروضة",
+    "deselectAll": "إلغاء تحديد الكل",
+    "selectAll": "تحديد الكل",
+    "visible": "مرئي",
+    "hidden": "مخفي",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ...",
+    "saveError": "خطأ أثناء حفظ التهيئة",
+    "fields": {
+      "client": "اسم العميل",
+      "description": "وصف الوظيفة",
+      "required_skills": "المهارات المطلوبة",
+      "location": "الموقع",
+      "contract_type": "نوع العقد",
+      "contract_duration": "مدة العقد",
+      "min_experience": "الخبرة المطلوبة",
+      "salary": "الراتب",
+      "remote_possible": "العمل عن بُعد",
+      "deadline": "الموعد النهائي",
+      "desired_start_date": "تاريخ البدء المرغوب",
+      "reference": "المرجع",
+      "industry": "قطاع النشاط"
+    }
+  },
+  "applications": {
+    "count": "{count, plural, one {# ترشيح} other {# ترشيحات}}",
+    "table": {
+      "candidate": "المرشح",
+      "contact": "التواصل",
+      "receivedOn": "تاريخ الاستلام",
+      "actions": "الإجراءات"
+    },
+    "cv": "السيرة الذاتية",
+    "convert": "→ ترشيح",
+    "converted": "تم التحويل",
+    "delete": "حذف",
+    "empty": "لا توجد ترشيحات لهذا التصفية"
+  },
+  "conversion": {
+    "title": "جارٍ التحويل إلى ترشيح…",
+    "subtitle": "يرجى الانتظار، لا تغلق هذه النافذة.",
+    "steps": {
+      "extract": "استخراج السيرة الذاتية للمرشح",
+      "save": "الحفظ في مجمّع المواهب",
+      "create": "إنشاء الترشيح"
+    }
+  },
+  "stats": {
+    "views": "المشاهدات",
+    "applications": "الترشيحات",
+    "conversionRate": "معدل التحويل",
+    "sources": "مصادر الترشيحات",
+    "sourceLabels": {
+      "qr": "رمز QR",
+      "direct": "رابط مباشر",
+      "linkedin": "لينكد إن",
+      "other": "أخرى"
+    }
+  },
+  "qrCode": {
+    "download": "تحميل رمز QR",
+    "downloading": "جارٍ التحميل...",
+    "hint": "امسح رمز QR هذا للوصول مباشرة إلى عرض العمل",
+    "viewQrCode": "عرض رمز QR",
+    "views": "{count} مشاهدة"
+  }
+}

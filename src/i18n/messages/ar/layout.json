@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "groups": {
+      "Pilotage": "لوحة القيادة",
+      "Recrutement": "التوظيف",
+      "Talents": "الكفاءات",
+      "Suivi": "المتابعة",
+      "Communication": "التواصل",
+      "Administration": "الإدارة"
+    },
+    "items": {
+      "/statistics": "الإحصائيات",
+      "/settings/landing": "الموقع التعريفي",
+      "/companies": "الشركات",
+      "/clients": "العملاء",
+      "/managers": "الموظفون",
+      "/users": "المستخدمون",
+      "/recruitment-requests": "طلبات التوظيف",
+      "/applications": "الترشيحات",
+      "/agenda": "الأجندة",
+      "/interviews": "المقابلات",
+      "/integrations": "التكاملات",
+      "/cvs": "بنك الكفاءات",
+      "/my-requests": "طلباتي",
+      "/public-offers": "العروض العامة",
+      "/emails": "البريد الإلكتروني",
+      "/logs": "السجلات",
+      "/roles": "الأدوار",
+      "/subscriptions": "الاشتراكات",
+      "/assignments": "التعيينات",
+      "/business-cards": "بطاقات العمل"
+    }
+  },
+  "sidebar": {
+    "mySpace": "مساحتي",
+    "clientSpace": "مساحة العميل",
+    "recruiterSpace": "مساحة التوظيف",
+    "user": "مستخدم",
+    "online": "متصل"
+  },
+  "header": {
+    "searchPlaceholder": "بحث...",
+    "noResultsFor": "لا توجد نتائج لـ «{query}»",
+    "notifications": "الإشعارات",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج",
+    "language": "اللغة"
+  }
+}

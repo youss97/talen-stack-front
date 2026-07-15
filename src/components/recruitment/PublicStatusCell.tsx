@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import type { ApplicationRequest } from '@/types/applicationRequest';
 
 interface PublicStatusCellProps {
@@ -10,6 +11,7 @@ interface PublicStatusCellProps {
 }
 
 export default function PublicStatusCell({ row, optimisticState, onToggle }: PublicStatusCellProps) {
+  const t = useTranslations('recruitmentRequests');
   const [isLoading, setIsLoading] = useState(false);
   
   // Utiliser l'état optimiste si disponible, sinon l'état du serveur
@@ -38,13 +40,13 @@ export default function PublicStatusCell({ row, optimisticState, onToggle }: Pub
             <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
             <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
           </svg>
-          ✓ Publique
+          ✓ {t('publicOffer.publicBadge')}
         </div>
-        
+
         {/* Infos - afficher même si public_slug n'est pas encore généré */}
         <div className="flex items-center gap-3">
           <span className="text-xs text-gray-600 dark:text-gray-400">
-            👁️ {row.public_views_count || 0} vues
+            👁️ {t('publicOffer.viewsCount', { count: row.public_views_count || 0 })}
           </span>
         </div>
 
@@ -57,7 +59,7 @@ export default function PublicStatusCell({ row, optimisticState, onToggle }: Pub
           <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
           </svg>
-          {isLoading ? 'Chargement...' : 'Rendre privée'}
+          {isLoading ? t('publicOffer.makePrivateLoading') : t('publicOffer.makePrivate')}
         </button>
       </div>
     );
@@ -74,7 +76,7 @@ export default function PublicStatusCell({ row, optimisticState, onToggle }: Pub
         <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
         <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
       </svg>
-      {isLoading ? 'Activation...' : '🌐 Rendre publique'}
+      {isLoading ? t('publicOffer.makePublicLoading') : `🌐 ${t('publicOffer.makePublic')}`}
     </button>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import type { Interview } from "@/types/interview";
@@ -19,6 +20,9 @@ export default function EditInterviewNotesModal({
   isLoading = false,
   interview,
 }: EditInterviewNotesModalProps) {
+  const t = useTranslations("interviewModals.editNotes");
+  const tc = useTranslations("common");
+  const locale = useLocale();
   const [notes, setNotes] = useState("");
   const [title, setTitle] = useState("");
   const [internalNotes, setInternalNotes] = useState("");
@@ -49,7 +53,7 @@ export default function EditInterviewNotesModal({
       });
       onClose();
     } catch (err) {
-      setError("Erreur lors de la modification");
+      setError(t("updateError"));
     }
   };
 
@@ -63,18 +67,20 @@ export default function EditInterviewNotesModal({
       <form onSubmit={handleSubmit}>
         <div className="p-6 sm:p-8 pb-0">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-            ✏️ Modifier l'entretien
+            ✏️ {t("title")}
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            {interviewDate ? `Entretien du ${interviewDate.toLocaleDateString('fr-FR', {
-              weekday: 'long',
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric'
-            })} à ${interviewDate.toLocaleTimeString('fr-FR', {
-              hour: '2-digit',
-              minute: '2-digit'
-            })}` : 'Modifier l\'entretien'}
+            {interviewDate ? t("subtitleWithDate", {
+              value: `${interviewDate.toLocaleDateString(locale, {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              })} ${locale === 'ar' ? 'في' : locale === 'en' ? 'at' : 'à'} ${interviewDate.toLocaleTimeString(locale, {
+                hour: '2-digit',
+                minute: '2-digit'
+              })}`
+            }) : t("subtitleDefault")}
           </p>
         </div>
 
@@ -89,45 +95,45 @@ export default function EditInterviewNotesModal({
           <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-2">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-gray-500 dark:text-gray-400">Type:</span>
-                <span className="ml-2 text-gray-900 dark:text-white">
-                  {interview.type === 'online' ? '🌐 En ligne' : '📍 Présentiel'}
+                <span className="text-gray-500 dark:text-gray-400">{t("type")}</span>
+                <span className="ms-2 text-gray-900 dark:text-white">
+                  {interview.type === 'online' ? `🌐 ${t("online")}` : `📍 ${t("presential")}`}
                 </span>
               </div>
               <div>
-                <span className="text-gray-500 dark:text-gray-400">Durée:</span>
-                <span className="ml-2 text-gray-900 dark:text-white">
+                <span className="text-gray-500 dark:text-gray-400">{t("duration")}</span>
+                <span className="ms-2 text-gray-900 dark:text-white">
                   {interview.duration_minutes} min
                 </span>
               </div>
             </div>
-            
+
             {interview.location && (
               <div className="text-sm">
-                <span className="text-gray-500 dark:text-gray-400">Lieu:</span>
-                <span className="ml-2 text-gray-900 dark:text-white">
+                <span className="text-gray-500 dark:text-gray-400">{t("location")}</span>
+                <span className="ms-2 text-gray-900 dark:text-white">
                   {interview.location}
                 </span>
               </div>
             )}
-            
+
             {interview.meeting_link && (
               <div className="text-sm">
-                <span className="text-gray-500 dark:text-gray-400">Lien:</span>
-                <a 
+                <span className="text-gray-500 dark:text-gray-400">{t("link")}</span>
+                <a
                   href={interview.meeting_link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="ml-2 text-brand-600 dark:text-brand-400 hover:underline"
+                  className="ms-2 text-brand-600 dark:text-brand-400 hover:underline"
                 >
-                  Rejoindre la réunion
+                  {t("joinMeeting")}
                 </a>
               </div>
             )}
 
             {interview.invitees_emails && interview.invitees_emails.length > 0 && (
               <div className="text-sm">
-                <span className="text-gray-500 dark:text-gray-400">Invités:</span>
+                <span className="text-gray-500 dark:text-gray-400">{t("invitees")}</span>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {interview.invitees_emails.map((email, idx) => (
                     <span
@@ -146,10 +152,9 @@ export default function EditInterviewNotesModal({
             <div className="flex items-start gap-2">
               <span className="text-yellow-600 dark:text-yellow-400 text-sm">⚠️</span>
               <div className="text-sm text-yellow-700 dark:text-yellow-300">
-                <p className="font-medium">Modification limitée</p>
+                <p className="font-medium">{t("limitedEditTitle")}</p>
                 <p className="mt-1">
-                  Seuls le titre, les notes et les notes internes peuvent être modifiés. Pour changer la date, l'heure ou d'autres détails, 
-                  veuillez annuler cet entretien et en créer un nouveau.
+                  {t("limitedEditText")}
                 </p>
               </div>
             </div>
@@ -158,53 +163,53 @@ export default function EditInterviewNotesModal({
           {/* Titre de l'entretien */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Titre de l'entretien
+              {t("titleFieldLabel")}
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Ex: Entretien technique - Développeur Full Stack"
+              placeholder={t("titleFieldPlaceholder")}
               className="w-full h-11 appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
             />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Le titre sera utilisé dans l'objet des emails
+              {t("titleFieldHint")}
             </p>
           </div>
 
           {/* Notes - seul champ modifiable */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Notes de l'entretien
+              {t("notesFieldLabel")}
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
-              placeholder="Ajoutez des notes sur cet entretien..."
+              placeholder={t("notesFieldPlaceholder")}
               className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
             />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Un email sera automatiquement envoyé au candidat et aux invités pour les informer de la modification.
+              {t("notesFieldHint")}
             </p>
           </div>
 
           {/* Notes internes (visibles seulement par l'équipe RH) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Notes internes - Équipe RH uniquement
+              {t("internalNotesLabel")}
             </label>
             <textarea
               value={internalNotes}
               onChange={(e) => setInternalNotes(e.target.value)}
               rows={3}
-              placeholder="Notes internes visibles seulement par l'équipe RH..."
+              placeholder={t("internalNotesPlaceholder")}
               className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
             />
             <div className="flex items-start gap-2 mt-2">
               <span className="text-amber-600 dark:text-amber-400 text-sm">🔒</span>
               <p className="text-xs text-amber-700 dark:text-amber-300">
-                Ces notes ne sont visibles que par l'équipe RH et ne seront pas partagées avec le candidat ou les invités.
+                {t("internalNotesHint")}
               </p>
             </div>
           </div>
@@ -212,10 +217,10 @@ export default function EditInterviewNotesModal({
 
         <div className="flex justify-end gap-3 p-6 sm:p-8 pt-4 border-t border-gray-100 dark:border-gray-800">
           <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-            Annuler
+            {tc("actions.cancel")}
           </Button>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Modification..." : "Modifier l'entretien"}
+            {isLoading ? t("submitting") : t("submitButton")}
           </Button>
         </div>
       </form>

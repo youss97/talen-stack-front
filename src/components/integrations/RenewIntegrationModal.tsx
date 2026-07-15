@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Modal } from '@/components/ui/modal';
 import Button from '@/components/ui/button/Button';
 import Label from '@/components/form/Label';
@@ -27,6 +28,8 @@ export default function RenewIntegrationModal({
   currentEndDate,
   integrationDate,
 }: RenewIntegrationModalProps) {
+  const t = useTranslations('integrations');
+  const tc = useTranslations('common');
   const [formData, setFormData] = useState({
     new_end_date: '',
     renewal_period_months: 12,
@@ -74,7 +77,7 @@ export default function RenewIntegrationModal({
     setError(null);
 
     if (!formData.new_end_date) {
-      setError('Veuillez sélectionner une nouvelle date de fin');
+      setError(t('modals.renew.errors.noEndDate'));
       return;
     }
 
@@ -82,7 +85,7 @@ export default function RenewIntegrationModal({
     const newDate = new Date(formData.new_end_date);
     const today = new Date();
     if (newDate <= today) {
-      setError('La nouvelle date de fin doit être dans le futur');
+      setError(t('modals.renew.errors.pastDate'));
       return;
     }
 
@@ -94,7 +97,7 @@ export default function RenewIntegrationModal({
       });
       onClose();
     } catch (error: any) {
-      setError(error?.message || 'Erreur lors du renouvellement');
+      setError(error?.message || t('modals.renew.errors.renewFailed'));
     }
   };
 
@@ -125,7 +128,7 @@ export default function RenewIntegrationModal({
           <div className="flex items-center gap-3 mb-4 sm:mb-6">
             <span className="text-2xl">🔄</span>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-              Renouveler l'intégration
+              {t('modals.renew.title')}
             </h2>
           </div>
 
@@ -143,25 +146,25 @@ export default function RenewIntegrationModal({
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
               <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
                 <span>ℹ️</span>
-                Période actuelle
+                {t('modals.renew.currentPeriodSection.title')}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-blue-700 dark:text-blue-300 font-medium">Date d'intégration:</span>
-                  <span className="ml-2 text-blue-900 dark:text-blue-100">
+                  <span className="text-blue-700 dark:text-blue-300 font-medium">{t('modals.renew.currentPeriodSection.integrationDate')}</span>
+                  <span className="ms-2 text-blue-900 dark:text-blue-100">
                     {integrationDate ? new Date(integrationDate).toLocaleDateString('fr-FR') : '-'}
                   </span>
                 </div>
                 <div>
-                  <span className="text-blue-700 dark:text-blue-300 font-medium">Date de fin actuelle:</span>
-                  <span className="ml-2 text-blue-900 dark:text-blue-100">
+                  <span className="text-blue-700 dark:text-blue-300 font-medium">{t('modals.renew.currentPeriodSection.currentEndDate')}</span>
+                  <span className="ms-2 text-blue-900 dark:text-blue-100">
                     {currentEndDate ? new Date(currentEndDate).toLocaleDateString('fr-FR') : '-'}
                   </span>
                 </div>
                 <div className="sm:col-span-2">
-                  <span className="text-blue-700 dark:text-blue-300 font-medium">Durée actuelle:</span>
-                  <span className="ml-2 text-blue-900 dark:text-blue-100">
-                    {currentPeriodMonths} mois
+                  <span className="text-blue-700 dark:text-blue-300 font-medium">{t('modals.renew.currentPeriodSection.currentDuration')}</span>
+                  <span className="ms-2 text-blue-900 dark:text-blue-100">
+                    {currentPeriodMonths} {t('modals.renew.currentPeriodSection.months')}
                   </span>
                 </div>
               </div>
@@ -171,12 +174,12 @@ export default function RenewIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                 <span>📅</span>
-                Période de renouvellement
+                {t('modals.renew.renewalPeriodSection.title')}
               </h3>
-              
+
               <div className="space-y-4">
                 <div>
-                  <Label>Durée du renouvellement</Label>
+                  <Label>{t('modals.renew.renewalPeriodSection.durationLabel')}</Label>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
                     {[6, 12, 18, 24].map((months) => (
                       <button
@@ -189,11 +192,11 @@ export default function RenewIntegrationModal({
                             : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                         }`}
                       >
-                        {months} mois
+                        {t('modals.renew.renewalPeriodSection.monthsOption', { count: months })}
                       </button>
                     ))}
                   </div>
-                  
+
                   {/* Option personnalisée */}
                   <div className="mt-3 flex items-center gap-2">
                     <input
@@ -204,20 +207,20 @@ export default function RenewIntegrationModal({
                       onChange={(e) => handlePeriodChange(parseInt(e.target.value) || 12)}
                       className="w-20 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">mois (personnalisé)</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{t('modals.renew.renewalPeriodSection.customLabel')}</span>
                   </div>
                 </div>
 
                 <div>
                   <DatePicker
                     id="new_end_date"
-                    label="Nouvelle date de fin *"
-                    placeholder="Sélectionner la nouvelle date de fin"
+                    label={t('modals.renew.renewalPeriodSection.newEndDateLabel')}
+                    placeholder={t('modals.renew.renewalPeriodSection.newEndDatePlaceholder')}
                     onChange={handleDateChange}
                     defaultDate={formData.new_end_date || undefined}
                   />
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Cette date sera la nouvelle échéance de l'intégration
+                    {t('modals.renew.renewalPeriodSection.newEndDateHelper')}
                   </p>
                 </div>
               </div>
@@ -227,18 +230,18 @@ export default function RenewIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                 <span>📝</span>
-                Notes de renouvellement
+                {t('modals.renew.notesSection.title')}
               </h3>
-              
+
               <div>
-                <Label htmlFor="renewal_notes">Notes (optionnel)</Label>
+                <Label htmlFor="renewal_notes">{t('modals.renew.notesSection.label')}</Label>
                 <textarea
                   id="renewal_notes"
                   value={formData.renewal_notes}
                   onChange={(e) => setFormData({ ...formData, renewal_notes: e.target.value })}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Raisons du renouvellement, conditions particulières, objectifs pour la nouvelle période..."
+                  placeholder={t('modals.renew.notesSection.placeholder')}
                 />
               </div>
             </div>
@@ -249,10 +252,10 @@ export default function RenewIntegrationModal({
                 <span className="text-amber-600 dark:text-amber-400 text-sm">⚠️</span>
                 <div className="text-sm">
                   <p className="font-medium text-amber-900 dark:text-amber-100 mb-1">
-                    Attention : Renouvellement unique
+                    {t('modals.renew.warning.title')}
                   </p>
                   <p className="text-amber-700 dark:text-amber-300">
-                    Cette intégration ne peut être renouvelée qu'une seule fois. Assurez-vous que les dates et la période correspondent à vos besoins.
+                    {t('modals.renew.warning.text')}
                   </p>
                 </div>
               </div>
@@ -261,15 +264,15 @@ export default function RenewIntegrationModal({
 
           <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
             <Button type="button" onClick={onClose} variant="outline" className="w-full sm:w-auto">
-              Annuler
+              {tc('actions.cancel')}
             </Button>
-            <Button 
-              type="submit" 
-              disabled={isLoading || !formData.new_end_date} 
+            <Button
+              type="submit"
+              disabled={isLoading || !formData.new_end_date}
               variant="primary"
               className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
             >
-              {isLoading ? 'Renouvellement...' : '🔄 Renouveler'}
+              {isLoading ? t('modals.renew.renewing') : t('modals.renew.renew')}
             </Button>
           </div>
         </div>

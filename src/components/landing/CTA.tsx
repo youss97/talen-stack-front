@@ -1,8 +1,11 @@
 "use client";
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 export default function CTA() {
+  const t = useTranslations('landing.cta');
+  const perks = t.raw('perks') as string[];
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-[var(--color-brand-25)]">
       <div className="landing-container">
@@ -14,8 +17,8 @@ export default function CTA() {
             transition={{ duration: 0.6 }}
             className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
           >
-            Prêt à transformer{' '}
-            <span className="text-[var(--color-brand-500)]">votre recrutement ?</span>
+            {t('headingLine1')}{' '}
+            <span className="text-[var(--color-brand-500)]">{t('headingHighlight')}</span>
           </motion.h2>
 
           <motion.p
@@ -25,8 +28,7 @@ export default function CTA() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed"
           >
-            Rejoignez des centaines d&apos;entreprises qui ont déjà révolutionné leur processus RH.
-            Commencez votre essai gratuit dès maintenant, aucune carte de crédit requise.
+            {t('subtitle')}
           </motion.p>
 
           <motion.div
@@ -38,12 +40,12 @@ export default function CTA() {
           >
             <Link href="/signin">
               <button className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl bg-[var(--color-brand-500)] text-white hover:bg-[var(--color-brand-600)] transition-colors shadow-lg shadow-[var(--color-brand-500)]/30">
-                🚀 Commencer l&apos;essai gratuit
+                {t('ctaPrimary')}
               </button>
             </Link>
             <a href="tel:+212500000000">
               <button className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-xl bg-[var(--color-brand-500)] text-white hover:bg-[var(--color-brand-600)] transition-colors shadow-lg shadow-[var(--color-brand-500)]/30">
-                📞 Parler à un expert
+                {t('ctaSecondary')}
               </button>
             </a>
           </motion.div>
@@ -55,7 +57,7 @@ export default function CTA() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
           >
-            {["14 jours d'essai gratuit", "Configuration en 24h", "Support dédié inclus"].map((item, i) => (
+            {perks.map((item, i) => (
               <div key={i} className="flex items-center justify-center space-x-3">
                 <div className="w-8 h-8 bg-[var(--color-brand-500)]/15 rounded-full flex items-center justify-center">
                   <svg className="w-5 h-5 text-[var(--color-brand-500)]" fill="currentColor" viewBox="0 0 20 20">
@@ -105,7 +107,7 @@ export default function CTA() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="mt-16 pt-8 border-t border-gray-200"
           >
-            <p className="text-gray-500 text-sm mb-6">Ils nous font déjà confiance</p>
+            <p className="text-gray-500 text-sm mb-6">{t('trustedTitle')}</p>
             <div className="flex flex-wrap justify-center items-center gap-8 opacity-70">
               {["TechCorp", "InnovateLab", "GlobalTech", "ScaleUp Inc"].map((name) => (
                 <div key={name} className="bg-gray-100 px-6 py-3 rounded-lg border border-gray-200">

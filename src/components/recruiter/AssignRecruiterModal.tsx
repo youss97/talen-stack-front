@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import { useGetUsersQuery } from "@/lib/services/userApi";
@@ -19,6 +20,8 @@ export default function AssignRecruiterModal({
   applicationCount,
   isLoading = false,
 }: AssignRecruiterModalProps) {
+  const t = useTranslations("applications.assignRecruiter");
+  const tc = useTranslations("common");
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string>("");
   const [selectedName, setSelectedName] = useState<string>("");
@@ -51,32 +54,32 @@ export default function AssignRecruiterModal({
       <form onSubmit={handleSubmit}>
         <div className="p-6 pb-0">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-            Affecter à un recruteur
+            {t("title")}
           </h2>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            {applicationCount} candidature{applicationCount > 1 ? "s" : ""} sélectionnée{applicationCount > 1 ? "s" : ""}
+            {applicationCount > 1 ? t("subtitlePlural", { count: applicationCount }) : t("subtitle", { count: applicationCount })}
           </p>
         </div>
 
         <div className="px-6 py-4 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Rechercher un recruteur
+              {t("searchLabel")}
             </label>
             <input
               type="text"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setSelectedId(""); }}
-              placeholder="Nom, prénom ou email..."
+              placeholder={t("searchPlaceholder")}
               className="w-full h-10 rounded-lg border border-gray-300 px-3 text-sm dark:bg-gray-900 dark:text-white dark:border-gray-700"
             />
           </div>
 
           <div className="max-h-56 overflow-y-auto space-y-1 custom-scrollbar">
             {isLoadingUsers ? (
-              <div className="text-center py-4 text-sm text-gray-400">Chargement...</div>
+              <div className="text-center py-4 text-sm text-gray-400">{t("loading")}</div>
             ) : users.length === 0 ? (
-              <div className="text-center py-4 text-sm text-gray-400">Aucun utilisateur trouvé</div>
+              <div className="text-center py-4 text-sm text-gray-400">{t("noUserFound")}</div>
             ) : (
               users.map((user) => {
                 const fullName = `${user.first_name} ${user.last_name}`.trim();
@@ -86,7 +89,7 @@ export default function AssignRecruiterModal({
                     key={user.id}
                     type="button"
                     onClick={() => { setSelectedId(user.id); setSelectedName(fullName); }}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                    className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
                       isSelected
                         ? "bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400 border border-brand-300 dark:border-brand-500/30"
                         : "hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
@@ -102,17 +105,17 @@ export default function AssignRecruiterModal({
 
           {selectedId && (
             <div className="p-3 rounded-lg bg-brand-50 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/30 text-sm text-brand-700 dark:text-brand-400">
-              Sélectionné : <strong>{selectedName}</strong>
+              {t("selected", { name: selectedName })}
             </div>
           )}
         </div>
 
         <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 dark:border-gray-800">
           <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
-            Annuler
+            {tc("actions.cancel")}
           </Button>
           <Button type="submit" disabled={!selectedId || isLoading}>
-            {isLoading ? "Affectation..." : "Affecter"}
+            {isLoading ? t("assigning") : t("assignButton")}
           </Button>
         </div>
       </form>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useGetIntegrationByIdQuery, useUpdateIntegrationMutation } from '@/lib/services/integrationApi';
 import { ContractType, IntegrationStatus, TrialPeriodStatus } from '@/types/integration';
 import { Modal } from '@/components/ui/modal';
@@ -22,6 +23,8 @@ export default function EditIntegrationModal({
   onClose,
   onSuccess,
 }: EditIntegrationModalProps) {
+  const t = useTranslations('integrations');
+  const tc = useTranslations('common');
   const [formData, setFormData] = useState({
     position: '',
     integration_date: '',
@@ -103,7 +106,7 @@ export default function EditIntegrationModal({
       onClose();
     } catch (error: any) {
       console.error('Erreur:', error);
-      setError(error?.data?.message || 'Erreur lors de la mise à jour de l\'intégration');
+      setError(error?.data?.message || t('modals.edit.updateFailed'));
     }
   };
 
@@ -120,7 +123,7 @@ export default function EditIntegrationModal({
       <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl">
         <div className="p-6 text-center">
           <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Chargement des détails...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t('modals.edit.loading')}</p>
         </div>
       </Modal>
     );
@@ -130,7 +133,7 @@ export default function EditIntegrationModal({
     return (
       <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl">
         <div className="p-6 text-center">
-          <p className="text-red-600 dark:text-red-400">Intégration non trouvée</p>
+          <p className="text-red-600 dark:text-red-400">{t('modals.edit.notFound')}</p>
         </div>
       </Modal>
     );
@@ -143,7 +146,7 @@ export default function EditIntegrationModal({
           <div className="flex items-center gap-3 mb-4 sm:mb-6">
             <span className="text-2xl">✏️</span>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-              Modifier l'intégration
+              {t('modals.edit.title')}
             </h2>
           </div>
 
@@ -160,30 +163,30 @@ export default function EditIntegrationModal({
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
             <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
               <span>👤</span>
-              Candidat
+              {t('modals.edit.candidateSection.title')}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-blue-700 dark:text-blue-300 font-medium">Nom:</span>
-                <span className="ml-2 text-blue-900 dark:text-blue-100">
+                <span className="text-blue-700 dark:text-blue-300 font-medium">{t('modals.edit.candidateSection.name')}</span>
+                <span className="ms-2 text-blue-900 dark:text-blue-100">
                   {integration.application?.cv?.candidate_first_name} {integration.application?.cv?.candidate_last_name}
                 </span>
               </div>
               <div>
-                <span className="text-blue-700 dark:text-blue-300 font-medium">Email:</span>
-                <span className="ml-2 text-blue-900 dark:text-blue-100">
+                <span className="text-blue-700 dark:text-blue-300 font-medium">{t('modals.edit.candidateSection.email')}</span>
+                <span className="ms-2 text-blue-900 dark:text-blue-100">
                   {integration.application?.cv?.candidate_email}
                 </span>
               </div>
               <div>
-                <span className="text-blue-700 dark:text-blue-300 font-medium">Recrutement:</span>
-                <span className="ml-2 text-blue-900 dark:text-blue-100">
+                <span className="text-blue-700 dark:text-blue-300 font-medium">{t('modals.edit.candidateSection.recruitment')}</span>
+                <span className="ms-2 text-blue-900 dark:text-blue-100">
                   {integration.application?.request?.title}
                 </span>
               </div>
               <div>
-                <span className="text-blue-700 dark:text-blue-300 font-medium">Client:</span>
-                <span className="ml-2 text-blue-900 dark:text-blue-100">
+                <span className="text-blue-700 dark:text-blue-300 font-medium">{t('modals.edit.candidateSection.client')}</span>
+                <span className="ms-2 text-blue-900 dark:text-blue-100">
                   {integration.client?.name}
                 </span>
               </div>
@@ -195,12 +198,12 @@ export default function EditIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>💼</span>
-                Informations du Poste
+                {t('modals.edit.positionSection.title')}
               </h3>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="position">Poste *</Label>
+                  <Label htmlFor="position">{t('modals.edit.positionSection.position')}</Label>
                   <Input
                     id="position"
                     type="text"
@@ -211,7 +214,7 @@ export default function EditIntegrationModal({
                 </div>
 
                 <div>
-                  <Label htmlFor="contract_type">Type de contrat *</Label>
+                  <Label htmlFor="contract_type">{t('modals.edit.positionSection.contractType')}</Label>
                   <select
                     id="contract_type"
                     required
@@ -219,12 +222,12 @@ export default function EditIntegrationModal({
                     onChange={(e) => setFormData({ ...formData, contract_type: e.target.value as ContractType })}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="cdi">CDI</option>
-                    <option value="cdd">CDD</option>
-                    <option value="freelance">Freelance</option>
-                    <option value="interim">Intérim</option>
-                    <option value="stage">Stage</option>
-                    <option value="alternance">Alternance</option>
+                    <option value="cdi">{t('contractTypes.cdi')}</option>
+                    <option value="cdd">{t('contractTypes.cdd')}</option>
+                    <option value="freelance">{t('contractTypes.freelance')}</option>
+                    <option value="interim">{t('contractTypes.interim')}</option>
+                    <option value="stage">{t('contractTypes.stage')}</option>
+                    <option value="alternance">{t('contractTypes.alternance')}</option>
                   </select>
                 </div>
               </div>
@@ -232,8 +235,8 @@ export default function EditIntegrationModal({
               <div>
                 <DatePicker
                   id="integration_date"
-                  label="Date d'intégration *"
-                  placeholder="Sélectionner une date"
+                  label={t('modals.edit.positionSection.integrationDate')}
+                  placeholder={t('modals.edit.positionSection.datePlaceholder')}
                   onChange={handleIntegrationDateChange}
                   defaultDate={formData.integration_date || undefined}
                 />
@@ -244,31 +247,31 @@ export default function EditIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>💰</span>
-                Rémunération
+                {t('modals.edit.salarySection.title')}
               </h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="salary_type">Type de rémunération</Label>
+                  <Label htmlFor="salary_type">{t('modals.edit.salarySection.salaryType')}</Label>
                   <select
                     id="salary_type"
                     value={formData.salary_type}
-                    onChange={(e) => setFormData({ 
-                      ...formData, 
+                    onChange={(e) => setFormData({
+                      ...formData,
                       salary_type: e.target.value,
                       salary: '',
                       daily_rate: ''
                     })}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="monthly">💼 Salaire mensuel</option>
-                    <option value="daily">🔄 TJM (Freelance)</option>
+                    <option value="monthly">{t('modals.edit.salarySection.monthlyOption')}</option>
+                    <option value="daily">{t('modals.edit.salarySection.dailyOption')}</option>
                   </select>
                 </div>
-                
+
                 {formData.salary_type === 'monthly' ? (
                   <div>
-                    <Label htmlFor="salary">Salaire mensuel</Label>
+                    <Label htmlFor="salary">{t('modals.edit.salarySection.monthlySalary')}</Label>
                     <Input
                       id="salary"
                       type="number"
@@ -276,12 +279,12 @@ export default function EditIntegrationModal({
                       step="0.01"
                       value={formData.salary}
                       onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
-                      placeholder="3750"
+                      placeholder={t('modals.edit.salarySection.salaryPlaceholder')}
                     />
                   </div>
                 ) : (
                   <div>
-                    <Label htmlFor="daily_rate">TJM</Label>
+                    <Label htmlFor="daily_rate">{t('modals.edit.salarySection.dailyRate')}</Label>
                     <Input
                       id="daily_rate"
                       type="number"
@@ -289,13 +292,13 @@ export default function EditIntegrationModal({
                       step="0.01"
                       value={formData.daily_rate}
                       onChange={(e) => setFormData({ ...formData, daily_rate: e.target.value })}
-                      placeholder="500"
+                      placeholder={t('modals.edit.salarySection.dailyRatePlaceholder')}
                     />
                   </div>
                 )}
-                
+
                 <div>
-                  <Label htmlFor="currency">Devise</Label>
+                  <Label htmlFor="currency">{t('modals.edit.salarySection.currency')}</Label>
                   <select
                     id="currency"
                     value={formData.currency}
@@ -319,34 +322,34 @@ export default function EditIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>📊</span>
-                Statuts
+                {t('modals.edit.statusSection.title')}
               </h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="status">Statut d'intégration</Label>
+                  <Label htmlFor="status">{t('modals.edit.statusSection.integrationStatus')}</Label>
                   <select
                     id="status"
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as IntegrationStatus })}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="in_progress">🔄 En cours</option>
-                    <option value="completed">✅ Terminée</option>
-                    <option value="failed">❌ Échec</option>
+                    <option value="in_progress">{t('page.filters.statusInProgress')}</option>
+                    <option value="completed">{t('page.filters.statusCompleted')}</option>
+                    <option value="failed">{t('page.filters.statusFailed')}</option>
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor="trial_period_status">Statut période d'essai</Label>
+                  <Label htmlFor="trial_period_status">{t('modals.edit.statusSection.trialStatus')}</Label>
                   <select
                     id="trial_period_status"
                     value={formData.trial_period_status}
                     onChange={(e) => setFormData({ ...formData, trial_period_status: e.target.value as TrialPeriodStatus })}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="in_progress">⏳ En cours</option>
-                    <option value="validated">✅ Validée</option>
-                    <option value="not_validated">❌ Non validée</option>
+                    <option value="in_progress">{t('page.filters.trialInProgress')}</option>
+                    <option value="validated">{t('page.filters.trialValidated')}</option>
+                    <option value="not_validated">{t('page.filters.trialNotValidated')}</option>
                   </select>
                 </div>
               </div>
@@ -356,26 +359,26 @@ export default function EditIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>⏱️</span>
-                Période d'essai
+                {t('modals.edit.trialSection.title')}
               </h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="trial_period_duration">Durée (jours)</Label>
+                  <Label htmlFor="trial_period_duration">{t('modals.edit.trialSection.duration')}</Label>
                   <Input
                     id="trial_period_duration"
                     type="number"
                     min="0"
                     value={formData.trial_period_duration}
                     onChange={(e) => setFormData({ ...formData, trial_period_duration: e.target.value })}
-                    placeholder="90"
+                    placeholder={t('modals.edit.trialSection.durationPlaceholder')}
                   />
                 </div>
                 <div>
                   <DatePicker
                     id="trial_period_end_date"
-                    label="Date de fin"
-                    placeholder="Sélectionner une date"
+                    label={t('modals.edit.trialSection.endDate')}
+                    placeholder={t('modals.edit.positionSection.datePlaceholder')}
                     onChange={handleTrialEndDateChange}
                     defaultDate={formData.trial_period_end_date || undefined}
                   />
@@ -387,33 +390,33 @@ export default function EditIntegrationModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                 <span>📝</span>
-                Notes
+                {t('modals.edit.notesSection.title')}
               </h3>
-              
+
               <div>
-                <Label htmlFor="notes">Notes sur l'intégration</Label>
+                <Label htmlFor="notes">{t('modals.edit.notesSection.label')}</Label>
                 <textarea
                   id="notes"
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Notes sur l'intégration, objectifs, points d'attention..."
+                  placeholder={t('modals.edit.notesSection.placeholder')}
                 />
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
               <Button type="button" onClick={onClose} variant="outline" className="w-full sm:w-auto">
-                Annuler
+                {tc('actions.cancel')}
               </Button>
-              <Button 
-                type="submit" 
-                disabled={isUpdating || !formData.integration_date || !formData.position} 
+              <Button
+                type="submit"
+                disabled={isUpdating || !formData.integration_date || !formData.position}
                 variant="primary"
                 className="w-full sm:w-auto"
               >
-                {isUpdating ? 'Mise à jour...' : 'Sauvegarder'}
+                {isUpdating ? t('modals.edit.updating') : t('modals.edit.save')}
               </Button>
             </div>
           </form>

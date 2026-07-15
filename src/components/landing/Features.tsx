@@ -1,46 +1,24 @@
 "use client";
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
-const features = [
-  {
-    icon: "👥",
-    title: "Gestion des Candidatures",
-    description: "Centralisez toutes vos candidatures, suivez leur progression et collaborez en équipe en temps réel.",
-    benefits: ["Workflow personnalisable", "Notifications automatiques", "Historique complet"]
-  },
-  {
-    icon: "📅",
-    title: "Planification d'Entretiens",
-    description: "Organisez vos entretiens facilement avec notre système de calendrier intégré et les notifications automatiques.",
-    benefits: ["Calendrier synchronisé", "Invitations automatiques", "Rappels intelligents"]
-  },
-  {
-    icon: "🔗",
-    title: "Suivi des Intégrations",
-    description: "Accompagnez vos nouvelles recrues avec un processus d'intégration structuré et personnalisé.",
-    benefits: ["Checklist d'intégration", "Suivi de progression", "Évaluations périodiques"]
-  },
-  {
-    icon: "📊",
-    title: "Analytics & Reporting",
-    description: "Analysez vos performances de recrutement avec des tableaux de bord détaillés et des métriques clés.",
-    benefits: ["Métriques en temps réel", "Rapports personnalisés", "Insights prédictifs"]
-  },
-  {
-    icon: "🤖",
-    title: "Automatisation Intelligente",
-    description: "Automatisez les tâches répétitives et concentrez-vous sur ce qui compte vraiment : les candidats.",
-    benefits: ["Tri automatique", "Réponses prédéfinies", "Workflows intelligents"]
-  },
-  {
-    icon: "🔒",
-    title: "Sécurité & Conformité",
-    description: "Protégez les données sensibles avec notre infrastructure sécurisée et conforme aux réglementations.",
-    benefits: ["Chiffrement bout en bout", "RGPD compliant", "Audit trail complet"]
-  }
+const featureKeys = [
+  { key: "applications", icon: "👥" },
+  { key: "interviews", icon: "📅" },
+  { key: "onboarding", icon: "🔗" },
+  { key: "analytics", icon: "📊" },
+  { key: "automation", icon: "🤖" },
+  { key: "security", icon: "🔒" },
 ];
 
 export default function Features() {
+  const t = useTranslations('landing.features');
+  const features = featureKeys.map(({ key, icon }) => ({
+    icon,
+    title: t(`items.${key}.title`),
+    description: t(`items.${key}.description`),
+    benefits: t.raw(`items.${key}.benefits`) as string[],
+  }));
   return (
     <section id="features" className="py-20 bg-white">
       <div className="landing-container">
@@ -53,11 +31,10 @@ export default function Features() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Tout ce dont vous avez besoin pour recruter
+            {t('heading')}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Une suite complète d'outils conçus pour moderniser et optimiser
-            chaque étape de votre processus de recrutement.
+            {t('subtitle')}
           </p>
         </motion.div>
 
@@ -91,7 +68,7 @@ export default function Features() {
               <ul className="space-y-2">
                 {feature.benefits.map((benefit, idx) => (
                   <li key={idx} className="flex items-center text-sm text-gray-500">
-                    <svg className="w-4 h-4 text-[var(--color-brand-500)] mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4 text-[var(--color-brand-500)] me-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                     {benefit}
@@ -111,8 +88,8 @@ export default function Features() {
           className="text-center mt-16"
         >
           <div className="inline-flex items-center px-6 py-3 rounded-full bg-[var(--color-brand-50)] text-[var(--color-brand-900)] text-sm font-medium">
-            <span className="w-2 h-2 bg-[var(--color-brand-500)] rounded-full mr-2 animate-pulse"></span>
-            Et bien plus encore à découvrir...
+            <span className="w-2 h-2 bg-[var(--color-brand-500)] rounded-full me-2 animate-pulse"></span>
+            {t('bottomCta')}
           </div>
         </motion.div>
       </div>

@@ -1,0 +1,55 @@
+{
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "search": "بحث",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "add": "إضافة",
+    "view": "عرض",
+    "close": "إغلاق",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "download": "تنزيل",
+    "export": "تصدير",
+    "filter": "تصفية",
+    "reset": "إعادة تعيين",
+    "create": "إنشاء",
+    "update": "تحديث",
+    "submit": "إرسال",
+    "loadMore": "تحميل المزيد"
+  },
+  "status": {
+    "loading": "جارٍ التحميل...",
+    "noData": "لا توجد بيانات",
+    "noResults": "لا توجد نتائج",
+    "success": "تم بنجاح",
+    "error": "خطأ",
+    "warning": "تنبيه",
+    "info": "معلومة"
+  },
+  "labels": {
+    "actions": "إجراءات",
+    "status": "الحالة",
+    "date": "التاريخ",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "description": "الوصف",
+    "type": "النوع",
+    "yes": "نعم",
+    "no": "لا"
+  },
+  "pagination": {
+    "page": "صفحة",
+    "of": "من",
+    "showing": "عرض {from} إلى {to} من {total}",
+    "rowsPerPage": "عدد الصفوف في الصفحة"
+  },
+  "confirmDialog": {
+    "deleteTitle": "تأكيد الحذف",
+    "deleteMessage": "هذا الإجراء لا يمكن التراجع عنه. هل تريد المتابعة؟"
+  }
+}

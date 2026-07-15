@@ -1,0 +1,25 @@
+{
+  "page": {
+    "title": "الإشعارات",
+    "description": "جميع إشعاراتك وتنبيهاتك"
+  },
+  "actions": {
+    "markAllRead": "تعليم الكل كمقروء"
+  },
+  "emptyState": {
+    "title": "لا توجد إشعارات",
+    "message": "سيتم إعلامك هنا بالترشيحات والأحداث الجديدة."
+  },
+  "time": {
+    "now": "الآن",
+    "minutesAgo": "منذ {minutes} دقيقة",
+    "hoursAgo": "منذ {hours} ساعة",
+    "daysAgo": "منذ {days} يوم"
+  },
+  "types": {
+    "application": "ترشيح",
+    "recruitment": "توظيف",
+    "integration": "إدماج",
+    "system": "النظام"
+  }
+}

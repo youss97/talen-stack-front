@@ -1,0 +1,97 @@
+{
+  "list": {
+    "title": "Manager Management",
+    "subtitle": "Manage the managers assigned to clients",
+    "addButton": "Add a Manager",
+    "clientSelect": {
+      "label": "Select a client",
+      "placeholder": "Choose a client...",
+      "emptyMessage": "No client found"
+    },
+    "columns": {
+      "collaborator": "Manager",
+      "email": "Email",
+      "phone": "Phone",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "blocked": "Blocked"
+    },
+    "emptyState": {
+      "noClientTitle": "Select a client",
+      "noClientSubtitle": "Choose a client to view and manage its managers",
+      "noManagers": "No manager found for this client"
+    },
+    "clientInactiveWarning": "This client is deactivated. You must first activate the client to be able to manage its managers."
+  },
+  "toasts": {
+    "selectClientFirstTitle": "Error",
+    "selectClientFirstMessage": "Please select a client",
+    "updateSuccess": "Manager updated successfully",
+    "createSuccess": "Manager created successfully",
+    "errorTitle": "Error",
+    "updateError": "Error updating the manager",
+    "createError": "Error creating the manager",
+    "statusToggleError": "Error updating the status",
+    "managerActivatedSuccess": "Manager activated successfully",
+    "managerDeactivatedSuccess": "Manager deactivated successfully"
+  },
+  "confirm": {
+    "deactivateTitle": "Deactivate the manager",
+    "activateTitle": "Activate the manager",
+    "deactivateMessage": "Are you sure you want to deactivate {name}? They will no longer be able to log in.",
+    "activateMessage": "Are you sure you want to activate {name}? They will be able to log in.",
+    "deactivateConfirm": "Deactivate",
+    "activateConfirm": "Activate"
+  },
+  "form": {
+    "editTitle": "Edit manager",
+    "addTitle": "Add a manager",
+    "editSubtitle": "Edit the manager's information",
+    "addSubtitle": "Create a new manager for this client",
+    "photoLabel": "Profile photo (optional)",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "password": "Password",
+    "passwordEditHint": "(leave blank to keep unchanged)",
+    "phone": "Phone",
+    "position": "Position",
+    "positionPlaceholder": "Human Resources Director",
+    "cancel": "Cancel",
+    "submitting": "Creating...",
+    "updating": "Updating...",
+    "submitCreate": "Create manager",
+    "submitUpdate": "Update"
+  },
+  "detail": {
+    "defaultName": "Manager",
+    "email": "Email",
+    "phone": "Phone",
+    "position": "Position",
+    "status": "Status",
+    "close": "Close"
+  },
+  "formModal": {
+    "editTitle": "Edit manager",
+    "addTitle": "Add a manager",
+    "editSubtitle": "Edit the manager's information",
+    "addSubtitle": "Create a new manager for this client",
+    "photoLabel": "Profile photo (optional)",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "password": "Password",
+    "passwordEditHint": "(leave blank to keep unchanged)",
+    "phone": "Phone",
+    "position": "Position",
+    "positionPlaceholder": "Human Resources Director",
+    "cancel": "Cancel",
+    "submitting": "Creating...",
+    "updating": "Updating...",
+    "submitCreate": "Create manager",
+    "submitUpdate": "Update"
+  }
+}

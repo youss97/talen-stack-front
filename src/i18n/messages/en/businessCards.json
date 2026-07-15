@@ -1,0 +1,65 @@
+{
+  "title": "Business cards",
+  "subtitle": "Shareable QR business cards (HR, Client, Employee)",
+  "backToSettings": "Back to settings",
+  "createMyCard": "Create my card",
+  "noCards": "No cards.",
+  "ownerTypes": {
+    "rh": "HR",
+    "client": "Client",
+    "employee": "Employee"
+  },
+  "templates": {
+    "snow": "Light (Snow)",
+    "dark": "Dark",
+    "brand": "Brand color",
+    "gradient": "Gradient",
+    "mint": "Pastel"
+  },
+  "card": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "qrAndCard": "QR & Card",
+    "preview": "Preview",
+    "link": "Link",
+    "deactivate": "Deactivate",
+    "activate": "Activate"
+  },
+  "form": {
+    "editTitle": "Edit my card",
+    "createTitle": "My business card",
+    "photoFromProfile": "Photo taken from your profile",
+    "fullNamePlaceholder": "Full name *",
+    "positionPlaceholder": "Job title / Position",
+    "companyPlaceholder": "Company",
+    "phonePlaceholder": "Phone",
+    "linkedinPlaceholder": "LinkedIn (URL)",
+    "websitePlaceholder": "Website (URL)",
+    "customFieldsLabel": "Custom fields (links / text)",
+    "addField": "+ Add",
+    "typeLink": "Link",
+    "typeText": "Text",
+    "labelPlaceholder": "Label",
+    "urlPlaceholder": "URL",
+    "valuePlaceholder": "Value",
+    "saving": "..."
+  },
+  "qrModal": {
+    "title": "Business card to share",
+    "altText": "Business card",
+    "scanHint": "Scanning the QR code opens the interactive card.",
+    "print": "Print",
+    "download": "Download (PNG)",
+    "fileNamePrefix": "card",
+    "printTitle": "Card {name}"
+  },
+  "confirmDelete": "Delete {name}'s card?",
+  "toasts": {
+    "cardUpdated": "Card updated",
+    "cardCreated": "Card created",
+    "saveError": "Error while saving",
+    "cardDeleted": "Card deleted",
+    "linkCopied": "Link copied",
+    "linkCopiedMessage": "Card link copied"
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import InfiniteSelect from "@/components/form/InfiniteSelect";
@@ -25,9 +26,12 @@ export default function AssignModal({
   onAssign,
   currentResponsibles,
   currentResponsible,
-  entityLabel = "cet élément",
+  entityLabel,
   isLoading = false,
 }: AssignModalProps) {
+  const t = useTranslations("assignModal");
+  const tc = useTranslations("common");
+  const resolvedEntityLabel = entityLabel ?? t("defaultEntityLabel");
   // Support both the new array prop and the legacy single prop
   const initial = currentResponsibles
     ? currentResponsibles
@@ -69,21 +73,21 @@ export default function AssignModal({
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-md">
       <div className="p-6">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-1">
-          Affecter des responsables
+          {t("title")}
         </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
-          Sélectionnez un ou plusieurs utilisateurs pour prendre en charge {entityLabel}.
+          {t("subtitle", { entityLabel: resolvedEntityLabel })}
         </p>
 
         <InfiniteSelect<UserRecord>
-          label="Ajouter un responsable"
+          label={t("addResponsible")}
           value=""
           onChange={handleAdd}
           useInfiniteQuery={useGetUsersForSelectInfiniteQuery as any}
           itemLabelKey="email"
           itemValueKey="id"
-          placeholder="Rechercher un utilisateur..."
-          emptyMessage="Aucun utilisateur trouvé"
+          placeholder={t("searchPlaceholder")}
+          emptyMessage={t("emptyResults")}
         />
 
         {selected.length > 0 && (
@@ -101,7 +105,7 @@ export default function AssignModal({
                   <button
                     type="button"
                     onClick={() => handleRemoveChip(u.id as string)}
-                    className="ml-0.5 text-brand-500 hover:text-brand-900 text-lg leading-none"
+                    className="ms-0.5 text-brand-500 hover:text-brand-900 text-lg leading-none"
                   >
                     ×
                   </button>
@@ -114,15 +118,15 @@ export default function AssignModal({
         <div className="flex justify-between gap-3 mt-6">
           {initial.length > 0 && (
             <Button variant="outline" onClick={handleClear} disabled={isLoading} className="text-error-500 border-error-300">
-              Retirer toutes les affectations
+              {t("clearAll")}
             </Button>
           )}
-          <div className="flex gap-3 ml-auto">
+          <div className="flex gap-3 ms-auto">
             <Button variant="outline" onClick={onClose} disabled={isLoading}>
-              Annuler
+              {tc("actions.cancel")}
             </Button>
             <Button onClick={handleSubmit} disabled={isLoading}>
-              {isLoading ? "Affectation..." : "Affecter"}
+              {isLoading ? t("assigning") : t("assign")}
             </Button>
           </div>
         </div>

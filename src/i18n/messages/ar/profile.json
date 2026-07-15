@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "editButton": "تعديل الملف الشخصي",
+    "photoAlt": "صورة الملف الشخصي"
+  },
+  "sections": {
+    "personalInfo": "المعلومات الشخصية",
+    "address": "العنوان والموقع",
+    "social": "الشبكات الاجتماعية",
+    "company": "الشركة"
+  },
+  "fields": {
+    "firstName": "الاسم الشخصي",
+    "lastName": "الاسم العائلي",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "position": "المنصب",
+    "role": "الدور",
+    "bio": "نبذة",
+    "country": "البلد",
+    "city": "المدينة",
+    "postalCode": "الرمز البريدي",
+    "taxId": "الرقم الضريبي",
+    "companyName": "الاسم"
+  },
+  "modal": {
+    "title": "تعديل ملفي الشخصي",
+    "subtitle": "قم بتحديث معلوماتك الشخصية",
+    "tabs": {
+      "info": "المعلومات",
+      "social": "الشبكات الاجتماعية",
+      "address": "العنوان",
+      "security": "الأمان"
+    },
+    "photoLabel": "صورة الملف الشخصي",
+    "choosePhoto": "اختر صورة",
+    "photoHint": "JPEG، PNG، WebP · بحد أقصى 5 ميغابايت",
+    "photoPreviewAlt": "معاينة",
+    "firstNameRequired": "الاسم الشخصي *",
+    "lastNameRequired": "الاسم العائلي *",
+    "firstNamePlaceholder": "الاسم الشخصي",
+    "lastNamePlaceholder": "الاسم العائلي",
+    "phone": "الهاتف",
+    "phonePlaceholder": "+212 6 12 34 56 78",
+    "position": "الوظيفة / المنصب",
+    "positionPlaceholder": "مثال: مطور Full Stack",
+    "bio": "نبذة",
+    "bioPlaceholder": "بضع كلمات عنك...",
+    "country": "البلد",
+    "countryPlaceholder": "مثال: المغرب",
+    "city": "المدينة",
+    "cityPlaceholder": "مثال: الدار البيضاء",
+    "postalCode": "الرمز البريدي",
+    "postalCodePlaceholder": "مثال: 20000",
+    "taxId": "الرقم الضريبي",
+    "taxIdPlaceholder": "مثال: TAX-123456",
+    "securityHint": "اترك هذه الحقول فارغة إذا كنت لا ترغب في تغيير كلمة المرور الخاصة بك.",
+    "currentPassword": "كلمة المرور الحالية",
+    "newPassword": "كلمة المرور الجديدة",
+    "passwordHint": "8 أحرف على الأقل، حرف كبير، رقم ورمز خاص",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ..."
+  },
+  "validation": {
+    "required": "مطلوب"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "groups": {
+      "Pilotage": "Pilotage",
+      "Recrutement": "Recrutement",
+      "Talents": "Talents",
+      "Suivi": "Suivi",
+      "Communication": "Communication",
+      "Administration": "Administration"
+    },
+    "items": {
+      "/statistics": "Statistiques",
+      "/settings/landing": "Site vitrine",
+      "/companies": "Entreprises",
+      "/clients": "Clients",
+      "/managers": "Collaborateurs",
+      "/users": "Utilisateurs",
+      "/recruitment-requests": "Recrutement",
+      "/applications": "Candidatures",
+      "/agenda": "Agenda",
+      "/interviews": "Entretiens",
+      "/integrations": "Intégrations",
+      "/cvs": "Vivier de talents",
+      "/my-requests": "Mes Offres",
+      "/public-offers": "Offres Publiques",
+      "/emails": "Emails",
+      "/logs": "Logs",
+      "/roles": "Rôles",
+      "/subscriptions": "Abonnements",
+      "/assignments": "Affectations",
+      "/business-cards": "Cartes de visite"
+    }
+  },
+  "sidebar": {
+    "mySpace": "Mon espace",
+    "clientSpace": "Espace client",
+    "recruiterSpace": "Espace recruteur",
+    "user": "Utilisateur",
+    "online": "En ligne"
+  },
+  "header": {
+    "searchPlaceholder": "Rechercher...",
+    "noResultsFor": "Aucun résultat pour “{query}”",
+    "notifications": "Notifications",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "language": "Langue"
+  }
+}

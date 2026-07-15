@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
@@ -18,24 +19,19 @@ export default function CVDetailModal({
   cv,
   isLoading = false,
 }: CVDetailModalProps) {
+  const t = useTranslations("cvs");
   if (!cv && !isLoading) return null;
 
   const getStatusLabel = (status?: string) => {
     switch (status) {
       case "new":
-        return "Nouveau";
       case "reviewed":
-        return "Examiné";
       case "shortlisted":
-        return "Présélectionné";
       case "interviewed":
-        return "Interviewé";
       case "hired":
-        return "Embauché";
       case "rejected":
-        return "Rejeté";
       case "archived":
-        return "Archivé";
+        return t(`status.${status}`);
       default:
         return status || "-";
     }
@@ -64,7 +60,7 @@ export default function CVDetailModal({
 
   const fullName = cv ? [cv.candidate_first_name, cv.candidate_last_name]
     .filter(Boolean)
-    .join(" ") || "Candidat" : "Détails du CV";
+    .join(" ") || t("detailModal.defaultCandidateName") : t("detailModal.defaultTitle");
 
   // Fallbacks: findOne returns raw entity without cv.details, findAll builds it.
   // Use cv.experiences / cv.formations / cv.skills / cv.full_information as fallback.
@@ -91,7 +87,7 @@ export default function CVDetailModal({
       : (cv?.languages as string[] || []).map((lang: string) => {
           const match = lang.match(/^(.+?)\s*\((.+?)\)$/);
           if (match) return { language: match[1].trim(), level: match[2].trim() };
-          return { language: lang, level: 'Non spécifié' };
+          return { language: lang, level: t("detailModal.fallbacks.levelNotSpecified") };
         });
 
   return (
@@ -127,9 +123,9 @@ export default function CVDetailModal({
               <div className="mt-3.5 flex flex-wrap gap-2">
                 {cv.candidate_email && <InfoChip icon="✉" text={cv.candidate_email} />}
                 {cv.candidate_phone && <InfoChip icon="☎" text={cv.candidate_phone} />}
-                {cv.total_experience ? <InfoChip icon="🎯" text={`${cv.total_experience} ans d'expérience`} /> : null}
+                {cv.total_experience ? <InfoChip icon="🎯" text={t("detailModal.yearsExperience", { years: cv.total_experience })} /> : null}
                 {cv.last_education && <InfoChip icon="🎓" text={cv.last_education} />}
-                {cv.remote_preferred && <InfoChip icon="🏠" text="Télétravail" />}
+                {cv.remote_preferred && <InfoChip icon="🏠" text={t("detailModal.remoteWork")} />}
               </div>
             )}
           </div>
@@ -146,19 +142,19 @@ export default function CVDetailModal({
           <div className="space-y-4">
             {/* Infos complémentaires */}
             {(cv.specialty || cv.industry_experience || cv.remote_preferred != null || cv.source) && (
-              <Section title="Informations" icon="ℹ️" accent="var(--brand)">
+              <Section title={t("detailModal.sections.information")} icon="ℹ️" accent="var(--brand)">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4">
-                  {cv.specialty && <DetailItem label="Spécialité" value={cv.specialty} />}
-                  <DetailItem label="Secteur" value={cv.industry_experience || "-"} />
-                  <DetailItem label="Télétravail" value={cv.remote_preferred ? "Oui" : "Non"} />
-                  <DetailItem label="Source" value={cv.source || "-"} />
+                  {cv.specialty && <DetailItem label={t("detailModal.fields.specialty")} value={cv.specialty} />}
+                  <DetailItem label={t("detailModal.fields.sector")} value={cv.industry_experience || "-"} />
+                  <DetailItem label={t("detailModal.fields.remote")} value={cv.remote_preferred ? t("detailModal.fields.yes") : t("detailModal.fields.no")} />
+                  <DetailItem label={t("detailModal.fields.source")} value={cv.source || "-"} />
                 </div>
               </Section>
             )}
 
             {/* Score de complétude */}
             {cv.details?.stats?.completeness_score && (
-              <Section title="Complétude du profil" icon="📊" accent="var(--brand)">
+              <Section title={t("detailModal.sections.completeness")} icon="📊" accent="var(--brand)">
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6 overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-brand-500 to-green-500 flex items-center justify-center text-xs font-semibold text-white transition-all duration-300"
@@ -172,7 +168,7 @@ export default function CVDetailModal({
 
             {/* Résumé professionnel */}
             {effectiveSummary && (
-              <Section title="Résumé professionnel" icon="📝" accent="var(--brand)">
+              <Section title={t("detailModal.sections.summary")} icon="📝" accent="var(--brand)">
                 <p className="text-sm leading-relaxed" style={{ color: "var(--text)" }}>
                   {effectiveSummary}
                 </p>
@@ -182,7 +178,7 @@ export default function CVDetailModal({
             {/* Expériences professionnelles */}
             {effectiveExperiences.length > 0 && (
               <Section
-                title={`Expériences professionnelles (${cv.details?.stats?.total_experiences || effectiveExperiences.length})`}
+                title={t("detailModal.sections.experiences", { count: cv.details?.stats?.total_experiences || effectiveExperiences.length })}
                 icon="💼"
                 accent="var(--brand)"
               >
@@ -190,12 +186,12 @@ export default function CVDetailModal({
                   {effectiveExperiences.map((exp: any, index: number) => (
                     <div
                       key={index}
-                      className="rounded-xl p-4 border-l-4"
-                      style={{ background: "var(--surface)", borderLeftColor: "var(--brand)", boxShadow: "var(--ds-shadow-card)" }}
+                      className="rounded-xl p-4 border-s-4"
+                      style={{ background: "var(--surface)", borderInlineStartColor: "var(--brand)", boxShadow: "var(--ds-shadow-card)" }}
                     >
                       <div className="flex justify-between items-start gap-3 mb-1.5">
                         <h4 className="font-semibold" style={{ color: "var(--text)" }}>
-                          {exp.title || "Poste non spécifié"}
+                          {exp.title || t("detailModal.fallbacks.positionNotSpecified")}
                         </h4>
                         {exp.duration && (
                           <span className="shrink-0 text-xs px-2.5 py-1 rounded-full" style={{ background: "var(--brand-soft)", color: "var(--brand-deep)" }}>
@@ -204,7 +200,7 @@ export default function CVDetailModal({
                         )}
                       </div>
                       <p className="text-sm" style={{ color: "var(--text-2)" }}>
-                        <strong style={{ color: "var(--text)" }}>{exp.company || "Entreprise non spécifiée"}</strong>
+                        <strong style={{ color: "var(--text)" }}>{exp.company || t("detailModal.fallbacks.companyNotSpecified")}</strong>
                         {exp.location && ` · ${exp.location}`}
                       </p>
                       {exp.description && (
@@ -221,7 +217,7 @@ export default function CVDetailModal({
             {/* Formations */}
             {effectiveFormations.length > 0 && (
               <Section
-                title={`Formations (${cv.details?.stats?.total_formations || effectiveFormations.length})`}
+                title={t("detailModal.sections.formations", { count: cv.details?.stats?.total_formations || effectiveFormations.length })}
                 icon="🎓"
                 accent="var(--brand-strong)"
               >
@@ -229,17 +225,17 @@ export default function CVDetailModal({
                   {effectiveFormations.map((form: any, index: number) => (
                     <div
                       key={index}
-                      className="rounded-xl p-4 border-l-4"
-                      style={{ background: "var(--surface)", borderLeftColor: "var(--brand-strong)", boxShadow: "var(--ds-shadow-card)" }}
+                      className="rounded-xl p-4 border-s-4"
+                      style={{ background: "var(--surface)", borderInlineStartColor: "var(--brand-strong)", boxShadow: "var(--ds-shadow-card)" }}
                     >
                       <h4 className="font-semibold mb-0.5" style={{ color: "var(--text)" }}>
-                        {form.degree || "Diplôme non spécifié"}
+                        {form.degree || t("detailModal.fallbacks.degreeNotSpecified")}
                       </h4>
                       {form.field && (
                         <p className="text-sm" style={{ color: "var(--text-2)" }}>{form.field}</p>
                       )}
                       <p className="text-sm" style={{ color: "var(--text-2)" }}>
-                        {form.institution || "Institution non spécifiée"}
+                        {form.institution || t("detailModal.fallbacks.institutionNotSpecified")}
                       </p>
                       {(form.start_date || form.end_date) && (
                         <p className="text-xs mt-1" style={{ color: "var(--text-3)" }}>
@@ -254,7 +250,7 @@ export default function CVDetailModal({
 
             {/* Compétences techniques */}
             {effectiveTechnicalSkills.length > 0 && (
-              <Section title={`Compétences techniques (${effectiveTechnicalSkills.length})`} icon="🛠️" accent="var(--blue)">
+              <Section title={t("detailModal.sections.technicalSkills", { count: effectiveTechnicalSkills.length })} icon="🛠️" accent="var(--blue)">
                 <div className="flex flex-wrap gap-2">
                   {effectiveTechnicalSkills.map((skill: string, index: number) => (
                     <Badge key={index} color="info" variant="light" size="sm">{skill}</Badge>
@@ -265,7 +261,7 @@ export default function CVDetailModal({
 
             {/* Compétences transversales */}
             {effectiveSoftSkills.length > 0 && (
-              <Section title={`Compétences transversales (${effectiveSoftSkills.length})`} icon="💡" accent="var(--brand-strong)">
+              <Section title={t("detailModal.sections.softSkills", { count: effectiveSoftSkills.length })} icon="💡" accent="var(--brand-strong)">
                 <div className="flex flex-wrap gap-2">
                   {effectiveSoftSkills.map((skill: string, index: number) => (
                     <Badge key={index} color="success" variant="light" size="sm">{skill}</Badge>
@@ -276,7 +272,7 @@ export default function CVDetailModal({
 
             {/* Toutes les compétences (fallback si pas de détails) */}
             {effectiveTechnicalSkills.length === 0 && effectiveSoftSkills.length === 0 && cv.additional_skills && cv.additional_skills.length > 0 && (
-              <Section title={`Compétences (${cv.additional_skills.length})`} icon="🛠️" accent="var(--blue)">
+              <Section title={t("detailModal.sections.skills", { count: cv.additional_skills.length })} icon="🛠️" accent="var(--blue)">
                 <div className="flex flex-wrap gap-2">
                   {cv.additional_skills.map((skill, index) => (
                     <Badge key={index} color="light" variant="solid" size="sm">{skill}</Badge>
@@ -287,7 +283,7 @@ export default function CVDetailModal({
 
             {/* Langues */}
             {effectiveLanguages.length > 0 && (
-              <Section title={`Langues (${cv.details?.stats?.total_languages || effectiveLanguages.length})`} icon="🌍" accent="var(--brand-strong)">
+              <Section title={t("detailModal.sections.languages", { count: cv.details?.stats?.total_languages || effectiveLanguages.length })} icon="🌍" accent="var(--brand-strong)">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {effectiveLanguages.map((lang: any, index: number) => (
                     <div
@@ -307,7 +303,7 @@ export default function CVDetailModal({
 
             {/* Certifications */}
             {effectiveCertifications.length > 0 && (
-              <Section title={`Certifications (${cv.details?.stats?.total_certifications || effectiveCertifications.length})`} icon="🏆" accent="var(--amber)">
+              <Section title={t("detailModal.sections.certifications", { count: cv.details?.stats?.total_certifications || effectiveCertifications.length })} icon="🏆" accent="var(--amber)">
                 <ul className="space-y-2.5">
                   {effectiveCertifications.map((cert: string, index: number) => (
                     <li key={index} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--text)" }}>
@@ -321,7 +317,7 @@ export default function CVDetailModal({
 
             {/* Mobilité géographique */}
             {cv.geographic_mobility && cv.geographic_mobility.length > 0 && (
-              <Section title="Mobilité géographique" icon="📍" accent="var(--brand)">
+              <Section title={t("detailModal.sections.geographicMobility")} icon="📍" accent="var(--brand)">
                 <div className="flex flex-wrap gap-2">
                   {cv.geographic_mobility.map((loc, i) => (
                     <span key={i} className="text-sm px-3 py-1 rounded-full" style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text)" }}>
@@ -334,7 +330,7 @@ export default function CVDetailModal({
 
             {/* Types de contrat */}
             {cv.contract_type_preferences && cv.contract_type_preferences.length > 0 && (
-              <Section title="Types de contrat préférés" icon="📄" accent="var(--brand)">
+              <Section title={t("detailModal.sections.contractTypes")} icon="📄" accent="var(--brand)">
                 <div className="flex flex-wrap gap-2">
                   {cv.contract_type_preferences.map((ct, i) => (
                     <span key={i} className="text-sm px-3 py-1 rounded-full" style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text)" }}>
@@ -347,10 +343,10 @@ export default function CVDetailModal({
 
             {/* Notes */}
             {effectiveNotes && (
-              <Section title="Notes" icon="📌" accent="var(--amber)">
+              <Section title={t("detailModal.sections.notes")} icon="📌" accent="var(--amber)">
                 <p
                   className="text-sm leading-relaxed rounded-lg p-3.5"
-                  style={{ background: "var(--amber-soft, #FDF6EC)", borderLeft: "4px solid var(--amber)", color: "var(--text)" }}
+                  style={{ background: "var(--amber-soft, #FDF6EC)", borderInlineStart: "4px solid var(--amber)", color: "var(--text)" }}
                 >
                   {effectiveNotes}
                 </p>
@@ -359,20 +355,20 @@ export default function CVDetailModal({
 
             {/* Document CV */}
             {cv.file_path && (
-              <Section title="Document CV" icon="📄" accent="var(--brand-deep)">
+              <Section title={t("detailModal.sections.document")} icon="📄" accent="var(--brand-deep)">
                 <div className="flex items-center gap-3 flex-wrap">
                   <div className="flex-1 min-w-[120px] text-sm truncate" style={{ color: "var(--text)" }}>
-                    {cv.file_name || "CV.pdf"}
+                    {cv.file_name || t("detailModal.fallbacks.fileName")}
                   </div>
                   <Button variant="outline" size="sm" onClick={() => cv.id && openCvInNewTab(cv.id).then((ok) => {
-                    if (!ok) alert("Impossible d'ouvrir le CV");
+                    if (!ok) alert(t("detailModal.errors.openFailed"));
                   })}>
-                    👁️ Visualiser
+                    {t("detailModal.actions.view")}
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => cv.id && downloadCvFile(cv.id, cv.file_name || "CV.pdf").then((ok) => {
-                    if (!ok) alert("Impossible de télécharger le CV");
+                  <Button variant="outline" size="sm" onClick={() => cv.id && downloadCvFile(cv.id, cv.file_name || t("detailModal.fallbacks.fileName")).then((ok) => {
+                    if (!ok) alert(t("detailModal.errors.downloadFailed"));
                   })}>
-                    Télécharger le CV
+                    {t("detailModal.actions.download")}
                   </Button>
                 </div>
               </Section>
@@ -383,7 +379,7 @@ export default function CVDetailModal({
 
       <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-5 border-t" style={{ borderColor: "var(--border)" }}>
         <Button variant="outline" onClick={onClose}>
-          Fermer
+          {t("detailModal.actions.close")}
         </Button>
       </div>
     </Modal>

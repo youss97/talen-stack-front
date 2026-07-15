@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
@@ -24,6 +25,9 @@ export default function InterviewDetailModal({
   onReschedule,
   onDelete,
 }: InterviewDetailModalProps) {
+  const t = useTranslations("interviewModals.detail");
+  const tc = useTranslations("common");
+  const locale = useLocale();
   const router = useRouter();
   const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
   const [isRescheduling, setIsRescheduling] = useState(false);
@@ -46,7 +50,7 @@ export default function InterviewDetailModal({
       setIsRescheduleModalOpen(false);
       onClose();
     } catch (error) {
-      console.error("Erreur lors du report:", error);
+      console.error("Error while rescheduling:", error);
     } finally {
       setIsRescheduling(false);
     }
@@ -70,13 +74,13 @@ export default function InterviewDetailModal({
   const getStatusLabel = (status: string) => {
     switch (status) {
       case "scheduled":
-        return "Planifié";
+        return t("statusLabels.scheduled");
       case "completed":
-        return "Terminé";
+        return t("statusLabels.completed");
       case "cancelled":
-        return "Annulé";
+        return t("statusLabels.cancelled");
       case "rescheduled":
-        return "Reporté";
+        return t("statusLabels.rescheduled");
       default:
         return status;
     }
@@ -86,7 +90,7 @@ export default function InterviewDetailModal({
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">
-          📅 Détails de l'entretien
+          📅 {t("title")}
         </h2>
       </div>
 
@@ -95,7 +99,7 @@ export default function InterviewDetailModal({
         {/* Statut */}
         <div>
           <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Statut
+            {tc("labels.status")}
           </h3>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
             <Badge
@@ -110,19 +114,19 @@ export default function InterviewDetailModal({
         {/* Informations sur les emails */}
         <div>
           <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Notifications email
+            {t("emailNotifications")}
           </h3>
           <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4 space-y-2">
             <div className="flex items-center gap-2">
               {interview.email_sent_to_candidate ? (
                 <span className="text-xs sm:text-sm text-green-600 dark:text-green-400 flex items-center gap-1">
                   <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                  Email envoyé au candidat
+                  {t("emailSentToCandidate")}
                 </span>
               ) : (
                 <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
                   <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
-                  Email non envoyé au candidat
+                  {t("emailNotSentToCandidate")}
                 </span>
               )}
             </div>
@@ -131,12 +135,12 @@ export default function InterviewDetailModal({
                 {interview.email_sent_to_invitees ? (
                   <span className="text-xs sm:text-sm text-green-600 dark:text-green-400 flex items-center gap-1">
                     <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                    Emails envoyés aux invités ({interview.invitees_emails.length})
+                    {t("emailsSentToInvitees", { count: interview.invitees_emails.length })}
                   </span>
                 ) : (
                   <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
                     <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
-                    Emails non envoyés aux invités ({interview.invitees_emails.length})
+                    {t("emailsNotSentToInvitees", { count: interview.invitees_emails.length })}
                   </span>
                 )}
               </div>
@@ -144,20 +148,25 @@ export default function InterviewDetailModal({
             {interview.status === "rescheduled" && interview.original_scheduled_date && (
               <div className="mt-3 p-2 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded">
                 <div className="text-xs sm:text-sm text-orange-700 dark:text-orange-300">
-                  <span className="font-medium">📅 Entretien reporté</span>
+                  <span className="font-medium">📅 {t("rescheduledBanner")}</span>
                   <div className="mt-1">
-                    Date originale : {new Date(interview.original_scheduled_date).toLocaleDateString("fr-FR", {
-                      weekday: "long",
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })} à {new Date(interview.original_scheduled_date).toLocaleTimeString("fr-FR", {
-                      hour: "2-digit",
-                      minute: "2-digit",
+                    {t("originalDateLabel", {
+                      value: t("dateAtTime", {
+                        date: new Date(interview.original_scheduled_date).toLocaleDateString(locale, {
+                          weekday: "long",
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        }),
+                        time: new Date(interview.original_scheduled_date).toLocaleTimeString(locale, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }),
+                      }),
                     })}
                   </div>
                   <div className="text-xs text-orange-600 dark:text-orange-400 mt-1">
-                    ✉️ Emails de report automatiquement envoyés
+                    ✉️ {t("rescheduleEmailsSent")}
                   </div>
                 </div>
               </div>
@@ -168,11 +177,11 @@ export default function InterviewDetailModal({
         {/* Date et heure */}
         <div>
           <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Date et heure
+            {t("dateTime")}
           </h3>
           <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4">
             <div className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
-              {interviewDate ? interviewDate.toLocaleDateString("fr-FR", {
+              {interviewDate ? interviewDate.toLocaleDateString(locale, {
                 weekday: "long",
                 day: "numeric",
                 month: "long",
@@ -180,10 +189,10 @@ export default function InterviewDetailModal({
               }) : '-'}
             </div>
             <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
-              {interviewDate ? interviewDate.toLocaleTimeString("fr-FR", {
+              {interviewDate ? interviewDate.toLocaleTimeString(locale, {
                 hour: "2-digit",
                 minute: "2-digit",
-              }) : '-'} • Durée: {interview.duration_minutes} minutes
+              }) : '-'} • {t("durationMinutes", { minutes: interview.duration_minutes })}
             </div>
           </div>
         </div>
@@ -191,20 +200,20 @@ export default function InterviewDetailModal({
         {/* Type et lieu/lien */}
         <div>
           <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Type d'entretien
+            {t("interviewType")}
           </h3>
           <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4">
             <div className="font-medium text-gray-900 dark:text-white mb-2 text-sm sm:text-base">
-              {interview.type === "presential" ? "📍 Présentiel" : "🌐 En ligne"}
+              {interview.type === "presential" ? `📍 ${t("presential")}` : `🌐 ${t("online")}`}
             </div>
             {interview.type === "presential" && interview.location && (
               <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                <span className="font-medium">Lieu:</span> {interview.location}
+                <span className="font-medium">{t("location")}</span> {interview.location}
               </div>
             )}
             {interview.type === "online" && interview.meeting_link && (
               <div className="text-xs sm:text-sm break-all">
-                <span className="font-medium text-gray-600 dark:text-gray-400">Lien:</span>{" "}
+                <span className="font-medium text-gray-600 dark:text-gray-400">{t("link")}</span>{" "}
                 <a
                   href={interview.meeting_link}
                   target="_blank"
@@ -222,31 +231,31 @@ export default function InterviewDetailModal({
         {interview.application?.request && (
           <div>
             <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Offre concernée
+              {t("offerSection")}
             </h3>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4 space-y-2">
               {/* Client */}
               {interview.application.request.client?.name && (
                 <div className="text-xs sm:text-sm">
-                  <span className="font-medium text-gray-600 dark:text-gray-400">Client : </span>
+                  <span className="font-medium text-gray-600 dark:text-gray-400">{t("client")}</span>
                   <span className="text-gray-900 dark:text-white">{interview.application.request.client.name}</span>
                 </div>
               )}
               {/* Titre du poste — cliquable vers la candidature */}
               <div className="text-xs sm:text-sm">
-                <span className="font-medium text-gray-600 dark:text-gray-400">Poste : </span>
+                <span className="font-medium text-gray-600 dark:text-gray-400">{t("position")}</span>
                 <button
                   type="button"
                   onClick={goToApplication}
-                  className="text-brand-600 dark:text-brand-400 hover:underline font-medium text-left"
-                  title="Voir la candidature"
+                  className="text-brand-600 dark:text-brand-400 hover:underline font-medium text-start"
+                  title={t("viewApplicationTitle")}
                 >
                   {interview.application.request.title}
                 </button>
               </div>
               {interview.application.request.reference && (
                 <div className="text-xs text-gray-500 dark:text-gray-400">
-                  Réf. {interview.application.request.reference}
+                  {t("reference", { reference: interview.application.request.reference })}
                 </div>
               )}
               <div className="pt-1">
@@ -256,7 +265,7 @@ export default function InterviewDetailModal({
                   onClick={goToApplication}
                   className="text-xs"
                 >
-                  👁 Voir la candidature
+                  👁 {t("viewApplicationButton")}
                 </Button>
               </div>
             </div>
@@ -267,7 +276,7 @@ export default function InterviewDetailModal({
         {interview.application && (
           <div>
             <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Candidat
+              {t("candidateSection")}
             </h3>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4 space-y-2">
               <div className="text-xs sm:text-sm">
@@ -292,7 +301,7 @@ export default function InterviewDetailModal({
         {interview.organizer && (
           <div>
             <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Organisateur
+              {t("organizerSection")}
             </h3>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4">
               <div className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
@@ -309,7 +318,7 @@ export default function InterviewDetailModal({
         {interview.invitees_emails && interview.invitees_emails.length > 0 && (
           <div>
             <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Personnes invitées ({interview.invitees_emails.length})
+              {t("inviteesSection", { count: interview.invitees_emails.length })}
             </h3>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4">
               <div className="flex flex-wrap gap-2">
@@ -330,7 +339,7 @@ export default function InterviewDetailModal({
         {interview.notes && (
           <div>
             <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Notes
+              {t("notesSection")}
             </h3>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4">
               <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
@@ -344,12 +353,12 @@ export default function InterviewDetailModal({
         <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-xs text-gray-500 dark:text-gray-400">
             <div>
-              <span className="font-medium">Créé le:</span>{" "}
-              {interview.created_at ? (() => { const d = new Date(interview.created_at); return isNaN(d.getTime()) ? '-' : `${d.toLocaleDateString("fr-FR")} à ${d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`; })() : '-'}
+              <span className="font-medium">{t("createdAt")}</span>{" "}
+              {interview.created_at ? (() => { const d = new Date(interview.created_at); return isNaN(d.getTime()) ? '-' : t("dateAtTime", { date: d.toLocaleDateString(locale), time: d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }) }); })() : '-'}
             </div>
             <div>
-              <span className="font-medium">Modifié le:</span>{" "}
-              {interview.updated_at ? (() => { const d = new Date(interview.updated_at); return isNaN(d.getTime()) ? '-' : `${d.toLocaleDateString("fr-FR")} à ${d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`; })() : '-'}
+              <span className="font-medium">{t("updatedAt")}</span>{" "}
+              {interview.updated_at ? (() => { const d = new Date(interview.updated_at); return isNaN(d.getTime()) ? '-' : t("dateAtTime", { date: d.toLocaleDateString(locale), time: d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }) }); })() : '-'}
             </div>
           </div>
         </div>
@@ -367,7 +376,7 @@ export default function InterviewDetailModal({
               }}
               className="text-red-600 hover:text-red-700 hover:border-red-300 w-full sm:w-auto text-sm"
             >
-              🗑️ Supprimer
+              🗑️ {tc("actions.delete")}
             </Button>
           )}
         </div>
@@ -382,14 +391,14 @@ export default function InterviewDetailModal({
                 }}
                 className="text-green-600 hover:text-green-700 hover:border-green-300 text-sm"
               >
-                ✓ Terminé
+                ✓ {t("statusLabels.completed")}
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setIsRescheduleModalOpen(true)}
                 className="text-orange-600 hover:text-orange-700 hover:border-orange-300 text-sm"
               >
-                📅 Reporter
+                📅 {t("rescheduleButton")}
               </Button>
               <Button
                 variant="outline"
@@ -399,12 +408,12 @@ export default function InterviewDetailModal({
                 }}
                 className="text-red-600 hover:text-red-700 hover:border-red-300 text-sm"
               >
-                ✗ Annuler
+                ✗ {tc("actions.cancel")}
               </Button>
             </>
           )}
           <Button variant="outline" onClick={onClose} className="text-sm">
-            Fermer
+            {tc("actions.close")}
           </Button>
         </div>
       </div>

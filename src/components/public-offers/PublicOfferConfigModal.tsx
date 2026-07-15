@@ -1,25 +1,26 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import { useUpdateApplicationRequestMutation } from "@/lib/services/applicationRequestApi";
 import { getApiErrorMessage } from "@/utils/errorMessages";
 
 // Champs configurables de l'offre publique (clés ↔ page /apply/[slug])
-export const PUBLIC_OFFER_FIELDS: { key: string; label: string }[] = [
-  { key: "client", label: "Nom du client" },
-  { key: "description", label: "Description du poste" },
-  { key: "required_skills", label: "Compétences requises" },
-  { key: "location", label: "Lieu" },
-  { key: "contract_type", label: "Type de contrat" },
-  { key: "contract_duration", label: "Durée du contrat" },
-  { key: "min_experience", label: "Expérience requise" },
-  { key: "salary", label: "Salaire" },
-  { key: "remote_possible", label: "Télétravail" },
-  { key: "deadline", label: "Date limite" },
-  { key: "desired_start_date", label: "Début souhaité" },
-  { key: "reference", label: "Référence" },
-  { key: "industry", label: "Secteur d'activité" },
+export const PUBLIC_OFFER_FIELDS: { key: string }[] = [
+  { key: "client" },
+  { key: "description" },
+  { key: "required_skills" },
+  { key: "location" },
+  { key: "contract_type" },
+  { key: "contract_duration" },
+  { key: "min_experience" },
+  { key: "salary" },
+  { key: "remote_possible" },
+  { key: "deadline" },
+  { key: "desired_start_date" },
+  { key: "reference" },
+  { key: "industry" },
 ];
 
 interface Props {
@@ -31,6 +32,7 @@ interface Props {
 }
 
 export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initialVisibleFields, onSaved }: Props) {
+  const t = useTranslations("publicOffers.config");
   const [updateRequest, { isLoading }] = useUpdateApplicationRequestMutation();
   const [visible, setVisible] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
@@ -64,16 +66,16 @@ export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initi
       onSaved?.();
       onClose();
     } catch (err) {
-      setError(getApiErrorMessage(err, "Erreur lors de l'enregistrement de la configuration"));
+      setError(getApiErrorMessage(err, t("saveError")));
     }
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-lg max-h-[90vh] flex flex-col">
       <div className="flex-shrink-0 p-6 pb-0">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Configurer l&apos;offre publique</h2>
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{t("title")}</h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Sélectionnez les champs à afficher sur la page publique de l&apos;offre. Le titre et le formulaire de candidature sont toujours visibles.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -84,28 +86,28 @@ export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initi
           </div>
         )}
         <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
-          La couleur de vos offres publiques est définie une seule fois dans <span className="font-medium">Paramètres → Site public &amp; branding</span> et s&apos;applique à toutes vos offres.
+          {t("brandColorNote", { settingsPath: t("settingsPath") })}
         </p>
 
         <div className="mb-3 flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Champs affichés</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("fieldsShown")}</span>
           <button
             type="button"
             onClick={() => setAll(!allChecked)}
             className="text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400"
           >
-            {allChecked ? "Tout désélectionner" : "Sélectionner tout"}
+            {allChecked ? t("deselectAll") : t("selectAll")}
           </button>
         </div>
         <ul className="space-y-2">
           {PUBLIC_OFFER_FIELDS.map((f) => (
             <li key={f.key} className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 dark:border-gray-700 px-4 py-2.5">
-              <span className="text-sm text-gray-800 dark:text-gray-200">{f.label}</span>
+              <span className="text-sm text-gray-800 dark:text-gray-200">{t(`fields.${f.key}`)}</span>
               <button
                 type="button"
                 onClick={() => toggle(f.key)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${visible[f.key] ? "bg-brand-500" : "bg-gray-300 dark:bg-gray-600"}`}
-                aria-label={visible[f.key] ? "Visible" : "Masqué"}
+                aria-label={visible[f.key] ? t("visible") : t("hidden")}
               >
                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${visible[f.key] ? "translate-x-6" : "translate-x-1"}`} />
               </button>
@@ -115,9 +117,9 @@ export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initi
       </div>
 
       <div className="flex-shrink-0 flex justify-end gap-3 p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
-        <Button variant="outline" onClick={onClose} disabled={isLoading}>Annuler</Button>
+        <Button variant="outline" onClick={onClose} disabled={isLoading}>{t("cancel")}</Button>
         <Button onClick={handleSave} disabled={isLoading || !offerId}>
-          {isLoading ? "Enregistrement..." : "Enregistrer"}
+          {isLoading ? t("saving") : t("save")}
         </Button>
       </div>
     </Modal>

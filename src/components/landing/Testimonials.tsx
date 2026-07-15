@@ -1,5 +1,6 @@
 "use client";
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 interface TestimonialItem {
   name: string;
@@ -11,58 +12,9 @@ interface TestimonialItem {
   rating?: number;
 }
 
-const defaultTestimonials: TestimonialItem[] = [
-  {
-    name: "Marie Dubois",
-    role: "Directrice RH",
-    company: "TechCorp",
-    avatar: "MD",
-    content: "Talent Stack a révolutionné notre processus de recrutement. Nous avons réduit notre temps de recrutement de 60% et amélioré significativement l'expérience candidat.",
-    rating: 5
-  },
-  {
-    name: "Pierre Martin",
-    role: "Responsable Talent Acquisition",
-    company: "InnovateLab",
-    avatar: "PM",
-    content: "L'interface intuitive et les fonctionnalités d'automatisation nous font gagner un temps précieux. Notre équipe RH est maintenant plus efficace que jamais.",
-    rating: 5
-  },
-  {
-    name: "Sophie Laurent",
-    role: "CEO",
-    company: "StartupXYZ",
-    avatar: "SL",
-    content: "En tant que startup en croissance, nous avions besoin d'un outil scalable. Talent Stack s'adapte parfaitement à nos besoins et évolue avec nous.",
-    rating: 5
-  },
-  {
-    name: "Thomas Bernard",
-    role: "Manager RH",
-    company: "GlobalTech",
-    avatar: "TB",
-    content: "La fonctionnalité de suivi des intégrations est exceptionnelle. Nos nouveaux employés sont maintenant mieux accompagnés dès leur premier jour.",
-    rating: 5
-  },
-  {
-    name: "Amélie Rousseau",
-    role: "Consultante RH",
-    company: "HR Solutions",
-    avatar: "AR",
-    content: "Je recommande Talent Stack à tous mes clients. C'est l'outil le plus complet et le plus facile à utiliser que j'aie jamais vu dans le domaine RH.",
-    rating: 5
-  },
-  {
-    name: "Nicolas Petit",
-    role: "Directeur des Opérations",
-    company: "ScaleUp Inc",
-    avatar: "NP",
-    content: "L'analytics et le reporting nous donnent une visibilité complète sur nos performances de recrutement. Les insights sont précieux pour optimiser nos processus.",
-    rating: 5
-  }
-];
-
 export default function Testimonials({ items, brand = "var(--color-brand-500)" }: { items?: TestimonialItem[]; brand?: string }) {
+  const t = useTranslations('landing.testimonials');
+  const defaultTestimonials = t.raw('defaultItems') as TestimonialItem[];
   const testimonials = items && items.length > 0 ? items : defaultTestimonials;
   const isUrl = (s?: string) => !!s && s.startsWith("http");
   const initials = (name: string) => name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
@@ -78,11 +30,10 @@ export default function Testimonials({ items, brand = "var(--color-brand-500)" }
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Ce que disent nos clients
+            {t('heading')}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Découvrez comment Talent Stack transforme le quotidien des équipes RH
-            dans des entreprises de toutes tailles.
+            {t('subtitle')}
           </p>
         </motion.div>
 
@@ -113,9 +64,9 @@ export default function Testimonials({ items, brand = "var(--color-brand-500)" }
               <div className="flex items-center">
                 {isUrl(testimonial.avatar) ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={testimonial.avatar} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover mr-4" />
+                  <img src={testimonial.avatar} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover me-4" />
                 ) : (
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center mr-4" style={{ background: `${brand}22` }}>
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center me-4" style={{ background: `${brand}22` }}>
                     <span className="font-semibold text-sm" style={{ color: brand }}>
                       {testimonial.avatar && testimonial.avatar.length <= 3 ? testimonial.avatar : initials(testimonial.name)}
                     </span>
@@ -140,20 +91,20 @@ export default function Testimonials({ items, brand = "var(--color-brand-500)" }
         >
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row items-center justify-between">
-              <div className="text-left mb-6 md:mb-0">
+              <div className="text-start mb-6 md:mb-0">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Rejoignez plus de 500 entreprises satisfaites
+                  {t('bottomCta.title')}
                 </h3>
                 <p className="text-gray-600">
-                  Commencez votre essai gratuit dès aujourd'hui et découvrez la différence.
+                  {t('bottomCta.subtitle')}
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 <button className="px-6 py-3 bg-[var(--color-brand-500)] text-white rounded-lg font-medium hover:bg-[var(--color-brand-600)] transition-colors">
-                  Essai gratuit 14 jours
+                  {t('bottomCta.trial')}
                 </button>
                 <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
-                  Demander une démo
+                  {t('bottomCta.demo')}
                 </button>
               </div>
             </div>

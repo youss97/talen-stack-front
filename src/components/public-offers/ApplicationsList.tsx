@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import Badge from "@/components/ui/badge/Badge";
 import Button from "@/components/ui/button/Button";
 import Pagination from "@/components/tables/Pagination";
@@ -23,6 +24,7 @@ interface ApplicationsListProps {
 const deburr = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "");
 
 export default function ApplicationsList({ applications, offerTitle, onConvert, convertingId, onDelete, deletingId }: ApplicationsListProps) {
+  const t = useTranslations("publicOffers.applications");
   const filteredApplications = applications;
 
   // Pagination côté client
@@ -74,8 +76,8 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
     <div className="space-y-4">
       {/* Compteur */}
       <div className="flex items-center">
-        <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
-          {filteredApplications.length} candidature{filteredApplications.length > 1 ? "s" : ""}
+        <span className="text-sm text-gray-500 dark:text-gray-400 ms-auto">
+          {t("count", { count: filteredApplications.length })}
         </span>
       </div>
 
@@ -84,11 +86,11 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
         <div className="w-full overflow-x-auto gw-card">
           <table className="min-w-full text-sm">
             <thead>
-              <tr className="text-left" style={{ background: "var(--surface-2)", color: "var(--text-2)" }}>
-                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">Candidat</th>
-                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">Contact</th>
-                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">Reçue le</th>
-                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs text-right">Actions</th>
+              <tr className="text-start" style={{ background: "var(--surface-2)", color: "var(--text-2)" }}>
+                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{t("table.candidate")}</th>
+                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{t("table.contact")}</th>
+                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{t("table.receivedOn")}</th>
+                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs text-end">{t("table.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -127,15 +129,15 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
                           <Button variant="outline" size="sm"
                             onClick={() => downloadCV(application.cv_path!, application.first_name, application.last_name)}
                             startIcon={<DownloadIcon />}>
-                            CV
+                            {t("cv")}
                           </Button>
                         )}
                         {onConvert && (
                           synced ? (
-                            <Badge color="success" variant="light" size="sm">✓ Transformée</Badge>
+                            <Badge color="success" variant="light" size="sm">✓ {t("converted")}</Badge>
                           ) : (
                             <Button size="sm" onClick={() => onConvert(application.id)} disabled={convertingId === application.id}>
-                              {convertingId === application.id ? "..." : "→ Candidature"}
+                              {convertingId === application.id ? "..." : t("convert")}
                             </Button>
                           )
                         )}
@@ -147,7 +149,7 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
                             disabled={deletingId === application.id}
                             startIcon={<TrashIcon />}
                           >
-                            {deletingId === application.id ? "..." : "Supprimer"}
+                            {deletingId === application.id ? "..." : t("delete")}
                           </Button>
                         )}
                       </div>
@@ -161,7 +163,7 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
       ) : (
         <div className="text-center py-12 gw-card">
           <p className="text-gray-500 dark:text-gray-400">
-            Aucune candidature pour ce filtre
+            {t("empty")}
           </p>
         </div>
       )}

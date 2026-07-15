@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
@@ -17,6 +18,7 @@ interface LoginFormInputs {
 }
 
 export default function SignInForm() {
+  const t = useTranslations("auth.signin");
   const router = useRouter();
   const [login, { isLoading }] = useLoginMutation();
 
@@ -55,7 +57,7 @@ export default function SignInForm() {
     } catch (error) {
       const err = error as ApiError;
       console.error('❌ Erreur de connexion:', err);
-      setApiError(err?.data?.message || "Échec de la connexion. Veuillez vérifier vos identifiants.");
+      setApiError(err?.data?.message || t("genericError"));
     }
   };
 
@@ -65,10 +67,10 @@ export default function SignInForm() {
         <div>
           <div className="mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Connexion
+              {t("title")}
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Entrez votre email et mot de passe pour vous connecter
+              {t("subtitle")}
             </p>
           </div>
           <div>
@@ -81,7 +83,7 @@ export default function SignInForm() {
                 )}
                 <div>
                   <Label>
-                    Email <span className="text-error-500">*</span>{" "}
+                    {t("email")} <span className="text-error-500">*</span>{" "}
                   </Label>
                   <Input
                     placeholder="info@gmail.com"
@@ -94,17 +96,17 @@ export default function SignInForm() {
                 </div>
                 <div>
                   <Label>
-                    Mot de passe <span className="text-error-500">*</span>{" "}
+                    {t("password")} <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      placeholder="Entrez votre mot de passe"
+                      placeholder={t("passwordPlaceholder")}
                       {...register("password")}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                      className="absolute z-30 -translate-y-1/2 cursor-pointer end-4 top-1/2"
                     >
                       {showPassword ? (
                         <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
@@ -127,7 +129,7 @@ export default function SignInForm() {
                 </div> */}
                 <div className="pt-2">
                   <Button className="w-full" size="sm" type="submit" disabled={isLoading}>
-                    {isLoading ? "Connexion..." : "Se connecter"}
+                    {isLoading ? t("submitting") : t("submit")}
                   </Button>
                 </div>
               </div>

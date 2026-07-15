@@ -1,0 +1,123 @@
+{
+  "status": {
+    "new": "جديد",
+    "reviewed": "تمت المراجعة",
+    "shortlisted": "ضمن القائمة المختصرة",
+    "interviewed": "تمت المقابلة",
+    "hired": "تم التوظيف",
+    "rejected": "مرفوض",
+    "archived": "مؤرشف",
+    "approved": "معتمد"
+  },
+  "detailModal": {
+    "defaultCandidateName": "مرشح",
+    "defaultTitle": "تفاصيل السيرة الذاتية",
+    "yearsExperience": "{years} سنوات خبرة",
+    "remoteWork": "عمل عن بُعد",
+    "sections": {
+      "information": "معلومات",
+      "completeness": "اكتمال الملف الشخصي",
+      "summary": "الملخص المهني",
+      "experiences": "الخبرات المهنية ({count})",
+      "formations": "التكوين الدراسي ({count})",
+      "technicalSkills": "المهارات التقنية ({count})",
+      "softSkills": "المهارات الشخصية ({count})",
+      "skills": "المهارات ({count})",
+      "languages": "اللغات ({count})",
+      "certifications": "الشهادات ({count})",
+      "geographicMobility": "الحركية الجغرافية",
+      "contractTypes": "أنواع العقود المفضلة",
+      "notes": "ملاحظات",
+      "document": "وثيقة السيرة الذاتية"
+    },
+    "fields": {
+      "specialty": "التخصص",
+      "sector": "القطاع",
+      "remote": "عمل عن بُعد",
+      "source": "المصدر",
+      "yes": "نعم",
+      "no": "لا"
+    },
+    "fallbacks": {
+      "positionNotSpecified": "المنصب غير محدد",
+      "companyNotSpecified": "الشركة غير محددة",
+      "degreeNotSpecified": "الشهادة غير محددة",
+      "institutionNotSpecified": "المؤسسة غير محددة",
+      "levelNotSpecified": "غير محدد",
+      "fileName": "السيرة_الذاتية.pdf"
+    },
+    "actions": {
+      "view": "👁️ عرض",
+      "download": "تحميل السيرة الذاتية",
+      "close": "إغلاق"
+    },
+    "errors": {
+      "openFailed": "تعذر فتح السيرة الذاتية",
+      "downloadFailed": "تعذر تحميل السيرة الذاتية"
+    }
+  },
+  "formModal": {
+    "title": {
+      "edit": "تعديل السيرة الذاتية",
+      "add": "إضافة سيرة ذاتية"
+    },
+    "subtitle": {
+      "edit": "عدّل معلومات السيرة الذاتية",
+      "add": "املأ المعلومات لإنشاء سيرة ذاتية جديدة"
+    },
+    "fields": {
+      "fileLabel": "ملف السيرة الذاتية (DOCX إلزامي، PDF مدعوم)",
+      "fileDropText": "انقر لاختيار ملف",
+      "fileHint": "PDF, DOC, DOCX - بحد أقصى 10 ميغابايت",
+      "fileExtractionHint": "✨ استخراج محلي مجاني (بدون ذكاء اصطناعي مدفوع)",
+      "fileExtractionInfo": "💡 يستخدم الاستخراج أولاً خوارزمية محلية مجانية (regex + NLP)، ثم OpenAI عند الحاجة. لا توجد واجهة برمجية مدفوعة افتراضيًا.",
+      "firstName": "الاسم الشخصي",
+      "firstNamePlaceholder": "محمد",
+      "lastName": "الاسم العائلي",
+      "lastNamePlaceholder": "العلوي",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "mohamed@example.com",
+      "phone": "الهاتف",
+      "phonePlaceholder": "+212 6 12 34 56 78",
+      "lastPosition": "المنصب الحالي",
+      "lastPositionPlaceholder": "مطور Full Stack",
+      "totalExperience": "سنوات الخبرة",
+      "totalExperiencePlaceholder": "5",
+      "lastEducation": "التكوين الدراسي",
+      "lastEducationPlaceholder": "ماستر في المعلوماتية",
+      "specialty": "التخصص ذو الصلة",
+      "specialtyPlaceholder": "مثال: تطوير الواجهات الأمامية للويب",
+      "industryExperience": "قطاع النشاط",
+      "industryExperiencePlaceholder": "تكنولوجيا المعلومات",
+      "skills": "المهارات (مفصولة بفواصل)",
+      "skillsPlaceholder": "React, Node.js, TypeScript",
+      "geographicMobility": "الحركية الجغرافية (مفصولة بفواصل)",
+      "geographicMobilityPlaceholder": "الرباط، الدار البيضاء، عن بُعد",
+      "contractTypes": "أنواع العقود المفضلة (مفصولة بفواصل)",
+      "contractTypesPlaceholder": "عقد غير محدد المدة، عقد محدد المدة، عمل حر",
+      "remotePreferred": "مستعد للعمل عن بُعد فقط",
+      "status": "الحالة",
+      "selectStatus": "اختر..."
+    },
+    "buttons": {
+      "cancel": "إلغاء",
+      "saving": "جارٍ الحفظ...",
+      "edit": "تعديل",
+      "add": "إضافة"
+    }
+  },
+  "statusModal": {
+    "title": "تغيير حالة السيرة الذاتية",
+    "newStatusLabel": "الحالة الجديدة",
+    "selectStatusPlaceholder": "اختر حالة...",
+    "commentLabel": "تعليق (اختياري)",
+    "commentPlaceholder": "أضف تعليقًا حول تغيير الحالة هذا...",
+    "commentHint": "سيتم حفظ هذا التعليق في سجل السيرة الذاتية",
+    "changeLabel": "التغيير:",
+    "buttons": {
+      "cancel": "إلغاء",
+      "confirm": "تأكيد",
+      "updating": "جارٍ التحديث..."
+    }
+  }
+}

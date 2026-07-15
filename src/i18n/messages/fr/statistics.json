@@ -1,0 +1,46 @@
+{
+  "page": {
+    "title": "Statistiques",
+    "description": "Vue d'ensemble de l'activité de recrutement",
+    "loadingDescription": "Vue d'ensemble de l'activité"
+  },
+  "kpis": {
+    "companies": "Entreprises",
+    "clients": "Clients",
+    "cvs": "Talents",
+    "recruitmentRequests": "Recrutements",
+    "applications": "Candidatures",
+    "integrations": "Intégrations",
+    "users": "Utilisateurs"
+  },
+  "filters": {
+    "presets": {
+      "7d": "7 jours",
+      "30d": "30 jours",
+      "3m": "3 mois",
+      "12m": "12 mois",
+      "all": "Tout"
+    },
+    "companyPlaceholder": "Toutes les entreprises",
+    "companyEmpty": "Aucune entreprise trouvée",
+    "dateRangePlaceholder": "Choisir une plage de dates…"
+  },
+  "charts": {
+    "newCompaniesPerMonth": "Nouvelles entreprises par mois",
+    "applicationsPerMonthGlobal": "Candidatures par mois (global)",
+    "companiesByStatus": "Entreprises par statut",
+    "trafficByCompany": "Trafic par entreprise (candidatures)",
+    "applicationsPerMonth": "Candidatures par mois",
+    "requestsByStatus": "Demandes par statut",
+    "integrationsByStatus": "Intégrations par statut",
+    "topClients": "Top clients (demandes)",
+    "series": {
+      "companies": "Entreprises",
+      "applications": "Candidatures",
+      "total": "Total"
+    }
+  },
+  "empty": {
+    "noStats": "Aucune statistique disponible."
+  }
+}

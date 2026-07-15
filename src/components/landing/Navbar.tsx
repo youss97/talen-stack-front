@@ -1,11 +1,21 @@
 "use client";
 import { useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import Button from '@/components/ui/button/Button';
+import LanguageSwitcher from '@/components/header/LanguageSwitcher';
 import { motion } from 'framer-motion';
 
 export default function Navbar({ logoUrl, siteName = "Hire Stack" }: { logoUrl?: string; siteName?: string } = {}) {
+  const t = useTranslations("landing.navbar");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const navLinks = [
+    { href: "#features", label: t("features") },
+    { href: "#stats", label: t("stats") },
+    { href: "#testimonials", label: t("testimonials") },
+    { href: "#contact", label: t("contact") },
+  ];
 
   return (
     <motion.nav
@@ -35,12 +45,7 @@ export default function Navbar({ logoUrl, siteName = "Hire Stack" }: { logoUrl?:
 
           {/* Navigation Desktop */}
           <div className="hidden md:flex items-center space-x-8">
-            {[
-              { href: "#features", label: "Fonctionnalités" },
-              { href: "#stats", label: "Statistiques" },
-              { href: "#testimonials", label: "Témoignages" },
-              { href: "#contact", label: "Contact" },
-            ].map((link) => (
+            {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -53,16 +58,18 @@ export default function Navbar({ logoUrl, siteName = "Hire Stack" }: { logoUrl?:
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
+            <LanguageSwitcher />
             <Link href="/signin">
-              <Button variant="outline" size="sm">Se connecter</Button>
+              <Button variant="outline" size="sm">{t("signIn")}</Button>
             </Link>
             <Link href="/signin">
-              <Button size="sm">Commencer</Button>
+              <Button size="sm">{t("start")}</Button>
             </Link>
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
+            <LanguageSwitcher />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-gray-600 hover:text-[var(--color-brand-500)] focus:outline-none"
@@ -87,12 +94,7 @@ export default function Navbar({ logoUrl, siteName = "Hire Stack" }: { logoUrl?:
             className="md:hidden"
           >
             <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-100">
-              {[
-                { href: "#features", label: "Fonctionnalités" },
-                { href: "#stats", label: "Statistiques" },
-                { href: "#testimonials", label: "Témoignages" },
-                { href: "#contact", label: "Contact" },
-              ].map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -103,10 +105,10 @@ export default function Navbar({ logoUrl, siteName = "Hire Stack" }: { logoUrl?:
               ))}
               <div className="flex flex-col space-y-2 px-3 pt-4">
                 <Link href="/signin">
-                  <Button variant="outline" size="sm" className="w-full">Se connecter</Button>
+                  <Button variant="outline" size="sm" className="w-full">{t("signIn")}</Button>
                 </Link>
                 <Link href="/signin">
-                  <Button size="sm" className="w-full">Commencer</Button>
+                  <Button size="sm" className="w-full">{t("start")}</Button>
                 </Link>
               </div>
             </div>

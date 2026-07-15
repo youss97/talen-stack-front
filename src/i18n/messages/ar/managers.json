@@ -1,0 +1,97 @@
+{
+  "list": {
+    "title": "إدارة المتعاونين",
+    "subtitle": "قم بإدارة المتعاونين المسندين إلى العملاء",
+    "addButton": "إضافة متعاون",
+    "clientSelect": {
+      "label": "اختر عميلاً",
+      "placeholder": "اختر عميلاً...",
+      "emptyMessage": "لم يتم العثور على أي عميل"
+    },
+    "columns": {
+      "collaborator": "المتعاون",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "status": "الحالة"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "blocked": "محظور"
+    },
+    "emptyState": {
+      "noClientTitle": "اختر عميلاً",
+      "noClientSubtitle": "اختر عميلاً لعرض وإدارة متعاونيه",
+      "noManagers": "لم يتم العثور على أي متعاون لهذا العميل"
+    },
+    "clientInactiveWarning": "هذا العميل معطل. يجب عليك أولاً تفعيل العميل لتتمكن من إدارة متعاونيه."
+  },
+  "toasts": {
+    "selectClientFirstTitle": "خطأ",
+    "selectClientFirstMessage": "يرجى اختيار عميل",
+    "updateSuccess": "تم تعديل المتعاون بنجاح",
+    "createSuccess": "تم إنشاء المتعاون بنجاح",
+    "errorTitle": "خطأ",
+    "updateError": "خطأ أثناء تعديل المتعاون",
+    "createError": "خطأ أثناء إنشاء المتعاون",
+    "statusToggleError": "خطأ أثناء تعديل الحالة",
+    "managerActivatedSuccess": "تم تفعيل المدير بنجاح",
+    "managerDeactivatedSuccess": "تم تعطيل المدير بنجاح"
+  },
+  "confirm": {
+    "deactivateTitle": "تعطيل المدير",
+    "activateTitle": "تفعيل المدير",
+    "deactivateMessage": "هل أنت متأكد من رغبتك في تعطيل {name}؟ لن يتمكن بعد الآن من تسجيل الدخول.",
+    "activateMessage": "هل أنت متأكد من رغبتك في تفعيل {name}؟ سيتمكن من تسجيل الدخول.",
+    "deactivateConfirm": "تعطيل",
+    "activateConfirm": "تفعيل"
+  },
+  "form": {
+    "editTitle": "تعديل المدير",
+    "addTitle": "إضافة مدير",
+    "editSubtitle": "قم بتعديل معلومات المدير",
+    "addSubtitle": "أنشئ مديراً جديداً لهذا العميل",
+    "photoLabel": "الصورة الشخصية (اختيارية)",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordEditHint": "(اتركه فارغاً لعدم التغيير)",
+    "phone": "الهاتف",
+    "position": "المنصب",
+    "positionPlaceholder": "مدير الموارد البشرية",
+    "cancel": "إلغاء",
+    "submitting": "جارٍ الإنشاء...",
+    "updating": "جارٍ التعديل...",
+    "submitCreate": "إنشاء المدير",
+    "submitUpdate": "تعديل"
+  },
+  "detail": {
+    "defaultName": "متعاون",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "position": "المنصب",
+    "status": "الحالة",
+    "close": "إغلاق"
+  },
+  "formModal": {
+    "editTitle": "تعديل المدير",
+    "addTitle": "إضافة مدير",
+    "editSubtitle": "قم بتعديل معلومات المدير",
+    "addSubtitle": "أنشئ مديراً جديداً لهذا العميل",
+    "photoLabel": "الصورة الشخصية (اختيارية)",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordEditHint": "(اتركه فارغاً لعدم التغيير)",
+    "phone": "الهاتف",
+    "position": "المنصب",
+    "positionPlaceholder": "مدير الموارد البشرية",
+    "cancel": "إلغاء",
+    "submitting": "جارٍ الإنشاء...",
+    "updating": "جارٍ التعديل...",
+    "submitCreate": "إنشاء المدير",
+    "submitUpdate": "تعديل"
+  }
+}

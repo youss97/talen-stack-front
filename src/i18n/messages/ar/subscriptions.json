@@ -1,0 +1,84 @@
+{
+  "page": {
+    "title": "الاشتراكات",
+    "subtitle": "أنشئ خطط اشتراك وقم بتعيينها للشركات للتحكم في وصولها",
+    "newPlan": "خطة جديدة"
+  },
+  "stats": {
+    "availablePlans": "الخطط المتاحة",
+    "subscribedCompanies": "الشركات المشتركة",
+    "activePlans": "الخطط النشطة"
+  },
+  "emptyState": {
+    "title": "لم يتم إنشاء أي خطة",
+    "subtitle": "أنشئ أول خطة اشتراك خاصة بك",
+    "cta": "إنشاء خطة"
+  },
+  "billing": {
+    "monthly": "شهري",
+    "annual": "سنوي",
+    "one_time": "لمرة واحدة"
+  },
+  "status": {
+    "active": "نشط",
+    "inactive": "غير نشط"
+  },
+  "card": {
+    "modules": "{count, plural, =0 {وحدة} =1 {وحدة} other {وحدات}}",
+    "noModuleSelected": "لم يتم تحديد أي وحدة"
+  },
+  "toast": {
+    "deletedTitle": "تم الحذف",
+    "deletedMessage": "تم حذف الخطة \"{name}\"",
+    "deleteErrorTitle": "خطأ",
+    "deleteErrorMessage": "تعذر حذف هذه الخطة",
+    "savedTitle": "نجاح"
+  },
+  "deleteModal": {
+    "title": "حذف الخطة",
+    "message": "هل أنت متأكد من حذف الخطة \"{name}\"؟ ستفقد الشركات التي تستخدمها وصولها الحالي."
+  },
+  "planModal": {
+    "title": {
+      "edit": "تعديل الخطة",
+      "new": "خطة اشتراك جديدة"
+    },
+    "subtitle": "حدد الوحدات المضمنة والسعر",
+    "sections": {
+      "information": "المعلومات",
+      "modulesIncluded": "الوحدات المضمنة"
+    },
+    "fields": {
+      "planName": "اسم الخطة",
+      "planNamePlaceholder": "مثال: Starter، Pro، Enterprise...",
+      "description": "الوصف",
+      "descriptionPlaceholder": "صف هذه الخطة ببضع كلمات...",
+      "price": "السعر",
+      "billingCycle": "الفوترة",
+      "planActive": "خطة نشطة"
+    },
+    "modules": {
+      "selectAll": "تحديد الكل",
+      "deselectAll": "إلغاء تحديد الكل",
+      "footnote": "* وحدتا الشركات والسجلات مخصصتان للمشرف العام وغير متاحتين في الاشتراكات."
+    },
+    "errors": {
+      "nameRequired": "اسم الخطة مطلوب",
+      "updateError": "خطأ أثناء تعديل الخطة",
+      "createError": "خطأ أثناء إنشاء الخطة"
+    },
+    "success": {
+      "updated": "تم تحديث الخطة \"{name}\" بنجاح",
+      "created": "تم إنشاء الخطة \"{name}\" بنجاح"
+    },
+    "buttons": {
+      "saving": "جارٍ الحفظ...",
+      "createPlan": "إنشاء الخطة"
+    }
+  },
+  "charts": {
+    "companiesPerPlan": "الشركات حسب الخطة",
+    "noSubscribedCompany": "لا توجد شركة مشتركة",
+    "companyCount": "{count, plural, =0 {شركة} =1 {شركة} other {شركات}}"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "list": {
+    "title": "Entreprises",
+    "subtitle": "Gérez les entreprises et leurs modules accessibles",
+    "addButton": "Ajouter une entreprise",
+    "searchPlaceholder": "Rechercher une entreprise...",
+    "allStatuses": "Tous les statuts",
+    "columns": {
+      "name": "Nom",
+      "siret": "SIRET",
+      "city": "Ville",
+      "email": "Email",
+      "phone": "Téléphone",
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "deleted": "Supprimée"
+    },
+    "rowActions": {
+      "activate": "Activer",
+      "deactivate": "Désactiver"
+    },
+    "emptyState": "Aucune entreprise trouvée",
+    "deactivateModal": {
+      "title": "Désactiver l'entreprise",
+      "message": "Êtes-vous sûr de vouloir désactiver l'entreprise \"{name}\" ? Tous ses comptes seront désactivés. Vous pourrez la réactiver depuis le tableau.",
+      "confirm": "Désactiver"
+    }
+  },
+  "toasts": {
+    "companyActivatedTitle": "Entreprise activée",
+    "companyDeactivatedTitle": "Entreprise désactivée",
+    "companyActivatedMessage": "\"{name}\" et ses comptes ont été réactivés",
+    "companyDeactivatedMessage": "\"{name}\" et ses comptes ont été désactivés",
+    "statusUpdateError": "Erreur lors de la modification du statut",
+    "reactivatedTitle": "Entreprise réactivée",
+    "reactivatedMessage": "\"{name}\" et ses comptes ont été réactivés",
+    "reactivateError": "Erreur lors de la réactivation",
+    "loadDetailError": "Erreur lors du chargement des détails de l'entreprise",
+    "deleteSuccess": "Entreprise supprimée avec succès",
+    "deleteError": "Erreur lors de la suppression",
+    "updateSuccess": "Entreprise modifiée avec succès",
+    "updateError": "Erreur lors de la modification de l'entreprise",
+    "createSuccess": "Entreprise créée avec succès",
+    "createError": "Erreur lors de la création de l'entreprise"
+  },
+  "form": {
+    "titleView": "Détails de l'entreprise",
+    "titleEdit": "Modifier l'entreprise",
+    "titleAdd": "Ajouter une entreprise",
+    "subtitleView": "Consultez les informations de l'entreprise",
+    "subtitleEdit": "Modifiez les informations de l'entreprise et ses modules",
+    "subtitleAdd": "Créez l'entreprise, son administrateur et définissez ses modules accessibles",
+    "loading": "Chargement...",
+    "sections": {
+      "company": "Informations de l'entreprise",
+      "contact": "Informations de contact",
+      "admin": "Administrateur de l'entreprise",
+      "subscription": "Abonnement & Modules"
+    },
+    "fields": {
+      "logo": "Logo de l'entreprise",
+      "logoHelper": "Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)",
+      "companyName": "Raison sociale",
+      "ice": "ICE",
+      "address": "Adresse",
+      "city": "Ville",
+      "postalCode": "Code postal",
+      "country": "Pays",
+      "selectCountry": "— Sélectionner un pays —",
+      "status": "Statut",
+      "phone": "Téléphone",
+      "email": "Email",
+      "adminPhoto": "Photo de l'administrateur",
+      "currentInfo": "(informations actuelles)",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "adminEmail": "Email",
+      "password": "Mot de passe",
+      "notEditable": "Non modifiable",
+      "adminPhone": "Téléphone de l'administrateur",
+      "position": "Poste / Position",
+      "subscriptionPlan": "Plan d'abonnement",
+      "noSubscription": "— Aucun abonnement (sélection manuelle) —",
+      "planPrefilled": "✓ Les modules ci-dessous ont été pré-sélectionnés depuis ce plan",
+      "accessibleModules": "Modules accessibles",
+      "deselectAll": "Tout désélectionner",
+      "selectAll": "Tout sélectionner",
+      "noModules": "Aucun module disponible",
+      "noModulesReadOnly": "Tous les modules (aucune restriction)"
+    },
+    "placeholders": {
+      "companyName": "Tech Solutions SARL",
+      "ice": "123456789000000",
+      "address": "12 rue de la Paix",
+      "city": "Paris",
+      "postalCode": "75001",
+      "phone": "+33612345678",
+      "email": "contact@techsolutions.fr",
+      "firstName": "John",
+      "lastName": "Doe",
+      "adminEmail": "admin@example.com",
+      "password": "StrongPassword123",
+      "adminPhone": "+212612345678",
+      "position": "Directeur RH"
+    },
+    "billingCycle": {
+      "monthly": "mois",
+      "annual": "an",
+      "oneTime": "unique"
+    },
+    "moduleCount": "{count, plural, one {# module sélectionné} other {# modules sélectionnés}}",
+    "noModuleSelected": "Aucun module sélectionné — accès complet",
+    "buttons": {
+      "close": "Fermer",
+      "cancel": "Annuler",
+      "add": "Ajouter",
+      "edit": "Modifier",
+      "saving": "Enregistrement..."
+    }
+  },
+  "featuresModal": {
+    "title": "Modules — {companyName}",
+    "subtitle": "Sélectionnez les modules que cette entreprise peut utiliser",
+    "toolbar": {
+      "selectedCount": "{selected} / {total} modules sélectionnés",
+      "selectAll": "Tout sélectionner",
+      "deselectAll": "Tout désélectionner"
+    },
+    "loading": "Chargement des modules...",
+    "emptyState": "Aucun module disponible",
+    "error": "Erreur lors de la sauvegarde. Veuillez réessayer.",
+    "footer": {
+      "noneSelected": "Aucun module sélectionné — accès complet",
+      "selectedCount": "{count, plural, one {# module accordé} other {# modules accordés}}",
+      "saving": "Sauvegarde..."
+    }
+  }
+}

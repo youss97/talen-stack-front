@@ -1,0 +1,123 @@
+{
+  "status": {
+    "new": "New",
+    "reviewed": "Reviewed",
+    "shortlisted": "Shortlisted",
+    "interviewed": "Interviewed",
+    "hired": "Hired",
+    "rejected": "Rejected",
+    "archived": "Archived",
+    "approved": "Approved"
+  },
+  "detailModal": {
+    "defaultCandidateName": "Candidate",
+    "defaultTitle": "CV Details",
+    "yearsExperience": "{years} years of experience",
+    "remoteWork": "Remote work",
+    "sections": {
+      "information": "Information",
+      "completeness": "Profile completeness",
+      "summary": "Professional summary",
+      "experiences": "Work experience ({count})",
+      "formations": "Education ({count})",
+      "technicalSkills": "Technical skills ({count})",
+      "softSkills": "Soft skills ({count})",
+      "skills": "Skills ({count})",
+      "languages": "Languages ({count})",
+      "certifications": "Certifications ({count})",
+      "geographicMobility": "Geographic mobility",
+      "contractTypes": "Preferred contract types",
+      "notes": "Notes",
+      "document": "CV document"
+    },
+    "fields": {
+      "specialty": "Specialty",
+      "sector": "Sector",
+      "remote": "Remote work",
+      "source": "Source",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "fallbacks": {
+      "positionNotSpecified": "Position not specified",
+      "companyNotSpecified": "Company not specified",
+      "degreeNotSpecified": "Degree not specified",
+      "institutionNotSpecified": "Institution not specified",
+      "levelNotSpecified": "Not specified",
+      "fileName": "CV.pdf"
+    },
+    "actions": {
+      "view": "👁️ View",
+      "download": "Download CV",
+      "close": "Close"
+    },
+    "errors": {
+      "openFailed": "Unable to open the CV",
+      "downloadFailed": "Unable to download the CV"
+    }
+  },
+  "formModal": {
+    "title": {
+      "edit": "Edit CV",
+      "add": "Add a CV"
+    },
+    "subtitle": {
+      "edit": "Edit the CV information",
+      "add": "Fill in the information to create a new CV"
+    },
+    "fields": {
+      "fileLabel": "CV file (DOCX required, PDF supported)",
+      "fileDropText": "Click to select a file",
+      "fileHint": "PDF, DOC, DOCX - Max 10MB",
+      "fileExtractionHint": "✨ Free local extraction (no paid AI)",
+      "fileExtractionInfo": "💡 Extraction first uses a free local algorithm (regex + NLP), then OpenAI if needed. No paid API by default.",
+      "firstName": "First name",
+      "firstNamePlaceholder": "John",
+      "lastName": "Last name",
+      "lastNamePlaceholder": "Doe",
+      "email": "Email",
+      "emailPlaceholder": "john@example.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+1 555 123 4567",
+      "lastPosition": "Current position",
+      "lastPositionPlaceholder": "Full Stack Developer",
+      "totalExperience": "Years of experience",
+      "totalExperiencePlaceholder": "5",
+      "lastEducation": "Education",
+      "lastEducationPlaceholder": "Master's in Computer Science",
+      "specialty": "Relevant specialty",
+      "specialtyPlaceholder": "e.g. Frontend web development",
+      "industryExperience": "Industry",
+      "industryExperiencePlaceholder": "IT / Tech",
+      "skills": "Skills (comma-separated)",
+      "skillsPlaceholder": "React, Node.js, TypeScript",
+      "geographicMobility": "Geographic mobility (comma-separated)",
+      "geographicMobilityPlaceholder": "Paris, Lyon, Remote",
+      "contractTypes": "Preferred contract types (comma-separated)",
+      "contractTypesPlaceholder": "Permanent, Fixed-term, Freelance",
+      "remotePreferred": "Open to remote work only",
+      "status": "Status",
+      "selectStatus": "Select..."
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "edit": "Edit",
+      "add": "Add"
+    }
+  },
+  "statusModal": {
+    "title": "Change CV status",
+    "newStatusLabel": "New status",
+    "selectStatusPlaceholder": "Select a status...",
+    "commentLabel": "Comment (optional)",
+    "commentPlaceholder": "Add a comment about this status change...",
+    "commentHint": "This comment will be saved in the CV history",
+    "changeLabel": "Change:",
+    "buttons": {
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "updating": "Updating..."
+    }
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useTranslations } from "next-intl";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,14 +19,16 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tool
 const BRAND = "#8AB925";
 const COLORS = [BRAND, "#739c1e", "#5c7d17", "#a3cf4d", "#d8ecaa", "#bedd77", "#476211"];
 
-const BILLING_LABELS: Record<string, string> = {
-  monthly: "Mensuel",
-  annual: "Annuel",
-  one_time: "Unique",
-};
-
 export default function SubscriptionCharts({ stats }: { stats: SubscriptionsStats }) {
+  const t = useTranslations("subscriptions");
   const hasDistrib = stats.plansDistribution.length > 0;
+
+  const billingLabel = (cycle: string) => {
+    if (cycle === "monthly") return t("billing.monthly");
+    if (cycle === "annual") return t("billing.annual");
+    if (cycle === "one_time") return t("billing.one_time");
+    return cycle;
+  };
 
   if (!hasDistrib) return null;
 
@@ -35,17 +38,17 @@ export default function SubscriptionCharts({ stats }: { stats: SubscriptionsStat
       {hasDistrib && (
         <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-5">
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
-            Sociétés par plan
+            {t("charts.companiesPerPlan")}
           </h3>
           {stats.plansDistribution.every((p) => p.companyCount === 0) ? (
-            <p className="text-sm text-gray-400 text-center py-8">Aucune société abonnée</p>
+            <p className="text-sm text-gray-400 text-center py-8">{t("charts.noSubscribedCompany")}</p>
           ) : (
             <div className="flex justify-center">
               <div className="w-full max-w-[280px]">
                 <Doughnut
                   data={{
                     labels: stats.plansDistribution.map(
-                      (p) => `${p.name} (${BILLING_LABELS[p.billingCycle] ?? p.billingCycle})`
+                      (p) => `${p.name} (${billingLabel(p.billingCycle)})`
                     ),
                     datasets: [
                       {
@@ -78,10 +81,12 @@ export default function SubscriptionCharts({ stats }: { stats: SubscriptionsStat
                     <span className="font-medium text-gray-700 dark:text-gray-300">
                       {p.name}{" "}
                       <span className="text-gray-400 font-normal">
-                        — {BILLING_LABELS[p.billingCycle] ?? p.billingCycle} · {p.price} MAD
+                        — {billingLabel(p.billingCycle)} · {p.price} MAD
                       </span>
                     </span>
-                    <span className="text-gray-500">{p.companyCount} société{p.companyCount !== 1 ? "s" : ""}</span>
+                    <span className="text-gray-500">
+                      {p.companyCount} {t("charts.companyCount", { count: p.companyCount })}
+                    </span>
                   </div>
                   <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                     <div

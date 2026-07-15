@@ -1,0 +1,369 @@
+{
+  "hub": {
+    "title": "Settings",
+    "subtitle": "Manage your application settings",
+    "unauthorized": "Unauthorized access. Redirecting...",
+    "categories": {
+      "applicationStatuses": {
+        "title": "Application Statuses",
+        "description": "Manage application statuses (Pending, Accepted, Rejected, etc.)"
+      },
+      "contractTypes": {
+        "title": "Contract Types",
+        "description": "Manage contract types (Permanent, Fixed-term, Freelance, etc.)"
+      },
+      "sidebarOrder": {
+        "title": "Sidebar order",
+        "description": "Set the display order of modules (features) in the side menu"
+      },
+      "publicSite": {
+        "title": "Public site & branding",
+        "description": "Customize the company's public page (slug, presentation, color, \"Powered by\")"
+      },
+      "landing": {
+        "title": "Landing page",
+        "description": "Manage the public page: text, pricing, testimonials, contact form (super admin)"
+      },
+      "cvSources": {
+        "title": "CV Source Management",
+        "description": "Manage CV sources (Public offer, Referral, LinkedIn, etc.)"
+      },
+      "emailTemplates": {
+        "title": "Email templates",
+        "description": "Customize the content of emails automatically sent by the platform (applications, interviews, notifications)"
+      },
+      "businessCards": {
+        "title": "Business cards",
+        "description": "Create and manage QR business cards (HR, Client, Employee)"
+      }
+    }
+  },
+  "applicationStatuses": {
+    "breadcrumb": "Application Statuses",
+    "title": "Application Statuses",
+    "subtitle": "Manage application statuses",
+    "searchPlaceholder": "Search...",
+    "createButton": "Create a status",
+    "columns": { "name": "Name", "status": "Status" },
+    "active": "Active",
+    "inactive": "Inactive",
+    "modal": {
+      "editTitle": "Edit status",
+      "createTitle": "Create a status",
+      "nameLabel": "Name",
+      "activeLabel": "Active",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "deleteModal": {
+      "title": "Delete status",
+      "message": "Are you sure you want to delete the status \"{name}\"?",
+      "confirmText": "Delete"
+    },
+    "toasts": {
+      "updated": "Status updated successfully",
+      "created": "Status created successfully",
+      "deleted": "Status deleted successfully",
+      "genericError": "An error occurred",
+      "deleteError": "Error while deleting"
+    }
+  },
+  "contractTypes": {
+    "breadcrumb": "Contract Types",
+    "title": "Contract Types",
+    "subtitle": "Manage contract types (Permanent, Fixed-term, Freelance, etc.)",
+    "searchPlaceholder": "Search...",
+    "createButton": "Create a contract type",
+    "columns": { "name": "Name", "status": "Status" },
+    "active": "Active",
+    "inactive": "Inactive",
+    "modal": {
+      "editTitle": "Edit contract type",
+      "createTitle": "Create a contract type",
+      "nameLabel": "Name",
+      "namePlaceholder": "E.g. Permanent, Fixed-term, Freelance",
+      "activeLabel": "Active",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "deleteModal": {
+      "title": "Delete contract type",
+      "message": "Are you sure you want to delete the contract type \"{name}\"?",
+      "confirmText": "Delete"
+    },
+    "toasts": {
+      "updated": "Contract type updated successfully",
+      "created": "Contract type created successfully",
+      "deleted": "Contract type deleted successfully",
+      "genericError": "An error occurred",
+      "deleteError": "Error while deleting"
+    }
+  },
+  "cvSources": {
+    "breadcrumb": "CV Source Management",
+    "title": "CV Source Management",
+    "subtitle": "Manage CV sources (Public offer, Referral, LinkedIn, etc.)",
+    "searchPlaceholder": "Search...",
+    "createButton": "Create a CV source",
+    "columns": { "name": "Name", "status": "Status" },
+    "active": "Active",
+    "inactive": "Inactive",
+    "modal": {
+      "editTitle": "Edit CV source",
+      "createTitle": "Create a CV source",
+      "nameLabel": "Name",
+      "namePlaceholder": "E.g. Public offer, Referral, LinkedIn",
+      "activeLabel": "Active",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "deleteModal": {
+      "title": "Delete CV source",
+      "message": "Are you sure you want to delete the CV source \"{name}\"?",
+      "confirmText": "Delete"
+    },
+    "toasts": {
+      "updated": "CV source updated successfully",
+      "created": "CV source created successfully",
+      "deleted": "CV source deleted successfully",
+      "genericError": "An error occurred",
+      "deleteError": "Error while deleting"
+    }
+  },
+  "applicationStatusesPage": {
+    "title": "Application Statuses",
+    "subtitle": "Manage the platform's application statuses",
+    "addButton": "Add a status",
+    "searchPlaceholder": "Search for an application status...",
+    "columns": { "name": "Name", "description": "Description", "color": "Color", "order": "Order" },
+    "emptyMessage": "No application status found",
+    "toasts": {
+      "loadDetailError": "Error loading application status details",
+      "deleted": "Application status deleted successfully",
+      "deleteError": "Error while deleting the application status",
+      "updated": "Application status updated successfully",
+      "created": "Application status created successfully",
+      "updateError": "Error while updating the application status",
+      "createError": "Error while creating the application status"
+    },
+    "deleteModal": {
+      "title": "Delete application status",
+      "message": "Are you sure you want to delete the application status \"{name}\"? This action cannot be undone.",
+      "confirmText": "Delete",
+      "cancelText": "Cancel"
+    },
+    "formModal": {
+      "detailTitle": "Application status details",
+      "editTitle": "Edit application status",
+      "createTitle": "Add application status",
+      "detailSubtitle": "View the application status information",
+      "editSubtitle": "Edit the application status information",
+      "createSubtitle": "Fill in the information to create a new application status",
+      "loading": "Loading data...",
+      "nameLabel": "Name",
+      "namePlaceholder": "Pending, Accepted, Rejected...",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Application status description...",
+      "colorLabel": "Color",
+      "orderLabel": "Display order",
+      "activeLabel": "Active",
+      "finalLabel": "Final status",
+      "close": "Close",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "edit": "Edit",
+      "add": "Add"
+    }
+  },
+  "contractTypesPage": {
+    "title": "Contract Types",
+    "subtitle": "Manage the platform's contract types",
+    "addButton": "Add a contract type",
+    "searchPlaceholder": "Search for a contract type...",
+    "columns": { "name": "Name", "description": "Description" },
+    "emptyMessage": "No contract type found",
+    "toasts": {
+      "loadDetailError": "Error loading contract type details",
+      "deleted": "Contract type deleted successfully",
+      "deleteError": "Error while deleting the contract type",
+      "updated": "Contract type updated successfully",
+      "created": "Contract type created successfully",
+      "updateError": "Error while updating the contract type",
+      "createError": "Error while creating the contract type"
+    },
+    "deleteModal": {
+      "title": "Delete contract type",
+      "message": "Are you sure you want to delete the contract type \"{name}\"? This action cannot be undone.",
+      "confirmText": "Delete",
+      "cancelText": "Cancel"
+    },
+    "formModal": {
+      "detailTitle": "Contract type details",
+      "editTitle": "Edit contract type",
+      "createTitle": "Add contract type",
+      "detailSubtitle": "View the contract type information",
+      "editSubtitle": "Edit the contract type information",
+      "createSubtitle": "Fill in the information to create a new contract type",
+      "loading": "Loading data...",
+      "nameLabel": "Name",
+      "namePlaceholder": "Permanent, Fixed-term, Internship...",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Contract type description...",
+      "orderLabel": "Display order",
+      "activeLabel": "Active",
+      "close": "Close",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "edit": "Edit",
+      "add": "Add"
+    }
+  },
+  "publicSite": {
+    "backButton": "Back to settings",
+    "title": "Public site & branding",
+    "subtitle": "Customize your company's public page (job offers, spontaneous applications).",
+    "slugLabel": "Public slug (URL)",
+    "slugPlaceholder": "my-company",
+    "linkLabel": "Link",
+    "descriptionLabel": "Presentation",
+    "descriptionPlaceholder": "Introduce your company to candidates…",
+    "brandColorLabel": "Brand color",
+    "save": "Save",
+    "saving": "Saving…",
+    "toasts": {
+      "savedTitle": "Saved",
+      "savedMessage": "Public site configuration updated",
+      "errorTitle": "Error",
+      "errorMessage": "Failed to save"
+    }
+  },
+  "sidebarOrder": {
+    "backButton": "Back to settings",
+    "title": "Sidebar order",
+    "subtitle": "Reorganize the order of the <strong>modules</strong> (sections) in the side menu.",
+    "saveButton": "Save order",
+    "emptyState": "No modules.",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "toasts": {
+      "savedTitle": "Success",
+      "savedMessage": "Module order saved. The menu has been updated."
+    }
+  },
+  "landing": {
+    "title": "Landing page",
+    "subtitle": "Manage the public content: text, pricing, testimonials, contact.",
+    "preview": "Preview",
+    "save": "Save",
+    "saving": "Saving…",
+    "tabs": {
+      "content": "Content",
+      "messages": "Messages",
+      "messagesWithCount": "Messages ({count})"
+    },
+    "identity": {
+      "title": "Identity (header)",
+      "siteNamePlaceholder": "Site name (e.g. Talent Stack)",
+      "logoAlt": "logo",
+      "logoPlaceholder": "Logo",
+      "uploadLogo": "Upload logo",
+      "uploading": "Uploading…",
+      "removeLogo": "Remove"
+    },
+    "hero": {
+      "title": "Hero section",
+      "titlePlaceholder": "Title",
+      "subtitlePlaceholder": "Subtitle",
+      "ctaTextPlaceholder": "Button text",
+      "ctaLinkPlaceholder": "Button link (#contact)",
+      "brandColorLabel": "Brand color"
+    },
+    "about": {
+      "title": "\"About\" section",
+      "titlePlaceholder": "Title",
+      "textPlaceholder": "Text"
+    },
+    "features": {
+      "title": "Features",
+      "addButton": "+ Add",
+      "titlePlaceholder": "Title",
+      "descriptionPlaceholder": "Description"
+    },
+    "pricing": {
+      "title": "Pricing",
+      "addButton": "+ Add a plan",
+      "planLabel": "Plan {index}",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "deleteButton": "Delete",
+      "namePlaceholder": "Plan name",
+      "pricePlaceholder": "Price (e.g. 49)",
+      "currency": {
+        "eur": "€ (EUR)",
+        "usd": "$ (USD)",
+        "mad": "MAD",
+        "gbp": "£ (GBP)",
+        "none": "None"
+      },
+      "cycle": {
+        "monthly": "/ month",
+        "yearly": "/ year",
+        "oneTime": "One-time / Custom quote"
+      },
+      "featuresPlaceholder": "One feature per line",
+      "highlightedLabel": "Popular plan",
+      "ctaTextPlaceholder": "Button text"
+    },
+    "testimonials": {
+      "title": "Customer testimonials",
+      "addButton": "+ Add",
+      "namePlaceholder": "Name",
+      "rolePlaceholder": "Role",
+      "companyPlaceholder": "Company",
+      "ratingPlaceholder": "Rating /5",
+      "avatarPlaceholder": "Customer photo URL (or upload →)",
+      "upload": "Upload",
+      "uploading": "Uploading…",
+      "textPlaceholder": "Testimonial",
+      "photoAddedTitle": "Photo added",
+      "photoUploadErrorTitle": "Error",
+      "photoUploadErrorMessage": "Failed to upload the photo"
+    },
+    "partners": {
+      "title": "Partner logos",
+      "addButton": "+ Add",
+      "upload": "Upload",
+      "uploading": "Uploading…",
+      "namePlaceholder": "Partner name (optional)",
+      "emptyState": "No partners. Click \"+ Add\" to insert a logo.",
+      "logoAddedTitle": "Logo added",
+      "logoUploadErrorTitle": "Error",
+      "logoUploadErrorMessage": "Failed to upload the logo"
+    },
+    "contact": {
+      "title": "Contact details & social networks",
+      "emailPlaceholder": "Email",
+      "phonePlaceholder": "Phone",
+      "addressPlaceholder": "Address",
+      "linkedinPlaceholder": "LinkedIn (URL)",
+      "instagramPlaceholder": "Instagram (URL)"
+    },
+    "messages": {
+      "emptyState": "No messages.",
+      "newBadge": "New",
+      "markRead": "Mark as read"
+    },
+    "toasts": {
+      "savedTitle": "Saved",
+      "savedMessage": "Landing page updated",
+      "errorTitle": "Error",
+      "errorMessage": "Failed to save",
+      "logoAddedTitle": "Logo added",
+      "logoAddedMessage": "Don't forget to save",
+      "logoErrorMessage": "Failed to upload the logo"
+    }
+  }
+}

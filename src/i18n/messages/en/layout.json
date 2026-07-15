@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "groups": {
+      "Pilotage": "Overview",
+      "Recrutement": "Recruitment",
+      "Talents": "Talents",
+      "Suivi": "Tracking",
+      "Communication": "Communication",
+      "Administration": "Administration"
+    },
+    "items": {
+      "/statistics": "Statistics",
+      "/settings/landing": "Showcase site",
+      "/companies": "Companies",
+      "/clients": "Clients",
+      "/managers": "Staff",
+      "/users": "Users",
+      "/recruitment-requests": "Recruitment",
+      "/applications": "Applications",
+      "/agenda": "Agenda",
+      "/interviews": "Interviews",
+      "/integrations": "Integrations",
+      "/cvs": "Talent pool",
+      "/my-requests": "My Requests",
+      "/public-offers": "Public Offers",
+      "/emails": "Emails",
+      "/logs": "Logs",
+      "/roles": "Roles",
+      "/subscriptions": "Subscriptions",
+      "/assignments": "Assignments",
+      "/business-cards": "Business Cards"
+    }
+  },
+  "sidebar": {
+    "mySpace": "My space",
+    "clientSpace": "Client space",
+    "recruiterSpace": "Recruiter space",
+    "user": "User",
+    "online": "Online"
+  },
+  "header": {
+    "searchPlaceholder": "Search...",
+    "noResultsFor": "No results for “{query}”",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Log out",
+    "language": "Language"
+  }
+}

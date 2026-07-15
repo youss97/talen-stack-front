@@ -1,0 +1,104 @@
+{
+  "list": {
+    "title": "المستخدمون",
+    "subtitle": "إدارة مستخدمي المنصة",
+    "addButton": "إضافة مستخدم",
+    "searchPlaceholder": "البحث بالبريد الإلكتروني...",
+    "filters": {
+      "allStatuses": "جميع الحالات",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "deleted": "محذوف"
+    },
+    "columns": {
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "email": "البريد الإلكتروني",
+      "role": "الدور",
+      "company": "الشركة",
+      "status": "الحالة"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "deleted": "محذوف"
+    },
+    "emptyState": "لم يتم العثور على أي مستخدم",
+    "actions": {
+      "changeRole": "تغيير الدور",
+      "block": "حظر",
+      "activate": "تفعيل"
+    },
+    "debug": {
+      "none": "لا شيء"
+    },
+    "delete": {
+      "title": "حذف المستخدم",
+      "message": "هل أنت متأكد من حذف المستخدم \"{name}\"؟ لن يتمكن بعد ذلك من تسجيل الدخول."
+    },
+    "toasts": {
+      "statusChanged": "تم {action} الحساب بنجاح",
+      "statusChangeError": "خطأ أثناء تعديل الحالة",
+      "userDetailLoadError": "خطأ أثناء تحميل تفاصيل المستخدم",
+      "roleChanged": "تم تغيير الدور بنجاح",
+      "roleChangeError": "خطأ أثناء تغيير الدور",
+      "userDeleted": "تم حذف المستخدم بنجاح",
+      "deleteError": "خطأ أثناء الحذف",
+      "userUpdated": "تم تعديل المستخدم بنجاح",
+      "userCreated": "تم إنشاء المستخدم بنجاح",
+      "updateError": "خطأ أثناء تعديل المستخدم",
+      "createError": "خطأ أثناء إنشاء المستخدم",
+      "notAllowedTitle": "إجراء غير مسموح به",
+      "cannotChangeAdminRole": "يتم إسناد دور المسؤول من قبل المسؤول الأعلى ولا يمكن تعديله من هنا.",
+      "cannotDeleteSelf": "لا يمكنك حذف حسابك الخاص.",
+      "cannotDeleteAdmin": "لا يمكن حذف الحسابات التي تحمل دور المسؤول.",
+      "blocked": "حظر",
+      "activated": "تفعيل"
+    }
+  },
+  "form": {
+    "titles": {
+      "view": "تفاصيل المستخدم",
+      "edit": "تعديل المستخدم",
+      "add": "إضافة مستخدم"
+    },
+    "subtitles": {
+      "view": "اطّلع على معلومات المستخدم",
+      "edit": "قم بتعديل معلومات المستخدم",
+      "add": "املأ المعلومات لإنشاء مستخدم جديد"
+    },
+    "loadingData": "جاري تحميل البيانات...",
+    "photo": "الصورة الشخصية",
+    "fields": {
+      "firstName": "الاسم الأول",
+      "firstNamePlaceholder": "John",
+      "lastName": "اسم العائلة",
+      "lastNamePlaceholder": "Doe",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "john.doe@example.com",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "SecurePassword123!",
+      "passwordEditHint": "(اتركه فارغًا لعدم التعديل)",
+      "role": "الدور",
+      "rolePlaceholder": "اختر دورًا",
+      "roleEmpty": "لم يتم العثور على أي دور",
+      "status": "الحالة",
+      "statusActive": "نشط",
+      "statusInactive": "غير نشط"
+    },
+    "buttons": {
+      "saving": "جاري الحفظ...",
+      "edit": "تعديل",
+      "add": "إضافة"
+    }
+  },
+  "roleChange": {
+    "title": "تغيير الدور",
+    "subtitleWithUser": "اختر دورًا جديدًا لـ {name}.",
+    "subtitle": "اختر دورًا جديدًا.",
+    "roleLabel": "الدور *",
+    "rolePlaceholder": "اختر دورًا",
+    "roleEmpty": "لم يتم العثور على أي دور",
+    "saving": "جاري الحفظ..."
+  }
+}

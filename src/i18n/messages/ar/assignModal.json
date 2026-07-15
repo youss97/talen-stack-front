@@ -1,0 +1,11 @@
+{
+  "title": "تعيين المسؤولين",
+  "subtitle": "اختر مستخدمًا واحدًا أو أكثر لتولي {entityLabel}.",
+  "defaultEntityLabel": "هذا العنصر",
+  "addResponsible": "إضافة مسؤول",
+  "searchPlaceholder": "البحث عن مستخدم...",
+  "emptyResults": "لم يتم العثور على أي مستخدم",
+  "clearAll": "إزالة جميع التعيينات",
+  "assign": "تعيين",
+  "assigning": "جارٍ التعيين..."
+}

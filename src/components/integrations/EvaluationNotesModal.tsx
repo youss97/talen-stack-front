@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Modal } from '@/components/ui/modal';
 import Button from '@/components/ui/button/Button';
 import Label from '@/components/form/Label';
@@ -27,8 +28,11 @@ export default function EvaluationNotesModal({
   isLoading = false,
   currentNotes = '',
   currentRating,
-  title = 'Notes d\'évaluation',
+  title,
 }: EvaluationNotesModalProps) {
+  const t = useTranslations('integrations');
+  const tc = useTranslations('common');
+  const modalTitle = title ?? t('modals.evaluationNotes.defaultTitle');
   const [formData, setFormData] = useState({
     evaluation_notes: '',
     performance_rating: 3,
@@ -53,7 +57,7 @@ export default function EvaluationNotesModal({
     setError(null);
 
     if (!formData.evaluation_notes.trim()) {
-      setError('Veuillez saisir des notes d\'évaluation');
+      setError(t('modals.evaluationNotes.errors.noNotes'));
       return;
     }
 
@@ -65,19 +69,19 @@ export default function EvaluationNotesModal({
       });
       onClose();
     } catch (error: any) {
-      setError(error?.message || 'Erreur lors de la sauvegarde des notes');
+      setError(error?.message || t('modals.evaluationNotes.errors.saveFailed'));
     }
   };
 
   const getRatingLabel = (rating: number) => {
-    const labels = {
-      1: 'Très insatisfaisant',
-      2: 'Insatisfaisant', 
-      3: 'Satisfaisant',
-      4: 'Très satisfaisant',
-      5: 'Excellent'
+    const labels: Record<number, string> = {
+      1: t('ratingLabels.1'),
+      2: t('ratingLabels.2'),
+      3: t('ratingLabels.3'),
+      4: t('ratingLabels.4'),
+      5: t('ratingLabels.5'),
     };
-    return labels[rating as keyof typeof labels] || 'Satisfaisant';
+    return labels[rating] || t('ratingLabels.3');
   };
 
   const getRatingColor = (rating: number) => {
@@ -93,7 +97,7 @@ export default function EvaluationNotesModal({
           <div className="flex items-center gap-3 mb-4 sm:mb-6">
             <span className="text-2xl">📝</span>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-              {title}
+              {modalTitle}
             </h2>
           </div>
 
@@ -111,12 +115,12 @@ export default function EvaluationNotesModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                 <span>⭐</span>
-                Évaluation de performance
+                {t('modals.evaluationNotes.performanceSection.title')}
               </h3>
-              
+
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="performance_rating">Note de performance</Label>
+                  <Label htmlFor="performance_rating">{t('modals.evaluationNotes.performanceSection.ratingLabel')}</Label>
                   <div className="mt-2">
                     <input
                       type="range"
@@ -150,11 +154,11 @@ export default function EvaluationNotesModal({
                 </div>
 
                 <div>
-                  <Label htmlFor="evaluation_date">Date d'évaluation</Label>
+                  <Label htmlFor="evaluation_date">{t('modals.evaluationNotes.performanceSection.dateLabel')}</Label>
                   <DatePicker
                     id="evaluation_date"
                     label=""
-                    placeholder="Sélectionner une date"
+                    placeholder={t('modals.create.positionSection.datePlaceholder')}
                     onChange={(dates, currentDateString) => {
                       setFormData({ ...formData, evaluation_date: currentDateString });
                     }}
@@ -168,33 +172,26 @@ export default function EvaluationNotesModal({
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                 <span>📋</span>
-                Notes détaillées
+                {t('modals.evaluationNotes.notesSection.title')}
               </h3>
-              
+
               <div>
-                <Label htmlFor="evaluation_notes">Notes d'évaluation *</Label>
+                <Label htmlFor="evaluation_notes">{t('modals.evaluationNotes.notesSection.label')} *</Label>
                 <textarea
                   id="evaluation_notes"
                   value={formData.evaluation_notes}
                   onChange={(e) => setFormData({ ...formData, evaluation_notes: e.target.value })}
                   rows={8}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Évaluez les performances du candidat intégré :
-
-• Points forts observés
-• Axes d'amélioration identifiés
-• Adaptation à l'équipe et à la culture d'entreprise
-• Atteinte des objectifs fixés
-• Recommandations pour la suite
-• Commentaires généraux sur l'intégration"
+                  placeholder={t('modals.evaluationNotes.notesSection.placeholder')}
                   required
                 />
                 <div className="flex justify-between items-center mt-1">
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Soyez précis et constructif dans votre évaluation
+                    {t('modals.evaluationNotes.notesSection.helper')}
                   </p>
                   <span className="text-xs text-gray-400 dark:text-gray-500">
-                    {formData.evaluation_notes.length} caractères
+                    {t('modals.evaluationNotes.notesSection.characterCount', { count: formData.evaluation_notes.length })}
                   </span>
                 </div>
               </div>
@@ -206,14 +203,14 @@ export default function EvaluationNotesModal({
                 <span className="text-blue-600 dark:text-blue-400 text-sm">💡</span>
                 <div className="text-sm">
                   <p className="font-medium text-blue-900 dark:text-blue-100 mb-2">
-                    Conseils pour une évaluation complète
+                    {t('modals.evaluationNotes.tipsSection.title')}
                   </p>
                   <ul className="text-blue-700 dark:text-blue-300 space-y-1 text-xs">
-                    <li>• Évaluez les compétences techniques et comportementales</li>
-                    <li>• Mentionnez l'adaptation à l'équipe et aux processus</li>
-                    <li>• Indiquez les objectifs atteints et ceux à améliorer</li>
-                    <li>• Proposez des recommandations constructives</li>
-                    <li>• Soyez objectif et factuel dans vos observations</li>
+                    <li>{t('modals.evaluationNotes.tipsSection.tip1')}</li>
+                    <li>{t('modals.evaluationNotes.tipsSection.tip2')}</li>
+                    <li>{t('modals.evaluationNotes.tipsSection.tip3')}</li>
+                    <li>{t('modals.evaluationNotes.tipsSection.tip4')}</li>
+                    <li>{t('modals.evaluationNotes.tipsSection.tip5')}</li>
                   </ul>
                 </div>
               </div>
@@ -222,15 +219,15 @@ export default function EvaluationNotesModal({
 
           <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
             <Button type="button" onClick={onClose} variant="outline" className="w-full sm:w-auto">
-              Annuler
+              {tc('actions.cancel')}
             </Button>
-            <Button 
-              type="submit" 
-              disabled={isLoading || !formData.evaluation_notes.trim()} 
+            <Button
+              type="submit"
+              disabled={isLoading || !formData.evaluation_notes.trim()}
               variant="primary"
               className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
             >
-              {isLoading ? 'Sauvegarde...' : '💾 Sauvegarder'}
+              {isLoading ? t('modals.evaluationNotes.saving') : t('modals.evaluationNotes.save')}
             </Button>
           </div>
         </div>

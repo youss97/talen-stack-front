@@ -1,0 +1,24 @@
+{
+  "page": {
+    "title": "Logs d'audit",
+    "subtitle": "Consultez les logs système"
+  },
+  "filters": {
+    "action": "Action",
+    "allActions": "Toutes les actions",
+    "table": "Table",
+    "tablePlaceholder": "Filtrer par table..."
+  },
+  "table": {
+    "columns": {
+      "action": "Action",
+      "table": "Table",
+      "user": "Utilisateur",
+      "company": "Entreprise",
+      "date": "Date"
+    },
+    "unknownUser": "Utilisateur inconnu",
+    "system": "Système",
+    "emptyState": "Aucun log trouvé"
+  }
+}

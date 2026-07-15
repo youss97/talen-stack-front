@@ -1,0 +1,97 @@
+{
+  "list": {
+    "title": "Gestion des Collaborateurs",
+    "subtitle": "Gérez les collaborateurs assignés aux clients",
+    "addButton": "Ajouter un Collaborateur",
+    "clientSelect": {
+      "label": "Sélectionner un client",
+      "placeholder": "Choisir un client...",
+      "emptyMessage": "Aucun client trouvé"
+    },
+    "columns": {
+      "collaborator": "Collaborateur",
+      "email": "Email",
+      "phone": "Téléphone",
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "blocked": "Bloqué"
+    },
+    "emptyState": {
+      "noClientTitle": "Sélectionnez un client",
+      "noClientSubtitle": "Choisissez un client pour voir et gérer ses collaborateurs",
+      "noManagers": "Aucun collaborateur trouvé pour ce client"
+    },
+    "clientInactiveWarning": "Ce client est désactivé. Vous devez d'abord activer le client pour pouvoir gérer ses managers."
+  },
+  "toasts": {
+    "selectClientFirstTitle": "Erreur",
+    "selectClientFirstMessage": "Veuillez sélectionner un client",
+    "updateSuccess": "Collaborateur modifié avec succès",
+    "createSuccess": "Collaborateur créé avec succès",
+    "errorTitle": "Erreur",
+    "updateError": "Erreur lors de la modification du collaborateur",
+    "createError": "Erreur lors de la création du collaborateur",
+    "statusToggleError": "Erreur lors de la modification du statut",
+    "managerActivatedSuccess": "Manager activé avec succès",
+    "managerDeactivatedSuccess": "Manager désactivé avec succès"
+  },
+  "confirm": {
+    "deactivateTitle": "Désactiver le manager",
+    "activateTitle": "Activer le manager",
+    "deactivateMessage": "Êtes-vous sûr de vouloir désactiver {name} ? Il ne pourra plus se connecter.",
+    "activateMessage": "Êtes-vous sûr de vouloir activer {name} ? Il pourra se connecter.",
+    "deactivateConfirm": "Désactiver",
+    "activateConfirm": "Activer"
+  },
+  "form": {
+    "editTitle": "Modifier le manager",
+    "addTitle": "Ajouter un manager",
+    "editSubtitle": "Modifiez les informations du manager",
+    "addSubtitle": "Créez un nouveau manager pour ce client",
+    "photoLabel": "Photo de profil (optionnelle)",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "Email",
+    "password": "Mot de passe",
+    "passwordEditHint": "(laisser vide pour ne pas changer)",
+    "phone": "Téléphone",
+    "position": "Position",
+    "positionPlaceholder": "Directeur des Ressources Humaines",
+    "cancel": "Annuler",
+    "submitting": "Création...",
+    "updating": "Modification...",
+    "submitCreate": "Créer le manager",
+    "submitUpdate": "Modifier"
+  },
+  "detail": {
+    "defaultName": "Collaborateur",
+    "email": "Email",
+    "phone": "Téléphone",
+    "position": "Position",
+    "status": "Statut",
+    "close": "Fermer"
+  },
+  "formModal": {
+    "editTitle": "Modifier le manager",
+    "addTitle": "Ajouter un manager",
+    "editSubtitle": "Modifiez les informations du manager",
+    "addSubtitle": "Créez un nouveau manager pour ce client",
+    "photoLabel": "Photo de profil (optionnelle)",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "Email",
+    "password": "Mot de passe",
+    "passwordEditHint": "(laisser vide pour ne pas changer)",
+    "phone": "Téléphone",
+    "position": "Position",
+    "positionPlaceholder": "Directeur des Ressources Humaines",
+    "cancel": "Annuler",
+    "submitting": "Création...",
+    "updating": "Modification...",
+    "submitCreate": "Créer le manager",
+    "submitUpdate": "Modifier"
+  }
+}

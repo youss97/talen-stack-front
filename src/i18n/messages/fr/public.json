@@ -1,0 +1,207 @@
+{
+  "poweredBy": "Powered by TalentStack",
+  "jobsMeta": {
+    "title": "Offre d'emploi",
+    "description": "Consultez et postulez à cette offre d'emploi."
+  },
+  "applyMeta": {
+    "title": "Offre d'emploi",
+    "description": "Consultez et postulez à cette offre d'emploi."
+  },
+  "apply": {
+    "badge": "OFFRE EN COURS",
+    "loading": "Chargement de l'offre…",
+    "notFound": {
+      "title": "Offre introuvable",
+      "message": "Cette offre n'existe pas ou n'est plus disponible."
+    },
+    "hero": {
+      "experience": "{count, plural, one {# an d'exp.} other {# ans d'exp.}}",
+      "cta": "Postuler à cette offre"
+    },
+    "success": {
+      "title": "Candidature envoyée avec succès !",
+      "message": "Notre équipe RH vous recontactera dans les meilleurs délais."
+    },
+    "sections": {
+      "description": "Description du poste",
+      "skills": "Compétences requises",
+      "details": "Détails du poste"
+    },
+    "sidebar": {
+      "reference": "Référence",
+      "contract": "Contrat",
+      "location": "Lieu",
+      "experience": "Expérience",
+      "experienceValue": "{count, plural, one {# an minimum} other {# ans minimum}}",
+      "salary": "Salaire",
+      "salaryFrom": "À partir de {value}",
+      "salaryTo": "Jusqu'à {value}",
+      "duration": "Durée",
+      "remote": "Télétravail",
+      "remoteYes": "Possible",
+      "remoteNo": "Non",
+      "deadline": "Date limite",
+      "startDate": "Début souhaité",
+      "industry": "Secteur"
+    },
+    "mobileCta": {
+      "prompt": "Intéressé(e) par ce poste ?",
+      "button": "Postuler maintenant"
+    },
+    "sidebarCta": "Postuler maintenant",
+    "modal": {
+      "title": "Postuler",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Jean",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Dupont",
+      "email": "Email",
+      "emailPlaceholder": "jean@exemple.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "+212 6 00 00 00 00",
+      "cv": "CV (PDF, DOC, DOCX — max 5 MB)",
+      "cvDropActive": "Déposez le fichier ici",
+      "cvDropIdle": "Glisser ou cliquer pour déposer votre CV",
+      "message": "Lettre de motivation",
+      "optional": "(optionnel)",
+      "messagePlaceholder": "Parlez-nous de vous et de votre motivation pour ce poste…",
+      "cancel": "Annuler",
+      "submitting": "Envoi…",
+      "submit": "Envoyer ma candidature",
+      "errors": {
+        "invalidFileType": "PDF, DOC ou DOCX uniquement",
+        "fileTooLarge": "Fichier trop lourd (max 5 MB)",
+        "dropRejected": "PDF, DOC ou DOCX uniquement (max 5 MB)",
+        "requiredFields": "Veuillez remplir tous les champs obligatoires",
+        "cvRequired": "Veuillez joindre votre CV",
+        "generic": "Erreur lors de l'envoi. Veuillez réessayer."
+      }
+    },
+    "footer": {
+      "rightsWithName": "© {year} {name}. Tous droits réservés.",
+      "rightsNoName": "© {year}. Tous droits réservés."
+    }
+  },
+  "company": {
+    "loading": "Chargement…",
+    "notFound": "Entreprise non trouvée",
+    "spontaneousCta": "Candidature spontanée",
+    "spontaneousModalTitle": "Candidature spontanée",
+    "spontaneousModalSubtitle": "Envoyez votre profil à {name}",
+    "successBanner": "Votre candidature spontanée a bien été envoyée. Merci !",
+    "filters": {
+      "contractType": "Type de contrat",
+      "countryAll": "Pays (tous)",
+      "cityAll": "Ville (toutes)",
+      "maxExperience": "Expérience max (ans)"
+    },
+    "offersTitle": "Offres d'emploi",
+    "offersCount": "{count, plural, one {# offre} other {# offres}}",
+    "experienceYears": "{count, plural, one {# an d'expérience} other {# ans d'expérience}}",
+    "viewDetails": "Voir les détails",
+    "noOffers": "Aucune offre disponible pour ces critères.",
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant"
+    },
+    "form": {
+      "firstNamePlaceholder": "Prénom",
+      "lastNamePlaceholder": "Nom",
+      "emailPlaceholder": "Email",
+      "phonePlaceholder": "Téléphone",
+      "cv": "CV (PDF, DOC, DOCX — max 5 MB)",
+      "cvDropActive": "Déposez le fichier ici",
+      "cvDropIdle": "Glisser ou cliquer pour déposer votre CV",
+      "messagePlaceholder": "Message (optionnel)",
+      "cancel": "Annuler",
+      "sending": "Envoi…",
+      "send": "Envoyer",
+      "errors": {
+        "invalidFileType": "PDF, DOC ou DOCX uniquement",
+        "fileTooLarge": "Fichier trop lourd (max 5 MB)",
+        "dropRejected": "PDF, DOC ou DOCX uniquement (max 5 MB)",
+        "requiredFields": "Veuillez remplir tous les champs obligatoires",
+        "cvRequired": "Veuillez joindre votre CV",
+        "generic": "Erreur lors de l'envoi. Veuillez réessayer."
+      }
+    },
+    "footer": {
+      "copyright": "© {year} {name}"
+    }
+  },
+  "jobs": {
+    "badge": "OFFRE EN COURS",
+    "loading": "Chargement de l'offre…",
+    "notFound": {
+      "title": "Offre introuvable",
+      "message": "Cette offre n'existe pas ou a expiré."
+    },
+    "hero": {
+      "experience": "{count, plural, one {# an d'exp.} other {# ans d'exp.}}"
+    },
+    "sections": {
+      "about": "À propos du poste",
+      "skills": "Compétences requises",
+      "apply": "Postuler à cette offre"
+    },
+    "info": {
+      "contract": "Contrat",
+      "location": "Lieu",
+      "salary": "Salaire",
+      "experience": "Expérience",
+      "deadline": "Date limite"
+    },
+    "details": "Détails du poste",
+    "form": {
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Jean",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Dupont",
+      "email": "Email",
+      "emailPlaceholder": "jean@exemple.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "+212 6 00 00 00 00",
+      "cv": "CV (PDF, DOC, DOCX — max 5 MB)",
+      "cvDropIdle": "Glisser ou cliquer pour déposer votre CV",
+      "message": "Message de motivation",
+      "messagePlaceholder": "Parlez-nous de vous et de votre motivation pour ce poste…",
+      "submitting": "Envoi en cours…",
+      "submit": "Envoyer ma candidature",
+      "errors": {
+        "fileTooLargeTitle": "Fichier trop volumineux",
+        "fileTooLargeMessage": "Le CV ne doit pas dépasser 5 MB",
+        "errorTitle": "Erreur",
+        "requiredFields": "Veuillez remplir tous les champs obligatoires",
+        "submitFailed": "Erreur lors de l'envoi de la candidature"
+      }
+    },
+    "success": {
+      "title": "Candidature envoyée !",
+      "message": "Merci pour votre candidature. Notre équipe RH vous recontactera dans les meilleurs délais."
+    },
+    "applyShortcut": "Postuler maintenant →",
+    "footer": {
+      "rightsWithName": "© {year} {name}. Tous droits réservés.",
+      "rightsNoName": "© {year}. Tous droits réservés."
+    }
+  },
+  "track": {
+    "loading": "Chargement…",
+    "notFound": "Candidature introuvable",
+    "genericError": "Erreur",
+    "title": "Suivi de candidature",
+    "status": "Statut : {status}",
+    "step": "Étape : {step}",
+    "receivedOn": "Candidature reçue le {date}",
+    "history": "Historique"
+  },
+  "card": {
+    "loading": "Chargement…",
+    "notFound": "Carte introuvable",
+    "call": "Appeler",
+    "email": "Envoyer un email",
+    "addToContacts": "Ajouter aux contacts",
+    "link": "Lien"
+  }
+}

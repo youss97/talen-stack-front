@@ -1,0 +1,207 @@
+{
+  "poweredBy": "بدعم من TalentStack",
+  "jobsMeta": {
+    "title": "عرض عمل",
+    "description": "اطّلعوا على هذا العرض وقدّموا ترشيحكم."
+  },
+  "applyMeta": {
+    "title": "عرض عمل",
+    "description": "اطّلعوا على هذا العرض وقدّموا ترشيحكم."
+  },
+  "apply": {
+    "badge": "عرض شغل متاح",
+    "loading": "جاري تحميل العرض…",
+    "notFound": {
+      "title": "العرض غير موجود",
+      "message": "هذا العرض غير موجود أو لم يعد متاحًا."
+    },
+    "hero": {
+      "experience": "{count, plural, one {سنة خبرة واحدة} two {سنتا خبرة} few {# سنوات خبرة} many {# سنة خبرة} other {# سنة خبرة}}",
+      "cta": "التقدم لهذا العرض"
+    },
+    "success": {
+      "title": "تم إرسال طلبك بنجاح!",
+      "message": "سيتواصل معك فريق الموارد البشرية في أقرب وقت ممكن."
+    },
+    "sections": {
+      "description": "وصف الوظيفة",
+      "skills": "المهارات المطلوبة",
+      "details": "تفاصيل الوظيفة"
+    },
+    "sidebar": {
+      "reference": "المرجع",
+      "contract": "نوع العقد",
+      "location": "الموقع",
+      "experience": "الخبرة",
+      "experienceValue": "{count, plural, one {سنة خبرة واحدة على الأقل} two {سنتا خبرة على الأقل} few {# سنوات خبرة على الأقل} many {# سنة خبرة على الأقل} other {# سنة خبرة على الأقل}}",
+      "salary": "الراتب",
+      "salaryFrom": "ابتداءً من {value}",
+      "salaryTo": "إلى غاية {value}",
+      "duration": "المدة",
+      "remote": "العمل عن بعد",
+      "remoteYes": "متاح",
+      "remoteNo": "غير متاح",
+      "deadline": "آخر أجل للترشح",
+      "startDate": "تاريخ الانطلاق المرغوب",
+      "industry": "القطاع"
+    },
+    "mobileCta": {
+      "prompt": "مهتم بهذه الوظيفة؟",
+      "button": "قدّم الآن"
+    },
+    "sidebarCta": "قدّم الآن",
+    "modal": {
+      "title": "التقديم",
+      "firstName": "الاسم الشخصي",
+      "firstNamePlaceholder": "أحمد",
+      "lastName": "الاسم العائلي",
+      "lastNamePlaceholder": "بنعلي",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "ahmed@example.com",
+      "phone": "الهاتف",
+      "phonePlaceholder": "+212 6 00 00 00 00",
+      "cv": "السيرة الذاتية (PDF، DOC، DOCX — بحد أقصى 5 ميغابايت)",
+      "cvDropActive": "أفلت الملف هنا",
+      "cvDropIdle": "اسحب وأفلت أو انقر لإرفاق سيرتك الذاتية",
+      "message": "رسالة تحفيزية",
+      "optional": "(اختياري)",
+      "messagePlaceholder": "حدّثنا عن نفسك وعن دوافعك للتقدم لهذه الوظيفة…",
+      "cancel": "إلغاء",
+      "submitting": "جاري الإرسال…",
+      "submit": "إرسال طلب الترشح",
+      "errors": {
+        "invalidFileType": "PDF أو DOC أو DOCX فقط",
+        "fileTooLarge": "الملف كبير جدًا (بحد أقصى 5 ميغابايت)",
+        "dropRejected": "PDF أو DOC أو DOCX فقط (بحد أقصى 5 ميغابايت)",
+        "requiredFields": "يرجى ملء جميع الحقول الإلزامية",
+        "cvRequired": "يرجى إرفاق سيرتك الذاتية",
+        "generic": "حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "footer": {
+      "rightsWithName": "© {year} {name}. جميع الحقوق محفوظة.",
+      "rightsNoName": "© {year}. جميع الحقوق محفوظة."
+    }
+  },
+  "company": {
+    "loading": "جاري التحميل…",
+    "notFound": "الشركة غير موجودة",
+    "spontaneousCta": "ترشح تلقائي",
+    "spontaneousModalTitle": "ترشح تلقائي",
+    "spontaneousModalSubtitle": "أرسل ملفك إلى {name}",
+    "successBanner": "تم إرسال ترشحك التلقائي بنجاح. شكرًا لك!",
+    "filters": {
+      "contractType": "نوع العقد",
+      "countryAll": "البلد (الكل)",
+      "cityAll": "المدينة (الكل)",
+      "maxExperience": "الحد الأقصى للخبرة (سنوات)"
+    },
+    "offersTitle": "عروض الشغل",
+    "offersCount": "{count, plural, one {عرض واحد} two {عرضان} few {# عروض} many {# عرضًا} other {# عرض}}",
+    "experienceYears": "{count, plural, one {سنة خبرة واحدة} two {سنتا خبرة} few {# سنوات خبرة} many {# سنة خبرة} other {# سنة خبرة}}",
+    "viewDetails": "عرض التفاصيل",
+    "noOffers": "لا توجد عروض متاحة لهذه المعايير.",
+    "pagination": {
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "form": {
+      "firstNamePlaceholder": "الاسم الشخصي",
+      "lastNamePlaceholder": "الاسم العائلي",
+      "emailPlaceholder": "البريد الإلكتروني",
+      "phonePlaceholder": "الهاتف",
+      "cv": "السيرة الذاتية (PDF، DOC، DOCX — بحد أقصى 5 ميغابايت)",
+      "cvDropActive": "أفلت الملف هنا",
+      "cvDropIdle": "اسحب وأفلت أو انقر لإرفاق سيرتك الذاتية",
+      "messagePlaceholder": "رسالة (اختياري)",
+      "cancel": "إلغاء",
+      "sending": "جاري الإرسال…",
+      "send": "إرسال",
+      "errors": {
+        "invalidFileType": "PDF أو DOC أو DOCX فقط",
+        "fileTooLarge": "الملف كبير جدًا (بحد أقصى 5 ميغابايت)",
+        "dropRejected": "PDF أو DOC أو DOCX فقط (بحد أقصى 5 ميغابايت)",
+        "requiredFields": "يرجى ملء جميع الحقول الإلزامية",
+        "cvRequired": "يرجى إرفاق سيرتك الذاتية",
+        "generic": "حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "footer": {
+      "copyright": "© {year} {name}"
+    }
+  },
+  "jobs": {
+    "badge": "عرض شغل متاح",
+    "loading": "جاري تحميل العرض…",
+    "notFound": {
+      "title": "العرض غير موجود",
+      "message": "هذا العرض غير موجود أو انتهت صلاحيته."
+    },
+    "hero": {
+      "experience": "{count, plural, one {سنة خبرة واحدة} two {سنتا خبرة} few {# سنوات خبرة} many {# سنة خبرة} other {# سنة خبرة}}"
+    },
+    "sections": {
+      "about": "عن الوظيفة",
+      "skills": "المهارات المطلوبة",
+      "apply": "التقدم لهذا العرض"
+    },
+    "info": {
+      "contract": "نوع العقد",
+      "location": "الموقع",
+      "salary": "الراتب",
+      "experience": "الخبرة",
+      "deadline": "آخر أجل للترشح"
+    },
+    "details": "تفاصيل الوظيفة",
+    "form": {
+      "firstName": "الاسم الشخصي",
+      "firstNamePlaceholder": "أحمد",
+      "lastName": "الاسم العائلي",
+      "lastNamePlaceholder": "بنعلي",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "ahmed@example.com",
+      "phone": "الهاتف",
+      "phonePlaceholder": "+212 6 00 00 00 00",
+      "cv": "السيرة الذاتية (PDF، DOC، DOCX — بحد أقصى 5 ميغابايت)",
+      "cvDropIdle": "اسحب وأفلت أو انقر لإرفاق سيرتك الذاتية",
+      "message": "رسالة تحفيزية",
+      "messagePlaceholder": "حدّثنا عن نفسك وعن دوافعك للتقدم لهذه الوظيفة…",
+      "submitting": "جاري الإرسال…",
+      "submit": "إرسال طلب الترشح",
+      "errors": {
+        "fileTooLargeTitle": "الملف كبير جدًا",
+        "fileTooLargeMessage": "يجب ألا يتجاوز حجم سيرتك الذاتية 5 ميغابايت",
+        "errorTitle": "خطأ",
+        "requiredFields": "يرجى ملء جميع الحقول الإلزامية",
+        "submitFailed": "حدث خطأ أثناء إرسال طلب الترشح"
+      }
+    },
+    "success": {
+      "title": "تم إرسال طلبك!",
+      "message": "شكرًا على ترشحك. سيتواصل معك فريق الموارد البشرية في أقرب وقت ممكن."
+    },
+    "applyShortcut": "قدّم الآن ←",
+    "footer": {
+      "rightsWithName": "© {year} {name}. جميع الحقوق محفوظة.",
+      "rightsNoName": "© {year}. جميع الحقوق محفوظة."
+    }
+  },
+  "track": {
+    "loading": "جاري التحميل…",
+    "notFound": "الترشح غير موجود",
+    "genericError": "خطأ",
+    "title": "تتبّع الترشح",
+    "status": "الحالة: {status}",
+    "step": "المرحلة: {step}",
+    "receivedOn": "تم استلام الترشح بتاريخ {date}",
+    "history": "السجل"
+  },
+  "card": {
+    "loading": "جاري التحميل…",
+    "notFound": "البطاقة غير موجودة",
+    "call": "اتصال",
+    "email": "إرسال بريد إلكتروني",
+    "addToContacts": "إضافة إلى جهات الاتصال",
+    "link": "رابط"
+  }
+}

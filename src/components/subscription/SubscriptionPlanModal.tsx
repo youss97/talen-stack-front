@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import Label from "@/components/form/Label";
@@ -32,6 +33,8 @@ export default function SubscriptionPlanModal({
   onSaved,
   onError,
 }: SubscriptionPlanModalProps) {
+  const t = useTranslations("subscriptions");
+  const tc = useTranslations("common");
   const isEditing = !!plan;
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -82,7 +85,7 @@ export default function SubscriptionPlanModal({
   };
 
   const handleSave = async () => {
-    if (!name.trim()) { onError?.("Le nom du plan est requis"); return; }
+    if (!name.trim()) { onError?.(t("planModal.errors.nameRequired")); return; }
 
     const data = {
       name: name.trim(),
@@ -97,14 +100,14 @@ export default function SubscriptionPlanModal({
     try {
       if (isEditing && plan) {
         await updatePlan({ id: plan.id, data }).unwrap();
-        onSaved?.(`Plan "${name}" mis à jour avec succès`);
+        onSaved?.(t("planModal.success.updated", { name }));
       } else {
         await createPlan(data).unwrap();
-        onSaved?.(`Plan "${name}" créé avec succès`);
+        onSaved?.(t("planModal.success.created", { name }));
       }
       onClose();
     } catch {
-      onError?.(`Erreur lors de ${isEditing ? "la modification" : "la création"} du plan`);
+      onError?.(isEditing ? t("planModal.errors.updateError") : t("planModal.errors.createError"));
     }
   };
 
@@ -115,10 +118,10 @@ export default function SubscriptionPlanModal({
       <div className="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
           <span>📦</span>
-          {isEditing ? "Modifier le plan" : "Nouveau plan d'abonnement"}
+          {isEditing ? t("planModal.title.edit") : t("planModal.title.new")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Définissez les modules inclus et le tarif
+          {t("planModal.subtitle")}
         </p>
       </div>
 
@@ -126,21 +129,21 @@ export default function SubscriptionPlanModal({
         {/* Informations */}
         <div>
           <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3">
-            Informations
+            {t("planModal.sections.information")}
           </h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <Label>Nom du plan <span className="text-error-500">*</span></Label>
+              <Label>{t("planModal.fields.planName")} <span className="text-error-500">*</span></Label>
               <Input
-                placeholder="Ex: Starter, Pro, Enterprise..."
+                placeholder={t("planModal.fields.planNamePlaceholder")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div className="sm:col-span-2">
-              <Label>Description</Label>
+              <Label>{t("planModal.fields.description")}</Label>
               <textarea
-                placeholder="Décrivez ce plan en quelques mots..."
+                placeholder={t("planModal.fields.descriptionPlaceholder")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
@@ -148,7 +151,7 @@ export default function SubscriptionPlanModal({
               />
             </div>
             <div>
-              <Label>Prix</Label>
+              <Label>{t("planModal.fields.price")}</Label>
               <div className="flex gap-2">
                 <Input
                   type="number"
@@ -173,15 +176,15 @@ export default function SubscriptionPlanModal({
               </div>
             </div>
             <div>
-              <Label>Facturation</Label>
+              <Label>{t("planModal.fields.billingCycle")}</Label>
               <select
                 value={billingCycle}
                 onChange={(e) => setBillingCycle(e.target.value as "monthly" | "annual" | "one_time")}
                 className={inputClass}
               >
-                <option value="monthly">Mensuel</option>
-                <option value="annual">Annuel</option>
-                <option value="one_time">Paiement unique</option>
+                <option value="monthly">{t("billing.monthly")}</option>
+                <option value="annual">{t("billing.annual")}</option>
+                <option value="one_time">{t("billing.one_time")}</option>
               </select>
             </div>
             <div className="flex items-center gap-3">
@@ -192,7 +195,7 @@ export default function SubscriptionPlanModal({
                   onChange={(e) => setIsActive(e.target.checked)}
                   className="h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500"
                 />
-                <span className="text-sm text-gray-700 dark:text-gray-300">Plan actif</span>
+                <span className="text-sm text-gray-700 dark:text-gray-300">{t("planModal.fields.planActive")}</span>
               </label>
             </div>
           </div>
@@ -202,13 +205,13 @@ export default function SubscriptionPlanModal({
         <div>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide flex items-center gap-2">
-              Modules inclus
+              {t("planModal.sections.modulesIncluded")}
               <span className="normal-case inline-flex items-center rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-600 dark:bg-brand-900/30 dark:text-brand-400">
                 {selectedFeatureIds.size}/{availableFeatures.length}
               </span>
             </h3>
             <button type="button" onClick={toggleAll} className="text-xs text-brand-600 dark:text-brand-400 hover:underline">
-              {selectedFeatureIds.size === availableFeatures.length ? "Tout désélectionner" : "Tout sélectionner"}
+              {selectedFeatureIds.size === availableFeatures.length ? t("planModal.modules.deselectAll") : t("planModal.modules.selectAll")}
             </button>
           </div>
 
@@ -254,15 +257,15 @@ export default function SubscriptionPlanModal({
           </div>
 
           <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
-            * Les modules Entreprises et Logs sont réservés au Super Admin et non disponibles dans les abonnements.
+            {t("planModal.modules.footnote")}
           </p>
         </div>
       </div>
 
       <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 dark:border-gray-800">
-        <Button variant="outline" onClick={onClose} disabled={isSaving}>Annuler</Button>
+        <Button variant="outline" onClick={onClose} disabled={isSaving}>{tc("actions.cancel")}</Button>
         <Button onClick={handleSave} disabled={isSaving}>
-          {isSaving ? "Sauvegarde..." : isEditing ? "Modifier" : "Créer le plan"}
+          {isSaving ? t("planModal.buttons.saving") : isEditing ? tc("actions.edit") : t("planModal.buttons.createPlan")}
         </Button>
       </div>
     </Modal>

@@ -1,0 +1,46 @@
+{
+  "page": {
+    "title": "الإحصائيات",
+    "description": "نظرة عامة على نشاط التوظيف",
+    "loadingDescription": "نظرة عامة على النشاط"
+  },
+  "kpis": {
+    "companies": "الشركات",
+    "clients": "العملاء",
+    "cvs": "المواهب",
+    "recruitmentRequests": "طلبات التوظيف",
+    "applications": "الترشيحات",
+    "integrations": "التكاملات",
+    "users": "المستخدمون"
+  },
+  "filters": {
+    "presets": {
+      "7d": "7 أيام",
+      "30d": "30 يومًا",
+      "3m": "3 أشهر",
+      "12m": "12 شهرًا",
+      "all": "الكل"
+    },
+    "companyPlaceholder": "جميع الشركات",
+    "companyEmpty": "لم يتم العثور على أي شركة",
+    "dateRangePlaceholder": "اختر نطاقًا زمنيًا…"
+  },
+  "charts": {
+    "newCompaniesPerMonth": "الشركات الجديدة شهريًا",
+    "applicationsPerMonthGlobal": "الترشيحات الشهرية (إجمالي)",
+    "companiesByStatus": "الشركات حسب الحالة",
+    "trafficByCompany": "الحركة حسب الشركة (الترشيحات)",
+    "applicationsPerMonth": "الترشيحات الشهرية",
+    "requestsByStatus": "الطلبات حسب الحالة",
+    "integrationsByStatus": "التكاملات حسب الحالة",
+    "topClients": "أفضل العملاء (الطلبات)",
+    "series": {
+      "companies": "الشركات",
+      "applications": "الترشيحات",
+      "total": "الإجمالي"
+    }
+  },
+  "empty": {
+    "noStats": "لا تتوفر أي إحصائيات."
+  }
+}

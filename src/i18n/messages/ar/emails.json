@@ -1,0 +1,140 @@
+{
+  "page": {
+    "title": "إدارة البريد الإلكتروني",
+    "subtitle": "أرسل رسائل بريد إلكتروني جماعية إلى المرشحين والعملاء والمستخدمين والمديرين",
+    "newEmail": "بريد إلكتروني جديد"
+  },
+  "filters": {
+    "searchPlaceholder": "البحث حسب الموضوع...",
+    "allStatuses": "كل الحالات"
+  },
+  "status": {
+    "draft": "مسودة",
+    "sent": "تم الإرسال",
+    "failed": "فشل",
+    "scheduled": "مجدول"
+  },
+  "table": {
+    "columns": {
+      "sender": "المرسل",
+      "recipients": "المستلمون",
+      "status": "الحالة",
+      "sentAt": "تاريخ الإرسال",
+      "createdAt": "تاريخ الإنشاء"
+    },
+    "recipientsCount": "{count} مستلم(ين)",
+    "sentFailedCount": "تم الإرسال: {sent} | فشل: {failed}",
+    "scheduledFor": "مجدول: {date}",
+    "emptyMessage": "لم يتم العثور على رسائل بريد إلكتروني"
+  },
+  "actions": {
+    "edit": "تعديل",
+    "sendNow": "إرسال الآن",
+    "cancelSchedule": "إلغاء الجدولة"
+  },
+  "toast": {
+    "deleteSuccessTitle": "نجاح",
+    "deleteSuccessMessage": "تم حذف البريد الإلكتروني بنجاح",
+    "deleteErrorTitle": "خطأ",
+    "deleteErrorMessage": "خطأ أثناء حذف البريد الإلكتروني",
+    "sendSuccessTitle": "نجاح",
+    "sendSuccessMessage": "تم إرسال البريد الإلكتروني بنجاح",
+    "sendErrorTitle": "خطأ",
+    "sendErrorMessage": "خطأ أثناء إرسال البريد الإلكتروني",
+    "cancelSuccessTitle": "نجاح",
+    "cancelSuccessMessage": "تم إلغاء الجدولة — تمت إعادة البريد الإلكتروني إلى مسودة",
+    "cancelErrorTitle": "خطأ",
+    "cancelErrorMessage": "خطأ أثناء إلغاء الجدولة"
+  },
+  "deleteModal": {
+    "title": "حذف البريد الإلكتروني",
+    "message": "هل أنت متأكد أنك تريد حذف البريد الإلكتروني \"{subject}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+    "confirmText": "حذف",
+    "cancelText": "إلغاء"
+  },
+  "detailModal": {
+    "title": "تفاصيل البريد الإلكتروني",
+    "sender": "المرسل",
+    "stats": {
+      "totalRecipients": "إجمالي المستلمين",
+      "sent": "تم الإرسال",
+      "failed": "فشل"
+    },
+    "recipients": "المستلمون ({count})",
+    "cc": "نسخة كربونية ({count})",
+    "bcc": "نسخة كربونية مخفية ({count})",
+    "message": "الرسالة",
+    "errorMessage": "رسالة الخطأ",
+    "createdAt": "تاريخ الإنشاء",
+    "sentAt": "تاريخ الإرسال"
+  },
+  "formModal": {
+    "titleAdd": "إرسال بريد إلكتروني",
+    "titleEdit": "تعديل المسودة",
+    "subtitle": "اختر المستلمين واكتب رسالتك",
+    "sendSuccess": "تم إرسال البريد الإلكتروني بنجاح!",
+    "errors": {
+      "noRecipient": "الرجاء اختيار مستلم واحد على الأقل.",
+      "noScheduleDate": "الرجاء اختيار تاريخ ووقت الإرسال.",
+      "scheduleDateFuture": "يجب أن يكون تاريخ الإرسال في المستقبل.",
+      "sendFailed": "خطأ أثناء إرسال البريد الإلكتروني. تحقق من المستلمين وحاول مرة أخرى."
+    },
+    "to": {
+      "badge": "إلى",
+      "title": "المستلمون الرئيسيون",
+      "selectedCount": "تم اختيار {count}",
+      "candidates": "المرشحون",
+      "candidatesPlaceholder": "البحث عن مرشحين...",
+      "clients": "العملاء",
+      "clientsPlaceholder": "البحث عن عملاء...",
+      "clientNoEmail": "{name} (بدون بريد إلكتروني)",
+      "users": "المستخدمون",
+      "usersPlaceholder": "البحث عن مستخدمين...",
+      "managers": "المديرون",
+      "selectClientFirst": "اختر عميلاً أولاً...",
+      "managersPlaceholder": "البحث عن مديرين...",
+      "manualEmails": "عناوين بريد إلكتروني يدوية",
+      "manualEmailsPlaceholder": "example@email.com، اضغط Enter..."
+    },
+    "cc": {
+      "showLabel": "إضافة نسخة كربونية (CC)",
+      "hideLabel": "إخفاء النسخة",
+      "selectedCount": "تم اختيار {count}",
+      "candidates": "المرشحون (نسخة كربونية)",
+      "candidatesPlaceholder": "البحث عن مرشحين لنسخة كربونية...",
+      "clients": "العملاء (نسخة كربونية)",
+      "clientsPlaceholder": "البحث عن عملاء لنسخة كربونية...",
+      "managers": "المديرون (نسخة كربونية)",
+      "managersPlaceholder": "البحث عن مديرين لنسخة كربونية...",
+      "manualEmails": "عناوين نسخة كربونية يدوية",
+      "manualEmailsPlaceholder": "cc@email.com، اضغط Enter..."
+    },
+    "bcc": {
+      "showLabel": "إضافة نسخة كربونية مخفية (BCC)",
+      "hideLabel": "إخفاء النسخة المخفية",
+      "selectedCount": "تم اختيار {count}",
+      "manualEmails": "عناوين النسخة الكربونية المخفية",
+      "manualEmailsPlaceholder": "bcc@email.com، اضغط Enter..."
+    },
+    "subject": "الموضوع",
+    "subjectPlaceholder": "أدخل موضوع البريد الإلكتروني",
+    "subjectRequired": "الموضوع مطلوب",
+    "message": "الرسالة",
+    "messagePlaceholder": "أدخل محتوى البريد الإلكتروني",
+    "messageRequired": "الرسالة مطلوبة",
+    "addButton": "إضافة",
+    "footer": {
+      "recipientsCount": "{count} مستلم(ين)",
+      "ccCount": "{count} نسخة كربونية",
+      "bccCount": "{count} نسخة كربونية مخفية",
+      "scheduleEnabled": "تم تفعيل الجدولة",
+      "scheduleSend": "جدولة الإرسال",
+      "draft": "مسودة",
+      "programSchedule": "جدولة",
+      "send": "إرسال",
+      "sending": "جارٍ الإرسال...",
+      "saving": "جارٍ الحفظ...",
+      "saveChanges": "حفظ التعديلات"
+    }
+  }
+}

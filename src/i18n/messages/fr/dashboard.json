@@ -1,0 +1,40 @@
+{
+  "title": {
+    "superAdmin": "Dashboard Global — TalentStack",
+    "client": "Mon espace client",
+    "default": "Dashboard"
+  },
+  "subtitle": {
+    "superAdmin": "Vue d'ensemble de toutes les sociétés",
+    "client": "Vos demandes et candidatures",
+    "default": "Statistiques de votre société"
+  },
+  "cards": {
+    "companies": "Sociétés",
+    "clients": "Clients",
+    "candidates": "Candidats (Vivier)",
+    "requests": "Demandes",
+    "applications": "Candidatures",
+    "integrations": "Intégrations",
+    "users": "Utilisateurs",
+    "cvPool": "Vivier (CVs)"
+  },
+  "charts": {
+    "applicationsPerMonth": "Candidatures / mois (6 derniers mois)",
+    "requestsPerMonth": "Demandes / mois (6 derniers mois)",
+    "requestsByStatus": "Demandes par statut",
+    "integrationsByStatus": "Intégrations par statut",
+    "topCompanies": "Top sociétés (nb clients)",
+    "topClients": "Top clients (nb demandes)",
+    "statusLabels": {
+      "inProgress": "En cours",
+      "standby": "Standby",
+      "abandoned": "Abandonnée",
+      "filled": "Comblée",
+      "open": "Ouverte",
+      "archived": "Archivée",
+      "completed": "Terminée",
+      "failed": "Échouée"
+    }
+  }
+}

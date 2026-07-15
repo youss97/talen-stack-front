@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useAppSelector } from "@/lib/hooks";
 import { useVerifyUserQuery } from "@/lib/services/authApi";
 

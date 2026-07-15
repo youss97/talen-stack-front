@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 
@@ -16,6 +17,8 @@ export default function FeedbackModal({
   onSubmit,
   isLoading = false,
 }: FeedbackModalProps) {
+  const t = useTranslations("recruiterModals");
+  const tc = useTranslations("common");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
@@ -25,7 +28,7 @@ export default function FeedbackModal({
     setError("");
 
     if (!title.trim() || !description.trim()) {
-      setError("Veuillez remplir tous les champs");
+      setError(t("feedback.errors.fillAllFields"));
       return;
     }
 
@@ -34,7 +37,7 @@ export default function FeedbackModal({
       setTitle("");
       setDescription("");
     } catch (err) {
-      setError("Erreur lors de l'ajout du feedback");
+      setError(t("feedback.errors.addFailed"));
     }
   };
 
@@ -43,7 +46,7 @@ export default function FeedbackModal({
       <form onSubmit={handleSubmit}>
         <div className="p-6 sm:p-8 pb-0">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-            Ajouter un feedback
+            {t("feedback.title")}
           </h2>
         </div>
 
@@ -56,28 +59,28 @@ export default function FeedbackModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Titre
+              {t("feedback.titleLabel")}
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full h-11 appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
-              placeholder="Ex: Excellent profil technique"
+              placeholder={t("feedback.titlePlaceholder")}
               required
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Description
+              {t("feedback.descriptionLabel")}
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
               className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
-              placeholder="Décrivez votre feedback en détail..."
+              placeholder={t("feedback.descriptionPlaceholder")}
               required
             />
           </div>
@@ -85,10 +88,10 @@ export default function FeedbackModal({
 
         <div className="flex justify-end gap-3 p-6 sm:p-8 pt-4 border-t border-gray-100 dark:border-gray-800">
           <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-            Annuler
+            {tc("actions.cancel")}
           </Button>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Ajout..." : "Ajouter"}
+            {isLoading ? t("feedback.adding") : t("feedback.addButton")}
           </Button>
         </div>
       </form>

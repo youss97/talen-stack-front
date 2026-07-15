@@ -1,0 +1,141 @@
+{
+  "list": {
+    "title": "Companies",
+    "subtitle": "Manage companies and their accessible modules",
+    "addButton": "Add a company",
+    "searchPlaceholder": "Search for a company...",
+    "allStatuses": "All statuses",
+    "columns": {
+      "name": "Name",
+      "siret": "SIRET",
+      "city": "City",
+      "email": "Email",
+      "phone": "Phone",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleted": "Deleted"
+    },
+    "rowActions": {
+      "activate": "Activate",
+      "deactivate": "Deactivate"
+    },
+    "emptyState": "No companies found",
+    "deactivateModal": {
+      "title": "Deactivate company",
+      "message": "Are you sure you want to deactivate the company \"{name}\"? All its accounts will be deactivated. You can reactivate it from the table.",
+      "confirm": "Deactivate"
+    }
+  },
+  "toasts": {
+    "companyActivatedTitle": "Company activated",
+    "companyDeactivatedTitle": "Company deactivated",
+    "companyActivatedMessage": "\"{name}\" and its accounts have been reactivated",
+    "companyDeactivatedMessage": "\"{name}\" and its accounts have been deactivated",
+    "statusUpdateError": "Error while updating the status",
+    "reactivatedTitle": "Company reactivated",
+    "reactivatedMessage": "\"{name}\" and its accounts have been reactivated",
+    "reactivateError": "Error while reactivating",
+    "loadDetailError": "Error while loading company details",
+    "deleteSuccess": "Company deleted successfully",
+    "deleteError": "Error while deleting",
+    "updateSuccess": "Company updated successfully",
+    "updateError": "Error while updating the company",
+    "createSuccess": "Company created successfully",
+    "createError": "Error while creating the company"
+  },
+  "form": {
+    "titleView": "Company details",
+    "titleEdit": "Edit company",
+    "titleAdd": "Add a company",
+    "subtitleView": "View the company information",
+    "subtitleEdit": "Edit the company information and its modules",
+    "subtitleAdd": "Create the company, its administrator and define its accessible modules",
+    "loading": "Loading...",
+    "sections": {
+      "company": "Company information",
+      "contact": "Contact information",
+      "admin": "Company administrator",
+      "subscription": "Subscription & Modules"
+    },
+    "fields": {
+      "logo": "Company logo",
+      "logoHelper": "Accepted formats: JPEG, PNG, GIF, WebP (max 5MB)",
+      "companyName": "Company name",
+      "ice": "Tax ID",
+      "address": "Address",
+      "city": "City",
+      "postalCode": "Postal code",
+      "country": "Country",
+      "selectCountry": "— Select a country —",
+      "status": "Status",
+      "phone": "Phone",
+      "email": "Email",
+      "adminPhoto": "Administrator photo",
+      "currentInfo": "(current information)",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "adminEmail": "Email",
+      "password": "Password",
+      "notEditable": "Not editable",
+      "adminPhone": "Administrator phone",
+      "position": "Job title / Position",
+      "subscriptionPlan": "Subscription plan",
+      "noSubscription": "— No subscription (manual selection) —",
+      "planPrefilled": "✓ The modules below have been pre-selected from this plan",
+      "accessibleModules": "Accessible modules",
+      "deselectAll": "Deselect all",
+      "selectAll": "Select all",
+      "noModules": "No modules available",
+      "noModulesReadOnly": "All modules (no restriction)"
+    },
+    "placeholders": {
+      "companyName": "Tech Solutions SARL",
+      "ice": "123456789000000",
+      "address": "12 rue de la Paix",
+      "city": "Paris",
+      "postalCode": "75001",
+      "phone": "+33612345678",
+      "email": "contact@techsolutions.fr",
+      "firstName": "John",
+      "lastName": "Doe",
+      "adminEmail": "admin@example.com",
+      "password": "StrongPassword123",
+      "adminPhone": "+212612345678",
+      "position": "HR Director"
+    },
+    "billingCycle": {
+      "monthly": "month",
+      "annual": "year",
+      "oneTime": "one-time"
+    },
+    "moduleCount": "{count, plural, one {# module selected} other {# modules selected}}",
+    "noModuleSelected": "No module selected — full access",
+    "buttons": {
+      "close": "Close",
+      "cancel": "Cancel",
+      "add": "Add",
+      "edit": "Edit",
+      "saving": "Saving..."
+    }
+  },
+  "featuresModal": {
+    "title": "Modules — {companyName}",
+    "subtitle": "Select the modules this company can use",
+    "toolbar": {
+      "selectedCount": "{selected} / {total} modules selected",
+      "selectAll": "Select all",
+      "deselectAll": "Deselect all"
+    },
+    "loading": "Loading modules...",
+    "emptyState": "No modules available",
+    "error": "Error while saving. Please try again.",
+    "footer": {
+      "noneSelected": "No module selected — full access",
+      "selectedCount": "{count, plural, one {# module granted} other {# modules granted}}",
+      "saving": "Saving..."
+    }
+  }
+}

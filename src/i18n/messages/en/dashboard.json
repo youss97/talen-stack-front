@@ -1,0 +1,40 @@
+{
+  "title": {
+    "superAdmin": "Global Dashboard — TalentStack",
+    "client": "My client space",
+    "default": "Dashboard"
+  },
+  "subtitle": {
+    "superAdmin": "Overview of all companies",
+    "client": "Your requests and applications",
+    "default": "Statistics for your company"
+  },
+  "cards": {
+    "companies": "Companies",
+    "clients": "Clients",
+    "candidates": "Candidates (Pool)",
+    "requests": "Requests",
+    "applications": "Applications",
+    "integrations": "Integrations",
+    "users": "Users",
+    "cvPool": "CV Pool"
+  },
+  "charts": {
+    "applicationsPerMonth": "Applications / month (last 6 months)",
+    "requestsPerMonth": "Requests / month (last 6 months)",
+    "requestsByStatus": "Requests by status",
+    "integrationsByStatus": "Integrations by status",
+    "topCompanies": "Top companies (nb clients)",
+    "topClients": "Top clients (nb requests)",
+    "statusLabels": {
+      "inProgress": "In progress",
+      "standby": "Standby",
+      "abandoned": "Abandoned",
+      "filled": "Filled",
+      "open": "Open",
+      "archived": "Archived",
+      "completed": "Completed",
+      "failed": "Failed"
+    }
+  }
+}

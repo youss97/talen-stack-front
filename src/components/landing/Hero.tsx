@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Button from '@/components/ui/button/Button';
 import { motion, type Transition } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import { useTranslations } from 'next-intl';
 
 const ThreeParticles = dynamic(() => import('@/components/common/ThreeParticles'), { ssr: false });
 
@@ -13,6 +14,7 @@ const fadeUp = (delay = 0) => ({
 });
 
 export default function Hero({ title, subtitle, brand = "var(--color-brand-500)" }: { title?: string; subtitle?: string; brand?: string } = {}) {
+  const t = useTranslations('landing.hero');
   return (
     <section className="relative pt-20 pb-16 bg-gradient-to-br from-[var(--color-brand-25)] via-white to-[var(--color-brand-50)] overflow-hidden">
       <ThreeParticles color={brand} count={50} opacity={0.35} />
@@ -23,8 +25,8 @@ export default function Hero({ title, subtitle, brand = "var(--color-brand-500)"
             {...fadeUp(0)}
             className="inline-flex items-center px-4 py-2 rounded-full bg-[var(--color-brand-50)] text-[var(--color-brand-900)] text-sm font-medium mb-8"
           >
-            <span className="w-2 h-2 rounded-full mr-2 animate-pulse" style={{ background: brand }}></span>
-            Nouvelle génération de recrutement
+            <span className="w-2 h-2 rounded-full me-2 animate-pulse" style={{ background: brand }}></span>
+            {t('badge')}
           </motion.div>
 
           {/* Titre principal */}
@@ -36,9 +38,9 @@ export default function Hero({ title, subtitle, brand = "var(--color-brand-500)"
               title
             ) : (
               <>
-                Révolutionnez votre
+                {t('titleDefault')}
                 <span style={{ color: brand }}>
-                  {" "}processus de recrutement
+                  {" "}{t('titleHighlight')}
                 </span>
               </>
             )}
@@ -49,8 +51,7 @@ export default function Hero({ title, subtitle, brand = "var(--color-brand-500)"
             {...fadeUp(0.2)}
             className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed"
           >
-            {subtitle ||
-              "Talent Stack simplifie la gestion des candidatures, optimise les entretiens et accélère les intégrations. Une plateforme complète pour les équipes RH modernes."}
+            {subtitle || t('subtitleDefault')}
           </motion.p>
 
           {/* CTA Buttons */}
@@ -60,20 +61,20 @@ export default function Hero({ title, subtitle, brand = "var(--color-brand-500)"
           >
             <Link href="/signin">
               <Button size="lg" className="px-8 py-4 text-lg">
-                🚀 Commencer gratuitement
+                {t('ctaPrimary')}
               </Button>
             </Link>
             <Button variant="outline" size="lg" className="px-8 py-4 text-lg">
-              📹 Voir la démo
+              {t('ctaSecondary')}
             </Button>
           </motion.div>
 
           {/* Stats rapides */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {[
-              { value: "95%", label: "Temps de recrutement réduit", color: "var(--color-brand-500)" },
-              { value: "500+", label: "Entreprises nous font confiance", color: "var(--color-brand-600)" },
-              { value: "24h", label: "Mise en place moyenne", color: "var(--color-brand-700)" },
+              { value: "95%", label: t('stat1Label'), color: "var(--color-brand-500)" },
+              { value: "500+", label: t('stat2Label'), color: "var(--color-brand-600)" },
+              { value: "24h", label: t('stat3Label'), color: "var(--color-brand-700)" },
             ].map((stat, i) => (
               <motion.div
                 key={i}
@@ -102,22 +103,22 @@ export default function Hero({ title, subtitle, brand = "var(--color-brand-500)"
                 <div className="w-3 h-3 bg-red-400 rounded-full"></div>
                 <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
                 <div className="w-3 h-3 bg-[var(--color-brand-500)] rounded-full"></div>
-                <div className="ml-4 text-sm text-gray-600">talent-stack.com/dashboard</div>
+                <div className="ms-4 text-sm text-gray-600">{t('preview.url')}</div>
               </div>
             </div>
             <div className="p-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-[var(--color-brand-25)] p-6 rounded-xl">
                   <div className="text-2xl font-bold text-[var(--color-brand-500)] mb-2">127</div>
-                  <div className="text-gray-600 text-sm">Candidatures actives</div>
+                  <div className="text-gray-600 text-sm">{t('preview.activeApplications')}</div>
                 </div>
                 <div className="bg-[var(--color-brand-50)] p-6 rounded-xl">
                   <div className="text-2xl font-bold text-[var(--color-brand-600)] mb-2">23</div>
-                  <div className="text-gray-600 text-sm">Entretiens planifiés</div>
+                  <div className="text-gray-600 text-sm">{t('preview.scheduledInterviews')}</div>
                 </div>
                 <div className="bg-[var(--color-brand-100)] p-6 rounded-xl">
                   <div className="text-2xl font-bold text-[var(--color-brand-700)] mb-2">8</div>
-                  <div className="text-gray-600 text-sm">Intégrations en cours</div>
+                  <div className="text-gray-600 text-sm">{t('preview.ongoingOnboarding')}</div>
                 </div>
               </div>
               <div className="space-y-4">
@@ -128,13 +129,13 @@ export default function Hero({ title, subtitle, brand = "var(--color-brand-500)"
                     </div>
                     <div>
                       <div className="font-medium">John Doe</div>
-                      <div className="text-sm text-gray-500">Développeur Full Stack</div>
+                      <div className="text-sm text-gray-500">{t('preview.candidate1Role')}</div>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-[var(--color-brand-50)] text-[var(--color-brand-900)] rounded-full text-sm">Entretien</span>
+                    <span className="px-3 py-1 bg-[var(--color-brand-50)] text-[var(--color-brand-900)] rounded-full text-sm">{t('preview.candidate1Status')}</span>
                     <span className="text-gray-400">•</span>
-                    <span className="text-sm text-gray-500">Aujourd'hui 14h</span>
+                    <span className="text-sm text-gray-500">{t('preview.candidate1Time')}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -144,13 +145,13 @@ export default function Hero({ title, subtitle, brand = "var(--color-brand-500)"
                     </div>
                     <div>
                       <div className="font-medium">Sarah Martin</div>
-                      <div className="text-sm text-gray-500">Designer UX/UI</div>
+                      <div className="text-sm text-gray-500">{t('preview.candidate2Role')}</div>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-[var(--color-brand-25)] text-[var(--color-brand-800)] rounded-full text-sm">Nouvelle</span>
+                    <span className="px-3 py-1 bg-[var(--color-brand-25)] text-[var(--color-brand-800)] rounded-full text-sm">{t('preview.candidate2Status')}</span>
                     <span className="text-gray-400">•</span>
-                    <span className="text-sm text-gray-500">Il y a 2h</span>
+                    <span className="text-sm text-gray-500">{t('preview.candidate2Time')}</span>
                   </div>
                 </div>
               </div>
@@ -161,12 +162,12 @@ export default function Hero({ title, subtitle, brand = "var(--color-brand-500)"
           <motion.div
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-4 -right-4 w-20 h-20 bg-[var(--color-brand-50)] rounded-full opacity-60"
+            className="absolute -top-4 -end-4 w-20 h-20 bg-[var(--color-brand-50)] rounded-full opacity-60"
           />
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-4 -left-4 w-16 h-16 bg-[var(--color-brand-100)] rounded-full opacity-60"
+            className="absolute -bottom-4 -start-4 w-16 h-16 bg-[var(--color-brand-100)] rounded-full opacity-60"
           />
         </div>
       </motion.div>

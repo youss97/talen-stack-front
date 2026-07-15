@@ -1,0 +1,120 @@
+{
+  "page": {
+    "title": "📅 Interview and integration agenda",
+    "eventsDisplayed": "{count, plural, =0 {No events displayed} one {# event displayed} other {# events displayed}}"
+  },
+  "loading": {
+    "message": "Loading events for the period...",
+    "range": "{start} to {end}"
+  },
+  "loadError": {
+    "title": "Error loading data",
+    "unknown": "Unknown error"
+  },
+  "cards": {
+    "interviews": {
+      "title": "Interviews",
+      "subtitle": "Candidate interview management",
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "rescheduled": "Rescheduled",
+      "cancelled": "Cancelled"
+    },
+    "integrations": {
+      "title": "Integrations",
+      "subtitle": "Candidate integration tracking",
+      "inProgress": "In progress",
+      "completed": "Completed",
+      "failed": "Failed"
+    }
+  },
+  "filters": {
+    "label": "Filters:",
+    "interviews": "Interviews",
+    "integrations": "Integrations",
+    "interviewStatus": "Interview status:",
+    "integrationStatus": "Integration status:",
+    "options": {
+      "all": "All",
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "rescheduled": "Rescheduled",
+      "inProgress": "In progress",
+      "integrationCompleted": "Completed",
+      "failed": "Failed"
+    },
+    "reset": "Reset"
+  },
+  "calendar": {
+    "allDay": "All day",
+    "previous": "Previous",
+    "next": "Next",
+    "today": "Today",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "agenda": "Agenda",
+    "date": "Date",
+    "time": "Time",
+    "event": "Event",
+    "noEventsInRange": "No events in this period",
+    "showMore": "+ {total} more"
+  },
+  "legend": {
+    "title": "Color legend",
+    "interviews": {
+      "title": "Interviews",
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "rescheduled": "Rescheduled",
+      "cancelled": "Cancelled"
+    },
+    "integrations": {
+      "title": "Integrations",
+      "inProgress": "In progress",
+      "completed": "Completed",
+      "failed": "Failed"
+    }
+  },
+  "events": {
+    "candidateFallback": "Candidate",
+    "interviewTitle": "Interview - {candidateName}",
+    "integrationTitle": "Integration - {candidateName} ({position})"
+  },
+  "toasts": {
+    "statusChanged": {
+      "title": "Status changed",
+      "message": "The interview status was successfully changed"
+    },
+    "statusChangeError": {
+      "title": "Error",
+      "message": "Unable to change the interview status"
+    },
+    "rescheduled": {
+      "title": "Interview rescheduled",
+      "message": "The interview was successfully rescheduled. Notifications have been sent."
+    },
+    "rescheduleError": {
+      "title": "Error",
+      "message": "Unable to reschedule the interview"
+    },
+    "deleted": {
+      "title": "Interview deleted",
+      "message": "The interview was successfully deleted"
+    },
+    "deleteError": {
+      "title": "Error",
+      "message": "Unable to delete the interview"
+    },
+    "integrationUpdated": {
+      "title": "Integration updated",
+      "message": "The changes were successfully saved"
+    }
+  },
+  "deleteModal": {
+    "title": "Delete interview",
+    "message": "Are you sure you want to delete this interview? This action cannot be undone.",
+    "confirmText": "Delete"
+  }
+}

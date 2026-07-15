@@ -1,0 +1,393 @@
+{
+  "page": {
+    "title": "Integrations Management",
+    "subtitle": "Track hired candidates' integrations and their trial period",
+    "newIntegration": "New integration",
+    "stats": {
+      "total": "Total integrations",
+      "inProgress": "In progress",
+      "completed": "Completed",
+      "trialSuccessRate": "Trial period success rate"
+    },
+    "filters": {
+      "allStatuses": "All statuses",
+      "statusInProgress": "🔄 In progress",
+      "statusCompleted": "✅ Completed",
+      "statusFailed": "❌ Failed",
+      "allTrialPeriods": "All trial periods",
+      "trialInProgress": "⏳ In progress",
+      "trialValidated": "✅ Validated",
+      "trialNotValidated": "❌ Not validated",
+      "reset": "🔄 Reset"
+    },
+    "table": {
+      "candidate": "Candidate",
+      "client": "Client",
+      "position": "Position",
+      "date": "Date",
+      "salary": "Salary/Daily rate",
+      "trialPeriod": "Trial period",
+      "status": "Status",
+      "draft": "Draft",
+      "empty": "No integrations found"
+    },
+    "toasts": {
+      "createSuccess": "Integration created successfully",
+      "actionSuccess": "Action completed successfully",
+      "editSuccess": "Integration updated successfully"
+    }
+  },
+  "statuses": {
+    "in_progress": "In progress",
+    "completed": "Completed",
+    "failed": "Failed"
+  },
+  "trialStatuses": {
+    "in_progress": "In progress",
+    "validated": "Validated",
+    "not_validated": "Not validated"
+  },
+  "contractTypes": {
+    "cdi": "Permanent contract",
+    "cdd": "Fixed-term contract",
+    "freelance": "Freelance",
+    "interim": "Temporary",
+    "stage": "Internship",
+    "alternance": "Apprenticeship"
+  },
+  "ratingLabels": {
+    "1": "Very unsatisfactory",
+    "2": "Unsatisfactory",
+    "3": "Satisfactory",
+    "4": "Very satisfactory",
+    "5": "Excellent"
+  },
+  "modals": {
+    "create": {
+      "title": "New integration",
+      "errors": {
+        "noApplication": "Please select an application",
+        "noClient": "Unable to retrieve client information. Please select another application.",
+        "createFailed": "Error while creating the integration"
+      },
+      "applicationSection": {
+        "title": "Application",
+        "label": "Select an application",
+        "searchPlaceholder": "Search for a candidate...",
+        "noOptionsMessage": "No application found",
+        "searchInputPlaceholder": "Type the candidate name or position...",
+        "helper": "Only active applications are shown. The recruitment and client will be automatically inferred.",
+        "autoInfoTitle": "Automatic information",
+        "partialInfoTitle": "Partial information",
+        "candidate": "Candidate:",
+        "recruitment": "Recruitment:",
+        "client": "Client:",
+        "idAvailable": "✓ ID available",
+        "idMissing": "⚠️ ID missing",
+        "hrManager": "HR manager:",
+        "connectedUser": "(logged-in user)",
+        "clientInfoMissing": "Some client information is unavailable. Please select another application if the issue persists."
+      },
+      "positionSection": {
+        "title": "Position information",
+        "position": "Position",
+        "positionPlaceholder": "E.g.: Full Stack Developer",
+        "contractType": "Contract type",
+        "integrationDate": "Integration date *",
+        "datePlaceholder": "Select a date"
+      },
+      "salarySection": {
+        "title": "Compensation",
+        "salaryType": "Compensation type",
+        "monthlyOption": "💼 Monthly salary",
+        "dailyOption": "🔄 Daily rate (Freelance)",
+        "currency": "Currency",
+        "currencyPlaceholder": "Select a currency",
+        "monthlySalary": "Monthly salary",
+        "salaryPlaceholder": "3750",
+        "dailyRate": "Daily rate",
+        "dailyRatePlaceholder": "500",
+        "perDay": "/day",
+        "preview": "Preview: "
+      },
+      "trialSection": {
+        "title": "Trial period",
+        "duration": "Duration (days)",
+        "durationPlaceholder": "90",
+        "endDate": "End date"
+      },
+      "notesSection": {
+        "title": "Notes",
+        "label": "Notes about the integration",
+        "placeholder": "Notes about the integration, objectives, points of attention..."
+      },
+      "creating": "Creating...",
+      "create": "Create"
+    },
+    "edit": {
+      "title": "Edit integration",
+      "loading": "Loading details...",
+      "notFound": "Integration not found",
+      "updateFailed": "Error while updating the integration",
+      "candidateSection": {
+        "title": "Candidate",
+        "name": "Name:",
+        "email": "Email:",
+        "recruitment": "Recruitment:",
+        "client": "Client:"
+      },
+      "positionSection": {
+        "title": "Position information",
+        "position": "Position *",
+        "contractType": "Contract type *",
+        "integrationDate": "Integration date *",
+        "datePlaceholder": "Select a date"
+      },
+      "salarySection": {
+        "title": "Compensation",
+        "salaryType": "Compensation type",
+        "monthlyOption": "💼 Monthly salary",
+        "dailyOption": "🔄 Daily rate (Freelance)",
+        "monthlySalary": "Monthly salary",
+        "salaryPlaceholder": "3750",
+        "dailyRate": "Daily rate",
+        "dailyRatePlaceholder": "500",
+        "currency": "Currency"
+      },
+      "statusSection": {
+        "title": "Statuses",
+        "integrationStatus": "Integration status",
+        "trialStatus": "Trial period status"
+      },
+      "trialSection": {
+        "title": "Trial period",
+        "duration": "Duration (days)",
+        "durationPlaceholder": "90",
+        "endDate": "End date"
+      },
+      "notesSection": {
+        "title": "Notes",
+        "label": "Notes about the integration",
+        "placeholder": "Notes about the integration, objectives, points of attention..."
+      },
+      "updating": "Updating...",
+      "save": "Save"
+    },
+    "detail": {
+      "loading": "Loading...",
+      "title": "Integration details",
+      "generalSection": {
+        "title": "General information",
+        "candidate": "Candidate:",
+        "client": "Client:",
+        "position": "Position:",
+        "integrationDate": "Integration date:",
+        "contractType": "Contract type:",
+        "status": "Status:"
+      },
+      "salarySection": {
+        "title": "Compensation",
+        "monthlySalary": "Monthly salary:",
+        "dailyRate": "Daily rate:",
+        "perDay": "/day",
+        "hrManager": "HR manager:"
+      },
+      "trialSection": {
+        "title": "Trial period",
+        "duration": "Duration:",
+        "days": "days",
+        "endDate": "End date:",
+        "status": "Status:",
+        "notes": "Notes:"
+      },
+      "notesSection": {
+        "title": "Notes"
+      },
+      "departureSection": {
+        "title": "Departure",
+        "date": "Date:",
+        "reason": "Reason:"
+      },
+      "evaluationSection": {
+        "title": "Evaluations",
+        "performance": "Performance:",
+        "evaluationNotes": "Evaluation notes:",
+        "finalRating": "Final rating:",
+        "finalEvaluation": "Final evaluation:"
+      },
+      "renewalSection": {
+        "title": "Renewal",
+        "renewalDate": "Renewal date:",
+        "period": "Period:",
+        "months": "months",
+        "newEndDate": "New end date:",
+        "notes": "Notes:"
+      },
+      "actions": {
+        "trialPeriod": "⏱️ Trial period",
+        "evaluationNotes": "📝 Evaluation notes",
+        "renew": "🔄 Renew",
+        "complete": "✅ Complete",
+        "departure": "📤 Departure",
+        "delete": "🗑️ Delete"
+      },
+      "deleteConfirm": {
+        "title": "Delete integration",
+        "message": "Are you sure you want to delete this integration?"
+      },
+      "toasts": {
+        "deleteSuccess": "Integration deleted successfully",
+        "deleteError": "Error while deleting",
+        "trialValidated": "Trial period validated successfully",
+        "trialInvalidated": "Trial period invalidated successfully",
+        "trialError": "Error during validation",
+        "completeSuccess": "Integration marked as completed",
+        "completeError": "Error while completing",
+        "departureSuccess": "Departure recorded successfully",
+        "departureError": "Error while recording the departure",
+        "renewSuccess": "Integration renewed successfully",
+        "renewError": "Error during renewal",
+        "evaluationSuccess": "Evaluation notes updated successfully",
+        "evaluationError": "Error while updating the notes"
+      },
+      "validateTrialModal": {
+        "title": "Trial period validation",
+        "notesLabel": "Notes about the trial period",
+        "notesPlaceholder": "Trial period assessment, strengths, areas for improvement...",
+        "invalidate": "❌ Invalidate",
+        "validate": "✅ Validate"
+      },
+      "completeModal": {
+        "title": "Mark as completed",
+        "finalRatingLabel": "Final rating (out of 5)",
+        "finalEvaluationLabel": "Final evaluation",
+        "finalEvaluationPlaceholder": "Integration summary, strengths, areas for improvement...",
+        "confirm": "✅ Mark as completed"
+      },
+      "departureModal": {
+        "title": "Record a departure",
+        "dateLabel": "Departure date",
+        "reasonLabel": "Departure reason",
+        "reasonPlaceholder": "Resignation, dismissal, end of contract, transfer...",
+        "confirm": "📤 Record departure"
+      }
+    },
+    "renew": {
+      "title": "Renew integration",
+      "errors": {
+        "noEndDate": "Please select a new end date",
+        "pastDate": "The new end date must be in the future",
+        "renewFailed": "Error during renewal"
+      },
+      "currentPeriodSection": {
+        "title": "Current period",
+        "integrationDate": "Integration date:",
+        "currentEndDate": "Current end date:",
+        "currentDuration": "Current duration:",
+        "months": "months"
+      },
+      "renewalPeriodSection": {
+        "title": "Renewal period",
+        "durationLabel": "Renewal duration",
+        "monthsOption": "{count} months",
+        "customLabel": "months (custom)",
+        "newEndDateLabel": "New end date *",
+        "newEndDatePlaceholder": "Select the new end date",
+        "newEndDateHelper": "This date will be the new deadline for the integration"
+      },
+      "notesSection": {
+        "title": "Renewal notes",
+        "label": "Notes (optional)",
+        "placeholder": "Reasons for the renewal, special conditions, objectives for the new period..."
+      },
+      "warning": {
+        "title": "Warning: single renewal",
+        "text": "This integration can only be renewed once. Make sure the dates and period match your needs."
+      },
+      "renewing": "Renewing...",
+      "renew": "🔄 Renew"
+    },
+    "evaluationNotes": {
+      "defaultTitle": "Evaluation notes",
+      "errors": {
+        "noNotes": "Please enter evaluation notes",
+        "saveFailed": "Error while saving the notes"
+      },
+      "performanceSection": {
+        "title": "Performance evaluation",
+        "ratingLabel": "Performance rating",
+        "dateLabel": "Evaluation date"
+      },
+      "notesSection": {
+        "title": "Detailed notes",
+        "label": "Evaluation notes",
+        "placeholder": "Evaluate the integrated candidate's performance:\n\n• Strengths observed\n• Areas for improvement identified\n• Adaptation to the team and company culture\n• Achievement of set objectives\n• Recommendations going forward\n• General comments on the integration",
+        "helper": "Be precise and constructive in your evaluation",
+        "characterCount": "{count} characters"
+      },
+      "tipsSection": {
+        "title": "Tips for a thorough evaluation",
+        "tip1": "• Evaluate both technical and behavioral skills",
+        "tip2": "• Mention adaptation to the team and processes",
+        "tip3": "• Indicate objectives achieved and those to improve",
+        "tip4": "• Offer constructive recommendations",
+        "tip5": "• Be objective and factual in your observations"
+      },
+      "saving": "Saving...",
+      "save": "💾 Save"
+    }
+  },
+  "agendaModal": {
+    "title": "Integration details",
+    "loading": "Loading details...",
+    "notFound": "Integration not found",
+    "candidateSection": {
+      "title": "Candidate",
+      "name": "Name:",
+      "email": "Email:",
+      "recruitment": "Recruitment:",
+      "client": "Client:"
+    },
+    "positionSection": {
+      "title": "Position",
+      "position": "Position:",
+      "contractType": "Contract type:",
+      "integrationDate": "Integration date:"
+    },
+    "salarySection": {
+      "title": "Compensation",
+      "monthlySalary": "Monthly salary:",
+      "dailyRate": "Daily rate:",
+      "perDay": "/day"
+    },
+    "statusesSection": {
+      "title": "Statuses",
+      "integration": "Integration:",
+      "trialPeriod": "Trial period:",
+      "renewal": "Renewal:",
+      "renewed": "Renewed"
+    },
+    "evaluationSection": {
+      "title": "Evaluation",
+      "performance": "Performance:",
+      "notes": "Notes:"
+    },
+    "notesSection": {
+      "title": "Notes"
+    },
+    "outcome": {
+      "motifLabel": "Reason",
+      "motifCompletedSuffix": "(successful integration)",
+      "motifFailedSuffix": "(failed integration)",
+      "motifPlaceholder": "Enter the reason...",
+      "motifRequiredError": "Please enter a reason.",
+      "updateErrorDefault": "Error while updating the integration",
+      "confirm": "Confirm",
+      "saving": "Saving...",
+      "markFailed": "❌ Mark as failed",
+      "markCompleted": "✓ Mark as successful",
+      "closedCompleted": "Integration successful — closed.",
+      "closedFailed": "Integration failed — closed."
+    }
+  }
+}

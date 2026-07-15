@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import Button from "@/components/ui/button/Button";
 import {
   useGetFeaturesQuery,
@@ -23,6 +24,8 @@ export default function CompanyFeaturesModal({
   company,
   onSaved,
 }: CompanyFeaturesModalProps) {
+  const t = useTranslations("companies");
+  const tc = useTranslations("common");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,7 +75,7 @@ export default function CompanyFeaturesModal({
       onSaved?.();
       onClose();
     } catch {
-      setError("Erreur lors de la sauvegarde. Veuillez réessayer.");
+      setError(t("featuresModal.error"));
     } finally {
       setSaving(false);
     }
@@ -94,11 +97,11 @@ export default function CompanyFeaturesModal({
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xl">⚙️</span>
               <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-                Modules — {company.name}
+                {t("featuresModal.title", { companyName: company.name })}
               </h2>
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Sélectionnez les modules que cette entreprise peut utiliser
+              {t("featuresModal.subtitle")}
             </p>
           </div>
           <button
@@ -115,15 +118,17 @@ export default function CompanyFeaturesModal({
         {!isLoading && allFeatures.length > 0 && (
           <div className="flex items-center justify-between px-6 py-3 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
             <span className="text-sm text-gray-600 dark:text-gray-400">
-              <span className="font-semibold text-brand-600 dark:text-brand-400">{selectedIds.size}</span>
-              {" "}/ {allFeatures.length} modules sélectionnés
+              {t("featuresModal.toolbar.selectedCount", {
+                selected: selectedIds.size,
+                total: allFeatures.length,
+              })}
             </span>
             <button
               type="button"
               onClick={toggleAll}
               className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:text-brand-800 dark:hover:text-brand-300 transition-colors"
             >
-              {allSelected ? "Tout désélectionner" : "Tout sélectionner"}
+              {allSelected ? t("featuresModal.toolbar.deselectAll") : t("featuresModal.toolbar.selectAll")}
             </button>
           </div>
         )}
@@ -133,12 +138,12 @@ export default function CompanyFeaturesModal({
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-16 gap-3">
               <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-brand-500" />
-              <p className="text-sm text-gray-400">Chargement des modules...</p>
+              <p className="text-sm text-gray-400">{t("featuresModal.loading")}</p>
             </div>
           ) : allFeatures.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-2xl mb-2">🔌</p>
-              <p className="text-gray-500">Aucun module disponible</p>
+              <p className="text-gray-500">{t("featuresModal.emptyState")}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -220,12 +225,12 @@ export default function CompanyFeaturesModal({
         <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
           <p className="text-xs text-gray-400 dark:text-gray-500">
             {selectedIds.size === 0
-              ? "Aucun module sélectionné — accès complet"
-              : `${selectedIds.size} module${selectedIds.size > 1 ? "s" : ""} accordé${selectedIds.size > 1 ? "s" : ""}`}
+              ? t("featuresModal.footer.noneSelected")
+              : t("featuresModal.footer.selectedCount", { count: selectedIds.size })}
           </p>
           <div className="flex gap-3">
             <Button variant="outline" size="sm" onClick={onClose} disabled={saving}>
-              Annuler
+              {tc("actions.cancel")}
             </Button>
             <Button size="sm" onClick={handleSave} disabled={saving || isLoading}>
               {saving ? (
@@ -234,9 +239,9 @@ export default function CompanyFeaturesModal({
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                   </svg>
-                  Sauvegarde...
+                  {t("featuresModal.footer.saving")}
                 </span>
-              ) : "Enregistrer"}
+              ) : tc("actions.save")}
             </Button>
           </div>
         </div>

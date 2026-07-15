@@ -1,8 +1,8 @@
 "use client";
 import React, { useCallback, useMemo, useState, useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import { useNavigation } from "@/hooks/useNavigation";
 import { HorizontaLDots } from "../icons/index";
@@ -27,6 +27,9 @@ const itemVariants: Variants = {
 };
 
 const AppSidebar: React.FC = () => {
+  const t = useTranslations("layout");
+  const locale = useLocale();
+  const isRtl = locale === "ar";
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
   const navItems = useNavigation();
@@ -113,7 +116,7 @@ const AppSidebar: React.FC = () => {
             {isActive(nav.path) && (
               <motion.span
                 layoutId="activeIndicator"
-                className="absolute right-3 w-1.5 h-1.5 rounded-full bg-[var(--brand-deep)] dark:bg-[var(--brand-ink)]"
+                className="absolute end-3 w-1.5 h-1.5 rounded-full bg-[var(--brand-deep)] dark:bg-[var(--brand-ink)]"
                 transition={{ type: "spring", stiffness: 350, damping: 25 }}
               />
             )}
@@ -125,7 +128,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white text-gray-900 border-gray-200 dark:bg-[#19210E] dark:text-white/90 dark:border-white/10 h-screen transition-all duration-300 ease-in-out z-50 border-r
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 start-0 bg-white text-gray-900 border-gray-200 dark:bg-[#19210E] dark:text-white/90 dark:border-white/10 h-screen transition-all duration-300 ease-in-out z-50 border-e
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -133,7 +136,7 @@ const AppSidebar: React.FC = () => {
             ? "w-[290px]"
             : "w-[90px]"
         }
-        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
+        ${isMobileOpen ? "translate-x-0" : isRtl ? "translate-x-full" : "-translate-x-full"}
         lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -174,10 +177,10 @@ const AppSidebar: React.FC = () => {
                   {/* Nom toujours affiché */}
                   <div className="min-w-0">
                     <p className="text-[13px] font-bold text-gray-800 dark:text-white truncate leading-tight max-w-[150px]">
-                      {companyName ?? "Mon espace"}
+                      {companyName ?? t("sidebar.mySpace")}
                     </p>
                     <p className="text-[10px] font-medium tracking-wide uppercase leading-tight" style={{ color: "var(--brand)" }}>
-                      {user?.company?.parent_company_id ? "Espace client" : "Espace recruteur"}
+                      {user?.company?.parent_company_id ? t("sidebar.clientSpace") : t("sidebar.recruiterSpace")}
                     </p>
                   </div>
                 </div>
@@ -249,7 +252,7 @@ const AppSidebar: React.FC = () => {
                 >
                   {showFull ? (
                     <span className="text-[10px] font-bold tracking-widest text-gray-400 dark:text-white/40">
-                      {section.group}
+                      {t(`nav.groups.${section.group}`)}
                     </span>
                   ) : (
                     <HorizontaLDots />
@@ -279,13 +282,13 @@ const AppSidebar: React.FC = () => {
                 <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
                   {user?.first_name && user?.last_name
                     ? `${user.first_name} ${user.last_name}`
-                    : user?.email ?? "Utilisateur"}
+                    : user?.email ?? t("sidebar.user")}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-white/50 truncate">
                   {user?.role?.name ?? "—"}
                 </p>
               </div>
-              <div className="w-2 h-2 rounded-full bg-brand-500 flex-shrink-0" title="En ligne" />
+              <div className="w-2 h-2 rounded-full bg-brand-500 flex-shrink-0" title={t("sidebar.online")} />
             </motion.div>
           ) : (
             <motion.div

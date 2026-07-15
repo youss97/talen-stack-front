@@ -1,0 +1,104 @@
+{
+  "list": {
+    "title": "Utilisateurs",
+    "subtitle": "Gérez les utilisateurs de la plateforme",
+    "addButton": "Ajouter un utilisateur",
+    "searchPlaceholder": "Rechercher par email...",
+    "filters": {
+      "allStatuses": "Tous les statuts",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "deleted": "Supprimé"
+    },
+    "columns": {
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Email",
+      "role": "Rôle",
+      "company": "Entreprise",
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "deleted": "Supprimé"
+    },
+    "emptyState": "Aucun utilisateur trouvé",
+    "actions": {
+      "changeRole": "Modifier le rôle",
+      "block": "Bloquer",
+      "activate": "Activer"
+    },
+    "debug": {
+      "none": "Aucune"
+    },
+    "delete": {
+      "title": "Supprimer l'utilisateur",
+      "message": "Êtes-vous sûr de vouloir supprimer l'utilisateur \"{name}\" ? Il ne pourra plus se connecter."
+    },
+    "toasts": {
+      "statusChanged": "Compte {action} avec succès",
+      "statusChangeError": "Erreur lors de la modification du statut",
+      "userDetailLoadError": "Erreur lors du chargement des détails de l'utilisateur",
+      "roleChanged": "Rôle modifié avec succès",
+      "roleChangeError": "Erreur lors de la modification du rôle",
+      "userDeleted": "Utilisateur supprimé avec succès",
+      "deleteError": "Erreur lors de la suppression",
+      "userUpdated": "Utilisateur modifié avec succès",
+      "userCreated": "Utilisateur créé avec succès",
+      "updateError": "Erreur lors de la modification de l'utilisateur",
+      "createError": "Erreur lors de la création de l'utilisateur",
+      "notAllowedTitle": "Action non autorisée",
+      "cannotChangeAdminRole": "Le rôle admin est attribué par le super admin et ne peut pas être modifié ici.",
+      "cannotDeleteSelf": "Vous ne pouvez pas supprimer votre propre compte.",
+      "cannotDeleteAdmin": "Les comptes avec le rôle admin ne peuvent pas être supprimés.",
+      "blocked": "bloqué",
+      "activated": "activé"
+    }
+  },
+  "form": {
+    "titles": {
+      "view": "Détails de l'utilisateur",
+      "edit": "Modifier l'utilisateur",
+      "add": "Ajouter un utilisateur"
+    },
+    "subtitles": {
+      "view": "Consultez les informations de l'utilisateur",
+      "edit": "Modifiez les informations de l'utilisateur",
+      "add": "Remplissez les informations pour créer un nouvel utilisateur"
+    },
+    "loadingData": "Chargement des données...",
+    "photo": "Photo de profil",
+    "fields": {
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "John",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Doe",
+      "email": "Email",
+      "emailPlaceholder": "john.doe@example.com",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "SecurePassword123!",
+      "passwordEditHint": "(laisser vide pour ne pas modifier)",
+      "role": "Rôle",
+      "rolePlaceholder": "Sélectionner un rôle",
+      "roleEmpty": "Aucun rôle trouvé",
+      "status": "Statut",
+      "statusActive": "Actif",
+      "statusInactive": "Inactif"
+    },
+    "buttons": {
+      "saving": "Enregistrement...",
+      "edit": "Modifier",
+      "add": "Ajouter"
+    }
+  },
+  "roleChange": {
+    "title": "Modifier le rôle",
+    "subtitleWithUser": "Choisissez un nouveau rôle pour {name}.",
+    "subtitle": "Choisissez un nouveau rôle.",
+    "roleLabel": "Rôle *",
+    "rolePlaceholder": "Sélectionner un rôle",
+    "roleEmpty": "Aucun rôle trouvé",
+    "saving": "Enregistrement..."
+  }
+}

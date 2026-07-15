@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import type { Interview } from "@/types/interview";
@@ -19,6 +20,9 @@ export default function CancelInterviewModal({
   isLoading = false,
   interview,
 }: CancelInterviewModalProps) {
+  const t = useTranslations("interviewModals.cancel");
+  const tc = useTranslations("common");
+  const locale = useLocale();
   const [reason, setReason] = useState("");
   const [error, setError] = useState("");
 
@@ -27,7 +31,7 @@ export default function CancelInterviewModal({
     setError("");
 
     if (!reason.trim()) {
-      setError("Veuillez indiquer la raison de l'annulation");
+      setError(t("reasonRequiredError"));
       return;
     }
 
@@ -36,7 +40,7 @@ export default function CancelInterviewModal({
       setReason("");
       onClose();
     } catch (err) {
-      setError("Erreur lors de l'annulation de l'entretien");
+      setError(t("cancelError"));
     }
   };
 
@@ -50,18 +54,20 @@ export default function CancelInterviewModal({
       <form onSubmit={handleSubmit}>
         <div className="p-6 sm:p-8 pb-0">
           <h2 className="text-xl font-semibold text-red-600 dark:text-red-400">
-            ❌ Annuler l'entretien
+            ❌ {t("title")}
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            {interviewDate ? `Entretien du ${interviewDate.toLocaleDateString('fr-FR', {
-              weekday: 'long',
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric'
-            })} à ${interviewDate.toLocaleTimeString('fr-FR', {
-              hour: '2-digit',
-              minute: '2-digit'
-            })}` : 'Annuler l\'entretien'}
+            {interviewDate ? t("subtitleWithDate", {
+              value: `${interviewDate.toLocaleDateString(locale, {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              })} ${locale === 'ar' ? 'في' : locale === 'en' ? 'at' : 'à'} ${interviewDate.toLocaleTimeString(locale, {
+                hour: '2-digit',
+                minute: '2-digit'
+              })}`
+            }) : t("subtitleDefault")}
           </p>
         </div>
 
@@ -76,10 +82,9 @@ export default function CancelInterviewModal({
             <div className="flex items-start gap-3">
               <span className="text-red-500 text-lg">⚠️</span>
               <div className="text-sm text-red-700 dark:text-red-300">
-                <p className="font-medium">Attention</p>
+                <p className="font-medium">{t("warningTitle")}</p>
                 <p className="mt-1">
-                  Cette action annulera définitivement l'entretien. Un email sera automatiquement 
-                  envoyé au candidat et aux invités pour les informer de l'annulation.
+                  {t("warningText")}
                 </p>
               </div>
             </div>
@@ -87,13 +92,13 @@ export default function CancelInterviewModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Raison de l'annulation <span className="text-red-500">*</span>
+              {t("reasonLabel")} <span className="text-red-500">*</span>
             </label>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               rows={3}
-              placeholder="Ex: Candidat indisponible, report de la décision, etc."
+              placeholder={t("reasonPlaceholder")}
               className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
               required
             />
@@ -102,10 +107,10 @@ export default function CancelInterviewModal({
 
         <div className="flex justify-end gap-3 p-6 sm:p-8 pt-4 border-t border-gray-100 dark:border-gray-800">
           <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-            Garder l'entretien
+            {t("keepButton")}
           </Button>
           <Button type="submit" variant="danger" disabled={isLoading}>
-            {isLoading ? "Annulation..." : "Confirmer l'annulation"}
+            {isLoading ? t("cancelling") : t("confirmButton")}
           </Button>
         </div>
       </form>

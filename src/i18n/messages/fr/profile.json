@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "editButton": "Modifier le profil",
+    "photoAlt": "Photo de profil"
+  },
+  "sections": {
+    "personalInfo": "Informations personnelles",
+    "address": "Adresse & Localisation",
+    "social": "Réseaux sociaux",
+    "company": "Entreprise"
+  },
+  "fields": {
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "position": "Poste",
+    "role": "Rôle",
+    "bio": "Bio",
+    "country": "Pays",
+    "city": "Ville",
+    "postalCode": "Code postal",
+    "taxId": "N° fiscal (TAX ID)",
+    "companyName": "Nom"
+  },
+  "modal": {
+    "title": "Modifier mon profil",
+    "subtitle": "Mettez à jour vos informations personnelles",
+    "tabs": {
+      "info": "Informations",
+      "social": "Réseaux sociaux",
+      "address": "Adresse",
+      "security": "Sécurité"
+    },
+    "photoLabel": "Photo de profil",
+    "choosePhoto": "Choisir une photo",
+    "photoHint": "JPEG, PNG, WebP · max 5MB",
+    "photoPreviewAlt": "Aperçu",
+    "firstNameRequired": "Prénom *",
+    "lastNameRequired": "Nom *",
+    "firstNamePlaceholder": "Prénom",
+    "lastNamePlaceholder": "Nom",
+    "phone": "Téléphone",
+    "phonePlaceholder": "+212 6 12 34 56 78",
+    "position": "Poste / Position",
+    "positionPlaceholder": "Ex: Développeur Full Stack",
+    "bio": "Bio",
+    "bioPlaceholder": "Quelques mots sur vous...",
+    "country": "Pays",
+    "countryPlaceholder": "Ex: Maroc",
+    "city": "Ville",
+    "cityPlaceholder": "Ex: Casablanca",
+    "postalCode": "Code postal",
+    "postalCodePlaceholder": "Ex: 20000",
+    "taxId": "N° fiscal (TAX ID)",
+    "taxIdPlaceholder": "Ex: TAX-123456",
+    "securityHint": "Laissez ces champs vides si vous ne souhaitez pas changer votre mot de passe.",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "passwordHint": "8+ caractères, majuscule, chiffre et caractère spécial",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Enregistrement..."
+  },
+  "validation": {
+    "required": "Requis"
+  }
+}
