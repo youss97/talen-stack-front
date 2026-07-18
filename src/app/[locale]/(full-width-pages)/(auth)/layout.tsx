@@ -2,27 +2,29 @@
 
 import GridShape from "@/components/common/GridShape";
 import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
-import LanguageSwitcher from "@/components/header/LanguageSwitcher";
 import GuestGuard from "@/components/auth/GuestGuard";
 import { ThemeProvider } from "@/context/ThemeContext";
 import React from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 const ThreeParticles = dynamic(() => import("@/components/common/ThreeParticles"), { ssr: false });
 
-const features = [
-  { icon: "🚀", title: "Recrutement rapide", desc: "Réduisez votre temps de recrutement de 95 %" },
-  { icon: "🤖", title: "Extraction CV automatique", desc: "Import et structuration automatique des CVs par IA" },
-  { icon: "🫥", title: "Anonymisation des CVs", desc: "CVs anonymisés pour un recrutement équitable et objectif" },
-  { icon: "📊", title: "Tableaux de bord", desc: "Suivi en temps réel de chaque candidature" },
-];
+const FEATURE_ICONS = ["🚀", "🤖", "🫥", "📊"];
 
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations("auth.marketing");
+  const features = (t.raw("features") as Array<{ title: string; desc: string }>).map((f, i) => ({
+    ...f,
+    icon: FEATURE_ICONS[i],
+  }));
+  const stats = t.raw("stats") as Array<{ value: string; label: string }>;
+
   return (
     <div className="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
       <ThemeProvider>
@@ -55,7 +57,7 @@ export default function AuthLayout({
                   transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
                   className="text-2xl font-bold text-white text-center mb-3"
                 >
-                  La plateforme RH nouvelle génération
+                  {t("tagline")}
                 </motion.h2>
                 <motion.p
                   initial={{ opacity: 0 }}
@@ -63,7 +65,7 @@ export default function AuthLayout({
                   transition={{ duration: 0.7, delay: 0.25 }}
                   className="text-brand-300 text-center text-sm mb-10 leading-relaxed"
                 >
-                  Gérez vos recrutements, vos candidats et vos intégrations depuis un seul espace intelligent.
+                  {t("subtitle")}
                 </motion.p>
 
                 {/* Feature list */}
@@ -92,22 +94,14 @@ export default function AuthLayout({
                   transition={{ duration: 0.6, delay: 0.8 }}
                   className="mt-10 flex items-center justify-around w-full border-t border-white/10 pt-8"
                 >
-                  {[
-                    { v: "500+", l: "Entreprises" },
-                    { v: "95%", l: "Satisfaction" },
-                    { v: "24h", l: "Démarrage" },
-                  ].map((s, i) => (
+                  {stats.map((s, i) => (
                     <div key={i} className="text-center">
-                      <div className="text-2xl font-bold text-brand-400">{s.v}</div>
-                      <div className="text-xs text-brand-300/70 mt-1">{s.l}</div>
+                      <div className="text-2xl font-bold text-brand-400">{s.value}</div>
+                      <div className="text-xs text-brand-300/70 mt-1">{s.label}</div>
                     </div>
                   ))}
                 </motion.div>
               </div>
-            </div>
-
-            <div className="fixed top-6 end-6 z-50">
-              <LanguageSwitcher />
             </div>
 
             <div className="fixed bottom-6 end-6 z-50 hidden sm:block">

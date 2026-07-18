@@ -131,7 +131,7 @@ export default function RequestKanbanPage() {
   };
 
   return (
-    <div className="p-6">
+    <div>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       <button

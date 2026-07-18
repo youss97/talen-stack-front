@@ -110,7 +110,7 @@ export default function InterviewsPage() {
 
   if (error) {
     return (
-      <div className="p-6">
+      <div>
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
           <p className="text-red-600 dark:text-red-400">
             Erreur lors du chargement des entretiens
@@ -124,7 +124,7 @@ export default function InterviewsPage() {
     <>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
       
-      <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

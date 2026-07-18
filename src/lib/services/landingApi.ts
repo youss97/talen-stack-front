@@ -5,9 +5,11 @@ export interface PricingPlan { name: string; price: string; currency?: string; c
 export interface Testimonial { name: string; role?: string; company?: string; text: string; rating?: number; avatar?: string }
 export interface FeatureItem { title: string; text?: string }
 export interface Partner { name?: string; logoUrl: string }
-export interface LandingData {
-  logoUrl?: string;
-  siteName?: string;
+
+export type LandingLocale = "fr" | "en" | "ar";
+
+/** Contenu éditorial traduisible (dupliqué par langue) */
+export interface LandingLocalizedContent {
   hero?: { title?: string; subtitle?: string; ctaText?: string; ctaLink?: string };
   about?: { title?: string; text?: string };
   features?: FeatureItem[];
@@ -15,7 +17,15 @@ export interface LandingData {
   testimonials?: Testimonial[];
   partners?: Partner[];
   contact?: { email?: string; phone?: string; address?: string; linkedin?: string; instagram?: string };
+}
+
+export interface LandingData {
+  // Identité — commune à toutes les langues
+  logoUrl?: string;
+  siteName?: string;
   brandColor?: string;
+  // Contenu éditorial par langue
+  locales?: Partial<Record<LandingLocale, LandingLocalizedContent>>;
 }
 export interface ContactMessage {
   id: string;

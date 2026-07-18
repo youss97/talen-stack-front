@@ -38,7 +38,8 @@ export default function LanguageSwitcher() {
       <button
         onClick={() => setIsOpen((v) => !v)}
         aria-label={t("language")}
-        className="flex items-center justify-center w-10 h-10 text-gray-600 rounded-lg hover:bg-[var(--brand-soft)] dark:text-white/70 dark:hover:bg-white/10"
+        style={{ borderColor: "var(--border-strong)" }}
+        className="relative flex items-center justify-center transition-colors border rounded-full h-11 w-11 text-gray-600 hover:text-gray-900 hover:bg-[var(--brand-soft)] dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path

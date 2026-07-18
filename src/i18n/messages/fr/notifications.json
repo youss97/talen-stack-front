@@ -6,6 +6,9 @@
   "actions": {
     "markAllRead": "Tout marquer comme lu"
   },
+  "dropdown": {
+    "viewAll": "Voir toutes les notifications"
+  },
   "emptyState": {
     "title": "Aucune notification",
     "message": "Vous serez notifié ici des nouvelles candidatures et événements."

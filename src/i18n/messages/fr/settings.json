@@ -1,4 +1,13 @@
 {
+  "backButton": "Retour aux paramètres",
+  "emailTemplatesPage": {
+    "title": "Templates emails",
+    "subtitle": "Personnalisez le contenu des emails envoyés automatiquement par la plateforme (candidatures, entretiens, notifications).",
+    "custom": "Personnalisé",
+    "default": "Par défaut",
+    "edit": "Modifier",
+    "view": "Voir"
+  },
   "hub": {
     "title": "Paramètres",
     "subtitle": "Gérez les paramètres de votre application",
@@ -263,6 +272,9 @@
       "content": "Contenu",
       "messages": "Messages",
       "messagesWithCount": "Messages ({count})"
+    },
+    "languageTabs": {
+      "label": "Langue du contenu :"
     },
     "identity": {
       "title": "Identité (header)",

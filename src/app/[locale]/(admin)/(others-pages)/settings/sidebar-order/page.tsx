@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import Button from "@/components/ui/button/Button";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import { NAV_CONFIG } from "@/layout/nav-config";
@@ -49,10 +48,6 @@ export default function SidebarOrderPage() {
   return (
     <div className="w-full">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
-
-      <Link href="/settings" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400">
-        <span className="inline-block rtl:rotate-180">←</span> {t("backButton")}
-      </Link>
 
       <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>

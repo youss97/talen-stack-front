@@ -12,12 +12,17 @@ import {
   useGetContactMessagesQuery,
   useMarkMessageReadMutation,
   type LandingData,
+  type LandingLocale,
+  type LandingLocalizedContent,
 } from "@/lib/services/landingApi";
 import { getApiErrorMessage } from "@/utils/errorMessages";
 
 const input = "h-10 w-full rounded-lg border border-gray-300 px-3 text-sm dark:bg-gray-900 dark:border-gray-700";
 const card = "rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]";
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+const LOCALES: LandingLocale[] = ["fr", "en", "ar"];
+const LOCALE_LABELS: Record<LandingLocale, string> = { fr: "Français", en: "English", ar: "العربية" };
 
 async function uploadImage(file: File): Promise<string> {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -50,6 +55,7 @@ export default function LandingEditorPage() {
 
   const [form, setForm] = useState<LandingData>({});
   const [tab, setTab] = useState<"content" | "messages">("content");
+  const [activeLocale, setActiveLocale] = useState<LandingLocale>("fr");
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
   const [partnerUploadingIdx, setPartnerUploadingIdx] = useState<number | null>(null);
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -69,15 +75,26 @@ export default function LandingEditorPage() {
     }
   };
 
-  // Helpers de mise à jour
-  const setHero = (k: string, v: string) => setForm((f) => ({ ...f, hero: { ...f.hero, [k]: v } }));
-  const setAbout = (k: string, v: string) => setForm((f) => ({ ...f, about: { ...f.about, [k]: v } }));
-  const setContact = (k: string, v: string) => setForm((f) => ({ ...f, contact: { ...f.contact, [k]: v } }));
+  // Contenu éditorial de la langue active
+  const localized: LandingLocalizedContent = form.locales?.[activeLocale] || {};
+  const setLocalized = (patch: Partial<LandingLocalizedContent>) =>
+    setForm((f) => ({
+      ...f,
+      locales: {
+        ...f.locales,
+        [activeLocale]: { ...(f.locales?.[activeLocale] || {}), ...patch },
+      },
+    }));
 
-  const features = form.features || [];
-  const pricing = form.pricing || [];
-  const testimonials = form.testimonials || [];
-  const partners = form.partners || [];
+  // Helpers de mise à jour (langue active)
+  const setHero = (k: string, v: string) => setLocalized({ hero: { ...localized.hero, [k]: v } });
+  const setAbout = (k: string, v: string) => setLocalized({ about: { ...localized.about, [k]: v } });
+  const setContact = (k: string, v: string) => setLocalized({ contact: { ...localized.contact, [k]: v } });
+
+  const features = localized.features || [];
+  const pricing = localized.pricing || [];
+  const testimonials = localized.testimonials || [];
+  const partners = localized.partners || [];
 
   if (isLoading) return <div className="flex justify-center py-12"><div className="w-8 h-8 border-4 border-gray-200 border-t-brand-500 rounded-full animate-spin" /></div>;
 
@@ -105,7 +122,23 @@ export default function LandingEditorPage() {
 
       {tab === "content" ? (
         <div className="space-y-5">
-          {/* Identité du site (logo header + nom) */}
+          {/* Sélecteur de langue du contenu éditorial */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{t("languageTabs.label")}</span>
+            <div className="inline-flex gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1 dark:border-gray-800 dark:bg-gray-800/40">
+              {LOCALES.map((loc) => (
+                <button
+                  key={loc}
+                  onClick={() => setActiveLocale(loc)}
+                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${activeLocale === loc ? "bg-white text-brand-600 shadow-sm dark:bg-gray-900 dark:text-brand-400" : "text-gray-500 hover:text-gray-700"}`}
+                >
+                  {LOCALE_LABELS[loc]}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Identité du site (logo header + nom) — commune à toutes les langues */}
           <div className={card}>
             <h2 className="mb-3 font-semibold text-gray-800 dark:text-white">{t("identity.title")}</h2>
             <div className="space-y-3">
@@ -152,11 +185,11 @@ export default function LandingEditorPage() {
           <div className={card}>
             <h2 className="mb-3 font-semibold text-gray-800 dark:text-white">{t("hero.title")}</h2>
             <div className="space-y-3">
-              <input className={input} placeholder={t("hero.titlePlaceholder")} value={form.hero?.title || ""} onChange={(e) => setHero("title", e.target.value)} />
-              <textarea className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700" rows={2} placeholder={t("hero.subtitlePlaceholder")} value={form.hero?.subtitle || ""} onChange={(e) => setHero("subtitle", e.target.value)} />
+              <input className={input} placeholder={t("hero.titlePlaceholder")} value={localized.hero?.title || ""} onChange={(e) => setHero("title", e.target.value)} />
+              <textarea className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700" rows={2} placeholder={t("hero.subtitlePlaceholder")} value={localized.hero?.subtitle || ""} onChange={(e) => setHero("subtitle", e.target.value)} />
               <div className="grid grid-cols-2 gap-3">
-                <input className={input} placeholder={t("hero.ctaTextPlaceholder")} value={form.hero?.ctaText || ""} onChange={(e) => setHero("ctaText", e.target.value)} />
-                <input className={input} placeholder={t("hero.ctaLinkPlaceholder")} value={form.hero?.ctaLink || ""} onChange={(e) => setHero("ctaLink", e.target.value)} />
+                <input className={input} placeholder={t("hero.ctaTextPlaceholder")} value={localized.hero?.ctaText || ""} onChange={(e) => setHero("ctaText", e.target.value)} />
+                <input className={input} placeholder={t("hero.ctaLinkPlaceholder")} value={localized.hero?.ctaLink || ""} onChange={(e) => setHero("ctaLink", e.target.value)} />
               </div>
               <div className="flex items-center gap-3">
                 <label className="text-sm text-gray-600 dark:text-gray-300">{t("hero.brandColorLabel")}</label>
@@ -169,8 +202,8 @@ export default function LandingEditorPage() {
           <div className={card}>
             <h2 className="mb-3 font-semibold text-gray-800 dark:text-white">{t("about.title")}</h2>
             <div className="space-y-3">
-              <input className={input} placeholder={t("about.titlePlaceholder")} value={form.about?.title || ""} onChange={(e) => setAbout("title", e.target.value)} />
-              <textarea className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700" rows={2} placeholder={t("about.textPlaceholder")} value={form.about?.text || ""} onChange={(e) => setAbout("text", e.target.value)} />
+              <input className={input} placeholder={t("about.titlePlaceholder")} value={localized.about?.title || ""} onChange={(e) => setAbout("title", e.target.value)} />
+              <textarea className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700" rows={2} placeholder={t("about.textPlaceholder")} value={localized.about?.text || ""} onChange={(e) => setAbout("text", e.target.value)} />
             </div>
           </div>
 
@@ -178,14 +211,14 @@ export default function LandingEditorPage() {
           <div className={card}>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-semibold text-gray-800 dark:text-white">{t("features.title")}</h2>
-              <button onClick={() => setForm((f) => ({ ...f, features: [...(f.features || []), { title: "", text: "" }] }))} className="text-xs px-2 py-1 rounded border border-gray-200 dark:border-gray-700">{t("features.addButton")}</button>
+              <button onClick={() => setLocalized({ features: [...features, { title: "", text: "" }] })} className="text-xs px-2 py-1 rounded border border-gray-200 dark:border-gray-700">{t("features.addButton")}</button>
             </div>
             <div className="space-y-3">
               {features.map((feat, i) => (
                 <div key={i} className="flex gap-2">
-                  <input className={input + " flex-1"} placeholder={t("features.titlePlaceholder")} value={feat.title} onChange={(e) => setForm((f) => ({ ...f, features: features.map((x, j) => j === i ? { ...x, title: e.target.value } : x) }))} />
-                  <input className={input + " flex-1"} placeholder={t("features.descriptionPlaceholder")} value={feat.text || ""} onChange={(e) => setForm((f) => ({ ...f, features: features.map((x, j) => j === i ? { ...x, text: e.target.value } : x) }))} />
-                  <button onClick={() => setForm((f) => ({ ...f, features: features.filter((_, j) => j !== i) }))} className="h-10 px-2 rounded-lg border border-error-300 text-error-500 text-xs">✕</button>
+                  <input className={input + " flex-1"} placeholder={t("features.titlePlaceholder")} value={feat.title} onChange={(e) => setLocalized({ features: features.map((x, j) => j === i ? { ...x, title: e.target.value } : x) })} />
+                  <input className={input + " flex-1"} placeholder={t("features.descriptionPlaceholder")} value={feat.text || ""} onChange={(e) => setLocalized({ features: features.map((x, j) => j === i ? { ...x, text: e.target.value } : x) })} />
+                  <button onClick={() => setLocalized({ features: features.filter((_, j) => j !== i) })} className="h-10 px-2 rounded-lg border border-error-300 text-error-500 text-xs">✕</button>
                 </div>
               ))}
             </div>
@@ -195,17 +228,17 @@ export default function LandingEditorPage() {
           <div className={card}>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-semibold text-gray-800 dark:text-white">{t("pricing.title")}</h2>
-              <button onClick={() => setForm((f) => ({ ...f, pricing: [...(f.pricing || []), { name: "", price: "", currency: "€", cycle: "/mois", features: [], ctaText: "" }] }))} className="text-xs px-2 py-1 rounded border border-gray-200 dark:border-gray-700">{t("pricing.addButton")}</button>
+              <button onClick={() => setLocalized({ pricing: [...pricing, { name: "", price: "", currency: "€", cycle: "/mois", features: [], ctaText: "" }] })} className="text-xs px-2 py-1 rounded border border-gray-200 dark:border-gray-700">{t("pricing.addButton")}</button>
             </div>
             <div className="space-y-4">
               {pricing.map((p, i) => {
-                const upd = (patch: Partial<typeof p>) => setForm((f) => ({ ...f, pricing: pricing.map((x, j) => (j === i ? { ...x, ...patch } : x)) }));
-                const move = (dir: -1 | 1) => setForm((f) => {
+                const upd = (patch: Partial<typeof p>) => setLocalized({ pricing: pricing.map((x, j) => (j === i ? { ...x, ...patch } : x)) });
+                const move = (dir: -1 | 1) => {
                   const arr = [...pricing]; const target = i + dir;
-                  if (target < 0 || target >= arr.length) return f;
+                  if (target < 0 || target >= arr.length) return;
                   [arr[i], arr[target]] = [arr[target], arr[i]];
-                  return { ...f, pricing: arr };
-                });
+                  setLocalized({ pricing: arr });
+                };
                 return (
                   <div key={i} className="rounded-xl border border-gray-200 dark:border-gray-700 p-3 space-y-2">
                     <div className="flex items-center gap-2">
@@ -213,7 +246,7 @@ export default function LandingEditorPage() {
                       <div className="ms-auto flex items-center gap-1">
                         <button onClick={() => move(-1)} disabled={i === 0} className="h-7 w-7 rounded border border-gray-200 dark:border-gray-700 text-xs disabled:opacity-40" aria-label={t("pricing.moveUp")}>↑</button>
                         <button onClick={() => move(1)} disabled={i === pricing.length - 1} className="h-7 w-7 rounded border border-gray-200 dark:border-gray-700 text-xs disabled:opacity-40" aria-label={t("pricing.moveDown")}>↓</button>
-                        <button onClick={() => setForm((f) => ({ ...f, pricing: pricing.filter((_, j) => j !== i) }))} className="h-7 px-2 rounded border border-error-300 text-error-500 text-xs">{t("pricing.deleteButton")}</button>
+                        <button onClick={() => setLocalized({ pricing: pricing.filter((_, j) => j !== i) })} className="h-7 px-2 rounded border border-error-300 text-error-500 text-xs">{t("pricing.deleteButton")}</button>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -249,16 +282,16 @@ export default function LandingEditorPage() {
           <div className={card}>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-semibold text-gray-800 dark:text-white">{t("testimonials.title")}</h2>
-              <button onClick={() => setForm((f) => ({ ...f, testimonials: [...(f.testimonials || []), { name: "", role: "", company: "", text: "", rating: 5 }] }))} className="text-xs px-2 py-1 rounded border border-gray-200 dark:border-gray-700">{t("testimonials.addButton")}</button>
+              <button onClick={() => setLocalized({ testimonials: [...testimonials, { name: "", role: "", company: "", text: "", rating: 5 }] })} className="text-xs px-2 py-1 rounded border border-gray-200 dark:border-gray-700">{t("testimonials.addButton")}</button>
             </div>
             <div className="space-y-4">
               {testimonials.map((testimonial, i) => (
                 <div key={i} className="rounded-xl border border-gray-200 dark:border-gray-700 p-3 space-y-2">
                   <div className="grid grid-cols-4 gap-2">
-                    <input className={input} placeholder={t("testimonials.namePlaceholder")} value={testimonial.name} onChange={(e) => setForm((f) => ({ ...f, testimonials: testimonials.map((x, j) => j === i ? { ...x, name: e.target.value } : x) }))} />
-                    <input className={input} placeholder={t("testimonials.rolePlaceholder")} value={testimonial.role || ""} onChange={(e) => setForm((f) => ({ ...f, testimonials: testimonials.map((x, j) => j === i ? { ...x, role: e.target.value } : x) }))} />
-                    <input className={input} placeholder={t("testimonials.companyPlaceholder")} value={testimonial.company || ""} onChange={(e) => setForm((f) => ({ ...f, testimonials: testimonials.map((x, j) => j === i ? { ...x, company: e.target.value } : x) }))} />
-                    <input className={input} type="number" min={1} max={5} placeholder={t("testimonials.ratingPlaceholder")} value={testimonial.rating || 5} onChange={(e) => setForm((f) => ({ ...f, testimonials: testimonials.map((x, j) => j === i ? { ...x, rating: Number(e.target.value) } : x) }))} />
+                    <input className={input} placeholder={t("testimonials.namePlaceholder")} value={testimonial.name} onChange={(e) => setLocalized({ testimonials: testimonials.map((x, j) => j === i ? { ...x, name: e.target.value } : x) })} />
+                    <input className={input} placeholder={t("testimonials.rolePlaceholder")} value={testimonial.role || ""} onChange={(e) => setLocalized({ testimonials: testimonials.map((x, j) => j === i ? { ...x, role: e.target.value } : x) })} />
+                    <input className={input} placeholder={t("testimonials.companyPlaceholder")} value={testimonial.company || ""} onChange={(e) => setLocalized({ testimonials: testimonials.map((x, j) => j === i ? { ...x, company: e.target.value } : x) })} />
+                    <input className={input} type="number" min={1} max={5} placeholder={t("testimonials.ratingPlaceholder")} value={testimonial.rating || 5} onChange={(e) => setLocalized({ testimonials: testimonials.map((x, j) => j === i ? { ...x, rating: Number(e.target.value) } : x) })} />
                   </div>
                   <div className="flex items-center gap-2">
                     {testimonial.avatar ? (
@@ -267,7 +300,7 @@ export default function LandingEditorPage() {
                     ) : (
                       <div className="h-9 w-9 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs font-semibold">{testimonial.name?.[0] || "?"}</div>
                     )}
-                    <input className={input + " flex-1"} placeholder={t("testimonials.avatarPlaceholder")} value={testimonial.avatar || ""} onChange={(e) => setForm((f) => ({ ...f, testimonials: testimonials.map((x, j) => j === i ? { ...x, avatar: e.target.value } : x) }))} />
+                    <input className={input + " flex-1"} placeholder={t("testimonials.avatarPlaceholder")} value={testimonial.avatar || ""} onChange={(e) => setLocalized({ testimonials: testimonials.map((x, j) => j === i ? { ...x, avatar: e.target.value } : x) })} />
                     <label className={`shrink-0 cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 dark:border-gray-700 ${uploadingIdx === i ? "opacity-50" : ""}`}>
                       {uploadingIdx === i ? t("testimonials.uploading") : t("testimonials.upload")}
                       <input
@@ -281,7 +314,7 @@ export default function LandingEditorPage() {
                           setUploadingIdx(i);
                           try {
                             const url = await uploadImage(file);
-                            setForm((f) => ({ ...f, testimonials: (f.testimonials || []).map((x, j) => (j === i ? { ...x, avatar: url } : x)) }));
+                            setLocalized({ testimonials: testimonials.map((x, j) => (j === i ? { ...x, avatar: url } : x)) });
                             addToast("success", t("testimonials.photoAddedTitle"));
                           } catch {
                             addToast("error", t("testimonials.photoUploadErrorTitle"), t("testimonials.photoUploadErrorMessage"));
@@ -294,8 +327,8 @@ export default function LandingEditorPage() {
                     </label>
                   </div>
                   <div className="flex gap-2">
-                    <textarea className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700" rows={2} placeholder={t("testimonials.textPlaceholder")} value={testimonial.text} onChange={(e) => setForm((f) => ({ ...f, testimonials: testimonials.map((x, j) => j === i ? { ...x, text: e.target.value } : x) }))} />
-                    <button onClick={() => setForm((f) => ({ ...f, testimonials: testimonials.filter((_, j) => j !== i) }))} className="h-9 px-3 self-start rounded-lg border border-error-300 text-error-500 text-xs">✕</button>
+                    <textarea className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm dark:bg-gray-900 dark:border-gray-700" rows={2} placeholder={t("testimonials.textPlaceholder")} value={testimonial.text} onChange={(e) => setLocalized({ testimonials: testimonials.map((x, j) => j === i ? { ...x, text: e.target.value } : x) })} />
+                    <button onClick={() => setLocalized({ testimonials: testimonials.filter((_, j) => j !== i) })} className="h-9 px-3 self-start rounded-lg border border-error-300 text-error-500 text-xs">✕</button>
                   </div>
                 </div>
               ))}
@@ -306,7 +339,7 @@ export default function LandingEditorPage() {
           <div className={card}>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-semibold text-gray-800 dark:text-white">{t("partners.title")}</h2>
-              <button onClick={() => setForm((f) => ({ ...f, partners: [...(f.partners || []), { name: "", logoUrl: "" }] }))} className="text-xs px-2 py-1 rounded border border-gray-200 dark:border-gray-700">{t("partners.addButton")}</button>
+              <button onClick={() => setLocalized({ partners: [...partners, { name: "", logoUrl: "" }] })} className="text-xs px-2 py-1 rounded border border-gray-200 dark:border-gray-700">{t("partners.addButton")}</button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {partners.map((p, i) => (
@@ -331,7 +364,7 @@ export default function LandingEditorPage() {
                           setPartnerUploadingIdx(i);
                           try {
                             const url = await uploadImage(file);
-                            setForm((f) => ({ ...f, partners: (f.partners || []).map((x, j) => (j === i ? { ...x, logoUrl: url } : x)) }));
+                            setLocalized({ partners: partners.map((x, j) => (j === i ? { ...x, logoUrl: url } : x)) });
                             addToast("success", t("partners.logoAddedTitle"));
                           } catch {
                             addToast("error", t("partners.logoUploadErrorTitle"), t("partners.logoUploadErrorMessage"));
@@ -342,9 +375,9 @@ export default function LandingEditorPage() {
                         }}
                       />
                     </label>
-                    <button onClick={() => setForm((f) => ({ ...f, partners: (f.partners || []).filter((_, j) => j !== i) }))} className="ms-auto h-9 px-3 rounded-lg border border-error-300 text-error-500 text-xs">✕</button>
+                    <button onClick={() => setLocalized({ partners: partners.filter((_, j) => j !== i) })} className="ms-auto h-9 px-3 rounded-lg border border-error-300 text-error-500 text-xs">✕</button>
                   </div>
-                  <input className={input} placeholder={t("partners.namePlaceholder")} value={p.name || ""} onChange={(e) => setForm((f) => ({ ...f, partners: (f.partners || []).map((x, j) => j === i ? { ...x, name: e.target.value } : x) }))} />
+                  <input className={input} placeholder={t("partners.namePlaceholder")} value={p.name || ""} onChange={(e) => setLocalized({ partners: partners.map((x, j) => j === i ? { ...x, name: e.target.value } : x) })} />
                 </div>
               ))}
               {partners.length === 0 && (
@@ -357,11 +390,11 @@ export default function LandingEditorPage() {
           <div className={card}>
             <h2 className="mb-3 font-semibold text-gray-800 dark:text-white">{t("contact.title")}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <input className={input} placeholder={t("contact.emailPlaceholder")} value={form.contact?.email || ""} onChange={(e) => setContact("email", e.target.value)} />
-              <input className={input} placeholder={t("contact.phonePlaceholder")} value={form.contact?.phone || ""} onChange={(e) => setContact("phone", e.target.value)} />
-              <input className={input} placeholder={t("contact.addressPlaceholder")} value={form.contact?.address || ""} onChange={(e) => setContact("address", e.target.value)} />
-              <input className={input} placeholder={t("contact.linkedinPlaceholder")} value={form.contact?.linkedin || ""} onChange={(e) => setContact("linkedin", e.target.value)} />
-              <input className={input} placeholder={t("contact.instagramPlaceholder")} value={form.contact?.instagram || ""} onChange={(e) => setContact("instagram", e.target.value)} />
+              <input className={input} placeholder={t("contact.emailPlaceholder")} value={localized.contact?.email || ""} onChange={(e) => setContact("email", e.target.value)} />
+              <input className={input} placeholder={t("contact.phonePlaceholder")} value={localized.contact?.phone || ""} onChange={(e) => setContact("phone", e.target.value)} />
+              <input className={input} placeholder={t("contact.addressPlaceholder")} value={localized.contact?.address || ""} onChange={(e) => setContact("address", e.target.value)} />
+              <input className={input} placeholder={t("contact.linkedinPlaceholder")} value={localized.contact?.linkedin || ""} onChange={(e) => setContact("linkedin", e.target.value)} />
+              <input className={input} placeholder={t("contact.instagramPlaceholder")} value={localized.contact?.instagram || ""} onChange={(e) => setContact("instagram", e.target.value)} />
             </div>
           </div>
 

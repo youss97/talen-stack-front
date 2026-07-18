@@ -1,5 +1,6 @@
 "use client";
 import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import Badge from "@/components/ui/badge/Badge";
 import Button from "@/components/ui/button/Button";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -9,6 +10,7 @@ import { useActions } from "@/hooks/useActions";
 import type { EmailTemplate, EmailTemplateType } from "@/types/emailTemplate";
 
 export default function EmailTemplatesPage() {
+  const t = useTranslations("settings.emailTemplatesPage");
   const { canUpdate } = useActions("/email-templates");
   const { data: templates = [], isLoading } = useGetEmailTemplatesQuery();
   const { data: variableInfo = [] } = useGetEmailTemplateVariablesQuery();
@@ -31,13 +33,13 @@ export default function EmailTemplatesPage() {
   const selectedTemplate: EmailTemplate | null = templates.find((t) => t.type === selectedType) || null;
 
   return (
-    <div className="p-6">
+    <div className="w-full">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Templates emails</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t("title")}</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Personnalisez le contenu des emails envoyés automatiquement par la plateforme (candidatures, entretiens, notifications).
+          {t("subtitle")}
         </p>
       </div>
 
@@ -55,7 +57,7 @@ export default function EmailTemplatesPage() {
               <div className="flex items-start justify-between gap-2">
                 <h3 className="font-medium text-gray-900 dark:text-white">{labelFor(template.type)}</h3>
                 <Badge color={template.is_custom ? "success" : "light"} variant="light" size="sm">
-                  {template.is_custom ? "Personnalisé" : "Par défaut"}
+                  {template.is_custom ? t("custom") : t("default")}
                 </Badge>
               </div>
               {descriptionFor(template.type) && (
@@ -73,7 +75,7 @@ export default function EmailTemplatesPage() {
                 disabled={!canUpdate}
                 className="mt-auto"
               >
-                {canUpdate ? "Modifier" : "Voir"}
+                {canUpdate ? t("edit") : t("view")}
               </Button>
             </div>
           ))}

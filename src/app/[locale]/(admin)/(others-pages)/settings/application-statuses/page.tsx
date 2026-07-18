@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { useGetApplicationStatusesQuery, useCreateApplicationStatusMutation, useUpdateApplicationStatusMutation, useDeleteApplicationStatusMutation } from "@/lib/services/applicationStatusApi";
 import DataTable from "@/components/tables/DataTable";
 import type { Column } from "@/components/tables/DataTable";
@@ -23,7 +22,6 @@ interface ApplicationStatus {
 
 export default function ApplicationStatusesPage() {
   const t = useTranslations("settings.applicationStatuses");
-  const ts = useTranslations("settings");
   const tc = useTranslations("common");
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
@@ -121,16 +119,6 @@ export default function ApplicationStatusesPage() {
       <ToastContainer toasts={toasts} onRemove={removeToast} />
       
       <div className="mb-6">
-        <div className="flex items-center gap-2 mb-2">
-          <Link
-            href="/settings"
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          >
-            {ts("hub.title")}
-          </Link>
-          <span className="text-gray-400">/</span>
-          <span className="text-gray-800 dark:text-white/90">{t("breadcrumb")}</span>
-        </div>
         <h1 className="text-2xl font-semibold text-gray-800 dark:text-white/90">
           {t("title")}
         </h1>
@@ -139,8 +127,8 @@ export default function ApplicationStatusesPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-800">
+      <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="flex items-center justify-between">
           <div className="flex-1 max-w-md">
             <input
               type="text"
@@ -154,27 +142,27 @@ export default function ApplicationStatusesPage() {
             {t("createButton")}
           </Button>
         </div>
-
-        <DataTable
-          columns={columns}
-          data={data?.data || []}
-          isLoading={isLoading}
-          onEdit={handleOpenEdit}
-          onDelete={(row) => setConfirmModal({ isOpen: true, status: row })}
-        />
-
-        {data && data.pagination && (
-          <div className="p-5 border-t border-gray-100 dark:border-gray-800">
-            <Pagination
-              currentPage={page}
-              totalPages={data.pagination.totalPages}
-              totalItems={data.pagination.total}
-              itemsPerPage={data.pagination.limit}
-              onPageChange={setPage}
-            />
-          </div>
-        )}
       </div>
+
+      <DataTable
+        columns={columns}
+        data={data?.data || []}
+        isLoading={isLoading}
+        onEdit={handleOpenEdit}
+        onDelete={(row) => setConfirmModal({ isOpen: true, status: row })}
+      />
+
+      {data && data.pagination && (
+        <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+          <Pagination
+            currentPage={page}
+            totalPages={data.pagination.totalPages}
+            totalItems={data.pagination.total}
+            itemsPerPage={data.pagination.limit}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
 
       {/* Form Modal */}
       <Modal isOpen={isFormModalOpen} onClose={() => setIsFormModalOpen(false)} className="max-w-md">

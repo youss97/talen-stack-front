@@ -259,7 +259,7 @@ export default function AgendaPage() {
 
   if (loadError) {
     return (
-      <div className="p-6">
+      <div>
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
           <h3 className="text-red-800 dark:text-red-400 font-semibold mb-2">
             {t("loadError.title")}
@@ -276,7 +276,7 @@ export default function AgendaPage() {
     <>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
       
-      <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
         <div className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

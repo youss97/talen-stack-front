@@ -6,6 +6,9 @@
   "actions": {
     "markAllRead": "Mark all as read"
   },
+  "dropdown": {
+    "viewAll": "View all notifications"
+  },
   "emptyState": {
     "title": "No notifications",
     "message": "You will be notified here about new applications and events."

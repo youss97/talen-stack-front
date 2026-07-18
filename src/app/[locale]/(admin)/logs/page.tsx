@@ -151,7 +151,7 @@ export default function LogsPage() {
   ];
 
   return (
-    <div className="p-6">
+    <div>
       <div className="w-full">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>

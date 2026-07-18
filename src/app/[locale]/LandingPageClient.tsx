@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { useAppSelector } from '@/lib/hooks';
 import { useVerifyUserQuery } from '@/lib/services/authApi';
@@ -48,6 +48,7 @@ function brandScaleVars(brand: string): React.CSSProperties {
 
 export default function LandingPageClient() {
   const router = useRouter();
+  const locale = useLocale();
   const tCommon = useTranslations('common');
   const tLanding = useTranslations('landing');
   const { isAuth, user } = useAppSelector((state) => state.auth);
@@ -56,13 +57,14 @@ export default function LandingPageClient() {
   // Mode aperçu : permet au super admin connecté de voir la landing sans redirection
   const isPreview = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("preview");
 
-  // Contenu éditable de la landing (géré par le super admin)
+  // Contenu éditable de la landing (géré par le super admin), pour la langue active
+  // (repli sur le français côté backend si la langue n'a pas de contenu saisi)
   useEffect(() => {
-    fetch(`${LANDING_API}/public/landing`, { cache: "no-store" })
+    fetch(`${LANDING_API}/public/landing?locale=${locale}`, { cache: "no-store" })
       .then((r) => r.json())
       .then(setContent)
       .catch(() => setContent({}));
-  }, []);
+  }, [locale]);
   
   // Vérifier l'authentification au chargement
   const { isLoading: isVerifying } = useVerifyUserQuery(undefined, {

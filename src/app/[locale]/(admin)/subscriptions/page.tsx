@@ -52,7 +52,7 @@ export default function SubscriptionsPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       {/* Header */}

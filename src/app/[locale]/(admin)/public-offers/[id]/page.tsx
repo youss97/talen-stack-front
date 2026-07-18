@@ -114,7 +114,7 @@ export default function PublicOfferDetailPage() {
 
   if (!offer || !offer.is_public) {
     return (
-      <div className="p-6">
+      <div>
         <div className="text-center py-12">
           <p className="text-gray-500">{t("notFound")}</p>
           <Button onClick={() => router.push("/public-offers")} className="mt-4">
@@ -126,7 +126,7 @@ export default function PublicOfferDetailPage() {
   }
 
   return (
-    <div className="p-6">
+    <div>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
       <ConversionLoader active={!!convertingId} done={convertDone} />
 

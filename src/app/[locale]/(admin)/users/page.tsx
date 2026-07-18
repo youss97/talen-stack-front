@@ -319,7 +319,7 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="p-6">
+    <div>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       <div className="w-full">

@@ -1,4 +1,13 @@
 {
+  "backButton": "Back to settings",
+  "emailTemplatesPage": {
+    "title": "Email templates",
+    "subtitle": "Customize the content of emails automatically sent by the platform (applications, interviews, notifications).",
+    "custom": "Customized",
+    "default": "Default",
+    "edit": "Edit",
+    "view": "View"
+  },
   "hub": {
     "title": "Settings",
     "subtitle": "Manage your application settings",
@@ -263,6 +272,9 @@
       "content": "Content",
       "messages": "Messages",
       "messagesWithCount": "Messages ({count})"
+    },
+    "languageTabs": {
+      "label": "Content language:"
     },
     "identity": {
       "title": "Identity (header)",

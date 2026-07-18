@@ -351,7 +351,7 @@ export default function AssignmentsPage() {
     t("bulkBar.selectedRequest", { count: selectedIds.length });
 
   return (
-    <div className="p-6">
+    <div>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       <div className="w-full">

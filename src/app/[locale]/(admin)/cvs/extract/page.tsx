@@ -419,7 +419,7 @@ export default function CVExtractPage() {
   const isSaving = isCreating || isUpdating;
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="max-w-5xl mx-auto">
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       {/* Back */}
