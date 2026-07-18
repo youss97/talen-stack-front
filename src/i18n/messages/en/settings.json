@@ -6,7 +6,79 @@
     "custom": "Customized",
     "default": "Default",
     "edit": "Edit",
-    "view": "View"
+    "view": "View",
+    "types": {
+      "NOTIFY": {
+        "label": "HR ↔ Client notification",
+        "description": "Internal notification sent to the other party (HR ↔ Client) at each key step: recruitment request created, new application proposed, status change, new feedback, interview scheduling/cancellation."
+      },
+      "TRACKING": {
+        "label": "Application tracking (candidate)",
+        "description": "Sent to the candidate right after they submit an application to a public offer, with a link to track their application status."
+      },
+      "APPLICATION_MANUAL": {
+        "label": "Manual email on an application",
+        "description": "Manual email sent by a recruiter/HR user directly from an application's page, to an address of their choice."
+      },
+      "INTERVIEW_INVITATION_CANDIDATE": {
+        "label": "Interview invitation — candidate",
+        "description": "Invitation sent to the CANDIDATE when an interview is scheduled for their application."
+      },
+      "INTERVIEW_INVITATION_INVITEE": {
+        "label": "Interview invitation — invitee",
+        "description": "Invitation sent to OTHER PARTICIPANTS (invitees) when an interview is scheduled."
+      },
+      "INTERVIEW_RESCHEDULE_CANDIDATE": {
+        "label": "Interview reschedule — candidate",
+        "description": "Sent to the CANDIDATE when an already scheduled interview is rescheduled to a new date/time."
+      },
+      "INTERVIEW_RESCHEDULE_INVITEE": {
+        "label": "Interview reschedule — invitee",
+        "description": "Sent to OTHER PARTICIPANTS when an already scheduled interview is rescheduled to a new date/time."
+      },
+      "INTERVIEW_MODIFICATION_CANDIDATE": {
+        "label": "Interview update — candidate",
+        "description": "Sent to the CANDIDATE when interview details are changed (other than date/time, e.g. location, type, notes)."
+      },
+      "INTERVIEW_MODIFICATION_INVITEE": {
+        "label": "Interview update — invitee",
+        "description": "Sent to OTHER PARTICIPANTS when interview details are changed (other than date/time)."
+      },
+      "INTERVIEW_CANCELLATION_CANDIDATE": {
+        "label": "Interview cancellation — candidate",
+        "description": "Sent to the CANDIDATE when a scheduled interview is cancelled."
+      },
+      "INTERVIEW_CANCELLATION_INVITEE": {
+        "label": "Interview cancellation — invitee",
+        "description": "Sent to OTHER PARTICIPANTS when a scheduled interview is cancelled."
+      }
+    },
+    "editorModal": {
+      "subtitle": "Customize the subject and body of this email. Use the variables below to insert dynamic information.",
+      "subjectLabel": "Email subject",
+      "subjectPlaceholder": "Email subject",
+      "bodyLabel": "Email body",
+      "variablesLabel": "Available variables",
+      "insertVariable": "Insert {variable}",
+      "previewLabel": "Preview (with sample data)",
+      "previewSubjectLabel": "Subject:",
+      "previewIframeTitle": "Email preview",
+      "reset": "Reset to default template",
+      "preview": "Preview",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "toasts": {
+        "savedTitle": "Saved",
+        "savedMessage": "The template has been updated.",
+        "errorTitle": "Error",
+        "saveError": "Failed to save",
+        "resetTitle": "Reset",
+        "resetMessage": "The default template has been restored.",
+        "resetError": "Failed to reset",
+        "previewError": "Failed to generate preview"
+      }
+    }
   },
   "hub": {
     "title": "Settings",

@@ -6,7 +6,79 @@
     "custom": "Personnalisé",
     "default": "Par défaut",
     "edit": "Modifier",
-    "view": "Voir"
+    "view": "Voir",
+    "types": {
+      "NOTIFY": {
+        "label": "Notification RH ↔ Client",
+        "description": "Notification interne envoyée à la partie opposée (RH ↔ Client) à chaque étape clé : création d'une demande de recrutement, nouvelle candidature proposée, changement de statut, nouveau feedback, planification/annulation d'entretien."
+      },
+      "TRACKING": {
+        "label": "Suivi de candidature (candidat)",
+        "description": "Envoyé au candidat juste après le dépôt de sa candidature à une offre publique, avec un lien de suivi de l'état de sa candidature."
+      },
+      "APPLICATION_MANUAL": {
+        "label": "Email manuel sur une candidature",
+        "description": "Email manuel envoyé par un recruteur/RH directement depuis la fiche d'une candidature, à l'adresse de son choix."
+      },
+      "INTERVIEW_INVITATION_CANDIDATE": {
+        "label": "Invitation entretien — candidat",
+        "description": "Invitation envoyée au CANDIDAT lorsqu'un entretien est planifié pour sa candidature."
+      },
+      "INTERVIEW_INVITATION_INVITEE": {
+        "label": "Invitation entretien — invité",
+        "description": "Invitation envoyée aux AUTRES PARTICIPANTS (invités) lorsqu'un entretien est planifié."
+      },
+      "INTERVIEW_RESCHEDULE_CANDIDATE": {
+        "label": "Report d'entretien — candidat",
+        "description": "Envoyé au CANDIDAT lorsqu'un entretien déjà planifié est reporté à une nouvelle date/heure."
+      },
+      "INTERVIEW_RESCHEDULE_INVITEE": {
+        "label": "Report d'entretien — invité",
+        "description": "Envoyé aux AUTRES PARTICIPANTS lorsqu'un entretien déjà planifié est reporté à une nouvelle date/heure."
+      },
+      "INTERVIEW_MODIFICATION_CANDIDATE": {
+        "label": "Modification d'entretien — candidat",
+        "description": "Envoyé au CANDIDAT lorsque les détails d'un entretien sont modifiés (hors changement de date/heure, ex: lieu, type, notes)."
+      },
+      "INTERVIEW_MODIFICATION_INVITEE": {
+        "label": "Modification d'entretien — invité",
+        "description": "Envoyé aux AUTRES PARTICIPANTS lorsque les détails d'un entretien sont modifiés (hors changement de date/heure)."
+      },
+      "INTERVIEW_CANCELLATION_CANDIDATE": {
+        "label": "Annulation d'entretien — candidat",
+        "description": "Envoyé au CANDIDAT lorsqu'un entretien planifié est annulé."
+      },
+      "INTERVIEW_CANCELLATION_INVITEE": {
+        "label": "Annulation d'entretien — invité",
+        "description": "Envoyé aux AUTRES PARTICIPANTS lorsqu'un entretien planifié est annulé."
+      }
+    },
+    "editorModal": {
+      "subtitle": "Personnalisez l'objet et le corps de cet email. Utilisez les variables ci-dessous pour insérer des informations dynamiques.",
+      "subjectLabel": "Objet de l'email",
+      "subjectPlaceholder": "Objet de l'email",
+      "bodyLabel": "Corps de l'email",
+      "variablesLabel": "Variables disponibles",
+      "insertVariable": "Insérer {variable}",
+      "previewLabel": "Aperçu (avec des données d'exemple)",
+      "previewSubjectLabel": "Objet :",
+      "previewIframeTitle": "Aperçu de l'email",
+      "reset": "Réinitialiser au modèle par défaut",
+      "preview": "Aperçu",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement...",
+      "toasts": {
+        "savedTitle": "Enregistré",
+        "savedMessage": "Le template a été mis à jour.",
+        "errorTitle": "Erreur",
+        "saveError": "Échec de l'enregistrement",
+        "resetTitle": "Réinitialisé",
+        "resetMessage": "Le modèle par défaut a été restauré.",
+        "resetError": "Échec de la réinitialisation",
+        "previewError": "Échec de l'aperçu"
+      }
+    }
   },
   "hub": {
     "title": "Paramètres",

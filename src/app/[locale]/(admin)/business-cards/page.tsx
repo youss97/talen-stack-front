@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { RootState } from "@/lib/store";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
@@ -220,9 +221,9 @@ export default function BusinessCardsPage() {
   return (
     <div>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
-      <a href="/settings" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400">
+      <Link href="/settings" className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400">
         <span className="inline-block rtl:rotate-180">←</span> {t("backToSettings")}
-      </a>
+      </Link>
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="flex flex-wrap items-center justify-between gap-3 p-5 border-b border-gray-100 dark:border-gray-800">
           <div>
@@ -250,7 +251,7 @@ export default function BusinessCardsPage() {
                   {c.email && <p className="text-xs text-gray-400 mt-1">{c.email}</p>}
                   <div className="mt-4 grid grid-cols-3 gap-2">
                     <button onClick={() => { setCardImageUrl(""); setQrCard(c); }} className="col-span-3 rounded-lg bg-brand-500 px-3 py-2 text-xs font-semibold text-white hover:bg-brand-600 transition-colors">{t("card.qrAndCard")}</button>
-                    <a href={`/card/${c.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2 text-center text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 transition-colors">{t("card.preview")}</a>
+                    <Link href={`/card/${c.id}`} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2 text-center text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 transition-colors">{t("card.preview")}</Link>
                     <button onClick={() => copyLink(c)} className="rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 transition-colors">{t("card.link")}</button>
                     <button onClick={() => openEdit(c)} className="rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 transition-colors">{tc("actions.edit")}</button>
                     <button onClick={() => toggleActive(c)} className="col-span-2 rounded-lg px-3 py-2 text-xs font-medium transition-colors bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/20 dark:text-amber-300">{c.is_active ? t("card.deactivate") : t("card.activate")}</button>

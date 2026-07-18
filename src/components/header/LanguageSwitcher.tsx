@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -15,6 +16,7 @@ export default function LanguageSwitcher() {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -30,7 +32,11 @@ export default function LanguageSwitcher() {
 
   const handleSelect = (nextLocale: string) => {
     setIsOpen(false);
-    router.replace(pathname, { locale: nextLocale });
+    // Conserver les paramètres de requête (ex: ?preview=1 sur le site vitrine) — sans ça,
+    // changer de langue les perd silencieusement et peut déclencher des effets de bord
+    // (ex: redirection automatique hors de la page pour un utilisateur déjà connecté).
+    const query = searchParams.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { locale: nextLocale });
   };
 
   return (

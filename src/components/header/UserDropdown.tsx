@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useSelector } from "react-redux";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { useLogoutMutation } from "@/lib/services/authApi";
@@ -99,7 +99,7 @@ export default function UserDropdown() {
         {user?.role?.code !== 'super_admin' && (
           <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
             <li>
-              <a
+              <Link
                 href="/profile"
                 onClick={closeDropdown}
                 className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
@@ -120,11 +120,11 @@ export default function UserDropdown() {
                   />
                 </svg>
                 {t("profile")}
-              </a>
+              </Link>
             </li>
             {isMainCompany && (
               <li>
-                <a
+                <Link
                   href="/settings"
                   onClick={closeDropdown}
                   className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
@@ -142,7 +142,7 @@ export default function UserDropdown() {
                     />
                   </svg>
                   {t("settings")}
-                </a>
+                </Link>
               </li>
             )}
           </ul>

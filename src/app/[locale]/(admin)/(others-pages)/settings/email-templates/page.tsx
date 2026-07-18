@@ -28,8 +28,12 @@ export default function EmailTemplatesPage() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const labelFor = (type: EmailTemplateType) => variableInfo.find((v) => v.type === type)?.label || type;
-  const descriptionFor = (type: EmailTemplateType) => variableInfo.find((v) => v.type === type)?.description || "";
+  // Libellés/descriptions traduits côté frontend (le backend ne renvoie que du français) —
+  // repli sur la valeur backend si un type n'a pas (encore) d'entrée dans le namespace.
+  const labelFor = (type: EmailTemplateType) =>
+    (t.has(`types.${type}.label`) ? t(`types.${type}.label`) : variableInfo.find((v) => v.type === type)?.label) || type;
+  const descriptionFor = (type: EmailTemplateType) =>
+    (t.has(`types.${type}.description`) ? t(`types.${type}.description`) : variableInfo.find((v) => v.type === type)?.description) || "";
   const selectedTemplate: EmailTemplate | null = templates.find((t) => t.type === selectedType) || null;
 
   return (
