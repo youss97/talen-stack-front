@@ -178,6 +178,15 @@ export default function UsersPage() {
         return <Badge color={color} variant="light" size="sm">{label}</Badge>;
       },
     },
+    {
+      key: "creator",
+      header: t("list.columns.createdBy"),
+      render: (_, row) => (
+        <span className="text-gray-600 dark:text-gray-400">
+          {row.creator ? `${row.creator.first_name} ${row.creator.last_name}` : "—"}
+        </span>
+      ),
+    },
   ];
 
   const handleRowClick = async (user: User) => {

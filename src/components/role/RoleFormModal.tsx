@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useSelector } from "react-redux";
 import { useForm, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Modal } from "@/components/ui/modal";
@@ -13,6 +14,7 @@ import {
   type CreateRoleFormData,
 } from "@/validations/roleValidation";
 import type { RoleWithFeatures } from "@/types/role";
+import type { RootState } from "@/lib/store";
 
 interface RoleFormModalProps {
   isOpen: boolean;
@@ -32,6 +34,7 @@ export default function RoleFormModal({
   const t = useTranslations("roles");
   const tc = useTranslations("common");
   const isEditing = !!role;
+  const companyName = useSelector((state: RootState) => state.auth.user?.company?.name);
 
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [selectedPages, setSelectedPages] = useState<string[]>([]);
@@ -146,6 +149,12 @@ export default function RoleFormModal({
       <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col flex-1 min-h-0">
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar">
           <div className="grid grid-cols-1 gap-5">
+            {companyName && (
+              <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 px-4 py-2.5">
+                <span className="text-sm text-gray-500 dark:text-gray-400">{t("form.companyLabel")} : </span>
+                <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{companyName}</span>
+              </div>
+            )}
             <div>
               <Label>{t("form.nameLabel")}</Label>
               <input

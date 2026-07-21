@@ -144,6 +144,13 @@ export default function RolesPage() {
         });
       },
     },
+    {
+      key: "creator",
+      header: t("list.columns.createdBy"),
+      render: (_, row) => (
+        <span>{row.creator ? `${row.creator.first_name} ${row.creator.last_name}` : "—"}</span>
+      ),
+    },
   ];
 
   const handleViewClick = async (role: Role) => {

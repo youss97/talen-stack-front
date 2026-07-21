@@ -61,6 +61,7 @@ export default function UserFormModal({
       first_name: "",
       last_name: "",
       role_id: "",
+      phone: "",
       status: "active",
     },
   });
@@ -73,6 +74,7 @@ export default function UserFormModal({
         first_name: user.first_name,
         last_name: user.last_name,
         role_id: user.role_id,
+        phone: user.phone || "",
         status: user.status === "deleted" ? "inactive" : user.status,
       });
       setPhotoPreview(getImageUrl(user.photo_path || user.photo));
@@ -83,6 +85,7 @@ export default function UserFormModal({
         first_name: "",
         last_name: "",
         role_id: "",
+        phone: "",
         status: "active",
       });
       setPhotoPreview(null);
@@ -222,6 +225,22 @@ export default function UserFormModal({
               {errors.email && !readOnly && (
                 <p className="mt-1 text-sm text-error-500">
                   {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            <div className="sm:col-span-2">
+              <Label>{t("form.fields.phone")}</Label>
+              <Input
+                type="tel"
+                placeholder={t("form.fields.phonePlaceholder")}
+                {...register("phone")}
+                error={!!errors.phone}
+                disabled={readOnly}
+              />
+              {errors.phone && !readOnly && (
+                <p className="mt-1 text-sm text-error-500">
+                  {errors.phone.message}
                 </p>
               )}
             </div>

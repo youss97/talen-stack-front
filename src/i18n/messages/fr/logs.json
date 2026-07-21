@@ -13,6 +13,7 @@
     "columns": {
       "action": "Action",
       "table": "Table",
+      "target": "Élément concerné",
       "user": "Utilisateur",
       "company": "Entreprise",
       "date": "Date"

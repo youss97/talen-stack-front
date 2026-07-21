@@ -172,8 +172,8 @@ export default function ClientsPage() {
         const formDataToSend = new FormData();
         formDataToSend.append("name", formData.name);
         if (formData.ice) formDataToSend.append("ice", formData.ice);
-        formDataToSend.append("address", formData.address);
-        formDataToSend.append("city", formData.city);
+        formDataToSend.append("address", formData.address || "");
+        formDataToSend.append("city", formData.city || "");
         formDataToSend.append("postal_code", formData.postal_code || "");
         formDataToSend.append("country", formData.country);
         formDataToSend.append("phone", formData.phone);
@@ -280,6 +280,13 @@ export default function ClientsPage() {
         const { label, color } = statusMap[value as string] ?? { label: String(value), color: "error" };
         return <Badge color={color} variant="light" size="sm">{label}</Badge>;
       },
+    },
+    {
+      key: "creator",
+      header: t("list.columns.createdBy"),
+      render: (_, row) => (
+        <span>{row.creator ? `${row.creator.first_name} ${row.creator.last_name}` : "—"}</span>
+      ),
     },
   ];
 

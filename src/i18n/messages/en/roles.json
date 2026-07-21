@@ -7,7 +7,8 @@
     "emptyMessage": "No roles found",
     "columns": {
       "usersCount": "Users",
-      "createdAt": "Created on"
+      "createdAt": "Created on",
+      "createdBy": "Created by"
     },
     "status": {
       "protected": "🔒 Protected",
@@ -36,6 +37,7 @@
     "titleAdd": "Add a role",
     "subtitleEdit": "Edit the role's information",
     "subtitleAdd": "Fill in the information to create a new role",
+    "companyLabel": "Company",
     "nameLabel": "Role name",
     "namePlaceholder": "Administrator",
     "descriptionPlaceholder": "Role description...",

@@ -16,7 +16,8 @@
       "email": "البريد الإلكتروني",
       "role": "الدور",
       "company": "الشركة",
-      "status": "الحالة"
+      "status": "الحالة",
+      "createdBy": "أنشئ بواسطة"
     },
     "status": {
       "active": "نشط",
@@ -76,6 +77,8 @@
       "lastNamePlaceholder": "Doe",
       "email": "البريد الإلكتروني",
       "emailPlaceholder": "john.doe@example.com",
+      "phone": "الهاتف",
+      "phonePlaceholder": "+212 6 00 00 00 00",
       "password": "كلمة المرور",
       "passwordPlaceholder": "SecurePassword123!",
       "passwordEditHint": "(اتركه فارغًا لعدم التعديل)",

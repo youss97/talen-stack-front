@@ -24,6 +24,7 @@ export interface Log {
   user_agent: string;
   created_at: string;
   user: LogUser | null;
+  target_label: string | null;
 }
 
 export interface LogPaginationParams {

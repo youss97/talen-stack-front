@@ -7,7 +7,8 @@
     "emptyMessage": "Aucun rôle trouvé",
     "columns": {
       "usersCount": "Utilisateurs",
-      "createdAt": "Date de création"
+      "createdAt": "Date de création",
+      "createdBy": "Créé par"
     },
     "status": {
       "protected": "🔒 Protégé",
@@ -36,6 +37,7 @@
     "titleAdd": "Ajouter un rôle",
     "subtitleEdit": "Modifiez les informations du rôle",
     "subtitleAdd": "Remplissez les informations pour créer un nouveau rôle",
+    "companyLabel": "Entreprise",
     "nameLabel": "Nom du rôle",
     "namePlaceholder": "Administrateur",
     "descriptionPlaceholder": "Description du rôle...",

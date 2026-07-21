@@ -12,7 +12,8 @@
       "collaborator": "Collaborateur",
       "email": "Email",
       "phone": "Téléphone",
-      "status": "Statut"
+      "status": "Statut",
+      "createdBy": "Créé par"
     },
     "status": {
       "active": "Actif",

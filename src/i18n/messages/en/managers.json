@@ -12,7 +12,8 @@
       "collaborator": "Manager",
       "email": "Email",
       "phone": "Phone",
-      "status": "Status"
+      "status": "Status",
+      "createdBy": "Created by"
     },
     "status": {
       "active": "Active",

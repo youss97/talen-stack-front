@@ -12,7 +12,8 @@
       "collaborator": "المتعاون",
       "email": "البريد الإلكتروني",
       "phone": "الهاتف",
-      "status": "الحالة"
+      "status": "الحالة",
+      "createdBy": "أنشئ بواسطة"
     },
     "status": {
       "active": "نشط",

@@ -16,7 +16,8 @@
       "email": "Email",
       "role": "Rôle",
       "company": "Entreprise",
-      "status": "Statut"
+      "status": "Statut",
+      "createdBy": "Créé par"
     },
     "status": {
       "active": "Actif",
@@ -76,6 +77,8 @@
       "lastNamePlaceholder": "Doe",
       "email": "Email",
       "emailPlaceholder": "john.doe@example.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "+212 6 00 00 00 00",
       "password": "Mot de passe",
       "passwordPlaceholder": "SecurePassword123!",
       "passwordEditHint": "(laisser vide pour ne pas modifier)",

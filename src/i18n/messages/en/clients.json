@@ -13,7 +13,8 @@
       "phone": "Phone",
       "city": "City",
       "country": "Country",
-      "status": "Status"
+      "status": "Status",
+      "createdBy": "Created by"
     },
     "status": {
       "active": "Active",
@@ -71,9 +72,8 @@
       "logoHelper": "Accepted formats: JPEG, PNG, GIF, WebP (max 5MB)",
       "name": "Company name",
       "namePlaceholder": "Tech Solutions SARL",
-      "ice": "ICE",
+      "ice": "ICE / SIRET",
       "icePlaceholder": "123456789012345",
-      "iceHelper": "Common Company Identifier · 15 digits",
       "country": "Country",
       "address": "Address",
       "addressPlaceholder": "12 rue de la Paix",

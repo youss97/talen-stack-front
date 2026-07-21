@@ -254,20 +254,14 @@ export default function ClientFormModal({
               {/* ICE */}
               {!isHidden("ice") && (
               <div>
-                <Label>
-                  {t("fields.ice")} {!readOnly && <span className="text-error-500">*</span>}
-                </Label>
+                <Label>{t("fields.ice")}</Label>
                 <Input
                   placeholder={t("fields.icePlaceholder")}
-                  maxLength={15}
                   {...register("ice")}
                   error={!!errors.ice}
                   disabled={readOnly}
                 />
                 {errors.ice && <p className="mt-1 text-sm text-error-500">{errors.ice.message}</p>}
-                {!readOnly && (
-                  <p className="mt-1 text-xs text-gray-400">{t("fields.iceHelper")}</p>
-                )}
               </div>
               )}
 
@@ -293,9 +287,7 @@ export default function ClientFormModal({
               {/* Adresse */}
               {!isHidden("address") && (
               <div className="sm:col-span-2">
-                <Label>
-                  {t("fields.address")} {!readOnly && <span className="text-error-500">*</span>}
-                </Label>
+                <Label>{t("fields.address")}</Label>
                 <Input
                   placeholder={t("fields.addressPlaceholder")}
                   {...register("address")}
@@ -309,9 +301,7 @@ export default function ClientFormModal({
               {/* Ville */}
               {!isHidden("city") && (
               <div>
-                <Label>
-                  {t("fields.city")} {!readOnly && <span className="text-error-500">*</span>}
-                </Label>
+                <Label>{t("fields.city")}</Label>
                 <Input
                   placeholder={t("fields.cityPlaceholder")}
                   {...register("city")}
@@ -507,7 +497,7 @@ export default function ClientFormModal({
 
                 <div>
                   <Label>{t("fields.email")} <span className="text-error-500">*</span></Label>
-                  <Input type="email" placeholder={t("fields.adminEmailPlaceholder")} {...register("adminEmail")} error={!!errors.adminEmail} />
+                  <Input type="email" placeholder={t("fields.adminEmailPlaceholder")} autoComplete="off" {...register("adminEmail")} error={!!errors.adminEmail} />
                   {errors.adminEmail && <p className="mt-1 text-sm text-error-500">{errors.adminEmail.message}</p>}
                 </div>
 
@@ -520,9 +510,13 @@ export default function ClientFormModal({
                 <div>
                   <Label>{t("fields.password")} <span className="text-error-500">*</span></Label>
                   <div className="relative">
+                    {/* Decoys hors-écran : Chrome ignore display:none mais respecte offscreen + readonly */}
+                    <input type="text" name="admin-username" tabIndex={-1} autoComplete="username" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 0, height: 0, opacity: 0 }} />
+                    <input type="password" name="admin-password" tabIndex={-1} autoComplete="new-password" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 0, height: 0, opacity: 0 }} />
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder={t("fields.passwordPlaceholder")}
+                      autoComplete="new-password"
                       {...register("adminPassword")}
                       error={!!errors.adminPassword}
                     />

@@ -49,6 +49,8 @@ export interface Role extends RoleScopes {
   users_count?: number;
   createdAt?: string;
   updatedAt?: string;
+  created_by?: string | null;
+  creator?: { id: string; first_name: string; last_name: string; email: string } | null;
 }
 
 export interface RoleWithFeatures extends RoleScopes {

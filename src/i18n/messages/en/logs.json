@@ -13,6 +13,7 @@
     "columns": {
       "action": "Action",
       "table": "Table",
+      "target": "Target",
       "user": "User",
       "company": "Company",
       "date": "Date"

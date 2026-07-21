@@ -18,6 +18,7 @@ export const createUserSchema = yup.object({
     .required("Le nom est requis")
     .min(2, "Le nom doit contenir au moins 2 caractères"),
   role_id: yup.string().required("Le rôle est requis"),
+  phone: yup.string().optional(),
   status: yup
     .string()
     .oneOf(["active", "inactive"], "Statut invalide")
@@ -41,6 +42,7 @@ export const updateUserSchema = yup.object({
     .string()
     .min(2, "Le nom doit contenir au moins 2 caractères"),
   role_id: yup.string(),
+  phone: yup.string().optional(),
   status: yup.string().oneOf(["active", "inactive"], "Statut invalide"),
 });
 

@@ -189,6 +189,8 @@ export const clientApi = createApi({
             position: mgr.position,
             status: mgr.status,
             displayName: `${mgr.first_name} ${mgr.last_name}${mgr.position ? ` - ${mgr.position}` : ''}`,
+            creator: item.creator || null,
+            creatorName: item.creator ? `${item.creator.first_name} ${item.creator.last_name}` : null,
           };
         });
         return {

@@ -7,7 +7,8 @@
     "emptyMessage": "لا يوجد أي دور",
     "columns": {
       "usersCount": "المستخدمون",
-      "createdAt": "تاريخ الإنشاء"
+      "createdAt": "تاريخ الإنشاء",
+      "createdBy": "أنشئ بواسطة"
     },
     "status": {
       "protected": "🔒 محمي",
@@ -36,6 +37,7 @@
     "titleAdd": "إضافة دور",
     "subtitleEdit": "قم بتعديل معلومات الدور",
     "subtitleAdd": "املأ المعلومات لإنشاء دور جديد",
+    "companyLabel": "الشركة",
     "nameLabel": "اسم الدور",
     "namePlaceholder": "مسؤول",
     "descriptionPlaceholder": "وصف الدور...",

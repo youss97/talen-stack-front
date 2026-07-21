@@ -65,25 +65,6 @@ export default function LogsPage() {
       const fullName = `${log.user.first_name} ${log.user.last_name}`.trim();
       return fullName || log.user.email || t("table.unknownUser");
     }
-    
-    // Si pas d'utilisateur, essayer d'extraire des informations depuis new_values
-    if (log.new_values && typeof log.new_values === 'object') {
-      const newValues = log.new_values as Record<string, unknown>;
-      
-      // Si c'est une création d'utilisateur, utiliser les données créées
-      if (log.table_name === 'users' && log.action === 'CREATE') {
-        const firstName = newValues.first_name as string;
-        const lastName = newValues.last_name as string;
-        const email = newValues.email as string;
-        
-        if (firstName && lastName) {
-          return `${firstName} ${lastName}`;
-        } else if (email) {
-          return email;
-        }
-      }
-    }
-    
     return t("table.system");
   };
 
@@ -106,6 +87,15 @@ export default function LogsPage() {
       header: t("table.columns.table"),
       render: (value) => (
         <span className="text-sm text-gray-600 dark:text-gray-300">
+          {(value as string) || "-"}
+        </span>
+      ),
+    },
+    {
+      key: "target_label",
+      header: t("table.columns.target"),
+      render: (value) => (
+        <span className="text-sm text-gray-800 dark:text-gray-200">
           {(value as string) || "-"}
         </span>
       ),

@@ -24,6 +24,8 @@ export interface Client {
   linked_company_id?: string;
   vat_rate?: string;
   payment_terms?: string | null;
+  created_by?: string | null;
+  creator?: { id: string; first_name: string; last_name: string; email: string } | null;
   // Company fields from linked company
   company_name?: string;
   company_ice?: string;
@@ -123,6 +125,9 @@ export interface Manager {
   photo?: string;
   status?: string;
   displayName?: string;
+  created_by?: string | null;
+  creator?: { id: string; first_name: string; last_name: string; email: string } | null;
+  creatorName?: string | null;
 }
 
 export const COUNTRY_LIST = [

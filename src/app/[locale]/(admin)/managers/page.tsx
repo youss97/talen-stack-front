@@ -163,6 +163,18 @@ export default function ManagersPage() {
         return <Badge variant="light" color={color}>{label}</Badge>;
       },
     },
+    {
+      key: "creatorName",
+      header: t("list.columns.createdBy"),
+      render: (_value, row) => {
+        const manager = row as any;
+        return (
+          <div className="text-sm text-gray-600 dark:text-gray-300">
+            {manager.creatorName || "—"}
+          </div>
+        );
+      },
+    },
   ];
 
   const handleCreateManager = async (formData: CreateManagerFormData) => {

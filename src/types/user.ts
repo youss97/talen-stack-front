@@ -27,6 +27,8 @@ export interface User {
   reset_token_expires?: string | null;
   created_at?: string;
   updated_at?: string;
+  created_by?: string | null;
+  creator?: { id: string; first_name: string; last_name: string; email: string } | null;
 }
 
 export interface CreateUserRequest {

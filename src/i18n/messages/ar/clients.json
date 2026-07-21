@@ -13,7 +13,8 @@
       "phone": "الهاتف",
       "city": "المدينة",
       "country": "البلد",
-      "status": "الحالة"
+      "status": "الحالة",
+      "createdBy": "أنشئ بواسطة"
     },
     "status": {
       "active": "نشط",
@@ -71,9 +72,8 @@
       "logoHelper": "الصيغ المقبولة: JPEG، PNG، GIF، WebP (بحد أقصى 5 ميجابايت)",
       "name": "الاسم التجاري",
       "namePlaceholder": "Tech Solutions SARL",
-      "ice": "ICE",
+      "ice": "ICE / SIRET",
       "icePlaceholder": "123456789012345",
-      "iceHelper": "المعرف المشترك للمقاولة · 15 رقمًا",
       "country": "البلد",
       "address": "العنوان",
       "addressPlaceholder": "12 rue de la Paix",

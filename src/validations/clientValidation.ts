@@ -7,14 +7,13 @@ export const createClientSchema = yup.object({
     .min(2, "La raison sociale doit contenir au moins 2 caractères"),
   ice: yup
     .string()
-    .required("L'ICE est requis")
-    .matches(/^\d{15}$/, "L'ICE doit contenir exactement 15 chiffres"),
+    .optional(),
   address: yup
     .string()
-    .required("L'adresse est requise"),
+    .optional(),
   city: yup
     .string()
-    .required("La ville est requise"),
+    .optional(),
   postal_code: yup
     .string()
     .optional(),
@@ -62,7 +61,6 @@ export const updateClientSchema = yup.object({
     .min(2, "La raison sociale doit contenir au moins 2 caractères"),
   ice: yup
     .string()
-    .matches(/^\d{15}$/, "L'ICE doit contenir exactement 15 chiffres")
     .optional(),
   address: yup.string(),
   city: yup.string(),
