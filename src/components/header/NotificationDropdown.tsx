@@ -10,6 +10,7 @@ import {
   useMarkAllNotificationsReadMutation,
   type AppNotification,
 } from "@/lib/services/notificationApi";
+import { useNotificationText } from "@/hooks/useNotificationText";
 
 function timeAgo(date: string, t: ReturnType<typeof useTranslations>): string {
   const diff = Date.now() - new Date(date).getTime();
@@ -31,6 +32,7 @@ const typeColors: Record<string, string> = {
 export default function NotificationDropdown() {
   const t = useTranslations("notifications");
   const tc = useTranslations("common");
+  const getNotificationText = useNotificationText();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -91,21 +93,24 @@ export default function NotificationDropdown() {
           ) : items.length === 0 ? (
             <li className="py-10 text-center text-sm text-gray-400">{t("emptyState.title")}</li>
           ) : (
-            items.map((n) => (
-              <li key={n.id}>
-                <button
-                  onClick={() => openItem(n)}
-                  className={`flex w-full gap-3 rounded-lg p-3 text-left hover:bg-gray-50 dark:hover:bg-white/5 ${!n.is_read ? "bg-brand-50/40 dark:bg-brand-500/5" : ""}`}
-                >
-                  <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${n.is_read ? "bg-transparent" : typeColors[n.type] || "bg-brand-500"}`} />
-                  <span className="block min-w-0 flex-1">
-                    <span className="block text-sm font-medium text-gray-800 dark:text-white/90">{n.title}</span>
-                    {n.message && <span className="mt-0.5 block text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{n.message}</span>}
-                    <span className="mt-1 block text-[11px] text-gray-400">{timeAgo(n.created_at, t)}</span>
-                  </span>
-                </button>
-              </li>
-            ))
+            items.map((n) => {
+              const { title, message } = getNotificationText(n);
+              return (
+                <li key={n.id}>
+                  <button
+                    onClick={() => openItem(n)}
+                    className={`flex w-full gap-3 rounded-lg p-3 text-left hover:bg-gray-50 dark:hover:bg-white/5 ${!n.is_read ? "bg-brand-50/40 dark:bg-brand-500/5" : ""}`}
+                  >
+                    <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${n.is_read ? "bg-transparent" : typeColors[n.type] || "bg-brand-500"}`} />
+                    <span className="block min-w-0 flex-1">
+                      <span className="block text-sm font-medium text-gray-800 dark:text-white/90">{title}</span>
+                      {message && <span className="mt-0.5 block text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{message}</span>}
+                      <span className="mt-1 block text-[11px] text-gray-400">{timeAgo(n.created_at, t)}</span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })
           )}
         </ul>
 

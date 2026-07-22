@@ -17,6 +17,8 @@ interface InfiniteSelectProps<T> {
   queryArg?: Record<string, unknown>;
   disabled?: boolean;
   itemLabelKey?: string;
+  /** Prioritaire sur itemLabelKey : permet de combiner plusieurs champs (ex. nom + titre) */
+  getOptionLabel?: (item: T) => string;
   itemValueKey?: string;
   emptyMessage?: string;
   error?: boolean;
@@ -33,6 +35,7 @@ function InfiniteSelectInner<T extends Record<string, unknown>>(
     queryArg = {},
     disabled = false,
     itemLabelKey = "name",
+    getOptionLabel: getOptionLabelProp,
     itemValueKey = "id",
     emptyMessage = "Aucun élément trouvé",
     error = false,
@@ -168,9 +171,10 @@ function InfiniteSelectInner<T extends Record<string, unknown>>(
   const getOptionLabel = useCallback(
     (option: T): string => {
       if (!option) return "";
+      if (getOptionLabelProp) return getOptionLabelProp(option);
       return String(option[itemLabelKey as keyof T] || "");
     },
-    [itemLabelKey]
+    [itemLabelKey, getOptionLabelProp]
   );
 
   const getSelectedLabel = (): string => {

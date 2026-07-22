@@ -497,7 +497,11 @@ export default function RecruitmentPage() {
       key: "min_experience" as keyof ApplicationRequest,
       header: t("list.columns.experience"),
       className: "min-w-[80px]",
-      render: (value: unknown) => <span className="text-sm">{t("list.columns.years", { count: value as number })}</span>,
+      render: (value: unknown) => (
+        <span className="text-sm">
+          {value ? t("detailModal.experienceMin", { count: value as number }) : "-"}
+        </span>
+      ),
     },
     {
       key: "responsible" as keyof ApplicationRequest,

@@ -99,6 +99,7 @@
       "client": "Nom du client",
       "description": "Description du poste",
       "required_skills": "Compétences requises",
+      "soft_skills": "Softskills",
       "location": "Lieu",
       "contract_type": "Type de contrat",
       "contract_duration": "Durée du contrat",

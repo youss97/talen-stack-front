@@ -27,10 +27,12 @@
     },
     "reference": "المرجع: {ref}",
     "years": "سنوات",
+    "experienceMin": "الحد الأدنى {count} سنوات",
+    "experienceRange": "{min} – {max} سنوات",
     "candidatesCount": "{count, plural, one {مرشح} other {مرشحون}}",
     "viewCandidates": "عرض المرشحين",
     "edit": "تعديل",
-    "archive": "أرشفة",
+    "changeStatus": "تغيير الحالة",
     "toast": {
       "success": "نجاح",
       "error": "خطأ",
@@ -38,8 +40,8 @@
       "createError": "خطأ أثناء إنشاء العرض",
       "editSuccess": "تم تعديل العرض بنجاح",
       "editError": "خطأ أثناء التعديل",
-      "archiveSuccess": "تمت أرشفة العرض",
-      "archiveError": "خطأ أثناء الأرشفة"
+      "statusUpdateSuccess": "تم تحديث الحالة",
+      "statusUpdateError": "خطأ أثناء تحديث الحالة"
     }
   },
   "candidates": {

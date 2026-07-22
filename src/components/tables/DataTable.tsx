@@ -107,6 +107,13 @@ function DataTable<T extends { id: string }>({
     return menuActions;
   }, [onView, onEdit, onDelete, canDeleteRow, customActions]);
 
+  // Infobulle native sur les cellules texte tronquées : affiche la valeur brute complète au survol.
+  const cellTitle = (value: unknown): string | undefined => {
+    if (typeof value === "string" && value.trim()) return value;
+    if (typeof value === "number") return String(value);
+    return undefined;
+  };
+
   const getValue = (row: T, key: string): T[keyof T] => {
     const keys = key.split(".");
     let value: unknown = row;
@@ -193,7 +200,10 @@ function DataTable<T extends { id: string }>({
                   <div className="absolute right-3 top-3">{renderActions(row)}</div>
                 )}
                 {/* 1ère colonne (photo/avatar + nom) en haut, centrée */}
-                <div className="flex flex-col items-center text-center text-sm text-gray-800 dark:text-gray-200">
+                <div
+                  className="flex flex-col items-center text-center text-sm text-gray-800 dark:text-gray-200"
+                  title={first ? cellTitle(getValue(row, String(first.key))) : undefined}
+                >
                   {first && (first.render ? first.render(getValue(row, String(first.key)), row) : String(getValue(row, String(first.key)) ?? ""))}
                 </div>
                 {/* Autres colonnes en dessous */}
@@ -203,7 +213,7 @@ function DataTable<T extends { id: string }>({
                     return (
                       <div key={column.header} className="flex items-start justify-between gap-3 text-sm">
                         <dt className="text-gray-400 dark:text-gray-500 shrink-0">{column.header}</dt>
-                        <dd className="text-right text-gray-700 dark:text-gray-200 min-w-0">
+                        <dd className="text-right text-gray-700 dark:text-gray-200 min-w-0" title={cellTitle(value)}>
                           {column.render ? column.render(value, row) : String(value ?? "")}
                         </dd>
                       </div>
@@ -266,6 +276,7 @@ function DataTable<T extends { id: string }>({
                   return (
                     <TableCell
                       key={column.header}
+                      title={cellTitle(value)}
                       className={`px-5 py-4 text-sm text-gray-800 dark:text-gray-200 ${
                         column.className || ""
                       }`}

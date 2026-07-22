@@ -11,6 +11,7 @@ export const PUBLIC_OFFER_FIELDS: { key: string }[] = [
   { key: "client" },
   { key: "description" },
   { key: "required_skills" },
+  { key: "soft_skills" },
   { key: "location" },
   { key: "contract_type" },
   { key: "contract_duration" },

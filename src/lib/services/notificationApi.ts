@@ -4,8 +4,12 @@ import { baseQueryWithReauth } from "./baseQueryWithReauth";
 export interface AppNotification {
   id: string;
   type: string;
-  title: string;
+  /** Notifications historiques uniquement — repli si event_key est absent */
+  title?: string;
   message?: string;
+  /** Clé de template i18n (namespace "notifications.messages") + params à interpoler */
+  event_key?: string;
+  params?: Record<string, unknown>;
   link?: string;
   is_read: boolean;
   created_at: string;

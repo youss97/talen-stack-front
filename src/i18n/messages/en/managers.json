@@ -37,7 +37,9 @@
     "createError": "Error creating the manager",
     "statusToggleError": "Error updating the status",
     "managerActivatedSuccess": "Manager activated successfully",
-    "managerDeactivatedSuccess": "Manager deactivated successfully"
+    "managerDeactivatedSuccess": "Manager deactivated successfully",
+    "managerDeletedSuccess": "Manager permanently deleted successfully",
+    "managerDeleteError": "Error deleting the manager"
   },
   "confirm": {
     "deactivateTitle": "Deactivate the manager",
@@ -45,7 +47,10 @@
     "deactivateMessage": "Are you sure you want to deactivate {name}? They will no longer be able to log in.",
     "activateMessage": "Are you sure you want to activate {name}? They will be able to log in.",
     "deactivateConfirm": "Deactivate",
-    "activateConfirm": "Activate"
+    "activateConfirm": "Activate",
+    "deleteTitle": "Permanently delete the manager",
+    "deleteMessage": "Are you sure you want to permanently delete {name}? This action is irreversible.",
+    "deleteConfirm": "Delete"
   },
   "form": {
     "editTitle": "Edit manager",

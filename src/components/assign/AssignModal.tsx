@@ -50,6 +50,14 @@ export default function AssignModal({
     setSelected(init as UserRecord[]);
   }, [isOpen]);
 
+  const getUserLabel = (u: UserRecord): string => {
+    const name = u.first_name || u.last_name
+      ? `${u.first_name || ""} ${u.last_name || ""}`.trim()
+      : String(u.email || u.id);
+    const title = u.position || (u.role as { name?: string } | undefined)?.name;
+    return title ? `${name} — ${title}` : name;
+  };
+
   const handleAdd = (id: string, item?: UserRecord) => {
     if (!item || selected.some(u => u.id === id)) return;
     setSelected(prev => [...prev, item]);
@@ -84,7 +92,7 @@ export default function AssignModal({
           value=""
           onChange={handleAdd}
           useInfiniteQuery={useGetUsersForSelectInfiniteQuery as any}
-          itemLabelKey="email"
+          getOptionLabel={getUserLabel}
           itemValueKey="id"
           placeholder={t("searchPlaceholder")}
           emptyMessage={t("emptyResults")}
@@ -93,9 +101,7 @@ export default function AssignModal({
         {selected.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
             {selected.map(u => {
-              const name = u.first_name || u.last_name
-                ? `${u.first_name || ""} ${u.last_name || ""}`.trim()
-                : String(u.email || u.id);
+              const name = getUserLabel(u);
               return (
                 <span
                   key={u.id as string}

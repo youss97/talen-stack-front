@@ -99,6 +99,7 @@
       "client": "اسم العميل",
       "description": "وصف الوظيفة",
       "required_skills": "المهارات المطلوبة",
+      "soft_skills": "المهارات الشخصية",
       "location": "الموقع",
       "contract_type": "نوع العقد",
       "contract_duration": "مدة العقد",

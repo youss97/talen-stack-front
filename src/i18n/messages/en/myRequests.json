@@ -27,10 +27,14 @@
     },
     "reference": "Reference: {ref}",
     "years": "years",
+    "experienceMin": "Min. {count} years",
+    "experienceRange": "{min} – {max} years",
+    "experienceMin": "Min. {count} years",
+    "experienceRange": "{min} – {max} years",
     "candidatesCount": "{count, plural, one {Candidate} other {Candidates}}",
     "viewCandidates": "View candidates",
     "edit": "Edit",
-    "archive": "Archive",
+    "changeStatus": "Change status",
     "toast": {
       "success": "Success",
       "error": "Error",
@@ -38,8 +42,8 @@
       "createError": "Error creating the offer",
       "editSuccess": "Offer updated successfully",
       "editError": "Error updating the offer",
-      "archiveSuccess": "Offer archived",
-      "archiveError": "Error archiving the offer"
+      "statusUpdateSuccess": "Status updated",
+      "statusUpdateError": "Error updating the status"
     }
   },
   "candidates": {

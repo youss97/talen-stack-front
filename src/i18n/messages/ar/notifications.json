@@ -24,5 +24,76 @@
     "recruitment": "توظيف",
     "integration": "إدماج",
     "system": "النظام"
+  },
+  "statusLabels": {
+    "in_progress": "قيد التنفيذ",
+    "standby": "معلّق",
+    "filled": "مكتمل"
+  },
+  "messages": {
+    "recruitment_request": {
+      "created_by_rh": {
+        "title": "طلب توظيف جديد",
+        "message": "تم إنشاء الطلب « {requestTitle} »."
+      },
+      "created_by_client": {
+        "title": "طلب توظيف جديد (من العميل)",
+        "message": "أنشأ العميل الطلب « {requestTitle} »."
+      },
+      "status_changed_by_client": {
+        "title": "تم تغيير حالة الطلب من طرف العميل",
+        "message": "غيّر العميل حالة الطلب « {requestTitle} » إلى « {newStatus} »."
+      }
+    },
+    "application": {
+      "proposed": {
+        "titleWithLabel": "ترشيح جديد مقترح: {label}",
+        "titleNoLabel": "ترشيح جديد مقترح",
+        "messageWithLabel": "تم اقتراح مرشح جديد لطلب التوظيف الخاص بك: {label}.",
+        "messageNoLabel": "تم اقتراح مرشح جديد لطلب التوظيف الخاص بك."
+      },
+      "status_changed": {
+        "titleWithLabel": "تم تحديث الترشيح: {label}",
+        "titleNoLabel": "تم تحديث حالة الترشيح",
+        "messageWithLabel": "أصبحت حالة الترشيح {label} « {change} ».",
+        "messageNoLabel": "أصبحت حالة أحد الترشيحات « {change} »."
+      },
+      "status_transitioned": {
+        "titleWithLabel": "تم تحديث الترشيح: {label}",
+        "titleNoLabel": "تم تحديث حالة الترشيح",
+        "messageWithLabel": "انتقلت حالة الترشيح {label} من « {oldStatus} » إلى « {newStatus} ».",
+        "messageNoLabel": "انتقلت حالة أحد الترشيحات من « {oldStatus} » إلى « {newStatus} »."
+      }
+    },
+    "feedback": {
+      "created": {
+        "titleWithCandidate": "تعليق جديد على ترشيح {candidateName}",
+        "titleNoCandidate": "تعليق جديد على ترشيح",
+        "messageCandidateOffer": "تمت إضافة تعليق على ترشيح {candidateName} لطلب « {offerTitle} »: « {feedbackTitle} ».",
+        "messageCandidateNoOffer": "تمت إضافة تعليق على ترشيح {candidateName}: « {feedbackTitle} ».",
+        "messageNoCandidateOffer": "تمت إضافة تعليق على ترشيح لطلب « {offerTitle} »: « {feedbackTitle} ».",
+        "messageNoCandidateNoOffer": "تمت إضافة تعليق على ترشيح: « {feedbackTitle} »."
+      }
+    },
+    "public_application": {
+      "created": {
+        "title": "ترشيح جديد (عرض عمومي)",
+        "message": "قدّم {firstName} {lastName} ترشيحه لـ « {offerTitle} »"
+      }
+    },
+    "interview": {
+      "scheduled": {
+        "titleWithLabel": "تمت برمجة مقابلة: {label}",
+        "titleNoLabel": "تمت برمجة مقابلة",
+        "messageWithLabel": "تمت برمجة مقابلة بتاريخ {scheduledDate} للترشيح {label}.",
+        "messageNoLabel": "تمت برمجة مقابلة بتاريخ {scheduledDate}."
+      },
+      "cancelled": {
+        "titleWithLabel": "تم إلغاء المقابلة: {label}",
+        "titleNoLabel": "تم إلغاء المقابلة",
+        "messageWithLabel": "تم إلغاء المقابلة الخاصة بالترشيح {label}. السبب: {reason}.",
+        "messageNoLabel": "تم إلغاء مقابلة. السبب: {reason}."
+      }
+    }
   }
 }

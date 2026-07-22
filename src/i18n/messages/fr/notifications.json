@@ -24,5 +24,76 @@
     "recruitment": "Recrutement",
     "integration": "Intégration",
     "system": "Système"
+  },
+  "statusLabels": {
+    "in_progress": "En cours",
+    "standby": "Standby",
+    "filled": "Comblée"
+  },
+  "messages": {
+    "recruitment_request": {
+      "created_by_rh": {
+        "title": "Nouvelle demande de recrutement",
+        "message": "La demande « {requestTitle} » a été créée."
+      },
+      "created_by_client": {
+        "title": "Nouvelle demande de recrutement (client)",
+        "message": "Le client a créé la demande « {requestTitle} »."
+      },
+      "status_changed_by_client": {
+        "title": "Statut de la demande modifié par le client",
+        "message": "Le client a changé le statut de la demande « {requestTitle} » en « {newStatus} »."
+      }
+    },
+    "application": {
+      "proposed": {
+        "titleWithLabel": "Nouvelle candidature proposée : {label}",
+        "titleNoLabel": "Nouvelle candidature proposée",
+        "messageWithLabel": "Un nouveau candidat a été proposé sur votre demande de recrutement : {label}.",
+        "messageNoLabel": "Un nouveau candidat a été proposé sur votre demande de recrutement."
+      },
+      "status_changed": {
+        "titleWithLabel": "Candidature mise à jour : {label}",
+        "titleNoLabel": "Statut de candidature mis à jour",
+        "messageWithLabel": "La candidature {label} est passée à « {change} ».",
+        "messageNoLabel": "Une candidature est passée à « {change} »."
+      },
+      "status_transitioned": {
+        "titleWithLabel": "Candidature mise à jour : {label}",
+        "titleNoLabel": "Statut de candidature mis à jour",
+        "messageWithLabel": "La candidature {label} est passée de « {oldStatus} » à « {newStatus} ».",
+        "messageNoLabel": "Une candidature est passée de « {oldStatus} » à « {newStatus} »."
+      }
+    },
+    "feedback": {
+      "created": {
+        "titleWithCandidate": "Nouveau feedback sur la candidature de {candidateName}",
+        "titleNoCandidate": "Nouveau feedback sur une candidature",
+        "messageCandidateOffer": "Un feedback a été ajouté sur la candidature de {candidateName} pour la demande « {offerTitle} » : « {feedbackTitle} ».",
+        "messageCandidateNoOffer": "Un feedback a été ajouté sur la candidature de {candidateName} : « {feedbackTitle} ».",
+        "messageNoCandidateOffer": "Un feedback a été ajouté sur une candidature pour la demande « {offerTitle} » : « {feedbackTitle} ».",
+        "messageNoCandidateNoOffer": "Un feedback a été ajouté sur une candidature : « {feedbackTitle} »."
+      }
+    },
+    "public_application": {
+      "created": {
+        "title": "Nouvelle candidature (offre publique)",
+        "message": "{firstName} {lastName} a postulé à « {offerTitle} »"
+      }
+    },
+    "interview": {
+      "scheduled": {
+        "titleWithLabel": "Entretien planifié : {label}",
+        "titleNoLabel": "Entretien planifié",
+        "messageWithLabel": "Un entretien a été planifié le {scheduledDate} pour la candidature {label}.",
+        "messageNoLabel": "Un entretien a été planifié le {scheduledDate}."
+      },
+      "cancelled": {
+        "titleWithLabel": "Entretien annulé : {label}",
+        "titleNoLabel": "Entretien annulé",
+        "messageWithLabel": "L'entretien pour la candidature {label} a été annulé. Motif : {reason}.",
+        "messageNoLabel": "Un entretien a été annulé. Motif : {reason}."
+      }
+    }
   }
 }

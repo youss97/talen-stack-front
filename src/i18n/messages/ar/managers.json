@@ -37,7 +37,9 @@
     "createError": "خطأ أثناء إنشاء المتعاون",
     "statusToggleError": "خطأ أثناء تعديل الحالة",
     "managerActivatedSuccess": "تم تفعيل المدير بنجاح",
-    "managerDeactivatedSuccess": "تم تعطيل المدير بنجاح"
+    "managerDeactivatedSuccess": "تم تعطيل المدير بنجاح",
+    "managerDeletedSuccess": "تم حذف المدير نهائيًا بنجاح",
+    "managerDeleteError": "خطأ أثناء حذف المدير"
   },
   "confirm": {
     "deactivateTitle": "تعطيل المدير",
@@ -45,7 +47,10 @@
     "deactivateMessage": "هل أنت متأكد من رغبتك في تعطيل {name}؟ لن يتمكن بعد الآن من تسجيل الدخول.",
     "activateMessage": "هل أنت متأكد من رغبتك في تفعيل {name}؟ سيتمكن من تسجيل الدخول.",
     "deactivateConfirm": "تعطيل",
-    "activateConfirm": "تفعيل"
+    "activateConfirm": "تفعيل",
+    "deleteTitle": "حذف المدير نهائيًا",
+    "deleteMessage": "هل أنت متأكد من رغبتك في حذف {name} نهائيًا؟ هذا الإجراء لا رجعة فيه.",
+    "deleteConfirm": "حذف"
   },
   "form": {
     "editTitle": "تعديل المدير",

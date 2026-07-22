@@ -4,6 +4,7 @@ export interface PublicJobOffer {
   reference?: string;
   description: string;
   required_skills?: string[];
+  soft_skills?: string[];
   min_experience?: number;
   contract_type: string;
   contract_duration?: string;

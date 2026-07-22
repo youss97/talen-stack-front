@@ -27,10 +27,12 @@
     },
     "reference": "Référence: {ref}",
     "years": "ans",
+    "experienceMin": "Min. {count} ans",
+    "experienceRange": "{min} – {max} ans",
     "candidatesCount": "{count, plural, one {Candidat} other {Candidats}}",
     "viewCandidates": "Voir les candidats",
     "edit": "Modifier",
-    "archive": "Archiver",
+    "changeStatus": "Changer le statut",
     "toast": {
       "success": "Succès",
       "error": "Erreur",
@@ -38,8 +40,8 @@
       "createError": "Erreur lors de la création de l'offre",
       "editSuccess": "Offre modifiée avec succès",
       "editError": "Erreur lors de la modification",
-      "archiveSuccess": "Offre archivée",
-      "archiveError": "Erreur lors de l'archivage"
+      "statusUpdateSuccess": "Statut mis à jour",
+      "statusUpdateError": "Erreur lors de la mise à jour du statut"
     }
   },
   "candidates": {

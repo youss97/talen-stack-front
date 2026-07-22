@@ -107,12 +107,12 @@ export default function MyRequestsPage() {
     }
   };
 
-  const handleArchive = async (request: ApplicationRequest) => {
+  const handleStatusChange = async (request: ApplicationRequest, status: string) => {
     try {
-      await updateManagerOwnRequest({ id: request.id, data: { status: "archived" as any } }).unwrap();
-      addToast("success", t("toast.success"), t("toast.archiveSuccess"));
+      await updateManagerOwnRequest({ id: request.id, data: { status: status as any } }).unwrap();
+      addToast("success", t("toast.success"), t("toast.statusUpdateSuccess"));
     } catch (error: any) {
-      const msg = error?.data?.message || error?.message || t("toast.archiveError");
+      const msg = error?.data?.message || error?.message || t("toast.statusUpdateError");
       addToast("error", t("toast.error"), msg);
     }
   };
@@ -248,17 +248,18 @@ export default function MyRequestsPage() {
                       </div>
                     )}
 
-                    {request.min_experience && (
-                      <div className="flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>
-                          {request.min_experience}
-                          {request.max_experience && `-${request.max_experience}`} {t("years")}
-                        </span>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>
+                        {request.min_experience
+                          ? request.max_experience
+                            ? t("experienceRange", { min: request.min_experience, max: request.max_experience })
+                            : t("experienceMin", { count: request.min_experience })
+                          : "-"}
+                      </span>
+                    </div>
                   </div>
 
                   {request.required_skills && request.required_skills.length > 0 && (
@@ -310,16 +311,22 @@ export default function MyRequestsPage() {
                     </Button>
                   )}
 
-                  {request.status !== "archived" && (
-                    <button
-                      type="button"
-                      onClick={() => handleArchive(request as unknown as ApplicationRequest)}
-                      disabled={isUpdating}
-                      className="text-xs text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors disabled:opacity-50"
-                    >
-                      {t("archive")}
-                    </button>
-                  )}
+                  <select
+                    value={["in_progress", "standby", "filled"].includes(request.status) ? request.status : ""}
+                    onChange={(e) =>
+                      e.target.value &&
+                      handleStatusChange(request as unknown as ApplicationRequest, e.target.value)
+                    }
+                    disabled={isUpdating}
+                    className="h-8 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-2 text-xs text-gray-600 dark:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 disabled:opacity-50"
+                  >
+                    <option value="" disabled>
+                      {t("changeStatus")}
+                    </option>
+                    <option value="in_progress">{t("status.in_progress")}</option>
+                    <option value="standby">{t("status.standby")}</option>
+                    <option value="filled">{t("status.filled")}</option>
+                  </select>
                 </div>
               </div>
             </div>

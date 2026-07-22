@@ -275,20 +275,24 @@ const AppSidebar: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.25 }}
-              className="flex items-center gap-3 px-2 py-2 rounded-xl bg-gray-50 dark:bg-white/5"
             >
-              <UserAvatar user={user ?? undefined} size={36} />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
-                  {user?.first_name && user?.last_name
-                    ? `${user.first_name} ${user.last_name}`
-                    : user?.email ?? t("sidebar.user")}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-white/50 truncate">
-                  {user?.role?.name ?? "—"}
-                </p>
-              </div>
-              <div className="w-2 h-2 rounded-full bg-brand-500 flex-shrink-0" title={t("sidebar.online")} />
+              <Link
+                href="/profile"
+                className="flex items-center gap-3 px-2 py-2 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+              >
+                <UserAvatar user={user ?? undefined} size={36} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
+                    {user?.first_name && user?.last_name
+                      ? `${user.first_name} ${user.last_name}`
+                      : user?.email ?? t("sidebar.user")}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-white/50 truncate">
+                    {user?.role?.name ?? "—"}
+                  </p>
+                </div>
+                <div className="w-2 h-2 rounded-full bg-brand-500 flex-shrink-0" title={t("sidebar.online")} />
+              </Link>
             </motion.div>
           ) : (
             <motion.div
@@ -299,10 +303,10 @@ const AppSidebar: React.FC = () => {
               transition={{ duration: 0.2 }}
               className="flex justify-center"
             >
-              <div className="relative">
+              <Link href="/profile" className="relative">
                 <UserAvatar user={user ?? undefined} size={36} />
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-brand-500 border-2 border-white dark:border-gray-900" />
-              </div>
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>

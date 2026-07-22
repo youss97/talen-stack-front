@@ -13,6 +13,7 @@ import {
   useDeleteNotificationMutation,
   type AppNotification,
 } from "@/lib/services/notificationApi";
+import { useNotificationText } from "@/hooks/useNotificationText";
 
 function timeAgo(date: string, t: ReturnType<typeof useTranslations>): string {
   const diff = Date.now() - new Date(date).getTime();
@@ -41,6 +42,7 @@ export default function NotificationsPage() {
   const [markRead] = useMarkNotificationReadMutation();
   const [markAllRead, { isLoading: markingAll }] = useMarkAllNotificationsReadMutation();
   const [deleteNotif] = useDeleteNotificationMutation();
+  const getNotificationText = useNotificationText();
 
   const items = data?.data ?? [];
 
@@ -72,25 +74,28 @@ export default function NotificationsPage() {
           <EmptyState title={t("emptyState.title")} message={t("emptyState.message")} />
         ) : (
           <ul className="divide-y divide-gray-100 dark:divide-gray-800">
-            {items.map((n) => (
-              <li key={n.id} className={`flex items-start gap-4 px-5 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-white/5 ${!n.is_read ? "bg-brand-50/40 dark:bg-brand-500/5" : ""}`}>
-                <span className={`mt-2 h-2.5 w-2.5 shrink-0 rounded-full ${n.is_read ? "bg-gray-200 dark:bg-gray-700" : typeColors[n.type] || "bg-brand-500"}`} />
-                <button onClick={() => open(n)} className="min-w-0 flex-1 text-start">
-                  <p className="text-sm font-semibold text-gray-800 dark:text-white">{n.title}</p>
-                  {n.message && <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">{n.message}</p>}
-                  <p className="mt-1 text-xs text-gray-400">{timeAgo(n.created_at, t)}</p>
-                </button>
-                <button
-                  onClick={() => deleteNotif(n.id)}
-                  className="shrink-0 rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-red-500 dark:hover:bg-gray-800"
-                  title={tc("actions.delete")}
-                >
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </li>
-            ))}
+            {items.map((n) => {
+              const { title, message } = getNotificationText(n);
+              return (
+                <li key={n.id} className={`flex items-start gap-4 px-5 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-white/5 ${!n.is_read ? "bg-brand-50/40 dark:bg-brand-500/5" : ""}`}>
+                  <span className={`mt-2 h-2.5 w-2.5 shrink-0 rounded-full ${n.is_read ? "bg-gray-200 dark:bg-gray-700" : typeColors[n.type] || "bg-brand-500"}`} />
+                  <button onClick={() => open(n)} className="min-w-0 flex-1 text-start">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-white">{title}</p>
+                    {message && <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">{message}</p>}
+                    <p className="mt-1 text-xs text-gray-400">{timeAgo(n.created_at, t)}</p>
+                  </button>
+                  <button
+                    onClick={() => deleteNotif(n.id)}
+                    className="shrink-0 rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-red-500 dark:hover:bg-gray-800"
+                    title={tc("actions.delete")}
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         )}
 

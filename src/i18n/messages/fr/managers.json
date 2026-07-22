@@ -37,7 +37,9 @@
     "createError": "Erreur lors de la création du collaborateur",
     "statusToggleError": "Erreur lors de la modification du statut",
     "managerActivatedSuccess": "Manager activé avec succès",
-    "managerDeactivatedSuccess": "Manager désactivé avec succès"
+    "managerDeactivatedSuccess": "Manager désactivé avec succès",
+    "managerDeletedSuccess": "Manager supprimé définitivement avec succès",
+    "managerDeleteError": "Erreur lors de la suppression du manager"
   },
   "confirm": {
     "deactivateTitle": "Désactiver le manager",
@@ -45,7 +47,10 @@
     "deactivateMessage": "Êtes-vous sûr de vouloir désactiver {name} ? Il ne pourra plus se connecter.",
     "activateMessage": "Êtes-vous sûr de vouloir activer {name} ? Il pourra se connecter.",
     "deactivateConfirm": "Désactiver",
-    "activateConfirm": "Activer"
+    "activateConfirm": "Activer",
+    "deleteTitle": "Supprimer définitivement le manager",
+    "deleteMessage": "Êtes-vous sûr de vouloir supprimer définitivement {name} ? Cette action est irréversible.",
+    "deleteConfirm": "Supprimer"
   },
   "form": {
     "editTitle": "Modifier le manager",

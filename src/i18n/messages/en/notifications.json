@@ -24,5 +24,76 @@
     "recruitment": "Recruitment",
     "integration": "Integration",
     "system": "System"
+  },
+  "statusLabels": {
+    "in_progress": "In progress",
+    "standby": "Standby",
+    "filled": "Filled"
+  },
+  "messages": {
+    "recruitment_request": {
+      "created_by_rh": {
+        "title": "New recruitment request",
+        "message": "The request « {requestTitle} » has been created."
+      },
+      "created_by_client": {
+        "title": "New recruitment request (client)",
+        "message": "The client created the request « {requestTitle} »."
+      },
+      "status_changed_by_client": {
+        "title": "Request status changed by the client",
+        "message": "The client changed the status of the request « {requestTitle} » to « {newStatus} »."
+      }
+    },
+    "application": {
+      "proposed": {
+        "titleWithLabel": "New application proposed: {label}",
+        "titleNoLabel": "New application proposed",
+        "messageWithLabel": "A new candidate has been proposed for your recruitment request: {label}.",
+        "messageNoLabel": "A new candidate has been proposed for your recruitment request."
+      },
+      "status_changed": {
+        "titleWithLabel": "Application updated: {label}",
+        "titleNoLabel": "Application status updated",
+        "messageWithLabel": "The application {label} moved to « {change} ».",
+        "messageNoLabel": "An application moved to « {change} »."
+      },
+      "status_transitioned": {
+        "titleWithLabel": "Application updated: {label}",
+        "titleNoLabel": "Application status updated",
+        "messageWithLabel": "The application {label} moved from « {oldStatus} » to « {newStatus} ».",
+        "messageNoLabel": "An application moved from « {oldStatus} » to « {newStatus} »."
+      }
+    },
+    "feedback": {
+      "created": {
+        "titleWithCandidate": "New feedback on {candidateName}'s application",
+        "titleNoCandidate": "New feedback on an application",
+        "messageCandidateOffer": "Feedback was added on {candidateName}'s application for the request « {offerTitle} »: « {feedbackTitle} ».",
+        "messageCandidateNoOffer": "Feedback was added on {candidateName}'s application: « {feedbackTitle} ».",
+        "messageNoCandidateOffer": "Feedback was added on an application for the request « {offerTitle} »: « {feedbackTitle} ».",
+        "messageNoCandidateNoOffer": "Feedback was added on an application: « {feedbackTitle} »."
+      }
+    },
+    "public_application": {
+      "created": {
+        "title": "New application (public offer)",
+        "message": "{firstName} {lastName} applied to « {offerTitle} »"
+      }
+    },
+    "interview": {
+      "scheduled": {
+        "titleWithLabel": "Interview scheduled: {label}",
+        "titleNoLabel": "Interview scheduled",
+        "messageWithLabel": "An interview has been scheduled on {scheduledDate} for the application {label}.",
+        "messageNoLabel": "An interview has been scheduled on {scheduledDate}."
+      },
+      "cancelled": {
+        "titleWithLabel": "Interview cancelled: {label}",
+        "titleNoLabel": "Interview cancelled",
+        "messageWithLabel": "The interview for the application {label} was cancelled. Reason: {reason}.",
+        "messageNoLabel": "An interview was cancelled. Reason: {reason}."
+      }
+    }
   }
 }

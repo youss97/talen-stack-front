@@ -505,6 +505,33 @@ export default function PublicApplyPage() {
               </motion.div>
             )}
 
+            {/* Softskills */}
+            {vis("soft_skills") && offer.soft_skills && offer.soft_skills.length > 0 && (
+              <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={1}
+                className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                <h2 className="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2">
+                  <span className="w-1 h-5 rounded-full" style={{ background: BRAND }} />
+                  {t("sections.softSkills")}
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {offer.soft_skills.map((skill: unknown, i: number) => {
+                    const label = typeof skill === "string" ? skill : (skill as { name?: string })?.name;
+                    if (!label) return null;
+                    return (
+                      <motion.span key={i}
+                        initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.15 + i * 0.05 }}
+                        className="px-4 py-2 rounded-xl text-sm font-semibold"
+                        style={{ background: BRAND_LT, color: BRAND_TX }}
+                      >
+                        {label}
+                      </motion.span>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+
             {/* CTA card mobile */}
             <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={2}
               className="lg:hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center">

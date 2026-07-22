@@ -367,10 +367,10 @@ export default function ApplicationRequestDetailModal({
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.experience")}</p>
                   <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                    {applicationRequest.min_experience != null && applicationRequest.max_experience != null
-                      ? t("detailModal.experienceRange", { min: applicationRequest.min_experience, max: applicationRequest.max_experience })
-                      : applicationRequest.min_experience != null
-                      ? t("detailModal.experienceMin", { count: applicationRequest.min_experience })
+                    {applicationRequest.min_experience
+                      ? applicationRequest.max_experience
+                        ? t("detailModal.experienceRange", { min: applicationRequest.min_experience, max: applicationRequest.max_experience })
+                        : t("detailModal.experienceMin", { count: applicationRequest.min_experience })
                       : "-"}
                   </p>
                 </div>

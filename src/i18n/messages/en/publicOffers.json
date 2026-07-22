@@ -99,6 +99,7 @@
       "client": "Client name",
       "description": "Job description",
       "required_skills": "Required skills",
+      "soft_skills": "Soft skills",
       "location": "Location",
       "contract_type": "Contract type",
       "contract_duration": "Contract duration",

@@ -26,6 +26,7 @@
     "sections": {
       "description": "Description du poste",
       "skills": "Compétences requises",
+      "softSkills": "Softskills",
       "details": "Détails du poste"
     },
     "sidebar": {

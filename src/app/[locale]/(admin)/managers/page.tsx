@@ -18,6 +18,7 @@ import {
   useCreateManagerForClientMutation,
   useUpdateManagerMutation,
   useToggleManagerStatusMutation,
+  useRemoveManagerFromClientMutation,
   useGetClientsForSelectInfiniteQuery,
   useGetClientByIdQuery,
 } from "@/lib/services/clientApi";
@@ -48,6 +49,16 @@ export default function ManagersPage() {
     managerName: "",
     managerStatus: "active",
   });
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState<{
+    isOpen: boolean;
+    managerId: string | null;
+    managerName: string;
+  }>({
+    isOpen: false,
+    managerId: null,
+    managerName: "",
+  });
+  const [isRemoving, setIsRemoving] = useState(false);
 
   // Get managers for selected client
   const { data, isLoading, isFetching } = useGetClientManagersQuery(
@@ -69,6 +80,7 @@ export default function ManagersPage() {
   const [createManager, { isLoading: isCreating }] = useCreateManagerForClientMutation();
   const [updateManager, { isLoading: isUpdating }] = useUpdateManagerMutation();
   const [toggleStatus] = useToggleManagerStatusMutation();
+  const [removeManagerFromClient] = useRemoveManagerFromClientMutation();
   const [isTogglingStatus, setIsTogglingStatus] = useState(false);
 
   const addToast = useCallback(
@@ -244,7 +256,7 @@ export default function ManagersPage() {
     setIsFormModalOpen(true);
   };
 
-  const handleDeleteClick = (manager: Manager) => {
+  const handleToggleClick = (manager: Manager) => {
     const mgr = manager as any;
     setConfirmModal({
       isOpen: true,
@@ -254,7 +266,7 @@ export default function ManagersPage() {
     });
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmToggle = async () => {
     if (!confirmModal.managerId || !selectedClientId) return;
 
     setIsTogglingStatus(true);
@@ -273,6 +285,34 @@ export default function ManagersPage() {
       addToast("error", t("toasts.errorTitle"), message);
     } finally {
       setIsTogglingStatus(false);
+    }
+  };
+
+  const handleDeleteClick = (manager: Manager) => {
+    const mgr = manager as any;
+    setConfirmDeleteModal({
+      isOpen: true,
+      managerId: mgr.id,
+      managerName: mgr.displayName || `${mgr.firstName || ''} ${mgr.lastName || ''}`.trim() || t("detail.defaultName"),
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmDeleteModal.managerId || !selectedClientId) return;
+
+    setIsRemoving(true);
+    try {
+      await removeManagerFromClient({
+        clientId: selectedClientId,
+        managerId: confirmDeleteModal.managerId,
+      }).unwrap();
+      addToast("success", t("toasts.managerDeletedSuccess"));
+      setConfirmDeleteModal({ isOpen: false, managerId: null, managerName: "" });
+    } catch (error) {
+      const message = getErrorMessage(error, t("toasts.managerDeleteError"));
+      addToast("error", t("toasts.errorTitle"), message);
+    } finally {
+      setIsRemoving(false);
     }
   };
 
@@ -340,6 +380,22 @@ export default function ManagersPage() {
               onView={handleViewClick}
               onEdit={canUpdate && canToggleManagerStatus ? handleEditClick : undefined}
               onDelete={canDelete && canToggleManagerStatus ? handleDeleteClick : undefined}
+              customActions={canUpdate && canToggleManagerStatus ? [
+                {
+                  label: t("confirm.deactivateTitle"),
+                  icon: <LockIcon />,
+                  color: "warning",
+                  onClick: (row) => handleToggleClick(row),
+                  hidden: (row) => (row as any).status !== "active",
+                },
+                {
+                  label: t("confirm.activateTitle"),
+                  icon: <UnlockIcon />,
+                  color: "success",
+                  onClick: (row) => handleToggleClick(row),
+                  hidden: (row) => (row as any).status === "active",
+                },
+              ] : undefined}
             />
 
           {/* Pagination */}
@@ -406,7 +462,7 @@ export default function ManagersPage() {
         onClose={() =>
           setConfirmModal({ isOpen: false, managerId: null, managerName: "", managerStatus: "active" })
         }
-        onConfirm={handleConfirmDelete}
+        onConfirm={handleConfirmToggle}
         title={confirmModal.managerStatus === 'active' ? t("confirm.deactivateTitle") : t("confirm.activateTitle")}
         message={
           confirmModal.managerStatus === 'active'
@@ -419,7 +475,35 @@ export default function ManagersPage() {
         isLoading={isTogglingStatus}
       />
 
+      <ConfirmModal
+        isOpen={confirmDeleteModal.isOpen}
+        onClose={() => setConfirmDeleteModal({ isOpen: false, managerId: null, managerName: "" })}
+        onConfirm={handleConfirmDelete}
+        title={t("confirm.deleteTitle")}
+        message={t("confirm.deleteMessage", { name: confirmDeleteModal.managerName })}
+        confirmText={t("confirm.deleteConfirm")}
+        cancelText={tc("actions.cancel")}
+        variant="danger"
+        isLoading={isRemoving}
+      />
+
       <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+    </svg>
+  );
+}
+
+function UnlockIcon() {
+  return (
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 018 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+    </svg>
   );
 }

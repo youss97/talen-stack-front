@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { io, Socket } from "socket.io-client";
 import { useDispatch } from "react-redux";
 import { notificationApi, type AppNotification } from "@/lib/services/notificationApi";
+import { useNotificationText } from "@/hooks/useNotificationText";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -38,6 +39,7 @@ function playNotificationSound() {
  */
 export default function NotificationsSocket() {
   const dispatch = useDispatch();
+  const getNotificationText = useNotificationText();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -56,7 +58,8 @@ export default function NotificationsSocket() {
       playNotificationSound();
       // Petit toast natif (best-effort)
       try {
-        window.dispatchEvent(new CustomEvent("app:toast", { detail: { variant: "info", title: notif.title, message: notif.message } }));
+        const { title, message } = getNotificationText(notif);
+        window.dispatchEvent(new CustomEvent("app:toast", { detail: { variant: "info", title, message } }));
       } catch { /* noop */ }
     });
 
@@ -64,6 +67,7 @@ export default function NotificationsSocket() {
       socket.off("notification");
       socket.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   return null;
