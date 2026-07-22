@@ -770,7 +770,7 @@ export default function RecruitmentPage() {
         isOpen={assignModal.isOpen}
         onClose={() => setAssignModal({ isOpen: false, request: null })}
         onAssign={handleAssignRequest}
-        currentResponsible={assignModal.request?.responsible}
+        currentResponsibles={assignModal.request?.responsibles ?? (assignModal.request?.responsible ? [assignModal.request.responsible] : [])}
         entityLabel={t("confirmModal.entityLabel")}
         isLoading={isAssigning}
       />

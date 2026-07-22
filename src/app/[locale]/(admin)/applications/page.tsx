@@ -884,7 +884,10 @@ export default function ApplicationsPage() {
         isOpen={assignResponsibleModal.isOpen}
         onClose={() => setAssignResponsibleModal({ isOpen: false, application: null })}
         onAssign={handleAssignResponsible}
-        currentResponsible={(assignResponsibleModal.application as any)?.responsible}
+        currentResponsibles={
+          (assignResponsibleModal.application as any)?.responsibles ??
+          ((assignResponsibleModal.application as any)?.responsible ? [(assignResponsibleModal.application as any).responsible] : [])
+        }
         entityLabel={t("detailPage.entityLabel")}
         isLoading={isAssigningResponsible}
       />

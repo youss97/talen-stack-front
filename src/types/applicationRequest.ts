@@ -171,6 +171,14 @@ export interface ApplicationRequest {
     last_name?: string;
     email?: string;
   } | null;
+  responsible_ids?: string[];
+  /** Liste complète des responsables affectés (affectation multiple) */
+  responsibles?: Array<{
+    id: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+  }>;
 }
 
 export interface CreateApplicationRequestRequest {

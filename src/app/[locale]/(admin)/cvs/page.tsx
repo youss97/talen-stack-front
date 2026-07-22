@@ -483,7 +483,7 @@ export default function CVsPage() {
         isOpen={assignModal.isOpen}
         onClose={() => setAssignModal({ isOpen: false, cv: null })}
         onAssign={handleAssignCV}
-        currentResponsible={assignModal.cv?.responsible}
+        currentResponsibles={(assignModal.cv as any)?.responsibles ?? (assignModal.cv?.responsible ? [assignModal.cv.responsible] : [])}
         entityLabel="ce talent"
         isLoading={isAssigning}
       />
