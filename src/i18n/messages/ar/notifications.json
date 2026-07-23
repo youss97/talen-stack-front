@@ -28,7 +28,8 @@
   "statusLabels": {
     "in_progress": "قيد التنفيذ",
     "standby": "معلّق",
-    "filled": "مكتمل"
+    "filled": "مكتمل",
+    "abandoned": "متوقفة"
   },
   "messages": {
     "recruitment_request": {

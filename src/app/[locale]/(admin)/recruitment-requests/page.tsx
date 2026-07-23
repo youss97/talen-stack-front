@@ -1,7 +1,8 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "@/i18n/navigation";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -34,6 +35,8 @@ export default function RecruitmentPage() {
   const t = useTranslations("recruitmentRequests");
   const tc = useTranslations("common");
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { canCreate, canUpdate, canDelete } = useActions("/recruitment-requests");
   const canAssign = canUpdate;
   const dispatch = useAppDispatch();
@@ -101,6 +104,23 @@ export default function RecruitmentPage() {
 
   const getErrorMessage = (error: unknown, defaultMessage: string): string =>
     getApiErrorMessage(error, defaultMessage);
+
+  // Ouvre directement le détail d'une demande quand on arrive via un lien de notification
+  // (ex. ?requestId=...), au lieu de rester sur la liste générale.
+  useEffect(() => {
+    const requestId = searchParams.get("requestId");
+    if (!requestId) return;
+    router.replace(pathname, { scroll: false });
+    setIsDetailModalOpen(true);
+    setIsLoadingDetail(true);
+    setSelectedRequest(null);
+    getRequestById(requestId)
+      .unwrap()
+      .then((fullData) => setSelectedRequest(fullData))
+      .catch(() => setIsDetailModalOpen(false))
+      .finally(() => setIsLoadingDetail(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleAddClick = () => {
     setEditingRequest(null);

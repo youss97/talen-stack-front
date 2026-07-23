@@ -82,6 +82,7 @@
       "password": "Mot de passe",
       "passwordPlaceholder": "SecurePassword123!",
       "passwordEditHint": "(laisser vide pour ne pas modifier)",
+      "generatePassword": "Générer",
       "role": "Rôle",
       "rolePlaceholder": "Sélectionner un rôle",
       "roleEmpty": "Aucun rôle trouvé",

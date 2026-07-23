@@ -28,7 +28,8 @@
   "statusLabels": {
     "in_progress": "In progress",
     "standby": "Standby",
-    "filled": "Filled"
+    "filled": "Filled",
+    "abandoned": "Abandoned"
   },
   "messages": {
     "recruitment_request": {

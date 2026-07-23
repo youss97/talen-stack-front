@@ -82,6 +82,7 @@
       "password": "كلمة المرور",
       "passwordPlaceholder": "SecurePassword123!",
       "passwordEditHint": "(اتركه فارغًا لعدم التعديل)",
+      "generatePassword": "توليد",
       "role": "الدور",
       "rolePlaceholder": "اختر دورًا",
       "roleEmpty": "لم يتم العثور على أي دور",

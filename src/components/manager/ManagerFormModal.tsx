@@ -8,6 +8,7 @@ import Button from "../ui/button/Button";
 import InputField from "../form/input/InputField";
 import ImageUpload from "../form/input/ImageUpload";
 import Label from "../form/Label";
+import { generatePassword } from "@/utils/generatePassword";
 import type { Manager } from "@/types/client";
 import {
   createManagerSchema,
@@ -190,10 +191,19 @@ export default function ManagerFormModal({
               </div>
 
               <div>
-                <Label htmlFor="password">
-                  {t("password")}{" "}
-                  {isEditing ? t("passwordEditHint") : <span className="text-error-500">*</span>}
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">
+                    {t("password")}{" "}
+                    {isEditing ? t("passwordEditHint") : <span className="text-error-500">*</span>}
+                  </Label>
+                  <button
+                    type="button"
+                    onClick={() => setValue("password", generatePassword(), { shouldValidate: true, shouldDirty: true })}
+                    className="mb-1.5 text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400"
+                  >
+                    {t("generatePassword")}
+                  </button>
+                </div>
                 <InputField
                   id="password"
                   type="password"

@@ -95,6 +95,7 @@
       "adminLastNamePlaceholder": "Doe",
       "password": "كلمة المرور",
       "passwordPlaceholder": "8 أحرف على الأقل",
+      "generatePassword": "توليد",
       "position": "المنصب",
       "positionPlaceholder": "مدير عام",
       "notProvided": "غير محدد",

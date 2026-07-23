@@ -20,6 +20,7 @@ import type { User } from "@/types/user";
 import type { Role } from "@/types/role";
 import { EyeIcon, EyeCloseIcon } from "@/icons";
 import { getImageUrl } from "@/utils/imageHelper";
+import { generatePassword } from "@/utils/generatePassword";
 
 interface UserFormModalProps {
   isOpen: boolean;
@@ -52,6 +53,7 @@ export default function UserFormModal({
     handleSubmit,
     reset,
     control,
+    setValue,
     formState: { errors },
   } = useForm<CreateUserFormData>({
     resolver: yupResolver(isEditing ? updateUserSchema : createUserSchema) as Resolver<CreateUserFormData>,
@@ -247,15 +249,27 @@ export default function UserFormModal({
 
             {!readOnly && (
               <div className="sm:col-span-2">
-                <Label>
-                  {t("form.fields.password")}{" "}
-                  {!isEditing && <span className="text-error-500">*</span>}
-                  {isEditing && (
-                    <span className="text-gray-400 text-xs">
-                      {t("form.fields.passwordEditHint")}
-                    </span>
-                  )}
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label>
+                    {t("form.fields.password")}{" "}
+                    {!isEditing && <span className="text-error-500">*</span>}
+                    {isEditing && (
+                      <span className="text-gray-400 text-xs">
+                        {t("form.fields.passwordEditHint")}
+                      </span>
+                    )}
+                  </Label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setValue("password", generatePassword(), { shouldValidate: true, shouldDirty: true });
+                      setShowPassword(true);
+                    }}
+                    className="mb-1.5 text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400"
+                  >
+                    {t("form.fields.generatePassword")}
+                  </button>
+                </div>
                 <div className="relative">
                   {/* Decoys hors-écran : Chrome ignore display:none mais respecte offscreen + readonly */}
                   <input type="text" name="username" tabIndex={-1} autoComplete="username" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 0, height: 0, opacity: 0 }} />

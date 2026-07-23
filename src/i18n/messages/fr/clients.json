@@ -95,6 +95,7 @@
       "adminLastNamePlaceholder": "Doe",
       "password": "Mot de passe",
       "passwordPlaceholder": "Min. 8 caractères",
+      "generatePassword": "Générer",
       "position": "Position",
       "positionPlaceholder": "Directeur Général",
       "notProvided": "Non renseigné",

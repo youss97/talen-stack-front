@@ -312,7 +312,7 @@ export default function MyRequestsPage() {
                   )}
 
                   <select
-                    value={["in_progress", "standby", "filled"].includes(request.status) ? request.status : ""}
+                    value={["in_progress", "standby", "filled", "abandoned"].includes(request.status) ? request.status : ""}
                     onChange={(e) =>
                       e.target.value &&
                       handleStatusChange(request as unknown as ApplicationRequest, e.target.value)
@@ -326,6 +326,7 @@ export default function MyRequestsPage() {
                     <option value="in_progress">{t("status.in_progress")}</option>
                     <option value="standby">{t("status.standby")}</option>
                     <option value="filled">{t("status.filled")}</option>
+                    <option value="abandoned">{t("status.abandoned")}</option>
                   </select>
                 </div>
               </div>

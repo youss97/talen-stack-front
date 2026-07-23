@@ -11,6 +11,7 @@ import Label from "@/components/form/Label";
 import ImageUpload from "@/components/form/input/ImageUpload";
 import CloudinaryImageUpload from "@/components/form/input/CloudinaryImageUpload";
 import Badge from "@/components/ui/badge/Badge";
+import { generatePassword } from "@/utils/generatePassword";
 import {
   createClientSchema,
   updateClientSchema,
@@ -59,6 +60,7 @@ export default function ClientFormModal({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<CreateClientFormData>({
     resolver: yupResolver(isEditing ? updateClientSchema : createClientSchema) as any,
@@ -508,7 +510,20 @@ export default function ClientFormModal({
                 </div>
 
                 <div>
-                  <Label>{t("fields.password")} <span className="text-error-500">*</span></Label>
+                  <div className="flex items-center justify-between">
+                    <Label>{t("fields.password")} <span className="text-error-500">*</span></Label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const generated = generatePassword();
+                        setValue("adminPassword", generated, { shouldValidate: true, shouldDirty: true });
+                        setShowPassword(true);
+                      }}
+                      className="mb-1.5 text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400"
+                    >
+                      {t("fields.generatePassword")}
+                    </button>
+                  </div>
                   <div className="relative">
                     {/* Decoys hors-écran : Chrome ignore display:none mais respecte offscreen + readonly */}
                     <input type="text" name="admin-username" tabIndex={-1} autoComplete="username" aria-hidden="true" style={{ position: "absolute", left: "-9999px", width: 0, height: 0, opacity: 0 }} />
