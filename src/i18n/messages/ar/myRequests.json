@@ -80,6 +80,14 @@
     "editTitle": "تعديل عرض التوظيف",
     "createSubtitle": "صف الملف الشخصي الذي تبحث عنه",
     "editSubtitle": "قم بتعديل معلومات عرضك",
+    "statusLabel": "الحالة",
+    "statusHint": "يمكنك تعليق هذا الطلب، أو تعليمه كمكتمل، أو التخلي عنه إذا لم يعد ذا صلة.",
+    "statusValues": {
+      "in_progress": "قيد التنفيذ",
+      "standby": "معلّق",
+      "filled": "مكتمل",
+      "abandoned": "متوقفة"
+    },
     "titleLabel": "المسمى الوظيفي",
     "titlePlaceholder": "مثال: مطوّر Full Stack React",
     "titleRequired": "العنوان مطلوب",

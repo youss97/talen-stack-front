@@ -9,6 +9,7 @@ import InputField from "../form/input/InputField";
 import ImageUpload from "../form/input/ImageUpload";
 import Label from "../form/Label";
 import { generatePassword } from "@/utils/generatePassword";
+import { EyeIcon, EyeCloseIcon } from "@/icons";
 import type { Manager } from "@/types/client";
 import {
   createManagerSchema,
@@ -33,6 +34,7 @@ export default function ManagerFormModal({
   const t = useTranslations("managers.formModal");
   const isEditing = !!manager;
   const [photoPreview, setPhotoPreview] = React.useState<string | null>(null);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const {
     register,
@@ -204,14 +206,26 @@ export default function ManagerFormModal({
                     {t("generatePassword")}
                   </button>
                 </div>
-                <InputField
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  {...register("password")}
-                  error={!!errors.password}
-                  hint={errors.password?.message}
-                />
+                <div className="relative">
+                  <InputField
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    {...register("password")}
+                    error={!!errors.password}
+                    hint={errors.password?.message}
+                  />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute z-30 -translate-y-1/2 cursor-pointer end-4 top-1/2"
+                  >
+                    {showPassword ? (
+                      <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                    ) : (
+                      <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                    )}
+                  </span>
+                </div>
               </div>
 
               <div>

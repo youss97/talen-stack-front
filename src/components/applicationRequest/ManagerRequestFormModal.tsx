@@ -15,6 +15,7 @@ interface SkillWithLevel { name: string; level: number; }
 interface ManagerRequestFormData {
   title: string;
   description: string;
+  status?: "in_progress" | "standby" | "filled" | "abandoned";
   contract_type: string;
   location: string;
   country: string;
@@ -45,6 +46,7 @@ interface ManagerRequestFormModalProps {
   initialData?: {
     title?: string;
     description?: string;
+    status?: string;
     contract_type?: string;
     contract_types?: string[];
     location?: string;
@@ -227,6 +229,7 @@ export default function ManagerRequestFormModal({
       reset({
         title: initialData.title || "",
         description: initialData.description || "",
+        status: (initialData.status as ManagerRequestFormData["status"]) || "in_progress",
         contract_type: initContractTypes[0] || "CDI",
         location: initialData.location || "",
         country: initialData.country || "Maroc",
@@ -386,6 +389,20 @@ export default function ManagerRequestFormModal({
 
       <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col flex-1 min-h-0">
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 space-y-5 custom-scrollbar">
+
+          {/* Statut (uniquement en modification — une nouvelle demande démarre "En cours") */}
+          {isEditing && (
+            <div>
+              <Label>{t("statusLabel")}</Label>
+              <select {...register("status")} className={selectClass}>
+                <option value="in_progress">{t("statusValues.in_progress")}</option>
+                <option value="standby">{t("statusValues.standby")}</option>
+                <option value="filled">{t("statusValues.filled")}</option>
+                <option value="abandoned">{t("statusValues.abandoned")}</option>
+              </select>
+              <p className="mt-1 text-xs text-gray-400">{t("statusHint")}</p>
+            </div>
+          )}
 
           {/* Titre */}
           <div>

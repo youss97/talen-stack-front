@@ -82,6 +82,14 @@
     "editTitle": "Edit recruitment offer",
     "createSubtitle": "Describe the profile you are looking for",
     "editSubtitle": "Update your offer's information",
+    "statusLabel": "Status",
+    "statusHint": "You can put this request on standby, mark it as filled, or abandon it if it's no longer relevant.",
+    "statusValues": {
+      "in_progress": "In progress",
+      "standby": "Standby",
+      "filled": "Filled",
+      "abandoned": "Abandoned"
+    },
     "titleLabel": "Job title",
     "titlePlaceholder": "e.g. Full Stack React Developer",
     "titleRequired": "Title is required",

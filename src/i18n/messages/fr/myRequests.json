@@ -80,6 +80,14 @@
     "editTitle": "Modifier l'offre de recrutement",
     "createSubtitle": "Décrivez le profil que vous recherchez",
     "editSubtitle": "Modifiez les informations de votre offre",
+    "statusLabel": "Statut",
+    "statusHint": "Vous pouvez mettre cette demande en stand by, la marquer comme comblée, ou l'abandonner si elle n'est plus d'actualité.",
+    "statusValues": {
+      "in_progress": "En cours",
+      "standby": "Standby",
+      "filled": "Comblée",
+      "abandoned": "Abandonnée"
+    },
     "titleLabel": "Titre du poste",
     "titlePlaceholder": "Ex: Développeur Full Stack React",
     "titleRequired": "Le titre est requis",
