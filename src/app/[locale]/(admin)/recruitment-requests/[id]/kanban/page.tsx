@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { ChevronLeft } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -139,7 +140,7 @@ export default function RequestKanbanPage() {
         className="mb-4 inline-flex items-center gap-2 text-sm font-medium"
         style={{ color: "var(--text-2)" }}
       >
-        <svg className="w-4 h-4 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+        <ChevronLeft size={16} strokeWidth={1.8} className="icon-glow rtl:rotate-180" />
         {t("kanban.backLink")}
       </button>
 

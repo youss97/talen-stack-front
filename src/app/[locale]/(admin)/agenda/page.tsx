@@ -1,5 +1,6 @@
 "use client";
 import { useState, useCallback, useMemo, type ComponentType } from "react";
+import { Target, Link2 } from "lucide-react";
 import { Calendar, momentLocalizer, View } from "react-big-calendar";
 import moment from "moment";
 import "moment/locale/fr";
@@ -297,7 +298,7 @@ export default function AgendaPage() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                    <span className="text-xl">🎯</span>
+                    <Target size={20} strokeWidth={1.8} className="icon-glow text-gray-600 dark:text-gray-300" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -361,7 +362,7 @@ export default function AgendaPage() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                    <span className="text-xl">🔗</span>
+                    <Link2 size={20} strokeWidth={1.8} className="icon-glow text-gray-600 dark:text-gray-300" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -617,7 +618,7 @@ export default function AgendaPage() {
             {/* Entretiens */}
             <div>
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                <span className="text-lg">🎯</span>
+                <Target size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t("legend.interviews.title")}
               </h4>
               <div className="grid grid-cols-2 gap-2">
@@ -643,7 +644,7 @@ export default function AgendaPage() {
             {/* Intégrations */}
             <div>
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                <span className="text-lg">🔗</span>
+                <Link2 size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t("legend.integrations.title")}
               </h4>
               <div className="grid grid-cols-3 gap-2">

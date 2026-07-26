@@ -1,4 +1,5 @@
 "use client";
+import { Star, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -821,16 +822,16 @@ export default function RecruiterFormModal({
                         onClick={() => handleLanguageChange(index, 'level', star)}
                         className="focus:outline-none"
                       >
-                        <svg
-                          className={`w-6 h-6 ${
+                        <Star
+                          size={24}
+                          strokeWidth={1.8}
+                          fill={star <= lang.level ? "currentColor" : "none"}
+                          className={`icon-glow ${
                             star <= lang.level
-                              ? "text-yellow-400 fill-current"
+                              ? "text-yellow-400"
                               : "text-gray-300 dark:text-gray-600"
                           }`}
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
+                        />
                       </button>
                     ))}
                   </div>
@@ -839,9 +840,7 @@ export default function RecruiterFormModal({
                     onClick={() => removeLanguage(index)}
                     className="text-error-500 hover:text-error-600 p-1"
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <X size={20} strokeWidth={1.8} className="icon-glow" />
                   </button>
                 </div>
               ))}

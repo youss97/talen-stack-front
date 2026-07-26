@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import { CheckCircle, FileText, Menu, Globe, LayoutTemplate, Mail, CreditCard, ChevronRight } from "lucide-react";
 
 export default function SettingsPage() {
   const t = useTranslations("settings.hub");
@@ -43,19 +44,7 @@ export default function SettingsPage() {
       title: t("categories.applicationStatuses.title"),
       description: t("categories.applicationStatuses.description"),
       icon: (
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
+        <CheckCircle className="icon-glow" size={24} strokeWidth={1.8} />
       ),
       href: "/settings/application-statuses",
       color: "blue",
@@ -65,19 +54,7 @@ export default function SettingsPage() {
       title: t("categories.contractTypes.title"),
       description: t("categories.contractTypes.description"),
       icon: (
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-          />
-        </svg>
+        <FileText className="icon-glow" size={24} strokeWidth={1.8} />
       ),
       href: "/settings/contract-types",
       color: "green",
@@ -87,19 +64,7 @@ export default function SettingsPage() {
       title: t("categories.sidebarOrder.title"),
       description: t("categories.sidebarOrder.description"),
       icon: (
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-        </svg>
+        <Menu className="icon-glow" size={24} strokeWidth={1.8} />
       ),
       href: "/settings/sidebar-order",
       color: "purple",
@@ -109,10 +74,7 @@ export default function SettingsPage() {
       title: t("categories.publicSite.title"),
       description: t("categories.publicSite.description"),
       icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 010 18M12 3a15 15 0 000 18" />
-        </svg>
+        <Globe className="icon-glow" size={24} strokeWidth={1.8} />
       ),
       href: "/settings/public-site",
       color: "blue",
@@ -122,10 +84,7 @@ export default function SettingsPage() {
       title: t("categories.landing.title"),
       description: t("categories.landing.description"),
       icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 9h16M8 13h8M8 16h5" />
-        </svg>
+        <LayoutTemplate className="icon-glow" size={24} strokeWidth={1.8} />
       ),
       href: "/settings/landing",
       color: "purple",
@@ -135,9 +94,7 @@ export default function SettingsPage() {
       title: t("categories.cvSources.title"),
       description: t("categories.cvSources.description"),
       icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
+        <FileText className="icon-glow" size={24} strokeWidth={1.8} />
       ),
       href: "/settings/cv-sources",
       color: "green",
@@ -147,9 +104,7 @@ export default function SettingsPage() {
       title: t("categories.emailTemplates.title"),
       description: t("categories.emailTemplates.description"),
       icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
+        <Mail className="icon-glow" size={24} strokeWidth={1.8} />
       ),
       href: "/settings/email-templates",
       color: "purple",
@@ -159,10 +114,7 @@ export default function SettingsPage() {
       title: t("categories.businessCards.title"),
       description: t("categories.businessCards.description"),
       icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h4M7 12h4M15 8h2M15 12h2M7 16h10" />
-        </svg>
+        <CreditCard className="icon-glow" size={24} strokeWidth={1.8} />
       ),
       href: "/business-cards",
       color: "green",
@@ -229,19 +181,7 @@ export default function SettingsPage() {
                     {category.description}
                   </p>
                 </div>
-                <svg
-                  className="w-5 h-5 text-gray-400 flex-shrink-0"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ChevronRight className="text-gray-400 flex-shrink-0 icon-glow" size={20} strokeWidth={1.8} />
               </div>
             </Link>
           );

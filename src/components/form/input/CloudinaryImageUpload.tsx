@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { Upload, ImageIcon } from "lucide-react";
 import { TrashBinIcon } from "@/icons";
 import toast from "react-hot-toast";
 
@@ -237,20 +238,7 @@ export default function CloudinaryImageUpload({
           </div>
         ) : (
           <div className="text-center p-4">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              stroke="currentColor"
-              fill="none"
-              viewBox="0 0 48 48"
-              aria-hidden="true"
-            >
-              <path
-                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <Upload size={48} strokeWidth={1.8} className="icon-glow mx-auto text-gray-400" />
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               {fileName || "Cliquez pour sélectionner une image"}
             </p>
@@ -259,9 +247,7 @@ export default function CloudinaryImageUpload({
             </p>
             {autoUpload && (
               <div className="mt-2 flex items-center justify-center text-xs text-blue-600">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                </svg>
+                <ImageIcon size={16} strokeWidth={1.8} className="icon-glow mr-1" />
                 Optimisation automatique
               </div>
             )}

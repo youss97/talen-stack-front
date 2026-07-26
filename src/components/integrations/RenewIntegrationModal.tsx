@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
+import { AlertCircle, Info, AlertTriangle, CalendarClock, NotebookText } from 'lucide-react';
 import { Modal } from '@/components/ui/modal';
 import Button from '@/components/ui/button/Button';
 import Label from '@/components/form/Label';
@@ -126,8 +127,7 @@ export default function RenewIntegrationModal({
       <form onSubmit={handleSubmit}>
         <div className="p-4 sm:p-6">
           <div className="flex items-center gap-3 mb-4 sm:mb-6">
-            <span className="text-2xl">🔄</span>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
               {t('modals.renew.title')}
             </h2>
           </div>
@@ -135,7 +135,7 @@ export default function RenewIntegrationModal({
           {error && (
             <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
               <div className="flex items-center gap-2">
-                <span className="text-red-500">❌</span>
+                <AlertCircle size={16} strokeWidth={1.8} className="icon-glow text-red-500" />
                 <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
               </div>
             </div>
@@ -145,7 +145,7 @@ export default function RenewIntegrationModal({
             {/* Informations actuelles */}
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
               <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
-                <span>ℹ️</span>
+                <Info size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.renew.currentPeriodSection.title')}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -173,7 +173,7 @@ export default function RenewIntegrationModal({
             {/* Sélection de la période de renouvellement */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                <span>📅</span>
+                <CalendarClock size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.renew.renewalPeriodSection.title')}
               </h3>
 
@@ -205,7 +205,7 @@ export default function RenewIntegrationModal({
                       max="36"
                       value={formData.renewal_period_months}
                       onChange={(e) => handlePeriodChange(parseInt(e.target.value) || 12)}
-                      className="w-20 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-20 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                     />
                     <span className="text-sm text-gray-600 dark:text-gray-400">{t('modals.renew.renewalPeriodSection.customLabel')}</span>
                   </div>
@@ -229,7 +229,7 @@ export default function RenewIntegrationModal({
             {/* Notes de renouvellement */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                <span>📝</span>
+                <NotebookText size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.renew.notesSection.title')}
               </h3>
 
@@ -240,7 +240,7 @@ export default function RenewIntegrationModal({
                   value={formData.renewal_notes}
                   onChange={(e) => setFormData({ ...formData, renewal_notes: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                   placeholder={t('modals.renew.notesSection.placeholder')}
                 />
               </div>
@@ -249,7 +249,7 @@ export default function RenewIntegrationModal({
             {/* Avertissement */}
             <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
               <div className="flex items-start gap-2">
-                <span className="text-amber-600 dark:text-amber-400 text-sm">⚠️</span>
+                <AlertTriangle size={16} strokeWidth={1.8} className="icon-glow text-amber-600 dark:text-amber-400 shrink-0" />
                 <div className="text-sm">
                   <p className="font-medium text-amber-900 dark:text-amber-100 mb-1">
                     {t('modals.renew.warning.title')}

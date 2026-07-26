@@ -1,6 +1,7 @@
 "use client";
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { Plus } from "lucide-react";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
 import Button from "@/components/ui/button/Button";
@@ -251,21 +252,5 @@ export default function ContractTypesPage() {
 }
 
 function PlusIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M10 4.16667V15.8333M4.16667 10H15.8333"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <Plus size={20} strokeWidth={1.8} className="icon-glow" />;
 }

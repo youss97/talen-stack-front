@@ -2,6 +2,7 @@
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { FolderOpen, Eye, Link2, Settings, RefreshCw, Plus } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import DataTable, { type Column } from "@/components/tables/DataTable";
@@ -122,21 +123,12 @@ export default function PublicOffersPage() {
   const customActions = [
     {
       label: t("actions.detailsAndApplications"),
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-        </svg>
-      ),
+      icon: <FolderOpen size={16} strokeWidth={1.8} className="icon-glow" />,
       onClick: (offer: PublicJobOffer) => router.push(`/public-offers/${offer.id}`),
     },
     {
       label: t("actions.viewOffer"),
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-        </svg>
-      ),
+      icon: <Eye size={16} strokeWidth={1.8} className="icon-glow" />,
       onClick: (offer: PublicJobOffer) => {
         if (offer.is_public && offer.public_slug) {
           const url = `${window.location.origin}/apply/${offer.public_slug}`;
@@ -148,11 +140,7 @@ export default function PublicOffersPage() {
     },
     {
       label: t("actions.copyLink"),
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-        </svg>
-      ),
+      icon: <Link2 size={16} strokeWidth={1.8} className="icon-glow" />,
       onClick: (offer: PublicJobOffer) => {
         if (offer.is_public && offer.public_slug) {
           copyLink(offer.public_slug);
@@ -163,21 +151,12 @@ export default function PublicOffersPage() {
     },
     {
       label: t("actions.configure"),
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      ),
+      icon: <Settings size={16} strokeWidth={1.8} className="icon-glow" />,
       onClick: (offer: PublicJobOffer) => setConfigOffer(offer),
     },
     {
       label: t("actions.toggleStatus"),
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-        </svg>
-      ),
+      icon: <RefreshCw size={16} strokeWidth={1.8} className="icon-glow" />,
       onClick: handleToggleActive,
     },
   ];
@@ -254,15 +233,5 @@ export default function PublicOffersPage() {
 }
 
 function PlusIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path
-        d="M10 4.16667V15.8333M4.16667 10H15.8333"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <Plus size={20} strokeWidth={1.8} className="icon-glow" />;
 }

@@ -1,14 +1,15 @@
 "use client";
+import { Check, Users, CalendarCheck2, Link2, BarChart3, Bot, ShieldCheck, type LucideIcon } from "lucide-react";
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
-const featureKeys = [
-  { key: "applications", icon: "👥" },
-  { key: "interviews", icon: "📅" },
-  { key: "onboarding", icon: "🔗" },
-  { key: "analytics", icon: "📊" },
-  { key: "automation", icon: "🤖" },
-  { key: "security", icon: "🔒" },
+const featureKeys: Array<{ key: string; icon: LucideIcon }> = [
+  { key: "applications", icon: Users },
+  { key: "interviews", icon: CalendarCheck2 },
+  { key: "onboarding", icon: Link2 },
+  { key: "analytics", icon: BarChart3 },
+  { key: "automation", icon: Bot },
+  { key: "security", icon: ShieldCheck },
 ];
 
 export default function Features() {
@@ -50,8 +51,8 @@ export default function Features() {
               className="group p-8 rounded-2xl border border-gray-100 hover:border-[var(--color-brand-500)]/40 hover:shadow-lg transition-all duration-300"
             >
               {/* Icon */}
-              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                {feature.icon}
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gray-50 text-gray-600 group-hover:scale-110 transition-transform duration-300">
+                <feature.icon size={24} strokeWidth={1.7} className="icon-glow" />
               </div>
 
               {/* Title */}
@@ -68,9 +69,11 @@ export default function Features() {
               <ul className="space-y-2">
                 {feature.benefits.map((benefit, idx) => (
                   <li key={idx} className="flex items-center text-sm text-gray-500">
-                    <svg className="w-4 h-4 text-[var(--color-brand-500)] me-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
+                    <Check
+                      size={16}
+                      strokeWidth={1.8}
+                      className="icon-glow text-gray-500 me-2 flex-shrink-0"
+                    />
                     {benefit}
                   </li>
                 ))}

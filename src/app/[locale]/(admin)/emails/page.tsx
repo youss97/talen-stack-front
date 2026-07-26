@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { Plus, Pencil, Send, Ban } from "lucide-react";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
 import Button from "@/components/ui/button/Button";
@@ -255,21 +256,21 @@ const EmailsPage = () => {
           customActions={[
             {
               label: t("actions.edit"),
-              icon: <span>✏️</span>,
+              icon: <Pencil size={16} strokeWidth={1.8} className="icon-glow" />,
               color: "primary",
               onClick: handleEditEmail,
               hidden: (email) => email.status !== "draft",
             },
             {
               label: t("actions.sendNow"),
-              icon: <span>📤</span>,
+              icon: <Send size={16} strokeWidth={1.8} className="icon-glow" />,
               color: "success",
               onClick: handleSendNow,
               hidden: (email) => email.status !== "draft" && email.status !== "scheduled",
             },
             {
               label: t("actions.cancelSchedule"),
-              icon: <span>🚫</span>,
+              icon: <Ban size={16} strokeWidth={1.8} className="icon-glow" />,
               color: "warning",
               onClick: handleCancelSchedule,
               hidden: (email) => email.status !== "scheduled",
@@ -326,23 +327,7 @@ const EmailsPage = () => {
 };
 
 function PlusIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M10 4.16667V15.8333M4.16667 10H15.8333"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <Plus size={20} strokeWidth={1.8} className="icon-glow" />;
 }
 
 export default EmailsPage;

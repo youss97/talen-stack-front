@@ -11,14 +11,14 @@
     },
     "filters": {
       "allStatuses": "All statuses",
-      "statusInProgress": "🔄 In progress",
+      "statusInProgress": "In progress",
       "statusCompleted": "✅ Completed",
       "statusFailed": "❌ Failed",
       "allTrialPeriods": "All trial periods",
       "trialInProgress": "⏳ In progress",
       "trialValidated": "✅ Validated",
       "trialNotValidated": "❌ Not validated",
-      "reset": "🔄 Reset"
+      "reset": "Reset"
     },
     "table": {
       "candidate": "Candidate",
@@ -99,8 +99,8 @@
       "salarySection": {
         "title": "Compensation",
         "salaryType": "Compensation type",
-        "monthlyOption": "💼 Monthly salary",
-        "dailyOption": "🔄 Daily rate (Freelance)",
+        "monthlyOption": "Monthly salary",
+        "dailyOption": "Daily rate (Freelance)",
         "currency": "Currency",
         "currencyPlaceholder": "Select a currency",
         "monthlySalary": "Monthly salary",
@@ -146,8 +146,8 @@
       "salarySection": {
         "title": "Compensation",
         "salaryType": "Compensation type",
-        "monthlyOption": "💼 Monthly salary",
-        "dailyOption": "🔄 Daily rate (Freelance)",
+        "monthlyOption": "Monthly salary",
+        "dailyOption": "Daily rate (Freelance)",
         "monthlySalary": "Monthly salary",
         "salaryPlaceholder": "3750",
         "dailyRate": "Daily rate",
@@ -224,12 +224,12 @@
         "notes": "Notes:"
       },
       "actions": {
-        "trialPeriod": "⏱️ Trial period",
-        "evaluationNotes": "📝 Evaluation notes",
-        "renew": "🔄 Renew",
-        "complete": "✅ Complete",
-        "departure": "📤 Departure",
-        "delete": "🗑️ Delete"
+        "trialPeriod": "Trial period",
+        "evaluationNotes": "Evaluation notes",
+        "renew": "Renew",
+        "complete": "Complete",
+        "departure": "Departure",
+        "delete": "Delete"
       },
       "deleteConfirm": {
         "title": "Delete integration",
@@ -305,7 +305,7 @@
         "text": "This integration can only be renewed once. Make sure the dates and period match your needs."
       },
       "renewing": "Renewing...",
-      "renew": "🔄 Renew"
+      "renew": "Renew"
     },
     "evaluationNotes": {
       "defaultTitle": "Evaluation notes",

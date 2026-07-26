@@ -1,109 +1,129 @@
-import PlusIcon from "./plus.svg";
-import CloseIcon from "./close.svg";
-import BoxIcon from "./box.svg";
-import CheckCircleIcon from "./check-circle.svg";
-import AlertIcon from "./alert.svg";
-import InfoIcon from "./info.svg";
-import ErrorIcon from "./info-hexa.svg";
-import BoltIcon from "./bolt.svg";
-import ArrowUpIcon from "./arrow-up.svg";
-import ArrowDownIcon from "./arrow-down.svg";
-import FolderIcon from "./folder.svg";
-import VideoIcon from "./videos.svg";
-import AudioIcon from "./audio.svg";
-import GridIcon from "./grid.svg";
-import FileIcon from "./file.svg";
-import DownloadIcon from "./download.svg";
-import ArrowRightIcon from "./arrow-right.svg";
-import GroupIcon from "./group.svg";
-import BoxIconLine from "./box-line.svg";
-import ShootingStarIcon from "./shooting-star.svg";
-import DollarLineIcon from "./dollar-line.svg";
-import TrashBinIcon from "./trash.svg";
-import AngleUpIcon from "./angle-up.svg";
-import AngleDownIcon from "./angle-down.svg";
-import PencilIcon from "./pencil.svg";
-import CheckLineIcon from "./check-line.svg";
-import CloseLineIcon from "./close-line.svg";
-import ChevronDownIcon from "./chevron-down.svg";
-import ChevronUpIcon from "./chevron-up.svg";
-import PaperPlaneIcon from "./paper-plane.svg";
-import LockIcon from "./lock.svg";
-import EnvelopeIcon from "./envelope.svg";
-import UserIcon from "./user-line.svg";
-import CalenderIcon from "./calender-line.svg";
-import EyeIcon from "./eye.svg";
-import EyeCloseIcon from "./eye-close.svg";
-import TimeIcon from "./time.svg";
-import CopyIcon from "./copy.svg";
-import ChevronLeftIcon from "./chevron-left.svg";
-import UserCircleIcon from "./user-circle.svg";
-import TaskIcon from "./task-icon.svg";
-import ListIcon from "./list.svg";
-import TableIcon from "./table.svg";
-import PageIcon from "./page.svg";
-import PieChartIcon from "./pie-chart.svg";
-import BoxCubeIcon from "./box-cube.svg";
-import PlugInIcon from "./plug-in.svg";
-import DocsIcon from "./docs.svg";
-import MailIcon from "./mail-line.svg";
-import HorizontaLDots from "./horizontal-dots.svg";
-import ChatIcon from "./chat.svg";
-import MoreDotIcon from "./more-dot.svg";
-import BellIcon from "./bell.svg";
+import React from "react";
+import {
+  Plus,
+  X,
+  Box,
+  CheckCircle2,
+  AlertTriangle,
+  Info,
+  XCircle,
+  Zap,
+  ArrowUp,
+  ArrowDown,
+  Folder,
+  Video,
+  Music2,
+  LayoutGrid,
+  File,
+  Download,
+  ArrowRight,
+  Users,
+  Package,
+  Sparkles,
+  DollarSign,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  Pencil,
+  Check,
+  Send,
+  Lock,
+  Mail,
+  User,
+  Calendar,
+  Eye,
+  EyeOff,
+  Clock,
+  Copy,
+  ChevronLeft,
+  UserCircle2,
+  ListChecks,
+  List,
+  Table,
+  FileText,
+  PieChart,
+  Plug,
+  Files,
+  MoreHorizontal,
+  MessageCircle,
+  MoreVertical,
+  Bell,
+  type LucideIcon,
+} from "lucide-react";
 
-export {
-  DownloadIcon,
-  BellIcon,
-  MoreDotIcon,
-  FileIcon,
-  GridIcon,
-  AudioIcon,
-  VideoIcon,
-  BoltIcon,
-  PlusIcon,
-  BoxIcon,
-  CloseIcon,
-  CheckCircleIcon,
-  AlertIcon,
-  InfoIcon,
-  ErrorIcon,
-  ArrowUpIcon,
-  FolderIcon,
-  ArrowDownIcon,
-  ArrowRightIcon,
-  GroupIcon,
-  BoxIconLine,
-  ShootingStarIcon,
-  DollarLineIcon,
-  TrashBinIcon,
-  AngleUpIcon,
-  AngleDownIcon,
-  PencilIcon,
-  CheckLineIcon,
-  CloseLineIcon,
-  ChevronDownIcon,
-  PaperPlaneIcon,
-  EnvelopeIcon,
-  LockIcon,
-  UserIcon,
-  CalenderIcon,
-  EyeIcon,
-  EyeCloseIcon,
-  TimeIcon,
-  CopyIcon,
-  ChevronLeftIcon,
-  UserCircleIcon,
-  ListIcon,
-  TableIcon,
-  PageIcon,
-  TaskIcon,
-  PieChartIcon,
-  BoxCubeIcon,
-  PlugInIcon,
-  DocsIcon,
-  MailIcon,
-  HorizontaLDots,
-  ChevronUpIcon,
-  ChatIcon,
-};
+/**
+ * Bibliothèque d'icônes du site — basée sur lucide-react (jeu d'icônes pro, cohérent).
+ * Chaque icône reçoit par défaut une légère ombre portée verte ("icon-glow", cf. globals.css).
+ * Les noms exportés sont conservés à l'identique pour ne pas casser les imports existants.
+ */
+function wrap(Lucide: LucideIcon) {
+  return function WrappedIcon({
+    className = "",
+    size = 20,
+    strokeWidth = 1.8,
+    ...rest
+  }: React.ComponentProps<LucideIcon>) {
+    return (
+      <Lucide
+        className={`icon-glow ${className}`.trim()}
+        size={size}
+        strokeWidth={strokeWidth}
+        {...rest}
+      />
+    );
+  };
+}
+
+export const PlusIcon = wrap(Plus);
+export const CloseIcon = wrap(X);
+export const BoxIcon = wrap(Box);
+export const CheckCircleIcon = wrap(CheckCircle2);
+export const AlertIcon = wrap(AlertTriangle);
+export const InfoIcon = wrap(Info);
+export const ErrorIcon = wrap(XCircle);
+export const BoltIcon = wrap(Zap);
+export const ArrowUpIcon = wrap(ArrowUp);
+export const ArrowDownIcon = wrap(ArrowDown);
+export const FolderIcon = wrap(Folder);
+export const VideoIcon = wrap(Video);
+export const AudioIcon = wrap(Music2);
+export const GridIcon = wrap(LayoutGrid);
+export const FileIcon = wrap(File);
+export const DownloadIcon = wrap(Download);
+export const ArrowRightIcon = wrap(ArrowRight);
+export const GroupIcon = wrap(Users);
+export const BoxIconLine = wrap(Package);
+export const ShootingStarIcon = wrap(Sparkles);
+export const DollarLineIcon = wrap(DollarSign);
+export const TrashBinIcon = wrap(Trash2);
+export const AngleUpIcon = wrap(ChevronUp);
+export const AngleDownIcon = wrap(ChevronDown);
+export const PencilIcon = wrap(Pencil);
+export const CheckLineIcon = wrap(Check);
+export const CloseLineIcon = wrap(X);
+export const ChevronDownIcon = wrap(ChevronDown);
+export const ChevronUpIcon = wrap(ChevronUp);
+export const PaperPlaneIcon = wrap(Send);
+export const LockIcon = wrap(Lock);
+export const EnvelopeIcon = wrap(Mail);
+export const UserIcon = wrap(User);
+export const CalenderIcon = wrap(Calendar);
+export const EyeIcon = wrap(Eye);
+export const EyeCloseIcon = wrap(EyeOff);
+export const TimeIcon = wrap(Clock);
+export const CopyIcon = wrap(Copy);
+export const ChevronLeftIcon = wrap(ChevronLeft);
+export const UserCircleIcon = wrap(UserCircle2);
+export const TaskIcon = wrap(ListChecks);
+export const ListIcon = wrap(List);
+export const TableIcon = wrap(Table);
+export const PageIcon = wrap(FileText);
+export const PieChartIcon = wrap(PieChart);
+export const BoxCubeIcon = wrap(Package);
+export const PlugInIcon = wrap(Plug);
+export const DocsIcon = wrap(Files);
+export const MailIcon = wrap(Mail);
+export const HorizontaLDots = wrap(MoreHorizontal);
+export const ChatIcon = wrap(MessageCircle);
+export const MoreDotIcon = wrap(MoreVertical);
+export const BellIcon = wrap(Bell);

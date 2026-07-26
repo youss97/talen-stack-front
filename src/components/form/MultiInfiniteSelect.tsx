@@ -6,6 +6,7 @@ import {
   useMemo,
   useCallback,
 } from "react";
+import { X, ChevronDown, Check } from "lucide-react";
 
 interface MultiInfiniteSelectProps<T> {
   label?: string;
@@ -230,38 +231,16 @@ function MultiInfiniteSelect<T extends Record<string, unknown>>({
                 onClick={handleClear}
                 className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10.5 3.5L3.5 10.5M3.5 3.5L10.5 10.5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <X size={14} strokeWidth={1.8} className="icon-glow" />
               </button>
             )}
-            <svg
-              className={`w-4 h-4 text-gray-400 transition-transform ${
+            <ChevronDown
+              size={16}
+              strokeWidth={1.8}
+              className={`icon-glow text-gray-400 transition-transform ${
                 isOpen ? "rotate-180" : ""
               }`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+            />
           </div>
         </div>
       </div>
@@ -302,7 +281,7 @@ function MultiInfiniteSelect<T extends Record<string, unknown>>({
                       <div className="flex items-center justify-between">
                         <span className="flex-1">{getOptionLabel(option)}</span>
                         {multiple && isSelected && (
-                          <span className="ml-2 text-brand-600 dark:text-brand-400">✓</span>
+                          <Check size={14} strokeWidth={2} className="icon-glow ml-2 text-brand-600 dark:text-brand-400" />
                         )}
                       </div>
                       {isLast && hasNextPage && (

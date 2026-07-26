@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
+import { Hourglass, ClipboardList, RefreshCw, CheckCircle2, LogOut, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
   useGetIntegrationByIdQuery,
@@ -203,8 +204,10 @@ export default function IntegrationDetailModal({
 
   if (isLoading || !integration) {
     return (
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <div className="p-6">{t('modals.detail.loading')}</div>
+      <Modal isOpen={isOpen} onClose={onClose} className="max-w-5xl">
+        <div className="flex items-center justify-center py-16">
+          <div className="w-8 h-8 border-4 border-gray-200 border-t-brand-500 rounded-full animate-spin" />
+        </div>
       </Modal>
     );
   }
@@ -298,7 +301,7 @@ export default function IntegrationDetailModal({
             </div>
           </div>
 
-          {/* Période d'essai */}
+          {/* PÃ©riode d'essai */}
           <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">
               {t('modals.detail.trialSection.title')}
@@ -345,7 +348,7 @@ export default function IntegrationDetailModal({
             </div>
           )}
 
-          {/* Départ */}
+          {/* DÃ©part */}
           {integration.departure_date && (
             <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -370,7 +373,7 @@ export default function IntegrationDetailModal({
             </div>
           )}
 
-          {/* Évaluation finale */}
+          {/* Ã‰valuation finale */}
           {(integration.final_rating || integration.evaluation_notes || integration.performance_rating) && (
             <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -381,7 +384,7 @@ export default function IntegrationDetailModal({
                   <div>
                     <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t('modals.detail.evaluationSection.performance')}</span>
                     <p className="text-sm sm:text-base text-gray-900 dark:text-white font-medium">
-                      {integration.performance_rating}/5 {'⭐'.repeat(integration.performance_rating)}
+                      {integration.performance_rating}/5 {'â˜…'.repeat(integration.performance_rating)}
                     </p>
                   </div>
                 )}
@@ -397,7 +400,7 @@ export default function IntegrationDetailModal({
                   <div>
                     <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t('modals.detail.evaluationSection.finalRating')}</span>
                     <p className="text-sm sm:text-base text-gray-900 dark:text-white font-medium">
-                      {integration.final_rating}/5 ⭐
+                      {integration.final_rating}/5 â˜…
                     </p>
                   </div>
                 )}
@@ -452,14 +455,15 @@ export default function IntegrationDetailModal({
 
           {/* Actions */}
           <div className="flex flex-wrap gap-2 sm:gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-            {/* Actions spécifiques selon le statut */}
+            {/* Actions spÃ©cifiques selon le statut */}
             {integration.status === IntegrationStatus.IN_PROGRESS &&
               integration.trial_period_status === TrialPeriodStatus.IN_PROGRESS && (
                 <Button
                   onClick={() => setShowValidateTrialModal(true)}
                   variant="outline"
-                  className="text-xs sm:text-sm text-orange-600 border-orange-300 hover:bg-orange-50"
+                  className="text-xs sm:text-sm text-orange-600 border-orange-300 hover:bg-orange-50 inline-flex items-center gap-1.5"
                 >
+                  <Hourglass size={15} strokeWidth={1.8} className="icon-glow" />
                   {t('modals.detail.actions.trialPeriod')}
                 </Button>
               )}
@@ -469,8 +473,9 @@ export default function IntegrationDetailModal({
                 <Button
                   onClick={() => setShowEvaluationModal(true)}
                   variant="outline"
-                  className="text-xs sm:text-sm text-blue-600 border-blue-300 hover:bg-blue-50"
+                  className="text-xs sm:text-sm text-blue-600 border-blue-300 hover:bg-blue-50 inline-flex items-center gap-1.5"
                 >
+                  <ClipboardList size={15} strokeWidth={1.8} className="icon-glow" />
                   {t('modals.detail.actions.evaluationNotes')}
                 </Button>
 
@@ -478,8 +483,9 @@ export default function IntegrationDetailModal({
                   <Button
                     onClick={() => setShowRenewalModal(true)}
                     variant="outline"
-                    className="text-xs sm:text-sm text-purple-600 border-purple-300 hover:bg-purple-50"
+                    className="text-xs sm:text-sm text-purple-600 border-purple-300 hover:bg-purple-50 inline-flex items-center gap-1.5"
                   >
+                    <RefreshCw size={15} strokeWidth={1.8} className="icon-glow" />
                     {t('modals.detail.actions.renew')}
                   </Button>
                 )}
@@ -487,16 +493,18 @@ export default function IntegrationDetailModal({
                 <Button
                   onClick={() => setShowCompleteModal(true)}
                   variant="primary"
-                  className="text-xs sm:text-sm"
+                  className="text-xs sm:text-sm inline-flex items-center gap-1.5"
                 >
+                  <CheckCircle2 size={15} strokeWidth={1.8} className="icon-glow" />
                   {t('modals.detail.actions.complete')}
                 </Button>
 
                 <Button
                   onClick={() => setShowDepartureModal(true)}
                   variant="outline"
-                  className="text-xs sm:text-sm"
+                  className="text-xs sm:text-sm inline-flex items-center gap-1.5"
                 >
+                  <LogOut size={15} strokeWidth={1.8} className="icon-glow" />
                   {t('modals.detail.actions.departure')}
                 </Button>
               </>
@@ -505,8 +513,9 @@ export default function IntegrationDetailModal({
             <Button
               onClick={() => setShowDeleteConfirm(true)}
               variant="outline"
-              className="ms-auto text-xs sm:text-sm text-red-600 border-red-300 hover:bg-red-50"
+              className="ms-auto text-xs sm:text-sm text-red-600 border-red-300 hover:bg-red-50 inline-flex items-center gap-1.5"
             >
+              <Trash2 size={15} strokeWidth={1.8} className="icon-glow" />
               {t('modals.detail.actions.delete')}
             </Button>
           </div>
@@ -523,12 +532,12 @@ export default function IntegrationDetailModal({
         message={t('modals.detail.deleteConfirm.message')}
       />
 
-      {/* Modal validation période d'essai */}
+      {/* Modal validation pÃ©riode d'essai */}
       {showValidateTrialModal && (
         <Modal isOpen={showValidateTrialModal} onClose={() => setShowValidateTrialModal(false)} className="max-w-md">
           <div className="p-6">
             <div className="flex items-center gap-3 mb-6">
-              <span className="text-2xl">⏱️</span>
+              <Hourglass size={22} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                 {t('modals.detail.validateTrialModal.title')}
               </h3>
@@ -543,7 +552,7 @@ export default function IntegrationDetailModal({
                   onChange={(e) => setTrialNotes(e.target.value)}
                   placeholder={t('modals.detail.validateTrialModal.notesPlaceholder')}
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                 />
               </div>
             </div>
@@ -575,12 +584,12 @@ export default function IntegrationDetailModal({
         </Modal>
       )}
 
-      {/* Modal marquer comme terminée */}
+      {/* Modal marquer comme terminÃ©e */}
       {showCompleteModal && (
         <Modal isOpen={showCompleteModal} onClose={() => setShowCompleteModal(false)} className="max-w-lg">
           <div className="p-6">
             <div className="flex items-center gap-3 mb-6">
-              <span className="text-2xl">✅</span>
+              <CheckCircle2 size={22} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                 {t('modals.detail.completeModal.title')}
               </h3>
@@ -593,13 +602,13 @@ export default function IntegrationDetailModal({
                   id="final_rating"
                   value={finalRating}
                   onChange={(e) => setFinalRating(parseInt(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                 >
-                  <option value={1}>⭐ 1 - {t('ratingLabels.1')}</option>
-                  <option value={2}>⭐⭐ 2 - {t('ratingLabels.2')}</option>
-                  <option value={3}>⭐⭐⭐ 3 - {t('ratingLabels.3')}</option>
-                  <option value={4}>⭐⭐⭐⭐ 4 - {t('ratingLabels.4')}</option>
-                  <option value={5}>⭐⭐⭐⭐⭐ 5 - {t('ratingLabels.5')}</option>
+                  <option value={1}>â˜… 1 - {t('ratingLabels.1')}</option>
+                  <option value={2}>â˜…â˜… 2 - {t('ratingLabels.2')}</option>
+                  <option value={3}>â˜…â˜…â˜… 3 - {t('ratingLabels.3')}</option>
+                  <option value={4}>â˜…â˜…â˜…â˜… 4 - {t('ratingLabels.4')}</option>
+                  <option value={5}>â˜…â˜…â˜…â˜…â˜… 5 - {t('ratingLabels.5')}</option>
                 </select>
               </div>
 
@@ -611,7 +620,7 @@ export default function IntegrationDetailModal({
                   onChange={(e) => setFinalEvaluation(e.target.value)}
                   placeholder={t('modals.detail.completeModal.finalEvaluationPlaceholder')}
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                 />
               </div>
             </div>
@@ -636,12 +645,12 @@ export default function IntegrationDetailModal({
         </Modal>
       )}
 
-      {/* Modal enregistrer départ */}
+      {/* Modal enregistrer dÃ©part */}
       {showDepartureModal && (
         <Modal isOpen={showDepartureModal} onClose={() => setShowDepartureModal(false)} className="max-w-md">
           <div className="p-6">
             <div className="flex items-center gap-3 mb-6">
-              <span className="text-2xl">📤</span>
+              <LogOut size={22} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                 {t('modals.detail.departureModal.title')}
               </h3>
@@ -657,7 +666,7 @@ export default function IntegrationDetailModal({
                   id="departure_date"
                   value={departureDate}
                   onChange={(e) => setDepartureDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                   required
                 />
               </div>
@@ -670,7 +679,7 @@ export default function IntegrationDetailModal({
                   onChange={(e) => setDepartureReason(e.target.value)}
                   placeholder={t('modals.detail.departureModal.reasonPlaceholder')}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                 />
               </div>
             </div>
@@ -709,7 +718,7 @@ export default function IntegrationDetailModal({
         integrationDate={integration?.integration_date}
       />
 
-      {/* Modal des notes d'évaluation */}
+      {/* Modal des notes d'Ã©valuation */}
       <EvaluationNotesModal
         isOpen={showEvaluationModal}
         onClose={() => setShowEvaluationModal(false)}

@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { AlertCircle, UserRound, Briefcase, Wallet, BarChart3, Hourglass, NotebookText } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useGetIntegrationByIdQuery, useUpdateIntegrationMutation } from '@/lib/services/integrationApi';
 import { ContractType, IntegrationStatus, TrialPeriodStatus } from '@/types/integration';
@@ -122,7 +123,7 @@ export default function EditIntegrationModal({
     return (
       <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl">
         <div className="p-6 text-center">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-10 h-10 border-4 border-gray-200 border-t-brand-500 rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-600 dark:text-gray-400">{t('modals.edit.loading')}</p>
         </div>
       </Modal>
@@ -143,9 +144,8 @@ export default function EditIntegrationModal({
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl">
       <div className="max-h-[90vh] overflow-y-auto">
         <div className="p-4 sm:p-6">
-          <div className="flex items-center gap-3 mb-4 sm:mb-6">
-            <span className="text-2xl">✏️</span>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+          <div className="mb-4 sm:mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
               {t('modals.edit.title')}
             </h2>
           </div>
@@ -153,7 +153,7 @@ export default function EditIntegrationModal({
           {error && (
             <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
               <div className="flex items-center gap-2">
-                <span className="text-red-500">❌</span>
+                <AlertCircle size={16} strokeWidth={1.8} className="icon-glow text-red-500 shrink-0" />
                 <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
               </div>
             </div>
@@ -162,7 +162,7 @@ export default function EditIntegrationModal({
           {/* Informations candidat (lecture seule) */}
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
             <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
-              <span>👤</span>
+              <UserRound size={16} strokeWidth={1.8} className="icon-glow" />
               {t('modals.edit.candidateSection.title')}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -197,7 +197,7 @@ export default function EditIntegrationModal({
             {/* Section Poste et Dates */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <span>💼</span>
+                <Briefcase size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.edit.positionSection.title')}
               </h3>
 
@@ -220,7 +220,7 @@ export default function EditIntegrationModal({
                     required
                     value={formData.contract_type}
                     onChange={(e) => setFormData({ ...formData, contract_type: e.target.value as ContractType })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                   >
                     <option value="cdi">{t('contractTypes.cdi')}</option>
                     <option value="cdd">{t('contractTypes.cdd')}</option>
@@ -243,10 +243,10 @@ export default function EditIntegrationModal({
               </div>
             </div>
 
-            {/* Section Rémunération */}
+            {/* Section RÃ©munÃ©ration */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <span>💰</span>
+                <Wallet size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.edit.salarySection.title')}
               </h3>
 
@@ -262,7 +262,7 @@ export default function EditIntegrationModal({
                       salary: '',
                       daily_rate: ''
                     })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                   >
                     <option value="monthly">{t('modals.edit.salarySection.monthlyOption')}</option>
                     <option value="daily">{t('modals.edit.salarySection.dailyOption')}</option>
@@ -303,16 +303,16 @@ export default function EditIntegrationModal({
                     id="currency"
                     value={formData.currency}
                     onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                   >
-                    <option value="MAD">MAD (د.م.)</option>
-                    <option value="EUR">EUR (€)</option>
+                    <option value="MAD">MAD (Ø¯.Ù….)</option>
+                    <option value="EUR">EUR (â‚¬)</option>
                     <option value="USD">USD ($)</option>
-                    <option value="GBP">GBP (£)</option>
-                    <option value="TND">TND (د.ت)</option>
-                    <option value="DZD">DZD (د.ج)</option>
-                    <option value="AED">AED (د.إ)</option>
-                    <option value="SAR">SAR (﷼)</option>
+                    <option value="GBP">GBP (Â£)</option>
+                    <option value="TND">TND (Ø¯.Øª)</option>
+                    <option value="DZD">DZD (Ø¯.Ø¬)</option>
+                    <option value="AED">AED (Ø¯.Ø¥)</option>
+                    <option value="SAR">SAR (ï·¼)</option>
                   </select>
                 </div>
               </div>
@@ -321,7 +321,7 @@ export default function EditIntegrationModal({
             {/* Section Statuts */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <span>📊</span>
+                <BarChart3 size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.edit.statusSection.title')}
               </h3>
 
@@ -332,7 +332,7 @@ export default function EditIntegrationModal({
                     id="status"
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as IntegrationStatus })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                   >
                     <option value="in_progress">{t('page.filters.statusInProgress')}</option>
                     <option value="completed">{t('page.filters.statusCompleted')}</option>
@@ -345,7 +345,7 @@ export default function EditIntegrationModal({
                     id="trial_period_status"
                     value={formData.trial_period_status}
                     onChange={(e) => setFormData({ ...formData, trial_period_status: e.target.value as TrialPeriodStatus })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                   >
                     <option value="in_progress">{t('page.filters.trialInProgress')}</option>
                     <option value="validated">{t('page.filters.trialValidated')}</option>
@@ -355,10 +355,10 @@ export default function EditIntegrationModal({
               </div>
             </div>
 
-            {/* Section Période d'essai */}
+            {/* Section PÃ©riode d'essai */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <span>⏱️</span>
+                <Hourglass size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.edit.trialSection.title')}
               </h3>
 
@@ -389,7 +389,7 @@ export default function EditIntegrationModal({
             {/* Section Notes */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <span>📝</span>
+                <NotebookText size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.edit.notesSection.title')}
               </h3>
 
@@ -400,7 +400,7 @@ export default function EditIntegrationModal({
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                   placeholder={t('modals.edit.notesSection.placeholder')}
                 />
               </div>

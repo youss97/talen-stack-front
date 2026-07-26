@@ -12,6 +12,7 @@ import {
 import type { Feature } from "@/types/role";
 import type { SubscriptionPlan } from "@/types/subscription";
 import { featureIcon, featureLabel } from "@/utils/featureLabels";
+import { Check } from "lucide-react";
 
 // Features réservées au super admin — non proposées dans les abonnements
 const SYSTEM_FEATURE_NAMES = new Set(["Entreprises", "Logs", "Activity Management", "Company Management"]);
@@ -232,9 +233,7 @@ export default function SubscriptionPlanModal({
                     checked ? "bg-brand-500 border-brand-500" : "border-gray-300 dark:border-gray-600"
                   }`}>
                     {checked && (
-                      <svg width="10" height="8" viewBox="0 0 12 9" fill="none">
-                        <path d="M1 4L4.5 7.5L11 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
-                      </svg>
+                      <Check size={10} strokeWidth={2.5} className="icon-glow text-white" />
                     )}
                   </div>
                   <input type="checkbox" checked={checked} onChange={() => toggle(feature.id)} className="sr-only" />

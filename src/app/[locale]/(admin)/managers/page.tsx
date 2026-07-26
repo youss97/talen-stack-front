@@ -23,6 +23,7 @@ import {
   useGetClientByIdQuery,
 } from "@/lib/services/clientApi";
 import { getApiErrorMessage } from "@/utils/errorMessages";
+import { AlertTriangle, Lock, Unlock, Users } from "lucide-react";
 
 export default function ManagersPage() {
   const t = useTranslations("managers");
@@ -363,9 +364,7 @@ export default function ManagersPage() {
           {selectedClient?.status === 'inactive' && (
               <div className="mb-4 rounded-xl p-4 bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800">
                 <div className="flex items-center gap-2 text-warning-800 dark:text-warning-200">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
+                  <AlertTriangle className="w-5 h-5 icon-glow" size={20} strokeWidth={1.8} />
                   <span className="text-sm font-medium">
                     {t("list.clientInactiveWarning")}
                   </span>
@@ -414,19 +413,11 @@ export default function ManagersPage() {
         </>
       ) : (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
-          <svg
-            className="mx-auto h-12 w-12 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-            />
-          </svg>
+          <Users
+            className="mx-auto text-gray-400 icon-glow"
+            size={48}
+            strokeWidth={1.8}
+          />
           <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
             {t("list.emptyState.noClientTitle")}
           </h3>
@@ -493,17 +484,9 @@ export default function ManagersPage() {
 }
 
 function LockIcon() {
-  return (
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-    </svg>
-  );
+  return <Lock className="icon-glow" size={16} strokeWidth={1.8} />;
 }
 
 function UnlockIcon() {
-  return (
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 018 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-    </svg>
-  );
+  return <Unlock className="icon-glow" size={16} strokeWidth={1.8} />;
 }

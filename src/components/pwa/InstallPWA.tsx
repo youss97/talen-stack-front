@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Button from '@/components/ui/button/Button';
+import { Smartphone } from 'lucide-react';
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -87,19 +88,11 @@ export default function InstallPWA() {
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0">
             <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-              <svg 
-                className="w-5 h-5 text-blue-600 dark:text-blue-400" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" 
-                />
-              </svg>
+              <Smartphone
+                className="w-5 h-5 text-blue-600 dark:text-blue-400 icon-glow"
+                size={20}
+                strokeWidth={1.8}
+              />
             </div>
           </div>
           <div className="flex-1 min-w-0">

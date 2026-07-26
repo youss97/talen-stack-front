@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Star, AlertCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Modal } from '@/components/ui/modal';
 import Button from '@/components/ui/button/Button';
@@ -104,7 +105,7 @@ export default function EvaluationNotesModal({
           {error && (
             <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
               <div className="flex items-center gap-2">
-                <span className="text-red-500">❌</span>
+                <AlertCircle size={16} strokeWidth={1.8} className="icon-glow text-red-500" />
                 <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
               </div>
             </div>
@@ -114,7 +115,7 @@ export default function EvaluationNotesModal({
             {/* Évaluation de performance */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                <span>⭐</span>
+                <Star size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.evaluationNotes.performanceSection.title')}
               </h3>
 
@@ -142,9 +143,16 @@ export default function EvaluationNotesModal({
                   
                   <div className="mt-3 text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg">
-                      <span className="text-2xl">
-                        {'⭐'.repeat(formData.performance_rating)}
-                        {'☆'.repeat(5 - formData.performance_rating)}
+                      <span className="inline-flex items-center gap-0.5">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <Star
+                            key={i}
+                            size={18}
+                            strokeWidth={1.8}
+                            className="icon-glow text-gray-500 dark:text-gray-400"
+                            fill={i < formData.performance_rating ? "currentColor" : "none"}
+                          />
+                        ))}
                       </span>
                       <span className={`font-medium ${getRatingColor(formData.performance_rating)}`}>
                         {formData.performance_rating}/5 - {getRatingLabel(formData.performance_rating)}

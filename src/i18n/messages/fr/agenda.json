@@ -1,6 +1,6 @@
 {
   "page": {
-    "title": "📅 Agenda des entretiens et intégrations",
+    "title": "Agenda des entretiens et intégrations",
     "eventsDisplayed": "{count, plural, =0 {Aucun événement affiché} one {# événement affiché} other {# événements affichés}}"
   },
   "loading": {

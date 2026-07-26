@@ -4,6 +4,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { motion, type Variants } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { Frown, CheckCircle2, Upload, Send, Check } from "lucide-react";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import {
   useGetPublicJobOfferBySlugQuery,
@@ -114,10 +115,7 @@ export default function PublicJobPage() {
       <div className="flex items-center justify-center min-h-screen bg-[#f5fae8]">
         <div className="text-center px-6">
           <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <Frown size={40} strokeWidth={1.5} className="icon-glow text-gray-400" />
           </div>
           <h1 className="text-2xl font-bold text-gray-800 mb-2">{t("notFound.title")}</h1>
           <p className="text-gray-500">{t("notFound.message")}</p>
@@ -383,17 +381,13 @@ export default function PublicJobPage() {
                         />
                         {cvFile ? (
                           <>
-                            <svg className="w-6 h-6 mb-1" style={{ color: BRAND }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <CheckCircle2 size={24} strokeWidth={1.8} className="icon-glow mb-1" style={{ color: BRAND }} />
                             <span className="text-sm font-medium" style={{ color: BRAND_TX }}>{cvFile.name}</span>
                             <span className="text-xs text-gray-400 mt-0.5">{(cvFile.size / 1024).toFixed(0)} KB</span>
                           </>
                         ) : (
                           <>
-                            <svg className="w-6 h-6 text-gray-400 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
+                            <Upload size={24} strokeWidth={1.5} className="icon-glow text-gray-400 mb-1" />
                             <span className="text-sm text-gray-500">{t("form.cvDropIdle")}</span>
                           </>
                         )}
@@ -427,9 +421,7 @@ export default function PublicJobPage() {
                         </>
                       ) : (
                         <>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                          </svg>
+                          <Send size={16} strokeWidth={1.8} className="icon-glow" />
                           {t("form.submit")}
                         </>
                       )}
@@ -450,9 +442,7 @@ export default function PublicJobPage() {
                     className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center"
                     style={{ background: BRAND_LT }}
                   >
-                    <svg className="w-10 h-10" style={{ color: BRAND }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
+                    <Check size={40} strokeWidth={2.5} className="icon-glow" style={{ color: BRAND }} />
                   </motion.div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">{t("success.title")}</h2>
                   <p className="text-gray-500 text-[15px] max-w-sm mx-auto leading-relaxed">

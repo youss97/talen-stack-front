@@ -11,14 +11,14 @@
     },
     "filters": {
       "allStatuses": "جميع الحالات",
-      "statusInProgress": "🔄 قيد التنفيذ",
+      "statusInProgress": "قيد التنفيذ",
       "statusCompleted": "✅ منتهية",
       "statusFailed": "❌ فشل",
       "allTrialPeriods": "جميع فترات التجربة",
       "trialInProgress": "⏳ قيد التنفيذ",
       "trialValidated": "✅ مُصادق عليها",
       "trialNotValidated": "❌ غير مُصادق عليها",
-      "reset": "🔄 إعادة تعيين"
+      "reset": "إعادة تعيين"
     },
     "table": {
       "candidate": "المرشح",
@@ -99,8 +99,8 @@
       "salarySection": {
         "title": "الأجر",
         "salaryType": "نوع الأجر",
-        "monthlyOption": "💼 راتب شهري",
-        "dailyOption": "🔄 أجرة يومية (عمل حر)",
+        "monthlyOption": "راتب شهري",
+        "dailyOption": "أجرة يومية (عمل حر)",
         "currency": "العملة",
         "currencyPlaceholder": "اختر عملة",
         "monthlySalary": "الراتب الشهري",
@@ -146,8 +146,8 @@
       "salarySection": {
         "title": "الأجر",
         "salaryType": "نوع الأجر",
-        "monthlyOption": "💼 راتب شهري",
-        "dailyOption": "🔄 أجرة يومية (عمل حر)",
+        "monthlyOption": "راتب شهري",
+        "dailyOption": "أجرة يومية (عمل حر)",
         "monthlySalary": "الراتب الشهري",
         "salaryPlaceholder": "3750",
         "dailyRate": "الأجرة اليومية",
@@ -224,12 +224,12 @@
         "notes": "ملاحظات:"
       },
       "actions": {
-        "trialPeriod": "⏱️ فترة التجربة",
-        "evaluationNotes": "📝 ملاحظات التقييم",
-        "renew": "🔄 تجديد",
-        "complete": "✅ إنهاء",
-        "departure": "📤 مغادرة",
-        "delete": "🗑️ حذف"
+        "trialPeriod": "فترة التجربة",
+        "evaluationNotes": "ملاحظات التقييم",
+        "renew": "تجديد",
+        "complete": "إنهاء",
+        "departure": "مغادرة",
+        "delete": "حذف"
       },
       "deleteConfirm": {
         "title": "حذف الإدماج",
@@ -305,7 +305,7 @@
         "text": "لا يمكن تجديد هذا الإدماج إلا مرة واحدة. تأكد من أن التواريخ والفترة تتوافق مع احتياجاتك."
       },
       "renewing": "جارٍ التجديد...",
-      "renew": "🔄 تجديد"
+      "renew": "تجديد"
     },
     "evaluationNotes": {
       "defaultTitle": "ملاحظات التقييم",

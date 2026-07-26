@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Mail, Phone, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
@@ -58,9 +59,9 @@ export default function Contact({ contact, brand = "var(--color-brand-500)" }: {
 
         {(c.email || c.phone || c.address || c.linkedin || c.instagram) && (
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500">
-            {c.email && <span>✉ {c.email}</span>}
-            {c.phone && <span>☎ {c.phone}</span>}
-            {c.address && <span>📍 {c.address}</span>}
+            {c.email && <span className="inline-flex items-center gap-1.5"><Mail size={15} strokeWidth={1.8} className="icon-glow text-gray-500" /> {c.email}</span>}
+            {c.phone && <span className="inline-flex items-center gap-1.5"><Phone size={15} strokeWidth={1.8} className="icon-glow text-gray-500" /> {c.phone}</span>}
+            {c.address && <span className="inline-flex items-center gap-1.5"><MapPin size={15} strokeWidth={1.8} className="icon-glow text-gray-500" /> {c.address}</span>}
             {c.linkedin && <a href={c.linkedin} target="_blank" rel="noopener noreferrer" className="rounded-full border border-gray-200 px-3 py-1.5 font-medium hover:bg-gray-100">LinkedIn</a>}
             {c.instagram && <a href={c.instagram} target="_blank" rel="noopener noreferrer" className="rounded-full border border-gray-200 px-3 py-1.5 font-medium hover:bg-gray-100">Instagram</a>}
           </div>

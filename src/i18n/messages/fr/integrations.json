@@ -11,14 +11,14 @@
     },
     "filters": {
       "allStatuses": "Tous les statuts",
-      "statusInProgress": "🔄 En cours",
+      "statusInProgress": "En cours",
       "statusCompleted": "✅ Terminée",
       "statusFailed": "❌ Échec",
       "allTrialPeriods": "Toutes les périodes",
       "trialInProgress": "⏳ En cours",
       "trialValidated": "✅ Validée",
       "trialNotValidated": "❌ Non validée",
-      "reset": "🔄 Réinitialiser"
+      "reset": "Réinitialiser"
     },
     "table": {
       "candidate": "Candidat",
@@ -99,8 +99,8 @@
       "salarySection": {
         "title": "Rémunération",
         "salaryType": "Type de rémunération",
-        "monthlyOption": "💼 Salaire mensuel",
-        "dailyOption": "🔄 TJM (Freelance)",
+        "monthlyOption": "Salaire mensuel",
+        "dailyOption": "TJM (Freelance)",
         "currency": "Devise",
         "currencyPlaceholder": "Sélectionner une devise",
         "monthlySalary": "Salaire mensuel",
@@ -146,8 +146,8 @@
       "salarySection": {
         "title": "Rémunération",
         "salaryType": "Type de rémunération",
-        "monthlyOption": "💼 Salaire mensuel",
-        "dailyOption": "🔄 TJM (Freelance)",
+        "monthlyOption": "Salaire mensuel",
+        "dailyOption": "TJM (Freelance)",
         "monthlySalary": "Salaire mensuel",
         "salaryPlaceholder": "3750",
         "dailyRate": "TJM",
@@ -224,12 +224,12 @@
         "notes": "Notes:"
       },
       "actions": {
-        "trialPeriod": "⏱️ Période d'essai",
-        "evaluationNotes": "📝 Notes d'évaluation",
-        "renew": "🔄 Renouveler",
-        "complete": "✅ Terminer",
-        "departure": "📤 Départ",
-        "delete": "🗑️ Supprimer"
+        "trialPeriod": "Période d'essai",
+        "evaluationNotes": "Notes d'évaluation",
+        "renew": "Renouveler",
+        "complete": "Terminer",
+        "departure": "Départ",
+        "delete": "Supprimer"
       },
       "deleteConfirm": {
         "title": "Supprimer l'intégration",
@@ -305,7 +305,7 @@
         "text": "Cette intégration ne peut être renouvelée qu'une seule fois. Assurez-vous que les dates et la période correspondent à vos besoins."
       },
       "renewing": "Renouvellement...",
-      "renew": "🔄 Renouveler"
+      "renew": "Renouveler"
     },
     "evaluationNotes": {
       "defaultTitle": "Notes d'évaluation",

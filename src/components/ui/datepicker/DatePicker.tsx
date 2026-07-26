@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import { Calendar, ChevronLeft, ChevronRight, X } from "lucide-react";
 
 interface DatePickerProps {
   value?: string;
@@ -229,59 +230,19 @@ const DatePicker: React.FC<DatePickerProps> = ({
 };
 
 function CalendarIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-gray-400">
-      <path
-        d="M6.66667 1.66667V4.16667M13.3333 1.66667V4.16667M2.5 7.5H17.5M4.16667 3.33333H15.8333C16.7538 3.33333 17.5 4.07953 17.5 5V16.6667C17.5 17.5871 16.7538 18.3333 15.8333 18.3333H4.16667C3.24619 18.3333 2.5 17.5871 2.5 16.6667V5C2.5 4.07953 3.24619 3.33333 4.16667 3.33333Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <Calendar size={20} strokeWidth={1.5} className="icon-glow text-gray-400" />;
 }
 
 function ChevronLeftIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path
-        d="M12.5 15L7.5 10L12.5 5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <ChevronLeft size={20} strokeWidth={1.5} className="icon-glow" />;
 }
 
 function ChevronRightIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path
-        d="M7.5 15L12.5 10L7.5 5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <ChevronRight size={20} strokeWidth={1.5} className="icon-glow" />;
 }
 
 function CloseIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-gray-500 dark:text-gray-400">
-      <path
-        d="M12 4L4 12M4 4L12 12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <X size={16} strokeWidth={1.5} className="icon-glow text-gray-500 dark:text-gray-400" />;
 }
 
 export default DatePicker;

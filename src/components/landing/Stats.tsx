@@ -1,4 +1,5 @@
 "use client";
+import { Award, ShieldCheck, Zap, type LucideIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
@@ -11,10 +12,10 @@ const statKeys = [
   { key: "satisfaction", number: "4.9/5" },
 ];
 
-const badgeKeys = [
-  { key: "leader", icon: "🏆" },
-  { key: "security", icon: "🔒" },
-  { key: "support", icon: "⚡" },
+const badgeKeys: Array<{ key: string; icon: LucideIcon }> = [
+  { key: "leader", icon: Award },
+  { key: "security", icon: ShieldCheck },
+  { key: "support", icon: Zap },
 ];
 
 export default function Stats() {
@@ -80,7 +81,7 @@ export default function Stats() {
               <div key={i} className="flex items-center space-x-3">
                 {i > 0 && <div className="hidden md:block w-px h-12 bg-white/20 me-8" />}
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xl">{item.icon}</span>
+                  <item.icon size={22} strokeWidth={1.8} className="icon-glow text-white" />
                 </div>
                 <div className="text-start">
                   <div className="text-white font-semibold">{t(`badges.${item.key}.title`)}</div>

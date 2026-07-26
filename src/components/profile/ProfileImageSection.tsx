@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import AvatarUpload from '../upload/AvatarUpload';
 import CloudinaryUpload from '../upload/CloudinaryUpload';
 import useCloudinaryUpload from '../../hooks/useCloudinaryUpload';
+import { ImagePlus, Trash2, X } from 'lucide-react';
 
 interface ProfileImageSectionProps {
   userId: string;
@@ -67,9 +68,11 @@ const ProfileImageSection: React.FC<ProfileImageSectionProps> = ({
                 onClick={() => setShowUploadModal(true)}
                 className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+                <ImagePlus
+                  className="w-4 h-4 mr-2 icon-glow"
+                  size={16}
+                  strokeWidth={1.8}
+                />
                 Changer la photo
               </button>
               
@@ -78,9 +81,11 @@ const ProfileImageSection: React.FC<ProfileImageSectionProps> = ({
                   onClick={handleRemoveAvatar}
                   className="inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 >
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
+                  <Trash2
+                    className="w-4 h-4 mr-2 icon-glow"
+                    size={16}
+                    strokeWidth={1.8}
+                  />
                   Supprimer
                 </button>
               )}
@@ -102,9 +107,7 @@ const ProfileImageSection: React.FC<ProfileImageSectionProps> = ({
                   onClick={() => setShowUploadModal(false)}
                   className="text-gray-400 hover:text-gray-600"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <X className="w-6 h-6 icon-glow" size={24} strokeWidth={1.8} />
                 </button>
               </div>
               

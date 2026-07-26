@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm, Controller } from "react-hook-form";
 import { Modal } from "@/components/ui/modal";
@@ -463,9 +464,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                 {totalCC > 0 && !showCC && (
                   <span className="ms-1 text-xs text-blue-600 dark:text-blue-400">{t("formModal.cc.selectedCount", { count: totalCC })}</span>
                 )}
-                <svg className={`w-4 h-4 transition-transform ${showCC ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                <ChevronDown className={`icon-glow w-4 h-4 transition-transform ${showCC ? "rotate-180" : ""}`} size={16} strokeWidth={1.8} />
               </button>
 
               {showCC && (
@@ -578,9 +577,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                 {bccRecipients.length > 0 && !showBCC && (
                   <span className="ms-1 text-xs text-gray-500">{t("formModal.bcc.selectedCount", { count: bccRecipients.length })}</span>
                 )}
-                <svg className={`w-4 h-4 transition-transform ${showBCC ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                <ChevronDown className={`icon-glow w-4 h-4 transition-transform ${showBCC ? "rotate-180" : ""}`} size={16} strokeWidth={1.8} />
               </button>
 
               {showBCC && (

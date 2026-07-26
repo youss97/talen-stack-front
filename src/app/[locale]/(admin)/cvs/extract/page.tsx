@@ -3,6 +3,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/navigation";
+import { ArrowLeft, Upload, FileText, Plus, X, RefreshCw } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
@@ -869,66 +870,29 @@ export default function CVExtractPage() {
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 function ArrowLeftIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-      <path d="M15.8333 10H4.16667M4.16667 10L10 15.8333M4.16667 10L10 4.16667"
-        stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <ArrowLeft size={18} strokeWidth={1.8} className="icon-glow" />;
 }
 
 function UploadIcon() {
-  return (
-    <svg width="40" height="40" viewBox="0 0 48 48" fill="none" className="text-gray-400">
-      <path d="M24 32V16M24 16L16 24M24 16L32 24" stroke="currentColor" strokeWidth="2"
-        strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M8 36V38C8 40.2091 9.79086 42 12 42H36C38.2091 42 40 40.2091 40 38V36"
-        stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <Upload size={40} strokeWidth={1.8} className="text-gray-400 icon-glow" />;
 }
 
 function DocIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-brand-600 dark:text-brand-400">
-      <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <FileText size={20} strokeWidth={1.8} className="text-brand-600 dark:text-brand-400 icon-glow" />;
 }
 
 function PlusIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-      <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="1.8"
-        strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <Plus size={14} strokeWidth={1.8} className="icon-glow" />;
 }
 
 function XIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
-      <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="2"
-        strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <X size={12} strokeWidth={1.8} className="icon-glow" />;
 }
 
 function XSmallIcon() {
-  return (
-    <svg width="10" height="10" viewBox="0 0 20 20" fill="none">
-      <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="2"
-        strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <X size={10} strokeWidth={1.8} className="icon-glow" />;
 }
 
 function RefreshIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-      <path d="M4 4v5h.582m15.356 2A8 8 0 004.582 9m0 0H9m-5 8v-5h-.582m0 0a8 8 0 0015.355-2M15 15h-4.582"
-        stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <RefreshCw size={14} strokeWidth={1.8} className="icon-glow" />;
 }

@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { AlertCircle } from "lucide-react";
 
 interface Props {
   children: React.ReactNode;
@@ -31,9 +32,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
       return (
         <div className="flex min-h-[200px] flex-col items-center justify-center rounded-lg border border-red-200 bg-red-50 p-6 text-center dark:border-red-800 dark:bg-red-900/20">
           <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-800/40">
-            <svg className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <AlertCircle size={24} strokeWidth={1.8} className="icon-glow text-red-500" />
           </div>
           <h3 className="mb-1 text-sm font-semibold text-red-700 dark:text-red-400">
             Une erreur est survenue

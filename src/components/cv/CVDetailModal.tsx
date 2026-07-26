@@ -1,5 +1,27 @@
 "use client";
+import type { ComponentType } from "react";
 import { useTranslations } from "next-intl";
+import {
+  Mail,
+  Phone,
+  Target,
+  GraduationCap,
+  Home,
+  Info,
+  BarChart3,
+  NotebookText,
+  Briefcase,
+  Wrench,
+  Lightbulb,
+  Globe,
+  Award,
+  MapPin,
+  FileText,
+  Pin,
+  Check,
+  Eye,
+  Download,
+} from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
@@ -121,11 +143,11 @@ export default function CVDetailModal({
             {/* Coordonnées / infos clés — aérées */}
             {cv && (
               <div className="mt-3.5 flex flex-wrap gap-2">
-                {cv.candidate_email && <InfoChip icon="✉" text={cv.candidate_email} />}
-                {cv.candidate_phone && <InfoChip icon="☎" text={cv.candidate_phone} />}
-                {cv.total_experience ? <InfoChip icon="🎯" text={t("detailModal.yearsExperience", { years: cv.total_experience })} /> : null}
-                {cv.last_education && <InfoChip icon="🎓" text={cv.last_education} />}
-                {cv.remote_preferred && <InfoChip icon="🏠" text={t("detailModal.remoteWork")} />}
+                {cv.candidate_email && <InfoChip icon={Mail} text={cv.candidate_email} />}
+                {cv.candidate_phone && <InfoChip icon={Phone} text={cv.candidate_phone} />}
+                {cv.total_experience ? <InfoChip icon={Target} text={t("detailModal.yearsExperience", { years: cv.total_experience })} /> : null}
+                {cv.last_education && <InfoChip icon={GraduationCap} text={cv.last_education} />}
+                {cv.remote_preferred && <InfoChip icon={Home} text={t("detailModal.remoteWork")} />}
               </div>
             )}
           </div>
@@ -142,7 +164,7 @@ export default function CVDetailModal({
           <div className="space-y-4">
             {/* Infos complémentaires */}
             {(cv.specialty || cv.industry_experience || cv.remote_preferred != null || cv.source) && (
-              <Section title={t("detailModal.sections.information")} icon="ℹ️" accent="var(--brand)">
+              <Section title={t("detailModal.sections.information")} icon={Info}>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4">
                   {cv.specialty && <DetailItem label={t("detailModal.fields.specialty")} value={cv.specialty} />}
                   <DetailItem label={t("detailModal.fields.sector")} value={cv.industry_experience || "-"} />
@@ -154,7 +176,7 @@ export default function CVDetailModal({
 
             {/* Score de complétude */}
             {cv.details?.stats?.completeness_score && (
-              <Section title={t("detailModal.sections.completeness")} icon="📊" accent="var(--brand)">
+              <Section title={t("detailModal.sections.completeness")} icon={BarChart3}>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6 overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-brand-500 to-green-500 flex items-center justify-center text-xs font-semibold text-white transition-all duration-300"
@@ -168,7 +190,7 @@ export default function CVDetailModal({
 
             {/* Résumé professionnel */}
             {effectiveSummary && (
-              <Section title={t("detailModal.sections.summary")} icon="📝" accent="var(--brand)">
+              <Section title={t("detailModal.sections.summary")} icon={NotebookText}>
                 <p className="text-sm leading-relaxed" style={{ color: "var(--text)" }}>
                   {effectiveSummary}
                 </p>
@@ -179,8 +201,7 @@ export default function CVDetailModal({
             {effectiveExperiences.length > 0 && (
               <Section
                 title={t("detailModal.sections.experiences", { count: cv.details?.stats?.total_experiences || effectiveExperiences.length })}
-                icon="💼"
-                accent="var(--brand)"
+                icon={Briefcase}
               >
                 <div className="space-y-3">
                   {effectiveExperiences.map((exp: any, index: number) => (
@@ -218,8 +239,7 @@ export default function CVDetailModal({
             {effectiveFormations.length > 0 && (
               <Section
                 title={t("detailModal.sections.formations", { count: cv.details?.stats?.total_formations || effectiveFormations.length })}
-                icon="🎓"
-                accent="var(--brand-strong)"
+                icon={GraduationCap}
               >
                 <div className="space-y-3">
                   {effectiveFormations.map((form: any, index: number) => (
@@ -250,7 +270,7 @@ export default function CVDetailModal({
 
             {/* Compétences techniques */}
             {effectiveTechnicalSkills.length > 0 && (
-              <Section title={t("detailModal.sections.technicalSkills", { count: effectiveTechnicalSkills.length })} icon="🛠️" accent="var(--blue)">
+              <Section title={t("detailModal.sections.technicalSkills", { count: effectiveTechnicalSkills.length })} icon={Wrench}>
                 <div className="flex flex-wrap gap-2">
                   {effectiveTechnicalSkills.map((skill: string, index: number) => (
                     <Badge key={index} color="info" variant="light" size="sm">{skill}</Badge>
@@ -261,7 +281,7 @@ export default function CVDetailModal({
 
             {/* Compétences transversales */}
             {effectiveSoftSkills.length > 0 && (
-              <Section title={t("detailModal.sections.softSkills", { count: effectiveSoftSkills.length })} icon="💡" accent="var(--brand-strong)">
+              <Section title={t("detailModal.sections.softSkills", { count: effectiveSoftSkills.length })} icon={Lightbulb}>
                 <div className="flex flex-wrap gap-2">
                   {effectiveSoftSkills.map((skill: string, index: number) => (
                     <Badge key={index} color="success" variant="light" size="sm">{skill}</Badge>
@@ -272,7 +292,7 @@ export default function CVDetailModal({
 
             {/* Toutes les compétences (fallback si pas de détails) */}
             {effectiveTechnicalSkills.length === 0 && effectiveSoftSkills.length === 0 && cv.additional_skills && cv.additional_skills.length > 0 && (
-              <Section title={t("detailModal.sections.skills", { count: cv.additional_skills.length })} icon="🛠️" accent="var(--blue)">
+              <Section title={t("detailModal.sections.skills", { count: cv.additional_skills.length })} icon={Wrench}>
                 <div className="flex flex-wrap gap-2">
                   {cv.additional_skills.map((skill, index) => (
                     <Badge key={index} color="light" variant="solid" size="sm">{skill}</Badge>
@@ -283,7 +303,7 @@ export default function CVDetailModal({
 
             {/* Langues */}
             {effectiveLanguages.length > 0 && (
-              <Section title={t("detailModal.sections.languages", { count: cv.details?.stats?.total_languages || effectiveLanguages.length })} icon="🌍" accent="var(--brand-strong)">
+              <Section title={t("detailModal.sections.languages", { count: cv.details?.stats?.total_languages || effectiveLanguages.length })} icon={Globe}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {effectiveLanguages.map((lang: any, index: number) => (
                     <div
@@ -303,11 +323,11 @@ export default function CVDetailModal({
 
             {/* Certifications */}
             {effectiveCertifications.length > 0 && (
-              <Section title={t("detailModal.sections.certifications", { count: cv.details?.stats?.total_certifications || effectiveCertifications.length })} icon="🏆" accent="var(--amber)">
+              <Section title={t("detailModal.sections.certifications", { count: cv.details?.stats?.total_certifications || effectiveCertifications.length })} icon={Award}>
                 <ul className="space-y-2.5">
                   {effectiveCertifications.map((cert: string, index: number) => (
                     <li key={index} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--text)" }}>
-                      <span className="mt-0.5" style={{ color: "var(--amber)" }}>✓</span>
+                      <Check size={15} strokeWidth={2} className="icon-glow mt-0.5 shrink-0" style={{ color: "var(--text-2)" }} />
                       {cert}
                     </li>
                   ))}
@@ -317,7 +337,7 @@ export default function CVDetailModal({
 
             {/* Mobilité géographique */}
             {cv.geographic_mobility && cv.geographic_mobility.length > 0 && (
-              <Section title={t("detailModal.sections.geographicMobility")} icon="📍" accent="var(--brand)">
+              <Section title={t("detailModal.sections.geographicMobility")} icon={MapPin}>
                 <div className="flex flex-wrap gap-2">
                   {cv.geographic_mobility.map((loc, i) => (
                     <span key={i} className="text-sm px-3 py-1 rounded-full" style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text)" }}>
@@ -330,7 +350,7 @@ export default function CVDetailModal({
 
             {/* Types de contrat */}
             {cv.contract_type_preferences && cv.contract_type_preferences.length > 0 && (
-              <Section title={t("detailModal.sections.contractTypes")} icon="📄" accent="var(--brand)">
+              <Section title={t("detailModal.sections.contractTypes")} icon={FileText}>
                 <div className="flex flex-wrap gap-2">
                   {cv.contract_type_preferences.map((ct, i) => (
                     <span key={i} className="text-sm px-3 py-1 rounded-full" style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text)" }}>
@@ -343,7 +363,7 @@ export default function CVDetailModal({
 
             {/* Notes */}
             {effectiveNotes && (
-              <Section title={t("detailModal.sections.notes")} icon="📌" accent="var(--amber)">
+              <Section title={t("detailModal.sections.notes")} icon={Pin}>
                 <p
                   className="text-sm leading-relaxed rounded-lg p-3.5"
                   style={{ background: "var(--amber-soft, #FDF6EC)", borderInlineStart: "4px solid var(--amber)", color: "var(--text)" }}
@@ -355,19 +375,21 @@ export default function CVDetailModal({
 
             {/* Document CV */}
             {cv.file_path && (
-              <Section title={t("detailModal.sections.document")} icon="📄" accent="var(--brand-deep)">
+              <Section title={t("detailModal.sections.document")} icon={FileText}>
                 <div className="flex items-center gap-3 flex-wrap">
                   <div className="flex-1 min-w-[120px] text-sm truncate" style={{ color: "var(--text)" }}>
                     {cv.file_name || t("detailModal.fallbacks.fileName")}
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => cv.id && openCvInNewTab(cv.id).then((ok) => {
+                  <Button variant="outline" size="sm" className="inline-flex items-center gap-1.5" onClick={() => cv.id && openCvInNewTab(cv.id).then((ok) => {
                     if (!ok) alert(t("detailModal.errors.openFailed"));
                   })}>
+                    <Eye size={16} strokeWidth={1.8} className="icon-glow" />
                     {t("detailModal.actions.view")}
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => cv.id && downloadCvFile(cv.id, cv.file_name || t("detailModal.fallbacks.fileName")).then((ok) => {
+                  <Button variant="outline" size="sm" className="inline-flex items-center gap-1.5" onClick={() => cv.id && downloadCvFile(cv.id, cv.file_name || t("detailModal.fallbacks.fileName")).then((ok) => {
                     if (!ok) alert(t("detailModal.errors.downloadFailed"));
                   })}>
+                    <Download size={16} strokeWidth={1.8} className="icon-glow" />
                     {t("detailModal.actions.download")}
                   </Button>
                 </div>
@@ -386,8 +408,8 @@ export default function CVDetailModal({
   );
 }
 
-/** Carte de section : titre avec pastille icône colorée + contenu aéré. */
-function Section({ title, icon, accent, children }: { title: React.ReactNode; icon: string; accent: string; children: React.ReactNode }) {
+/** Carte de section : titre avec pastille icône (monochrome) + contenu aéré. */
+function Section({ title, icon: Icon, children }: { title: React.ReactNode; icon: ComponentType<{ size?: number; strokeWidth?: number; className?: string; style?: React.CSSProperties }>; accent?: string; children: React.ReactNode }) {
   return (
     <section
       className="rounded-2xl p-5"
@@ -395,10 +417,10 @@ function Section({ title, icon, accent, children }: { title: React.ReactNode; ic
     >
       <h3 className="flex items-center gap-2.5 mb-4 text-sm font-semibold" style={{ color: "var(--text)" }}>
         <span
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm"
-          style={{ background: `color-mix(in srgb, ${accent} 14%, transparent)` }}
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+          style={{ background: "var(--surface-2)" }}
         >
-          {icon}
+          <Icon size={16} strokeWidth={1.8} className="icon-glow" style={{ color: "var(--text-2)" }} />
         </span>
         {title}
       </h3>
@@ -416,13 +438,13 @@ function DetailItem({ label, value }: { label: string; value: string }) {
   );
 }
 
-function InfoChip({ icon, text }: { icon: string; text: string }) {
+function InfoChip({ icon: Icon, text }: { icon: ComponentType<{ size?: number; strokeWidth?: number; className?: string }>; text: string }) {
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium"
       style={{ background: "var(--surface-2)", border: "1px solid var(--border)", color: "var(--text-2)" }}
     >
-      <span aria-hidden style={{ opacity: 0.8 }}>{icon}</span>
+      <Icon size={13} strokeWidth={1.8} className="icon-glow" />
       <span style={{ color: "var(--text)" }}>{text}</span>
     </span>
   );

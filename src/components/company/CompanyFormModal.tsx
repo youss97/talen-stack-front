@@ -16,6 +16,7 @@ import {
 import type { Company } from "@/types/company";
 import { featureIcon, featureLabel } from "@/utils/featureLabels";
 import { EyeIcon, EyeCloseIcon } from "@/icons";
+import { Check } from "lucide-react";
 import { getImageUrl } from "@/utils/imageHelper";
 import { useGetFeaturesQuery, useGetCompanyFeaturesQuery } from "@/lib/services/roleApi";
 import { useGetSubscriptionPlansQuery, useGetCompanyPlanQuery } from "@/lib/services/subscriptionApi";
@@ -505,7 +506,7 @@ export default function CompanyFormModal({
                           <div className={`w-4 h-4 mt-0.5 shrink-0 rounded border-2 flex items-center justify-center transition-colors ${
                             checked ? "bg-brand-500 border-brand-500" : "border-gray-300 dark:border-gray-600"
                           }`}>
-                            {checked && <svg width="10" height="8" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" /></svg>}
+                            {checked && <Check size={10} strokeWidth={2.5} className="icon-glow text-white" />}
                           </div>
                           <input type="checkbox" checked={checked} onChange={() => toggleFeature(feature.id)} className="sr-only" />
                           <div className="min-w-0 flex-1">

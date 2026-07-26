@@ -1,6 +1,6 @@
 {
   "page": {
-    "title": "📅 Interview and integration agenda",
+    "title": "Interview and integration agenda",
     "eventsDisplayed": "{count, plural, =0 {No events displayed} one {# event displayed} other {# events displayed}}"
   },
   "loading": {

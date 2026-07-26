@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { AlertCircle, AlertTriangle, Info, Loader2 } from "lucide-react";
 import { Modal } from "./index";
 import Button from "../button/Button";
 
@@ -42,21 +43,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   };
 
   const icons = {
-    danger: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    warning: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    info: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
+    danger: <AlertCircle size={24} strokeWidth={1.8} className="icon-glow" />,
+    warning: <AlertTriangle size={24} strokeWidth={1.8} className="icon-glow" />,
+    info: <Info size={24} strokeWidth={1.8} className="icon-glow" />,
   };
 
   return (
@@ -88,10 +77,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                  </svg>
+                  <Loader2 size={16} strokeWidth={1.8} className="icon-glow animate-spin" />
                   Chargement...
                 </span>
               ) : confirmText}

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import { ImagePlus, Camera, Check } from 'lucide-react';
 
 interface CompanyLogoUploadProps {
   companyId: string;
@@ -107,19 +108,11 @@ const CompanyLogoUpload: React.FC<CompanyLogoUploadProps> = ({
         ) : (
           <div className="w-full h-full bg-gray-50 flex items-center justify-center">
             <div className="text-center">
-              <svg
-                className="w-8 h-8 text-gray-400 mx-auto mb-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                />
-              </svg>
+              <ImagePlus
+                className="w-8 h-8 text-gray-400 mx-auto mb-2 icon-glow"
+                size={32}
+                strokeWidth={1.8}
+              />
               <p className="text-xs text-gray-500">Logo</p>
             </div>
           </div>
@@ -147,32 +140,13 @@ const CompanyLogoUpload: React.FC<CompanyLogoUploadProps> = ({
         htmlFor={`logo-upload-${companyId}`}
         className="absolute -bottom-2 -right-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-2 cursor-pointer shadow-lg transition-colors disabled:opacity-50"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
+        <Camera className="w-4 h-4 icon-glow" size={16} strokeWidth={1.8} />
       </label>
 
       {/* Indicateur de changement */}
       {previewUrl && (
         <div className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full p-1">
-          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <Check className="w-3 h-3 icon-glow" size={12} strokeWidth={1.8} />
         </div>
       )}
     </div>

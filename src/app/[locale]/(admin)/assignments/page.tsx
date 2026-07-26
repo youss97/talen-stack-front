@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { UserPlus, UserMinus } from "lucide-react";
 import DataTableWithSelection, { type Column } from "@/components/tables/DataTableWithSelection";
 import Pagination from "@/components/tables/Pagination";
 import { ToastContainer, type ToastItem } from "@/components/ui/toast/Toast";
@@ -27,19 +28,11 @@ const inputClass =
   "h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800";
 
 function AssignIcon() {
-  return (
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-    </svg>
-  );
+  return <UserPlus size={16} strokeWidth={1.8} className="icon-glow" />;
 }
 
 function UnassignIcon() {
-  return (
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6h8m6-4l2 2m0 0l2 2m-2-2l2-2m-2 2l-2 2" />
-    </svg>
-  );
+  return <UserMinus size={16} strokeWidth={1.8} className="icon-glow" />;
 }
 
 function ResponsibleCell({ user }: { user?: ResponsibleUser | null }) {

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import { ImagePlus, Upload, Check } from 'lucide-react';
 
 interface JobBackgroundUploadProps {
   jobId: string;
@@ -109,19 +110,11 @@ const JobBackgroundUpload: React.FC<JobBackgroundUploadProps> = ({
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <div className="text-center">
-              <svg
-                className="w-12 h-12 text-gray-400 mx-auto mb-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1}
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
+              <ImagePlus
+                className="w-12 h-12 text-gray-400 mx-auto mb-3 icon-glow"
+                size={48}
+                strokeWidth={1.8}
+              />
               <p className="text-sm text-gray-600 mb-1">Image de fond</p>
               <p className="text-xs text-gray-500">1200x600px recommandé</p>
             </div>
@@ -143,14 +136,11 @@ const JobBackgroundUpload: React.FC<JobBackgroundUploadProps> = ({
             htmlFor={`background-upload-${jobId}`}
             className="cursor-pointer bg-white bg-opacity-90 hover:bg-opacity-100 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 opacity-0 hover:opacity-100"
           >
-            <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-              />
-            </svg>
+            <Upload
+              className="w-4 h-4 inline mr-2 icon-glow"
+              size={16}
+              strokeWidth={1.8}
+            />
             Changer l'image
           </label>
         </div>
@@ -178,13 +168,7 @@ const JobBackgroundUpload: React.FC<JobBackgroundUploadProps> = ({
       {/* Indicateur de changement */}
       {previewUrl && (
         <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-2 shadow-lg">
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <Check className="w-4 h-4 icon-glow" size={16} strokeWidth={1.8} />
         </div>
       )}
     </div>

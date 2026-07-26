@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useGetIntegrationByIdQuery, useUpdateIntegrationMutation } from '@/lib/services/integrationApi';
 import { ContractType, IntegrationStatus, TrialPeriodStatus } from '@/types/integration';
@@ -287,9 +288,16 @@ export default function IntegrationAgendaModal({
                       <div className="flex items-center justify-between">
                         <span className="text-gray-600 dark:text-gray-400">{t('evaluationSection.performance')}</span>
                         <div className="flex items-center gap-1">
-                          <span className="text-yellow-500">
-                            {'⭐'.repeat(integration.performance_rating)}
-                            {'☆'.repeat(5 - integration.performance_rating)}
+                          <span className="inline-flex items-center gap-0.5">
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <Star
+                                key={i}
+                                size={14}
+                                strokeWidth={1.8}
+                                className="icon-glow text-gray-500 dark:text-gray-400"
+                                fill={i < integration.performance_rating! ? "currentColor" : "none"}
+                              />
+                            ))}
                           </span>
                           <span className="text-gray-900 dark:text-white font-medium">
                             {integration.performance_rating}/5

@@ -14,6 +14,7 @@ import {
   type AppNotification,
 } from "@/lib/services/notificationApi";
 import { useNotificationText } from "@/hooks/useNotificationText";
+import { X } from "lucide-react";
 
 function timeAgo(date: string, t: ReturnType<typeof useTranslations>): string {
   const diff = Date.now() - new Date(date).getTime();
@@ -89,9 +90,7 @@ export default function NotificationsPage() {
                     className="shrink-0 rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-red-500 dark:hover:bg-gray-800"
                     title={tc("actions.delete")}
                   >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <X className="h-4 w-4 icon-glow" size={16} strokeWidth={1.8} />
                   </button>
                 </li>
               );

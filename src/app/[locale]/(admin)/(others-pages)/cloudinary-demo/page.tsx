@@ -9,6 +9,7 @@ import ProfilePhotoUpload from '@/components/upload/ProfilePhotoUpload';
 import JobBackgroundUpload from '@/components/upload/JobBackgroundUpload';
 import CloudinaryImage from '@/components/common/CloudinaryImage';
 import useCloudinaryUpload from '@/hooks/useCloudinaryUpload';
+import { FileText } from 'lucide-react';
 
 const CloudinaryDemoPage = () => {
   const [userAvatar, setUserAvatar] = useState<string>('');
@@ -212,9 +213,7 @@ const CloudinaryDemoPage = () => {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                          </svg>
+                          <FileText className="text-gray-400 icon-glow" size={48} strokeWidth={1.8} />
                         </div>
                       )}
                     </div>

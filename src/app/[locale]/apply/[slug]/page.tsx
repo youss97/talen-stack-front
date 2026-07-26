@@ -12,6 +12,7 @@ import {
 } from "@/lib/services/publicJobOfferApi";
 import { formatDate } from "@/utils/dateFormat";
 import { getCurrencyByCode, DEFAULT_CURRENCY } from "@/lib/currencies";
+import { X, AlertCircle, CheckCircle2, UploadCloud, Send, SearchX, Plus, Check } from "lucide-react";
 
 const ThreeParticles = dynamic(() => import("@/components/common/ThreeParticles"), { ssr: false });
 
@@ -127,9 +128,7 @@ function ApplyModal({
               onClick={onClose}
               className="w-9 h-9 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors flex-shrink-0"
             >
-              <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="w-5 h-5 text-gray-500 icon-glow" size={20} strokeWidth={1.8} />
             </button>
           </div>
 
@@ -137,9 +136,7 @@ function ApplyModal({
           <form onSubmit={handleSubmit} className="p-8 space-y-5">
             {error && (
               <div className="flex items-start gap-3 p-4 rounded-xl bg-red-50 border border-red-100">
-                <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5 icon-glow" size={20} strokeWidth={1.8} />
                 <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
@@ -194,19 +191,13 @@ function ApplyModal({
                 <input {...getInputProps()} />
                 {cvFile ? (
                   <>
-                    <svg className="w-6 h-6 mb-1" style={{ color: BRAND }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <CheckCircle2 className="w-6 h-6 mb-1 icon-glow" style={{ color: BRAND }} size={24} strokeWidth={1.8} />
                     <span className="text-sm font-medium" style={{ color: BRAND_TX }}>{cvFile.name}</span>
                     <span className="text-xs text-gray-400 mt-0.5">{(cvFile.size / 1024).toFixed(0)} KB</span>
                   </>
                 ) : (
                   <>
-                    <svg className="w-6 h-6 text-gray-400 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
+                    <UploadCloud className="w-6 h-6 text-gray-400 mb-1 icon-glow" size={24} strokeWidth={1.5} />
                     <span className="text-sm text-gray-500">
                       {isDragActive ? t("cvDropActive") : t("cvDropIdle")}
                     </span>
@@ -242,9 +233,7 @@ function ApplyModal({
                   </>
                 ) : (
                   <>
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                    </svg>
+                    <Send className="w-4 h-4 icon-glow" size={16} strokeWidth={1.8} />
                     {t("submit")}
                   </>
                 )}
@@ -307,10 +296,7 @@ export default function PublicApplyPage() {
       </div>
       <div className="text-center bg-white rounded-2xl shadow-xl p-12 max-w-md mx-4">
         <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg className="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <SearchX className="w-10 h-10 text-gray-400 icon-glow" size={40} strokeWidth={1.5} />
         </div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("notFound.title")}</h1>
         <p className="text-gray-500">{t("notFound.message")}</p>
@@ -425,9 +411,7 @@ export default function PublicApplyPage() {
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-white font-semibold text-base shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
             style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_TX})` }}
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
+            <Plus className="w-5 h-5 icon-glow" size={20} strokeWidth={1.8} />
             {t("hero.cta")}
           </motion.button>
         </div>
@@ -443,9 +427,7 @@ export default function PublicApplyPage() {
             style={{ background: BRAND_LT, borderColor: `${BRAND}44` }}>
             <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
               style={{ background: BRAND }}>
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-              </svg>
+              <Check className="w-5 h-5 text-white icon-glow" size={20} strokeWidth={2.5} />
             </div>
             <div>
               <p className="font-bold text-sm" style={{ color: BRAND_TX }}>{t("success.title")}</p>
@@ -539,9 +521,7 @@ export default function PublicApplyPage() {
               <button onClick={() => setModalOpen(true)}
                 className="w-full h-12 rounded-xl text-white font-semibold flex items-center justify-center gap-2"
                 style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_TX})` }}>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
+                <Plus className="w-4 h-4 icon-glow" size={16} strokeWidth={1.8} />
                 {t("mobileCta.button")}
               </button>
             </motion.div>
@@ -577,9 +557,7 @@ export default function PublicApplyPage() {
                 className="mt-5 w-full h-11 rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90"
                 style={{ background: `linear-gradient(135deg, ${BRAND}, ${BRAND_TX})` }}
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
+                <Plus className="w-4 h-4 icon-glow" size={16} strokeWidth={1.8} />
                 {t("sidebarCta")}
               </button>
             </motion.div>

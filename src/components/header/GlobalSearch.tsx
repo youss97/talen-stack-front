@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import { Search, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { useGlobalSearchQuery } from "@/lib/services/statsApi";
@@ -62,10 +63,7 @@ export default function GlobalSearch() {
     <div ref={containerRef} className="relative hidden lg:block">
       <div className="relative">
         <span className="absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
+          <Search size={16} strokeWidth={2} className="icon-glow" />
         </span>
         <input
           ref={inputRef}
@@ -81,10 +79,7 @@ export default function GlobalSearch() {
         />
         {isFetching && (
           <span className="absolute end-3 top-1/2 -translate-y-1/2">
-            <svg className="animate-spin h-3.5 w-3.5 text-brand-500" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-            </svg>
+            <Loader2 className="animate-spin h-3.5 w-3.5 text-brand-500" />
           </span>
         )}
       </div>

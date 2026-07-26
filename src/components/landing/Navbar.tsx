@@ -1,4 +1,5 @@
 "use client";
+import { Menu, X } from "lucide-react";
 import { useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
@@ -74,13 +75,11 @@ export default function Navbar({ logoUrl, siteName = "Hire Stack" }: { logoUrl?:
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-gray-600 hover:text-[var(--color-brand-500)] focus:outline-none"
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                {isMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
+              {isMenuOpen ? (
+                <X size={24} strokeWidth={1.8} className="icon-glow" />
+              ) : (
+                <Menu size={24} strokeWidth={1.8} className="icon-glow" />
+              )}
             </button>
           </div>
         </div>

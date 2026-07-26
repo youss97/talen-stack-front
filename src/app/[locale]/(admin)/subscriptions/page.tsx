@@ -1,6 +1,7 @@
 "use client";
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { Plus } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
@@ -232,9 +233,5 @@ function PlanCard({
 }
 
 function PlusIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-      <path d="M10 4.16667V15.8333M4.16667 10H15.8333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
+  return <Plus size={18} strokeWidth={1.8} className="icon-glow" />;
 }

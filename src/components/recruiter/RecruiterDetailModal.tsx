@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Eye, Download, ShieldCheck, CalendarClock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
@@ -429,7 +430,9 @@ export default function RecruiterDetailModal({
                           onClick={() => openCvInNewTab(recruiter.cv!.id!).then((ok) => {
                             if (!ok) showError(t("toast.stepUpdateErrorTitle"), t("openCvError"));
                           })}
+                          className="inline-flex items-center gap-1.5"
                         >
+                          <Eye size={16} strokeWidth={1.8} className="icon-glow" />
                           {t("viewCv")}
                         </Button>
                       )}
@@ -439,7 +442,9 @@ export default function RecruiterDetailModal({
                         onClick={() => recruiter.cv?.id && downloadCvFile(recruiter.cv.id, cvAny?.file_name || 'CV.pdf').then((ok) => {
                           if (!ok) showError(t("toast.stepUpdateErrorTitle"), t("downloadCvError"));
                         })}
+                        className="inline-flex items-center gap-1.5"
                       >
+                        <Download size={16} strokeWidth={1.8} className="icon-glow" />
                         {t("downloadCv")}
                       </Button>
                       {recruiter.cv.id && (
@@ -475,7 +480,9 @@ export default function RecruiterDetailModal({
                               showError(t("toast.stepUpdateErrorTitle"), t("downloadAnonymizedCvError"));
                             }
                           }}
+                          className="inline-flex items-center gap-1.5"
                         >
+                          <ShieldCheck size={16} strokeWidth={1.8} className="icon-glow" />
                           {t("anonymizedCv")}
                         </Button>
                       )}
@@ -515,8 +522,9 @@ export default function RecruiterDetailModal({
                 <Button
                   onClick={() => setIsScheduleInterviewModalOpen(true)}
                   variant="outline"
-                  className="text-xs px-3 py-1"
+                  className="text-xs px-3 py-1 inline-flex items-center gap-1.5"
                 >
+                  <CalendarClock size={14} strokeWidth={1.8} className="icon-glow" />
                   {t("scheduleButton")}
                 </Button>
               </div>
@@ -635,8 +643,9 @@ export default function RecruiterDetailModal({
                   <Button
                     onClick={() => setIsScheduleInterviewModalOpen(true)}
                     variant="outline"
-                    className="mt-2 text-xs"
+                    className="mt-2 text-xs inline-flex items-center gap-1.5"
                   >
+                    <CalendarClock size={14} strokeWidth={1.8} className="icon-glow" />
                     {t("scheduleFirstInterview")}
                   </Button>
                 </div>

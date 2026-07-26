@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import { ImagePlus, Camera, Check } from 'lucide-react';
 
 interface ProfilePhotoUploadProps {
   entityType: 'user' | 'admin' | 'manager' | 'candidate';
@@ -111,17 +112,10 @@ const ProfilePhotoUpload: React.FC<ProfilePhotoUploadProps> = ({
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-            <svg
-              className="w-1/2 h-1/2 text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <ImagePlus
+              className="w-1/2 h-1/2 text-gray-400 icon-glow"
+              strokeWidth={1.8}
+            />
           </div>
         )}
         
@@ -149,20 +143,11 @@ const ProfilePhotoUpload: React.FC<ProfilePhotoUploadProps> = ({
       >
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 rounded-full flex items-center justify-center">
           <div className="bg-white bg-opacity-90 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
+            <Camera
+              className="w-5 h-5 text-gray-700 icon-glow"
+              size={20}
+              strokeWidth={1.8}
+            />
           </div>
         </div>
       </label>
@@ -170,13 +155,7 @@ const ProfilePhotoUpload: React.FC<ProfilePhotoUploadProps> = ({
       {/* Indicateur de changement */}
       {previewUrl && (
         <div className="absolute -bottom-1 -right-1 bg-green-500 text-white rounded-full p-1.5 shadow-lg">
-          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <Check className="w-3 h-3 icon-glow" size={12} strokeWidth={1.8} />
         </div>
       )}
     </div>

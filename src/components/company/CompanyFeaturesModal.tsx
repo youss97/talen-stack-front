@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { X, Check, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Button from "@/components/ui/button/Button";
 import {
@@ -108,9 +109,7 @@ export default function CompanyFeaturesModal({
             onClick={onClose}
             className="mt-1 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-300 dark:hover:bg-gray-800 transition-colors"
           >
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
+            <X className="icon-glow" size={18} strokeWidth={1.8} />
           </button>
         </div>
 
@@ -172,9 +171,7 @@ export default function CompanyFeaturesModal({
                           : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
                       }`}>
                         {checked && (
-                          <svg width="12" height="9" viewBox="0 0 12 9" fill="none">
-                            <path d="M1 4L4.5 7.5L11 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
+                          <Check className="icon-glow text-white" size={12} strokeWidth={2.5} />
                         )}
                       </div>
                     </div>
@@ -235,10 +232,7 @@ export default function CompanyFeaturesModal({
             <Button size="sm" onClick={handleSave} disabled={saving || isLoading}>
               {saving ? (
                 <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
+                  <Loader2 className="icon-glow animate-spin" size={16} strokeWidth={1.8} />
                   {t("featuresModal.footer.saving")}
                 </span>
               ) : tc("actions.save")}

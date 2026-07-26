@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { AlertCircle, Info, AlertTriangle, UserRound, Briefcase, Wallet, Hourglass, NotebookText } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
@@ -254,17 +255,14 @@ export default function CreateIntegrationModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-0 border-b border-gray-100 dark:border-gray-800">
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">🔗</span>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-            {t('modals.create.title')}
-          </h2>
-        </div>
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+          {t('modals.create.title')}
+        </h2>
 
         {error && (
           <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
             <div className="flex items-center gap-2">
-              <span className="text-red-500">❌</span>
+              <AlertCircle size={16} strokeWidth={1.8} className="icon-glow text-red-500 shrink-0" />
               <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
             </div>
           </div>
@@ -277,7 +275,7 @@ export default function CreateIntegrationModal({
             {/* Section Candidature */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <span>👤</span>
+                <UserRound size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.create.applicationSection.title')}
               </h3>
 
@@ -346,13 +344,11 @@ export default function CreateIntegrationModal({
                     : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
                 }`}>
                   <div className="flex items-start gap-2">
-                    <span className={`text-sm ${
-                      selectedApplication.request?.client?.id 
-                        ? 'text-blue-600 dark:text-blue-400' 
-                        : 'text-yellow-600 dark:text-yellow-400'
-                    }`}>
-                      {selectedApplication.request?.client?.id ? 'ℹ️' : '⚠️'}
-                    </span>
+                    {selectedApplication.request?.client?.id ? (
+                      <Info size={16} strokeWidth={1.8} className="icon-glow text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                    ) : (
+                      <AlertTriangle size={16} strokeWidth={1.8} className="icon-glow text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5" />
+                    )}
                     <div className="text-sm">
                       <p className={`font-medium ${
                         selectedApplication.request?.client?.id 
@@ -416,7 +412,7 @@ export default function CreateIntegrationModal({
             {/* Section Poste et Dates */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <span>💼</span>
+                <Briefcase size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.create.positionSection.title')}
               </h3>
 
@@ -444,7 +440,7 @@ export default function CreateIntegrationModal({
                     required
                     value={formData.contract_type}
                     onChange={(e) => setFormData({ ...formData, contract_type: e.target.value as ContractType })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                   >
                     <option value="cdi">{t('contractTypes.cdi')}</option>
                     <option value="cdd">{t('contractTypes.cdd')}</option>
@@ -470,7 +466,7 @@ export default function CreateIntegrationModal({
             {/* Section Rémunération */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <span>💰</span>
+                <Wallet size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.create.salarySection.title')}
               </h3>
 
@@ -487,7 +483,7 @@ export default function CreateIntegrationModal({
                       salary: '',
                       daily_rate: ''
                     })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                   >
                     <option value="monthly">{t('modals.create.salarySection.monthlyOption')}</option>
                     <option value="daily">{t('modals.create.salarySection.dailyOption')}</option>
@@ -561,7 +557,7 @@ export default function CreateIntegrationModal({
             {/* Section Période d'essai */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <span>⏱️</span>
+                <Hourglass size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.create.trialSection.title')}
               </h3>
 
@@ -592,7 +588,7 @@ export default function CreateIntegrationModal({
             {/* Section Notes */}
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg space-y-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <span>📝</span>
+                <NotebookText size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
                 {t('modals.create.notesSection.title')}
               </h3>
 
@@ -603,7 +599,7 @@ export default function CreateIntegrationModal({
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-3 focus:ring-brand-500/10 focus:border-brand-300 dark:focus:border-brand-800"
                   placeholder={t('modals.create.notesSection.placeholder')}
                 />
               </div>

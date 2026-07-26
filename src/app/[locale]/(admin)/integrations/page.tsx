@@ -15,6 +15,7 @@ import IntegrationDetailModal from '@/components/integrations/IntegrationDetailM
 import EditIntegrationModal from '@/components/integrations/EditIntegrationModal';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/lib/store';
+import { Plus, BarChart3, Hourglass, CheckCircle2, Target, RotateCcw } from 'lucide-react';
 
 export default function IntegrationsPage() {
   const t = useTranslations('integrations');
@@ -212,7 +213,7 @@ export default function IntegrationsPage() {
             </p>
           </div>
           {!isClientUser && (
-            <Button onClick={() => setIsCreateModalOpen(true)} startIcon={<PlusIcon />}>
+            <Button onClick={() => setIsCreateModalOpen(true)} startIcon={<Plus className="icon-glow" size={20} strokeWidth={1.8} />}>
               {t('page.newIntegration')}
             </Button>
           )}
@@ -231,7 +232,7 @@ export default function IntegrationsPage() {
                     </div>
                   </div>
                   <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                    <span className="text-xl">📊</span>
+                    <BarChart3 size={20} strokeWidth={1.8} className="icon-glow text-gray-600 dark:text-gray-300" />
                   </div>
                 </div>
               </div>
@@ -244,7 +245,7 @@ export default function IntegrationsPage() {
                     </div>
                   </div>
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-                    <span className="text-xl">⏳</span>
+                    <Hourglass size={20} strokeWidth={1.8} className="icon-glow text-gray-600 dark:text-gray-300" />
                   </div>
                 </div>
               </div>
@@ -257,7 +258,7 @@ export default function IntegrationsPage() {
                     </div>
                   </div>
                   <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
-                    <span className="text-xl">✅</span>
+                    <CheckCircle2 size={20} strokeWidth={1.8} className="icon-glow text-gray-600 dark:text-gray-300" />
                   </div>
                 </div>
               </div>
@@ -270,7 +271,7 @@ export default function IntegrationsPage() {
                     </div>
                   </div>
                   <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
-                    <span className="text-xl">🎯</span>
+                    <Target size={20} strokeWidth={1.8} className="icon-glow text-gray-600 dark:text-gray-300" />
                   </div>
                 </div>
               </div>
@@ -318,8 +319,9 @@ export default function IntegrationsPage() {
                   setTrialFilter('');
                   setPage(1);
                 }}
-                className="h-11 w-full px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="h-11 w-full px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors inline-flex items-center justify-center gap-1.5"
               >
+                <RotateCcw size={15} strokeWidth={1.8} className="icon-glow" />
                 {t('page.filters.reset')}
               </button>
             </div>
@@ -390,25 +392,5 @@ export default function IntegrationsPage() {
         />
       )}
     </div>
-  );
-}
-
-function PlusIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M10 4.16667V15.8333M4.16667 10H15.8333"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }

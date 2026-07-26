@@ -8,6 +8,16 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import { useUpdateProfileMutation } from "@/lib/services/userApi";
 import type { RootState } from "@/lib/store";
+import { Pencil } from "lucide-react";
+
+// lucide-react n'inclut plus les logos de marque (LinkedIn, X, Facebook...) — icône dédiée.
+function LinkedinIcon({ size = 16, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.368-1.85 3.598 0 4.268 2.368 4.268 5.451v6.29zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.114 20.452H3.56V9h3.554v11.452z" />
+    </svg>
+  );
+}
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
@@ -61,9 +71,7 @@ export default function UserInfoCard() {
   };
 
   const EditIcon = () => (
-    <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fillRule="evenodd" clipRule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z" fill="" />
-    </svg>
+    <Pencil size={18} strokeWidth={1.8} className="icon-glow" />
   );
 
   return (
@@ -108,7 +116,7 @@ export default function UserInfoCard() {
             <div className="mt-6 flex items-center gap-3 flex-wrap">
               {user.linkedin && (
                 <a href={user.linkedin} target="_blank" rel="noopener noreferrer" className="text-sm text-brand-500 hover:text-brand-600 flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                  <LinkedinIcon size={16} className="icon-glow" />
                   LinkedIn
                 </a>
               )}

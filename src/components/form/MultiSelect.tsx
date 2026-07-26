@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { X, ChevronDown, Check } from "lucide-react";
 
 interface Option {
   value: string;
@@ -105,13 +106,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                       onClick={(e) => removeOption(e, selectedOptions[idx])}
                       className="ml-0.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                     >
-                      <svg width="12" height="12" viewBox="0 0 14 14" fill="currentColor">
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M3.407 4.469a.75.75 0 011.061-1.061L7 5.939l2.532-2.531a.75.75 0 111.06 1.06L8.061 7l2.531 2.531a.75.75 0 11-1.06 1.061L7 8.061l-2.532 2.531a.75.75 0 11-1.06-1.06L5.939 7 3.407 4.469z"
-                        />
-                      </svg>
+                      <X size={12} strokeWidth={1.8} className="icon-glow" />
                     </button>
                   )}
                 </span>
@@ -120,15 +115,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               <span className="text-sm text-gray-400 dark:text-gray-500">{placeholder}</span>
             )}
           </div>
-          <svg
-            className={`ml-auto h-5 w-5 shrink-0 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
-            viewBox="0 0 20 20"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <path d="M4.792 7.396L10 12.604l5.208-5.208" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <ChevronDown
+            size={20}
+            strokeWidth={1.8}
+            className={`icon-glow ml-auto shrink-0 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          />
         </div>
 
         {/* Dropdown */}
@@ -157,9 +148,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                       }`}
                     >
                       {isSelected && (
-                        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
-                          <path d="M8.5 2L4 7.5 1.5 5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                        </svg>
+                        <Check size={10} strokeWidth={2} className="icon-glow text-white" />
                       )}
                     </span>
                     {option.text}

@@ -1,4 +1,5 @@
 "use client";
+import { Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
@@ -47,7 +48,7 @@ export default function Pricing({ plans, brand = "var(--color-brand-500)" }: { p
               <ul className="mt-6 space-y-3 text-sm text-gray-600">
                 {(p.features || []).map((feat, j) => (
                   <li key={j} className="flex items-center gap-2">
-                    <span style={{ color: brand }}>✓</span> {feat}
+                    <Check size={16} strokeWidth={1.8} className="icon-glow text-gray-500 flex-shrink-0" /> {feat}
                   </li>
                 ))}
               </ul>

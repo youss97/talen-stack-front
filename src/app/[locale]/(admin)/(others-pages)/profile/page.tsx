@@ -12,6 +12,7 @@ import { setCredentials } from "@/lib/slices/authSlice";
 import { useAppSelector } from "@/lib/hooks";
 import { getImageUrl } from "@/utils/imageHelper";
 import type { RootState } from "@/lib/store";
+import { ExternalLink, Pencil, Mail, Phone, MapPin, User, Link2, Building2, Eye, EyeOff } from "lucide-react";
 
 function buildSchema(requiredMsg: string) {
   return yup.object({
@@ -68,9 +69,7 @@ function SocialLink({ href, label, icon }: { href?: string | null; label: string
       className="flex items-center gap-2 text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors group">
       {icon}
       <span className="text-sm truncate">{href.replace(/^https?:\/\//, '')}</span>
-      <svg className="w-3.5 h-3.5 ms-auto opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-      </svg>
+      <ExternalLink className="ms-auto opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 icon-glow" size={14} strokeWidth={1.8} />
     </a>
   );
 }
@@ -234,9 +233,7 @@ export default function Profile() {
             {/* Edit button */}
             <button onClick={openModal}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition-colors shadow-sm self-start sm:self-auto">
-              <svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor">
-                <path fillRule="evenodd" clipRule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206Z" />
-              </svg>
+              <Pencil className="icon-glow" size={16} strokeWidth={1.8} />
               {t("hero.editButton")}
             </button>
           </div>
@@ -245,26 +242,19 @@ export default function Profile() {
           <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
             {user.email && (
               <span className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-                <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+                <Mail className="flex-shrink-0 icon-glow" size={16} strokeWidth={1.8} />
                 {user.email}
               </span>
             )}
             {user.phone && (
               <span className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-                <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
+                <Phone className="flex-shrink-0 icon-glow" size={16} strokeWidth={1.8} />
                 {user.phone}
               </span>
             )}
             {(user.city || user.country) && (
               <span className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-                <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+                <MapPin className="flex-shrink-0 icon-glow" size={16} strokeWidth={1.8} />
                 {[user.city, user.country].filter(Boolean).join(", ")}
               </span>
             )}
@@ -280,9 +270,7 @@ export default function Profile() {
 
           {/* Informations personnelles */}
           <Section title={t("sections.personalInfo")} icon={
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
+            <User className="icon-glow" size={16} strokeWidth={1.8} />
           }>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <InfoItem label={t("fields.firstName")} value={user.first_name} />
@@ -302,10 +290,7 @@ export default function Profile() {
 
           {/* Adresse */}
           <Section title={t("sections.address")} icon={
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
+            <MapPin className="icon-glow" size={16} strokeWidth={1.8} />
           }>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <InfoItem label={t("fields.country")} value={user.country} />
@@ -321,9 +306,7 @@ export default function Profile() {
 
           {/* Réseaux sociaux */}
           <Section title={t("sections.social")} icon={
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-            </svg>
+            <Link2 className="icon-glow" size={16} strokeWidth={1.8} />
           }>
             <div className="space-y-3">
               <SocialLink href={user.linkedin} label="LinkedIn" icon={
@@ -352,9 +335,7 @@ export default function Profile() {
           {/* Entreprise */}
           {user.company && (
             <Section title={t("sections.company")} icon={
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
+              <Building2 className="icon-glow" size={16} strokeWidth={1.8} />
             }>
               <InfoItem label={t("fields.companyName")} value={user.company?.name} />
               {user.company?.email && <InfoItem label={t("fields.email")} value={user.company?.email} />}
@@ -479,9 +460,9 @@ export default function Profile() {
                     <div className="relative">
                       <input className={inputCls} type={showCurrentPwd ? "text" : "password"} {...register("current_password")} placeholder={t("modal.currentPassword")} />
                       <button type="button" onClick={() => setShowCurrentPwd(!showCurrentPwd)} className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={showCurrentPwd ? "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" : "M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"} />
-                        </svg>
+                        {showCurrentPwd
+                          ? <EyeOff className="icon-glow" size={16} strokeWidth={1.8} />
+                          : <Eye className="icon-glow" size={16} strokeWidth={1.8} />}
                       </button>
                     </div>
                   </FormField>
@@ -489,9 +470,9 @@ export default function Profile() {
                     <div className="relative">
                       <input className={inputCls} type={showNewPwd ? "text" : "password"} {...register("new_password")} placeholder={t("modal.newPassword")} />
                       <button type="button" onClick={() => setShowNewPwd(!showNewPwd)} className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={showNewPwd ? "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" : "M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"} />
-                        </svg>
+                        {showNewPwd
+                          ? <EyeOff className="icon-glow" size={16} strokeWidth={1.8} />
+                          : <Eye className="icon-glow" size={16} strokeWidth={1.8} />}
                       </button>
                     </div>
                     <p className="text-xs text-gray-400 mt-1">{t("modal.passwordHint")}</p>

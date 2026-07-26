@@ -311,6 +311,14 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Icônes "pro" (lucide-react) — légère ombre portée verte pour donner du relief */
+.icon-glow {
+  filter: drop-shadow(0 2px 3px rgb(34 197 94 / 0.45));
+}
+.dark .icon-glow {
+  filter: drop-shadow(0 2px 4px rgb(74 222 128 / 0.55));
+}
+
 /* third-party libraries CSS */
 .apexcharts-legend-text {
   @apply !text-gray-700 dark:!text-gray-400;
