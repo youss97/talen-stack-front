@@ -35,6 +35,7 @@ interface TableCellProps {
   className?: string; // Optional className for styling
   colSpan?: number; // Optional colspan attribute
   title?: string; // Optional native tooltip (full text on hover)
+  onClick?: () => void; // Optional click handler (ex: en-tête de colonne triable)
 }
 
 // Table Component
@@ -64,9 +65,10 @@ const TableCell: React.FC<TableCellProps> = ({
   className,
   colSpan,
   title,
+  onClick,
 }) => {
   const CellTag = isHeader ? "th" : "td";
-  return <CellTag className={` ${className}`} colSpan={colSpan} title={title}>{children}</CellTag>;
+  return <CellTag className={` ${className}`} colSpan={colSpan} title={title} onClick={onClick}>{children}</CellTag>;
 };
 
 export { Table, TableHeader, TableBody, TableRow, TableCell };

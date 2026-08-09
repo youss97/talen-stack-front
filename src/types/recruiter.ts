@@ -226,6 +226,8 @@ export interface RecruiterPaginationParams {
   workflow_status?: WorkflowStatus;
   responsible_id?: string;
   unassigned?: boolean;
+  sortBy?: string;
+  sortOrder?: "ASC" | "DESC";
 }
 
 export interface ApplicationStatusHistory {

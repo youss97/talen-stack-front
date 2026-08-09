@@ -30,7 +30,13 @@ const AppSidebar: React.FC = () => {
   const t = useTranslations("layout");
   const locale = useLocale();
   const isRtl = locale === "ar";
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const { isExpanded, isMobileOpen, isHovered, setIsHovered, toggleMobileSidebar } = useSidebar();
+
+  // Ferme la sidebar mobile après le choix d'un module — ne fait rien sur desktop (isMobileOpen
+  // y est toujours false, donc jamais ré-ouverte par erreur en cliquant un lien).
+  const closeMobileSidebar = () => {
+    if (isMobileOpen) toggleMobileSidebar();
+  };
   const pathname = usePathname();
   const navItems = useNavigation();
   const user = useSelector((state: RootState) => state.auth.user);
@@ -86,6 +92,7 @@ const AppSidebar: React.FC = () => {
         <motion.li key={nav.path} variants={itemVariants}>
           <Link
             href={nav.path}
+            onClick={closeMobileSidebar}
             className={`menu-item group ${
               isActive(nav.path)
                 ? "font-semibold bg-[var(--brand-soft)] text-[var(--brand-deep)] dark:bg-[var(--brand)] dark:text-[var(--brand-ink)]"
@@ -278,6 +285,7 @@ const AppSidebar: React.FC = () => {
             >
               <Link
                 href="/profile"
+                onClick={closeMobileSidebar}
                 className="flex items-center gap-3 px-2 py-2 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
               >
                 <UserAvatar user={user ?? undefined} size={36} />
@@ -303,7 +311,7 @@ const AppSidebar: React.FC = () => {
               transition={{ duration: 0.2 }}
               className="flex justify-center"
             >
-              <Link href="/profile" className="relative">
+              <Link href="/profile" onClick={closeMobileSidebar} className="relative">
                 <UserAvatar user={user ?? undefined} size={36} />
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-brand-500 border-2 border-white dark:border-gray-900" />
               </Link>

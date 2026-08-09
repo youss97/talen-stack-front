@@ -22,7 +22,9 @@ export interface PublicJobOffer {
   is_public: boolean;
   public_slug?: string;
   public_visible_fields?: string[]; // champs affichés sur l'offre publique (vide = tout)
+  questions?: PublicOfferQuestion[]; // questions personnalisées du formulaire de candidature
   public_views_count?: number;
+  applications_count?: number;
   public_background_image?: string;
   public_brand_color?: string;
   published_at?: string;
@@ -47,6 +49,8 @@ export interface PublicJobOffer {
       id?: string;
       name?: string;
       logo_path?: string;
+      slug?: string;
+      public_brand_color?: string;
     };
   };
   manager?: {
@@ -60,12 +64,27 @@ export interface PublicJobOffer {
   updated_at?: string;
 }
 
+export interface ResponsibleUser {
+  id: string;
+  first_name: string;
+  last_name: string;
+}
+
+export interface PublicOfferQuestion {
+  id: string;
+  question_text: string;
+  answer_type: "number" | "yesno";
+  is_required: boolean;
+  display_order?: number;
+}
+
 export interface PublicApplication {
   id: string;
   first_name: string;
   last_name: string;
   email: string;
   phone: string;
+  city?: string;
   cv_path?: string;
   original_cv_filename?: string;
   message?: string;
@@ -76,6 +95,9 @@ export interface PublicApplication {
   synced_to_talent_pool?: boolean;
   synced_cv_id?: string | null;
   synced_application_id?: string | null;
+  referrer_user_id?: string | null;
+  referrer?: ResponsibleUser | null;
+  answers?: Array<{ id: string; question_text: string; answer_value: string }>;
   created_at: string;
 }
 
@@ -106,6 +128,7 @@ export interface CreatePublicApplicationData {
   last_name: string;
   email: string;
   phone: string;
+  city?: string;
   message?: string;
   source?: 'qr' | 'direct' | 'linkedin' | 'other';
 }

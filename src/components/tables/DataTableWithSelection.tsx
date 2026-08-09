@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useCallback } from "react";
-import { Eye, Pencil, Trash2, Mail, CalendarDays } from "lucide-react";
+import { Eye, Pencil, Trash2, Mail, CalendarDays, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import {
   Table,
   TableHeader,
@@ -18,6 +18,10 @@ export interface Column<T> {
   header: string;
   render?: (value: T[keyof T], row: T) => React.ReactNode;
   className?: string;
+  /** Colonne triable en cliquant sur son en-tête */
+  sortable?: boolean;
+  /** Clé envoyée au backend pour le tri, si différente de `key` */
+  sortKey?: string;
 }
 
 export interface DataTableWithSelectionProps<T> {
@@ -41,6 +45,11 @@ export interface DataTableWithSelectionProps<T> {
   useActionsMenu?: boolean; // Nouvelle prop pour forcer l'utilisation du menu
   enableViewToggle?: boolean;
   defaultView?: "table" | "cards";
+  /** Tri par colonne (clé actuellement triée) */
+  sortBy?: string;
+  sortOrder?: "ASC" | "DESC";
+  /** Appelé avec `column.sortKey ?? column.key` au clic sur un en-tête triable */
+  onSort?: (key: string) => void;
 }
 
 function DataTableWithSelection<T extends { id: string }>({
@@ -59,6 +68,9 @@ function DataTableWithSelection<T extends { id: string }>({
   useActionsMenu = true, // Par défaut, utiliser le menu d'actions
   enableViewToggle = true,
   defaultView = "table",
+  sortBy,
+  sortOrder,
+  onSort,
 }: DataTableWithSelectionProps<T>) {
   const hasActionHandlers = onView || onEdit || onDelete || customActions;
   const [view, setView] = useState<"table" | "cards">(defaultView);
@@ -235,15 +247,35 @@ function DataTableWithSelection<T extends { id: string }>({
                 className="w-4 h-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded"
               />
             </TableCell>
-            {columns.map((column) => (
-              <TableCell
-                key={column.id ?? String(column.key)}
-                isHeader
-                className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 whitespace-nowrap"
-              >
-                {column.header}
-              </TableCell>
-            ))}
+            {columns.map((column) => {
+              const columnSortKey = column.sortKey ?? String(column.key);
+              const isSorted = column.sortable && sortBy === columnSortKey;
+              return (
+                <TableCell
+                  key={column.id ?? String(column.key)}
+                  isHeader
+                  className={`px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 whitespace-nowrap ${
+                    column.sortable ? "cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200" : ""
+                  }`}
+                  onClick={column.sortable ? () => onSort?.(columnSortKey) : undefined}
+                >
+                  {column.sortable ? (
+                    <span className="inline-flex items-center gap-1">
+                      {column.header}
+                      {isSorted && sortOrder === "ASC" ? (
+                        <ArrowUp size={14} strokeWidth={1.8} />
+                      ) : isSorted && sortOrder === "DESC" ? (
+                        <ArrowDown size={14} strokeWidth={1.8} />
+                      ) : (
+                        <ArrowUpDown size={14} strokeWidth={1.8} className="opacity-40" />
+                      )}
+                    </span>
+                  ) : (
+                    column.header
+                  )}
+                </TableCell>
+              );
+            })}
             {(actions || hasActionHandlers) && (
               <TableCell
                 isHeader

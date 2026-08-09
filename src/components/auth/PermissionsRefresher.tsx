@@ -10,7 +10,10 @@ import type { RootState } from "@/lib/store";
  */
 export default function PermissionsRefresher() {
   const user = useSelector((state: RootState) => state.auth.user);
-  const { refetch } = useVerifyUserQuery();
+  // Monté globalement (layout racine) sur TOUTES les pages, y compris landing/signin —
+  // sans token, l'appel serait un 401 garanti pour chaque visiteur anonyme.
+  const hasToken = typeof window !== "undefined" && !!localStorage.getItem("token");
+  const { refetch } = useVerifyUserQuery(undefined, { skip: !hasToken });
 
   useEffect(() => {
     // Écouter les événements personnalisés de modification de rôles

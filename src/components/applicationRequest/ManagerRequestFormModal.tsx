@@ -1,11 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import TextArea from "@/components/form/input/TextArea";
+import RichTextEditor from "@/components/form/RichTextEditor";
 import Label from "@/components/form/Label";
 import StarRating from "@/components/form/StarRating";
 import WorkflowStepsEditor, { type WorkflowStep } from "@/components/applicationRequest/WorkflowStepsEditor";
@@ -202,6 +203,7 @@ export default function ManagerRequestFormModal({
     handleSubmit,
     reset,
     setValue,
+    control,
     formState: { errors },
   } = useForm<ManagerRequestFormData>({
     defaultValues: {
@@ -418,11 +420,18 @@ export default function ManagerRequestFormModal({
           {/* Description */}
           <div>
             <Label>{t("descriptionLabel")} <span className="text-error-500">*</span></Label>
-            <TextArea
-              placeholder={t("descriptionPlaceholder")}
-              {...register("description", { required: t("descriptionRequired") })}
-              rows={4}
-              error={!!errors.description}
+            <Controller
+              name="description"
+              control={control}
+              rules={{ required: t("descriptionRequired") }}
+              render={({ field }) => (
+                <RichTextEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder={t("descriptionPlaceholder")}
+                  error={!!errors.description}
+                />
+              )}
             />
             {errors.description && <p className="mt-1 text-sm text-error-500">{errors.description.message}</p>}
           </div>

@@ -12,7 +12,7 @@ import { useUpdateProfileMutation } from "@/lib/services/userApi";
 import { User } from "@/types/auth";
 import { setCredentials } from "@/lib/slices/authSlice";
 import { getImageUrl } from "@/utils/imageHelper";
-import { Eye, EyeOff } from "lucide-react";
+import { EyeIcon, EyeCloseIcon } from "@/icons";
 
 interface UpdateProfileModalProps {
   isOpen: boolean;
@@ -107,13 +107,6 @@ export default function UpdateProfileModal({ isOpen, onClose, user }: UpdateProf
     }
   };
 
-  const EyeIcon = ({ open }: { open: boolean }) =>
-    open ? (
-      <EyeOff size={20} strokeWidth={1.8} className="icon-glow" />
-    ) : (
-      <Eye size={20} strokeWidth={1.8} className="icon-glow" />
-    );
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-[700px] m-4">
       <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
@@ -187,9 +180,16 @@ export default function UpdateProfileModal({ isOpen, onClose, user }: UpdateProf
                   {...register("current_password")}
                   error={errors.current_password?.message}
                 />
-                <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                  <EyeIcon open={showCurrentPassword} />
-                </button>
+                <span
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute z-30 -translate-y-1/2 cursor-pointer end-4 top-9"
+                >
+                  {showCurrentPassword ? (
+                    <EyeIcon className="text-gray-500 dark:text-gray-400" />
+                  ) : (
+                    <EyeCloseIcon className="text-gray-500 dark:text-gray-400" />
+                  )}
+                </span>
               </div>
               <div className="relative">
                 <FormInput
@@ -199,9 +199,16 @@ export default function UpdateProfileModal({ isOpen, onClose, user }: UpdateProf
                   {...register("new_password")}
                   error={errors.new_password?.message}
                 />
-                <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                  <EyeIcon open={showNewPassword} />
-                </button>
+                <span
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute z-30 -translate-y-1/2 cursor-pointer end-4 top-9"
+                >
+                  {showNewPassword ? (
+                    <EyeIcon className="text-gray-500 dark:text-gray-400" />
+                  ) : (
+                    <EyeCloseIcon className="text-gray-500 dark:text-gray-400" />
+                  )}
+                </span>
               </div>
               <p className="text-xs text-gray-400">Au moins 8 caractères, une majuscule, un chiffre et un caractère spécial</p>
             </div>

@@ -9,14 +9,18 @@ export type EmailTemplateType =
   | "INTERVIEW_MODIFICATION_CANDIDATE"
   | "INTERVIEW_MODIFICATION_INVITEE"
   | "INTERVIEW_CANCELLATION_CANDIDATE"
-  | "INTERVIEW_CANCELLATION_INVITEE";
+  | "INTERVIEW_CANCELLATION_INVITEE"
+  | "PUBLIC_APPLICATION_DELETED";
 
 export interface EmailTemplate {
+  [key: string]: unknown;
+  id: string;
   type: EmailTemplateType;
+  name: string;
   subject: string;
   body_html: string;
-  is_custom: boolean;
-  variables: string[];
+  is_active: boolean;
+  is_default: boolean;
 }
 
 export interface EmailTemplateVariableInfo {
@@ -26,7 +30,20 @@ export interface EmailTemplateVariableInfo {
   variables: string[];
 }
 
+export interface CreateEmailTemplateRequest {
+  type: EmailTemplateType;
+  name: string;
+  subject: string;
+  body_html: string;
+}
+
 export interface UpdateEmailTemplateRequest {
+  name?: string;
+  subject?: string;
+  body_html?: string;
+}
+
+export interface DefaultEmailTemplateContent {
   subject: string;
   body_html: string;
 }

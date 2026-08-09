@@ -196,6 +196,7 @@ export default function PermissionsSelector({
       approve: t("actions.approve"), reject: t("actions.reject"), archive: t("actions.archive"),
       send: t("actions.send"), assign: t("actions.assign"), manage: t("actions.manage"),
       resend: t("actions.resend"), stats: t("actions.stats"), "update-status": t("actions.updateStatus"),
+      "toggle-status": t("actions.toggleStatus"), configure: t("actions.configure"),
     };
     return map[suffix] ?? name;
   };

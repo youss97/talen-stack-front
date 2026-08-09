@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import { useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import type { RootState } from "@/lib/store";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -10,13 +12,16 @@ import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import {
   useGetPublicJobOfferByIdQuery,
   useGetPublicApplicationsByRequestQuery,
+  useGetRequestResponsibleUsersQuery,
   useConvertPublicApplicationMutation,
   useDeletePublicApplicationMutation,
 } from "@/lib/services/publicJobOfferApi";
 import ApplicationsList from "@/components/public-offers/ApplicationsList";
 import ConversionLoader from "@/components/public-offers/ConversionLoader";
+import TemplatePickerModal from "@/components/email/TemplatePickerModal";
 import { getApiErrorMessage } from "@/utils/errorMessages";
 import { getCurrencyByCode, DEFAULT_CURRENCY } from "@/lib/currencies";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import type { PublicApplication } from "@/types/publicJobOffer";
 
 export default function PublicOfferDetailPage() {
@@ -25,9 +30,18 @@ export default function PublicOfferDetailPage() {
   const router = useRouter();
   const id = params.id as string;
   const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const [referrerFilter, setReferrerFilter] = useState<string>("all");
+
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  const roleCode = ((currentUser as any)?.role?.code || "").toUpperCase();
+  const isAdmin = roleCode.includes("ADMIN");
 
   const { data: offer, isLoading } = useGetPublicJobOfferByIdQuery(id);
-  const { data: publicApps = [] } = useGetPublicApplicationsByRequestQuery(id, { skip: !id });
+  const { data: publicApps = [] } = useGetPublicApplicationsByRequestQuery(
+    { requestId: id, referrerId: referrerFilter === "all" ? undefined : referrerFilter },
+    { skip: !id }
+  );
+  const { data: responsibleUsers = [] } = useGetRequestResponsibleUsersQuery(id, { skip: !id || !isAdmin });
   const [convertPublicApp] = useConvertPublicApplicationMutation();
   const [deletePublicApp] = useDeletePublicApplicationMutation();
   const [convertingId, setConvertingId] = useState<string | null>(null);
@@ -37,8 +51,14 @@ export default function PublicOfferDetailPage() {
     isOpen: false,
     application: null,
   });
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
 
-  const handleConvert = async (appId: string) => {
+  const [confirmConvert, setConfirmConvert] = useState<{ isOpen: boolean; appId: string | null }>({
+    isOpen: false,
+    appId: null,
+  });
+
+  const performConvert = async (appId: string) => {
     setConvertingId(appId);
     setConvertDone(false);
     try {
@@ -63,6 +83,16 @@ export default function PublicOfferDetailPage() {
     }
   };
 
+  const handleConvertClick = (appId: string) => {
+    setConfirmConvert({ isOpen: true, appId });
+  };
+
+  const handleConfirmConvert = async () => {
+    const appId = confirmConvert.appId;
+    setConfirmConvert({ isOpen: false, appId: null });
+    if (appId) await performConvert(appId);
+  };
+
   const handleDeleteClick = (application: PublicApplication) => {
     setConfirmDelete({ isOpen: true, application });
   };
@@ -70,11 +100,27 @@ export default function PublicOfferDetailPage() {
   const handleConfirmDelete = async () => {
     const application = confirmDelete.application;
     if (!application) return;
+    // Relecture/ajustement systématique de l'email envoyé avant suppression.
+    setConfirmDelete({ isOpen: false, application });
+    setShowTemplatePicker(true);
+  };
+
+  const performDelete = async (
+    application: PublicApplication,
+    payload?: { templateId?: string; subject: string; body_html: string }
+  ) => {
     setDeletingId(application.id);
     try {
-      await deletePublicApp({ id: application.id, requestId: id }).unwrap();
+      await deletePublicApp({
+        id: application.id,
+        requestId: id,
+        templateId: payload?.templateId,
+        subject: payload?.subject,
+        body_html: payload?.body_html,
+      }).unwrap();
       addToast("success", t("toast.deleted"), t("toast.deletedMessage"));
       setConfirmDelete({ isOpen: false, application: null });
+      setShowTemplatePicker(false);
     } catch (e) {
       addToast("error", t("toast.error"), getApiErrorMessage(e, t("toast.deleteError")));
     } finally {
@@ -82,8 +128,9 @@ export default function PublicOfferDetailPage() {
     }
   };
 
+  const publicCompanySlug = offer?.client?.company?.slug;
   const publicUrl = offer?.public_slug && typeof window !== "undefined"
-    ? `${window.location.origin}/apply/${offer.public_slug}`
+    ? `${window.location.origin}${publicCompanySlug ? `/${publicCompanySlug}` : "/apply"}/${offer.public_slug}${currentUser?.id ? `?ref=${currentUser.id}` : ""}`
     : "";
 
   const addToast = (
@@ -168,9 +215,10 @@ export default function PublicOfferDetailPage() {
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t("description")}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">
-                  {offer.description}
-                </p>
+                <div
+                  className="text-sm text-gray-600 dark:text-gray-400 [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5 [&_a]:underline"
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(offer.description) }}
+                />
               </div>
 
               {(offer.min_salary || offer.max_salary) && (
@@ -304,16 +352,28 @@ export default function PublicOfferDetailPage() {
 
       {/* Candidatures de l'offre publique (séparées des candidatures) */}
       <div className="mt-6 rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
             {t("receivedApplications")}
             <span className="ms-2 text-sm text-gray-400">({publicApps.length})</span>
           </h2>
+          {isAdmin && responsibleUsers.length > 0 && (
+            <select
+              value={referrerFilter}
+              onChange={(e) => setReferrerFilter(e.target.value)}
+              className="h-10 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 text-sm text-gray-700 dark:text-gray-300 focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10"
+            >
+              <option value="all">{t("filters.allReferrers")}</option>
+              {responsibleUsers.map((u) => (
+                <option key={u.id} value={u.id}>{`${u.first_name} ${u.last_name}`}</option>
+              ))}
+            </select>
+          )}
         </div>
         <ApplicationsList
           applications={publicApps}
           offerTitle={offer.title}
-          onConvert={handleConvert}
+          onConvert={handleConvertClick}
           convertingId={convertingId}
           onDelete={handleDeleteClick}
           deletingId={deletingId}
@@ -330,6 +390,29 @@ export default function PublicOfferDetailPage() {
         cancelText={t("deleteApplication.cancel")}
         variant="danger"
         isLoading={!!deletingId}
+      />
+
+      <TemplatePickerModal
+        isOpen={showTemplatePicker}
+        onClose={() => { setShowTemplatePicker(false); setConfirmDelete({ isOpen: false, application: null }); }}
+        type="PUBLIC_APPLICATION_DELETED"
+        title={t("deleteApplication.pickTemplateTitle")}
+        isConfirming={!!deletingId}
+        onConfirm={(payload) => {
+          if (confirmDelete.application) performDelete(confirmDelete.application, payload);
+        }}
+      />
+
+      <ConfirmModal
+        isOpen={confirmConvert.isOpen}
+        onClose={() => setConfirmConvert({ isOpen: false, appId: null })}
+        onConfirm={handleConfirmConvert}
+        title={t("convertApplication.title")}
+        message={t("convertApplication.message")}
+        confirmText={t("convertApplication.confirm")}
+        cancelText={t("convertApplication.cancel")}
+        variant="info"
+        isLoading={!!convertingId}
       />
     </div>
   );

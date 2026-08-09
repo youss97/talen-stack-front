@@ -21,7 +21,7 @@
     },
     "success": {
       "title": "Application sent successfully!",
-      "message": "Our HR team will get back to you as soon as possible."
+      "message": "Thank you for applying to this position.\n\nYour application has been successfully recorded and is currently under review.\n\nIf your profile matches what we're looking for, we'll get in touch with you as soon as possible.\n\nIf you haven't heard back within two weeks, you may assume another candidate was selected for this position.\n\nThank you for your interest in this opportunity, and we wish you every success in your professional journey."
     },
     "sections": {
       "description": "Job description",
@@ -29,6 +29,9 @@
       "softSkills": "Soft skills",
       "details": "Job details"
     },
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "viewAllOffers": "View all offers from {company}",
     "sidebar": {
       "reference": "Reference",
       "contract": "Contract",
@@ -51,6 +54,17 @@
       "button": "Apply now"
     },
     "sidebarCta": "Apply now",
+    "questionsModal": {
+      "title": "A few questions before applying",
+      "yes": "Yes",
+      "no": "No",
+      "numberPlaceholder": "Your answer",
+      "cancel": "Cancel",
+      "next": "Next",
+      "errors": {
+        "required": "Please answer all required questions."
+      }
+    },
     "modal": {
       "title": "Apply",
       "firstName": "First name",
@@ -61,6 +75,8 @@
       "emailPlaceholder": "john@example.com",
       "phone": "Phone",
       "phonePlaceholder": "+212 6 00 00 00 00",
+      "city": "City",
+      "cityPlaceholder": "Casablanca",
       "cv": "Resume (PDF, DOC, DOCX — max 5 MB)",
       "cvDropActive": "Drop the file here",
       "cvDropIdle": "Drag and drop or click to upload your resume",

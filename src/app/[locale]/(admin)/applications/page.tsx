@@ -43,7 +43,8 @@ import type { Recruiter } from "@/types/recruiter";
 import type { CreateRecruiterRequest, UpdateRecruiterRequest, WorkflowStatus } from "@/types/recruiter";
 import type { CreateInterviewRequest } from "@/types/interview";
 import { getApiErrorMessage } from "@/utils/errorMessages";
-import { Plus, UserPlus, Eye, Pencil, Trash2 } from "lucide-react";
+import { useTableSort } from "@/hooks/useTableSort";
+import { Plus, UserPlus, Eye, Pencil, Trash2, Copy } from "lucide-react";
 
 export default function ApplicationsPage() {
   const t = useTranslations("applications");
@@ -74,6 +75,7 @@ export default function ApplicationsPage() {
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [isInterviewModalOpen, setIsInterviewModalOpen] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<Recruiter | null>(null);
+  const [isDuplicateMode, setIsDuplicateMode] = useState(false);
   const [detailApplicationId, setDetailApplicationId] = useState<string | null>(null);
   const [interviewCandidate, setInterviewCandidate] = useState<Recruiter | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -113,6 +115,8 @@ export default function ApplicationsPage() {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
+  const { sortBy, sortOrder, handleSort } = useTableSort();
+
   const { data, isLoading, isFetching, refetch } = useGetRecruitersQuery({
     page,
     limit,
@@ -121,6 +125,8 @@ export default function ApplicationsPage() {
     workflow_status: workflowStatusFilter || undefined,
     client_id: clientFilter || undefined,
     request_id: requestFilter || undefined,
+    sortBy,
+    sortOrder,
   });
 
   // Récupérer les statuts de candidature
@@ -319,6 +325,8 @@ export default function ApplicationsPage() {
       key: "request" as keyof Recruiter,
       header: t("list.columns.request"),
       className: "min-w-[180px]",
+      sortable: true,
+      sortKey: "request",
       render: (value: unknown) => {
         const request = value as { title: string; reference: string };
         return (
@@ -334,6 +342,8 @@ export default function ApplicationsPage() {
       key: "request" as keyof Recruiter,
       header: t("list.columns.client"),
       className: "min-w-[150px]",
+      sortable: true,
+      sortKey: "client",
       render: (_value: unknown, row: Recruiter) => {
         const request = row.request as { client?: { name: string } } | undefined;
         return (
@@ -347,6 +357,8 @@ export default function ApplicationsPage() {
       key: "workflow_status",
       header: t("list.columns.workflow"),
       className: "min-w-[120px]",
+      sortable: true,
+      sortKey: "workflow_status",
       render: (value: any, row: Recruiter) => {
         const status = (value as string) || 'draft';
         const isActive = status === 'active';
@@ -410,6 +422,8 @@ export default function ApplicationsPage() {
       key: "status",
       header: t("list.columns.status"),
       className: "min-w-[120px]",
+      sortable: true,
+      sortKey: "status",
       render: (value: any) => (
         <Badge
           color={getStatusColor(value as string) as "success" | "error" | "warning" | "info" | "light"}
@@ -464,6 +478,7 @@ export default function ApplicationsPage() {
 
   const handleAddClick = () => {
     setSelectedApplication(null);
+    setIsDuplicateMode(false);
     setFormError(null);
     setIsFormModalOpen(true);
   };
@@ -471,6 +486,7 @@ export default function ApplicationsPage() {
   const handleEditClick = async (application: Recruiter) => {
     // Charger les données complètes avant d'ouvrir le modal
     setFormError(null);
+    setIsDuplicateMode(false);
     setIsFormModalOpen(true);
     setSelectedApplication(null); // Afficher un loading
     try {
@@ -481,6 +497,35 @@ export default function ApplicationsPage() {
       addToast("error", tc("status.error"), t("toast.loadApplicationErrorMessage"));
       setIsFormModalOpen(false);
       setSelectedApplication(null); // Réinitialiser pour éviter de bloquer
+    }
+  };
+
+  const handleDuplicateClick = async (application: Recruiter) => {
+    // Pré-remplir le formulaire d'ajout avec les infos de cette candidature, sans jamais
+    // la modifier : on réinitialise seulement les champs d'état de progression (statut du
+    // pipeline, date/notes d'entretien) qui n'auraient aucun sens sur une nouvelle candidature.
+    setFormError(null);
+    setIsFormModalOpen(true);
+    setSelectedApplication(null); // Afficher un loading
+    try {
+      const fullData = await getApplicationById(application.id).unwrap();
+      setSelectedApplication({
+        ...fullData,
+        workflow_status: undefined,
+        status: undefined,
+        recruiter_interview_date: undefined,
+        qualification_report: "",
+        recruiter_notes: "",
+        is_anonymized: false,
+        adjusted_experience: undefined,
+      } as unknown as Recruiter);
+      setIsDuplicateMode(true);
+    } catch (error) {
+      console.error("Error loading application data:", error);
+      addToast("error", tc("status.error"), t("toast.loadApplicationErrorMessage"));
+      setIsFormModalOpen(false);
+      setSelectedApplication(null);
+      setIsDuplicateMode(false);
     }
   };
 
@@ -542,10 +587,11 @@ export default function ApplicationsPage() {
   };
 
   const handleFormSubmit = async (data: any) => {
+    const isEditingSubmit = selectedApplication && !isDuplicateMode;
     try {
-      if (selectedApplication) {
+      if (isEditingSubmit) {
         await updateApplication({
-          id: selectedApplication.id,
+          id: selectedApplication!.id,
           data: data as UpdateRecruiterRequest,
         }).unwrap();
         addToast("success", tc("status.success"), t("toast.updateSuccessMessage"));
@@ -555,8 +601,9 @@ export default function ApplicationsPage() {
       }
       setIsFormModalOpen(false);
       setSelectedApplication(null);
+      setIsDuplicateMode(false);
     } catch (error) {
-      const defaultMsg = selectedApplication
+      const defaultMsg = isEditingSubmit
         ? t("toast.updateErrorMessage")
         : t("toast.createErrorMessage");
       const msg = getErrorMessage(error, defaultMsg);
@@ -731,6 +778,9 @@ export default function ApplicationsPage() {
             onSelectionChange={handleSelectionChange}
             isLoading={isLoading || isFetching}
             onView={handleRowClick}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={(key) => { handleSort(key); setPage(1); }}
             actions={(row: Recruiter) => (
               <ActionsMenu
                 actions={[
@@ -744,6 +794,12 @@ export default function ApplicationsPage() {
                     label: t("actions.edit"),
                     icon: <EditIcon />,
                     onClick: () => handleEditClick(row),
+                    color: 'default' as const,
+                  }] : []),
+                  ...(canUpdate ? [{
+                    label: t("actions.duplicate"),
+                    icon: <DuplicateIcon />,
+                    onClick: () => handleDuplicateClick(row),
                     color: 'default' as const,
                   }] : []),
                   {
@@ -796,10 +852,12 @@ export default function ApplicationsPage() {
         onClose={() => {
           setIsFormModalOpen(false);
           setSelectedApplication(null);
+          setIsDuplicateMode(false);
           setFormError(null);
         }}
         onSubmit={handleFormSubmit}
         recruiter={selectedApplication}
+        isDuplicate={isDuplicateMode}
         isLoading={isCreating || isUpdating}
         serverError={formError}
       />
@@ -910,6 +968,10 @@ function ViewIcon() {
 
 function EditIcon() {
   return <Pencil className="icon-glow" size={18} strokeWidth={1.8} />;
+}
+
+function DuplicateIcon() {
+  return <Copy className="icon-glow" size={18} strokeWidth={1.8} />;
 }
 
 function TrashIcon() {

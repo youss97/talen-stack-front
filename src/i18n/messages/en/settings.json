@@ -2,11 +2,28 @@
   "backButton": "Back to settings",
   "emailTemplatesPage": {
     "title": "Email templates",
-    "subtitle": "Customize the content of emails automatically sent by the platform (applications, interviews, notifications).",
-    "custom": "Customized",
+    "subtitle": "Customize the content of emails automatically sent by the platform (applications, interviews, notifications). You can save several variants per type and choose which one is used by default.",
     "default": "Default",
     "edit": "Edit",
-    "view": "View",
+    "delete": "Delete",
+    "setDefault": "Set as default",
+    "addTemplate": "+ New template",
+    "noneSaved": "No custom template — TalentStack's default template is used.",
+    "deleteConfirm": {
+      "title": "Delete template",
+      "message": "Are you sure you want to delete the template \"{name}\"? This action is irreversible.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "toasts": {
+      "errorTitle": "Error",
+      "deletedTitle": "Deleted",
+      "deletedMessage": "The template has been deleted.",
+      "deleteError": "Failed to delete",
+      "defaultSetTitle": "Set as default",
+      "defaultSetMessage": "\"{name}\" will now be used by default for this type.",
+      "defaultSetError": "Failed to update"
+    },
     "types": {
       "NOTIFY": {
         "label": "HR ↔ Client notification",
@@ -51,10 +68,17 @@
       "INTERVIEW_CANCELLATION_INVITEE": {
         "label": "Interview cancellation — invitee",
         "description": "Sent to OTHER PARTICIPANTS when a scheduled interview is cancelled."
+      },
+      "PUBLIC_APPLICATION_DELETED": {
+        "label": "Public offer application deleted",
+        "description": "Sent to the CANDIDATE when their application to a public offer is deleted by the recruiter."
       }
     },
     "editorModal": {
       "subtitle": "Customize the subject and body of this email. Use the variables below to insert dynamic information.",
+      "subtitleCreate": "Create a new variant for this email type. Use the variables below to insert dynamic information.",
+      "nameLabel": "Template name",
+      "namePlaceholder": "E.g. Polite rejection, Standard follow-up...",
       "subjectLabel": "Email subject",
       "subjectPlaceholder": "Email subject",
       "bodyLabel": "Email body",
@@ -63,7 +87,6 @@
       "previewLabel": "Preview (with sample data)",
       "previewSubjectLabel": "Subject:",
       "previewIframeTitle": "Email preview",
-      "reset": "Reset to default template",
       "preview": "Preview",
       "cancel": "Cancel",
       "save": "Save",
@@ -71,11 +94,9 @@
       "toasts": {
         "savedTitle": "Saved",
         "savedMessage": "The template has been updated.",
+        "createdMessage": "The template has been created.",
         "errorTitle": "Error",
         "saveError": "Failed to save",
-        "resetTitle": "Reset",
-        "resetMessage": "The default template has been restored.",
-        "resetError": "Failed to reset",
         "previewError": "Failed to generate preview"
       }
     }

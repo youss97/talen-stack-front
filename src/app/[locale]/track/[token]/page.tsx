@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 
 interface Tracking {
   candidate: { first_name: string; last_name: string };
@@ -12,12 +13,18 @@ interface Tracking {
   history: { status: string; date?: string; comment?: string | null }[];
 }
 
+interface DeletedTracking {
+  deleted: true;
+  redirect_url: string;
+}
+
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export default function TrackPage() {
   const t = useTranslations("public.track");
   const tRoot = useTranslations("public");
   const { token } = useParams() as { token: string };
+  const router = useRouter();
   const [data, setData] = useState<Tracking | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,10 +33,19 @@ export default function TrackPage() {
     if (!token) return;
     fetch(`${API}/public/applications/track/${token}`)
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(setData)
-      .catch(() => setError(t("notFound")))
-      .finally(() => setLoading(false));
-  }, [token, t]);
+      .then((result: Tracking | DeletedTracking) => {
+        if ("deleted" in result && result.deleted) {
+          router.replace(result.redirect_url);
+          return; // reste en "loading" jusqu'à la navigation, pour éviter un flash d'erreur
+        }
+        setData(result as Tracking);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(t("notFound"));
+        setLoading(false);
+      });
+  }, [token, t, router]);
 
   const fmt = (d?: string) => (d ? new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : "");
 

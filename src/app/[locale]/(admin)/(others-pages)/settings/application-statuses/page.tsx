@@ -24,7 +24,7 @@ export default function ApplicationStatusesPage() {
   const t = useTranslations("settings.applicationStatuses");
   const tc = useTranslations("common");
   const [page, setPage] = useState(1);
-  const [limit] = useState(5);
+  const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<ApplicationStatus | null>(null);
@@ -160,6 +160,7 @@ export default function ApplicationStatusesPage() {
             totalItems={data.pagination.total}
             itemsPerPage={data.pagination.limit}
             onPageChange={setPage}
+            onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
           />
         </div>
       )}

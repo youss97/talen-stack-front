@@ -2,11 +2,28 @@
   "backButton": "Retour aux paramètres",
   "emailTemplatesPage": {
     "title": "Templates emails",
-    "subtitle": "Personnalisez le contenu des emails envoyés automatiquement par la plateforme (candidatures, entretiens, notifications).",
-    "custom": "Personnalisé",
+    "subtitle": "Personnalisez le contenu des emails envoyés automatiquement par la plateforme (candidatures, entretiens, notifications). Vous pouvez enregistrer plusieurs variantes par type et choisir celle utilisée par défaut.",
     "default": "Par défaut",
     "edit": "Modifier",
-    "view": "Voir",
+    "delete": "Supprimer",
+    "setDefault": "Définir par défaut",
+    "addTemplate": "+ Nouveau template",
+    "noneSaved": "Aucun template personnalisé — le modèle par défaut de TalentStack est utilisé.",
+    "deleteConfirm": {
+      "title": "Supprimer le template",
+      "message": "Êtes-vous sûr de vouloir supprimer le template « {name} » ? Cette action est irréversible.",
+      "confirm": "Supprimer",
+      "cancel": "Annuler"
+    },
+    "toasts": {
+      "errorTitle": "Erreur",
+      "deletedTitle": "Supprimé",
+      "deletedMessage": "Le template a été supprimé.",
+      "deleteError": "Échec de la suppression",
+      "defaultSetTitle": "Défini par défaut",
+      "defaultSetMessage": "« {name} » sera désormais utilisé par défaut pour ce type.",
+      "defaultSetError": "Échec de la mise à jour"
+    },
     "types": {
       "NOTIFY": {
         "label": "Notification RH ↔ Client",
@@ -51,10 +68,17 @@
       "INTERVIEW_CANCELLATION_INVITEE": {
         "label": "Annulation d'entretien — invité",
         "description": "Envoyé aux AUTRES PARTICIPANTS lorsqu'un entretien planifié est annulé."
+      },
+      "PUBLIC_APPLICATION_DELETED": {
+        "label": "Candidature d'offre publique supprimée",
+        "description": "Envoyé au CANDIDAT lorsque sa candidature à une offre publique est supprimée par le recruteur."
       }
     },
     "editorModal": {
       "subtitle": "Personnalisez l'objet et le corps de cet email. Utilisez les variables ci-dessous pour insérer des informations dynamiques.",
+      "subtitleCreate": "Créez une nouvelle variante pour ce type d'email. Utilisez les variables ci-dessous pour insérer des informations dynamiques.",
+      "nameLabel": "Nom du template",
+      "namePlaceholder": "Ex: Refus poli, Relance standard...",
       "subjectLabel": "Objet de l'email",
       "subjectPlaceholder": "Objet de l'email",
       "bodyLabel": "Corps de l'email",
@@ -63,7 +87,6 @@
       "previewLabel": "Aperçu (avec des données d'exemple)",
       "previewSubjectLabel": "Objet :",
       "previewIframeTitle": "Aperçu de l'email",
-      "reset": "Réinitialiser au modèle par défaut",
       "preview": "Aperçu",
       "cancel": "Annuler",
       "save": "Enregistrer",
@@ -71,11 +94,9 @@
       "toasts": {
         "savedTitle": "Enregistré",
         "savedMessage": "Le template a été mis à jour.",
+        "createdMessage": "Le template a été créé.",
         "errorTitle": "Erreur",
         "saveError": "Échec de l'enregistrement",
-        "resetTitle": "Réinitialisé",
-        "resetMessage": "Le modèle par défaut a été restauré.",
-        "resetError": "Échec de la réinitialisation",
         "previewError": "Échec de l'aperçu"
       }
     }

@@ -106,7 +106,9 @@
       "manage": "Manage",
       "resend": "Resend",
       "stats": "Statistics",
-      "updateStatus": "Change status"
+      "updateStatus": "Change status",
+      "toggleStatus": "Toggle status",
+      "configure": "Configure"
     }
   }
 }

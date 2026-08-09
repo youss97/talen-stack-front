@@ -13,7 +13,8 @@
       "email": "البريد الإلكتروني",
       "phone": "الهاتف",
       "status": "الحالة",
-      "createdBy": "أنشئ بواسطة"
+      "createdBy": "أنشئ بواسطة",
+      "lastLogin": "آخر تسجيل دخول"
     },
     "status": {
       "active": "نشط",

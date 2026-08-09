@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
-import { useUpdateApplicationRequestMutation } from "@/lib/services/applicationRequestApi";
+import { useUpdatePublicOfferConfigMutation } from "@/lib/services/publicJobOfferApi";
 import { getApiErrorMessage } from "@/utils/errorMessages";
 
 // Champs configurables de l'offre publique (clés ↔ page /apply/[slug])
@@ -34,7 +34,7 @@ interface Props {
 
 export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initialVisibleFields, onSaved }: Props) {
   const t = useTranslations("publicOffers.config");
-  const [updateRequest, { isLoading }] = useUpdateApplicationRequestMutation();
+  const [updatePublicOfferConfig, { isLoading }] = useUpdatePublicOfferConfigMutation();
   const [visible, setVisible] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
 
@@ -63,7 +63,7 @@ export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initi
     // Si tout est coché → [] (= tout afficher)
     const payload = selected.length === PUBLIC_OFFER_FIELDS.length ? [] : selected;
     try {
-      await updateRequest({ id: offerId, data: { public_visible_fields: payload } as never }).unwrap();
+      await updatePublicOfferConfig({ id: offerId, data: { public_visible_fields: payload } }).unwrap();
       onSaved?.();
       onClose();
     } catch (err) {

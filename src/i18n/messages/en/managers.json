@@ -13,7 +13,8 @@
       "email": "Email",
       "phone": "Phone",
       "status": "Status",
-      "createdBy": "Created by"
+      "createdBy": "Created by",
+      "lastLogin": "Last login"
     },
     "status": {
       "active": "Active",

@@ -40,6 +40,8 @@ export const recruiterApi = createApi({
           ...(params.recruiter_id && { recruiter_id: params.recruiter_id }),
           ...(params.responsible_id && { responsible_id: params.responsible_id }),
           ...(params.unassigned && { unassigned: true }),
+          ...(params.sortBy && { sortBy: params.sortBy }),
+          ...(params.sortOrder && { sortOrder: params.sortOrder }),
         },
       }),
       providesTags: (result) =>

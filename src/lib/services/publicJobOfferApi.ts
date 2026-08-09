@@ -5,6 +5,7 @@ import type {
   PublicJobOfferStats,
   CreatePublicJobOfferData,
   CreatePublicApplicationData,
+  ResponsibleUser,
 } from '@/types/publicJobOffer';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -24,10 +25,10 @@ export const publicJobOfferApi = createApi({
   tagTypes: ['PublicJobOffer', 'PublicApplication', 'ApplicationRequest'],
   endpoints: (builder) => ({
     // Admin endpoints - Utilise maintenant recruitment_requests
-    getPublicJobOffers: builder.query<{ data: PublicJobOffer[]; pagination: { page: number; limit: number; total: number; totalPages: number } }, { page?: number; limit?: number; search?: string }>({
-      query: ({ page = 1, limit = 5, search } = {}) => ({
+    getPublicJobOffers: builder.query<{ data: PublicJobOffer[]; pagination: { page: number; limit: number; total: number; totalPages: number } }, { page?: number; limit?: number; search?: string; sortBy?: string; sortOrder?: "ASC" | "DESC" }>({
+      query: ({ page = 1, limit = 5, search, sortBy, sortOrder } = {}) => ({
         url: '/requests/public/all',
-        params: { page, limit, ...(search && { search }) }
+        params: { page, limit, ...(search && { search }), ...(sortBy && { sortBy }), ...(sortOrder && { sortOrder }) }
       }),
       providesTags: ['PublicJobOffer'],
     }),
@@ -38,9 +39,27 @@ export const publicJobOfferApi = createApi({
     }),
 
     // Candidatures d'offre publique d'une demande (séparées des candidatures)
-    getPublicApplicationsByRequest: builder.query<PublicApplication[], string>({
-      query: (requestId) => `/requests/${requestId}/public-applications`,
-      providesTags: (result, error, requestId) => [{ type: 'PublicApplication', id: requestId }],
+    getPublicApplicationsByRequest: builder.query<PublicApplication[], { requestId: string; referrerId?: string }>({
+      query: ({ requestId, referrerId }) => ({
+        url: `/requests/${requestId}/public-applications`,
+        params: referrerId ? { referrerId } : undefined,
+      }),
+      providesTags: (result, error, { requestId }) => [{ type: 'PublicApplication', id: requestId }],
+    }),
+
+    // Personnes assignées/responsables d'une demande — alimente le filtre "recruteur référent"
+    getRequestResponsibleUsers: builder.query<ResponsibleUser[], string>({
+      query: (requestId) => `/requests/${requestId}/responsible-users`,
+    }),
+
+    // Configurer l'affichage d'une offre publique (champs visibles)
+    updatePublicOfferConfig: builder.mutation<PublicJobOffer, { id: string; data: { public_visible_fields?: string[] } }>({
+      query: ({ id, data }) => ({
+        url: `/requests/${id}/public-config`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'PublicJobOffer', id }, 'PublicJobOffer'],
     }),
 
     // Transformer une candidature publique en vraie candidature
@@ -53,10 +72,11 @@ export const publicJobOfferApi = createApi({
     }),
 
     // Supprimer une candidature d'offre publique (non transformée)
-    deletePublicApplication: builder.mutation<void, { id: string; requestId: string }>({
-      query: ({ id }) => ({
+    deletePublicApplication: builder.mutation<void, { id: string; requestId: string; templateId?: string; subject?: string; body_html?: string }>({
+      query: ({ id, templateId, subject, body_html }) => ({
         url: `/public-applications/${id}`,
         method: 'DELETE',
+        body: { templateId, subject, body_html },
       }),
       invalidatesTags: (result, error, { requestId }) => [{ type: 'PublicApplication', id: requestId }],
     }),
@@ -125,6 +145,8 @@ export const {
   useGetPublicJobOffersQuery,
   useGetPublicJobOfferByIdQuery,
   useGetPublicApplicationsByRequestQuery,
+  useGetRequestResponsibleUsersQuery,
+  useUpdatePublicOfferConfigMutation,
   useConvertPublicApplicationMutation,
   useDeletePublicApplicationMutation,
   useGetSpontaneousApplicationsQuery,

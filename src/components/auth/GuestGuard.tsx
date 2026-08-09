@@ -12,7 +12,10 @@ interface GuestGuardProps {
 
 export default function GuestGuard({ children }: GuestGuardProps) {
   const router = useRouter();
-  const { isLoading } = useVerifyUserQuery();
+  // Sans token en local, on sait déjà que l'utilisateur n'est pas connecté — inutile
+  // d'appeler /auth/me (401 garanti) juste pour afficher la page de connexion.
+  const hasToken = typeof window !== "undefined" && !!localStorage.getItem("token");
+  const { isLoading } = useVerifyUserQuery(undefined, { skip: !hasToken });
   const { isAuth } = useAppSelector((state) => state.auth);
 
   useEffect(() => {

@@ -36,6 +36,7 @@
   "actions": {
     "viewDetails": "View details",
     "edit": "Edit",
+    "duplicate": "Duplicate",
     "sendEmail": "Send email",
     "scheduleInterview": "Schedule interview",
     "assign": "Assign",

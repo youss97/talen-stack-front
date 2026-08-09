@@ -1,4 +1,16 @@
 {
+  "templatePicker": {
+    "subtitle": "Choisissez un template enregistré (facultatif), puis relisez ou modifiez l'objet et le corps avant l'envoi. Les modifications ne sont jamais enregistrées dans le template.",
+    "templateLabel": "Template enregistré",
+    "selectPlaceholder": "Rechercher un template...",
+    "noTemplate": "Aucun template enregistré",
+    "default": "défaut",
+    "subjectLabel": "Objet de l'email",
+    "bodyLabel": "Corps de l'email",
+    "variablesLabel": "Variables disponibles",
+    "cancel": "Annuler",
+    "confirm": "Envoyer"
+  },
   "page": {
     "title": "Gestion des Emails",
     "subtitle": "Envoyez des emails en masse aux candidats, clients, utilisateurs et managers",

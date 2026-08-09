@@ -65,6 +65,7 @@ export default function AssignmentsPage() {
   const [unassignedOnly, setUnassignedOnly] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   // Selection state (reset on tab change)
@@ -92,7 +93,7 @@ export default function AssignmentsPage() {
 
   const qParams = {
     page,
-    limit: 10,
+    limit,
     search: debouncedSearch || undefined,
     unassigned: unassignedOnly || undefined,
   };
@@ -526,7 +527,7 @@ export default function AssignmentsPage() {
         )}
 
         {/* Pagination */}
-        {pagination && pagination.totalPages > 1 && (
+        {pagination && (
           <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
             <Pagination
               currentPage={page}
@@ -534,6 +535,7 @@ export default function AssignmentsPage() {
               totalItems={pagination.total}
               itemsPerPage={pagination.limit}
               onPageChange={setPage}
+              onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
             />
           </div>
         )}

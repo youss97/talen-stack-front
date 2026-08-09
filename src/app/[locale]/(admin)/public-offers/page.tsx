@@ -1,14 +1,18 @@
 "use client";
 import { useState, useCallback } from "react";
+import { useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { FolderOpen, Eye, Link2, Settings, RefreshCw, Plus } from "lucide-react";
+import type { RootState } from "@/lib/store";
+import { usePermissions } from "@/hooks/usePermissions";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
+import { useTableSort } from "@/hooks/useTableSort";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
-import { formatDate } from "@/utils/dateFormat";
+import { formatDateTime } from "@/utils/dateFormat";
 import {
   useGetPublicJobOffersQuery,
   useTogglePublicJobOfferActiveMutation,
@@ -16,18 +20,31 @@ import {
 import type { PublicJobOffer } from "@/types/publicJobOffer";
 import PublicOfferConfigModal from "@/components/public-offers/PublicOfferConfigModal";
 
+// URL canonique /{slug-société}/{slug-offre} si la société a un slug, sinon repli /apply/{slug-offre}.
+function buildPublicOfferUrl(offer: PublicJobOffer, refUserId?: string): string {
+  const companySlug = offer.client?.company?.slug;
+  const path = companySlug ? `/${companySlug}/${offer.public_slug}` : `/apply/${offer.public_slug}`;
+  return `${window.location.origin}${path}${refUserId ? `?ref=${refUserId}` : ""}`;
+}
+
 export default function PublicOffersPage() {
   const t = useTranslations("publicOffers.list");
   const router = useRouter();
+  const { canDoAction } = usePermissions();
+  const currentUser = useSelector((state: RootState) => state.auth.user);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState("");
   const [configOffer, setConfigOffer] = useState<PublicJobOffer | null>(null);
+  const { sortBy, sortOrder, handleSort } = useTableSort();
 
   const { data, isLoading, isFetching, refetch } = useGetPublicJobOffersQuery({
     page,
-    limit: 5,
+    limit,
     search: search || undefined,
+    sortBy,
+    sortOrder,
   });
 
   const [toggleActive] = useTogglePublicJobOfferActiveMutation();
@@ -58,8 +75,8 @@ export default function PublicOffersPage() {
     }
   };
 
-  const copyLink = (slug: string) => {
-    const url = `${window.location.origin}/apply/${slug}`;
+  const copyLink = (offer: PublicJobOffer) => {
+    const url = buildPublicOfferUrl(offer, currentUser?.id);
     navigator.clipboard.writeText(url);
     addToast("success", t("toast.linkCopied"), t("toast.linkCopiedMessage"));
   };
@@ -69,10 +86,13 @@ export default function PublicOffersPage() {
       key: "title",
       header: t("columns.title"),
       className: "font-medium",
+      sortable: true,
     },
     {
       key: "client.name",
       header: t("columns.client"),
+      sortable: true,
+      sortKey: "client",
       render: (_, row) => (
         <span className="text-gray-600 dark:text-gray-400">
           {row.client?.name || t("notAvailable")}
@@ -82,14 +102,17 @@ export default function PublicOffersPage() {
     {
       key: "location",
       header: t("columns.location"),
+      sortable: true,
     },
     {
       key: "contract_type",
       header: t("columns.contractType"),
+      sortable: true,
     },
     {
       key: "is_public",
       header: t("columns.status"),
+      sortable: true,
       render: (value) => (
         <Badge
           color={value ? "success" : "error"}
@@ -103,6 +126,16 @@ export default function PublicOffersPage() {
     {
       key: "public_views_count",
       header: t("columns.views"),
+      sortable: true,
+      render: (value) => (
+        <span className="text-gray-600 dark:text-gray-400">
+          {(value as number) || 0}
+        </span>
+      ),
+    },
+    {
+      key: "applications_count",
+      header: t("columns.applicationsCount"),
       render: (value) => (
         <span className="text-gray-600 dark:text-gray-400">
           {(value as number) || 0}
@@ -112,9 +145,10 @@ export default function PublicOffersPage() {
     {
       key: "created_at",
       header: t("columns.createdAt"),
+      sortable: true,
       render: (value) => (
         <span className="text-gray-600 dark:text-gray-400">
-          {formatDate(value as string)}
+          {formatDateTime(value as string)}
         </span>
       ),
     },
@@ -131,8 +165,7 @@ export default function PublicOffersPage() {
       icon: <Eye size={16} strokeWidth={1.8} className="icon-glow" />,
       onClick: (offer: PublicJobOffer) => {
         if (offer.is_public && offer.public_slug) {
-          const url = `${window.location.origin}/apply/${offer.public_slug}`;
-          window.open(url, '_blank');
+          window.open(buildPublicOfferUrl(offer, currentUser?.id), '_blank');
         } else {
           addToast("warning", t("toast.attention"), t("toast.notPublicWarning"));
         }
@@ -143,22 +176,22 @@ export default function PublicOffersPage() {
       icon: <Link2 size={16} strokeWidth={1.8} className="icon-glow" />,
       onClick: (offer: PublicJobOffer) => {
         if (offer.is_public && offer.public_slug) {
-          copyLink(offer.public_slug);
+          copyLink(offer);
         } else {
           addToast("warning", t("toast.attention"), t("toast.notPublicWarning"));
         }
       },
     },
-    {
+    ...(canDoAction('public-offers.configure') ? [{
       label: t("actions.configure"),
       icon: <Settings size={16} strokeWidth={1.8} className="icon-glow" />,
       onClick: (offer: PublicJobOffer) => setConfigOffer(offer),
-    },
-    {
+    }] : []),
+    ...(canDoAction('public-offers.toggle-status') ? [{
       label: t("actions.toggleStatus"),
       icon: <RefreshCw size={16} strokeWidth={1.8} className="icon-glow" />,
       onClick: handleToggleActive,
-    },
+    }] : []),
   ];
 
   return (
@@ -206,6 +239,9 @@ export default function PublicOffersPage() {
           isLoading={isLoading || isFetching}
           customActions={customActions}
           emptyMessage={t("emptyMessage")}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSort={(key) => { handleSort(key); setPage(1); }}
         />
 
         {data && data.pagination && (
@@ -216,6 +252,7 @@ export default function PublicOffersPage() {
               totalItems={data.pagination.total}
               itemsPerPage={data.pagination.limit}
               onPageChange={setPage}
+              onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
             />
           </div>
         )}

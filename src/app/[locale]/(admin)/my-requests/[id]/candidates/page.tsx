@@ -22,7 +22,7 @@ import { getFeedbackCardColor } from "@/utils/feedbackColors";
 import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
 import type { Recruiter } from "@/types/recruiter";
 import type { ApplicationRequest } from "@/types/applicationRequest";
-import { Users, Mail, Phone } from "lucide-react";
+import { Users, Mail, Phone, Eye, Pencil, RefreshCw, ClipboardList, MessageCircle, FileText, Download } from "lucide-react";
 
 export default function RequestCandidatesPage() {
   const t = useTranslations("myRequests.candidates");
@@ -198,15 +198,19 @@ export default function RequestCandidatesPage() {
             variant="outline"
             size="sm"
             onClick={() => setIsOfferDetailOpen(true)}
+            className="inline-flex items-center gap-1.5"
           >
-            📋 {t("offerDetails")}
+            <Eye size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
+            {t("offerDetails")}
           </Button>
           {offer?.is_owner && (
             <Button
               size="sm"
               onClick={() => setIsOfferEditOpen(true)}
+              className="inline-flex items-center gap-1.5"
             >
-              ✏️ {t("editOffer")}
+              <Pencil size={16} strokeWidth={1.8} className="icon-glow" />
+              {t("editOffer")}
             </Button>
           )}
           <Button
@@ -214,8 +218,14 @@ export default function RequestCandidatesPage() {
             size="sm"
             onClick={() => refetch()}
             disabled={isFetching}
+            className="inline-flex items-center gap-1.5"
           >
-            {isFetching ? "..." : `↻ ${t("refresh")}`}
+            {isFetching ? "..." : (
+              <>
+                <RefreshCw size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
+                {t("refresh")}
+              </>
+            )}
           </Button>
         </div>
       </div>
@@ -355,8 +365,9 @@ export default function RequestCandidatesPage() {
                       {rhFeedbacks.length > 0 && (
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                              📋 {t("feedback.hrEvaluations", { count: rhFeedbacks.length })}
+                            <p className="text-xs font-medium text-gray-700 dark:text-gray-300 inline-flex items-center gap-1.5">
+                              <ClipboardList size={14} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
+                              {t("feedback.hrEvaluations", { count: rhFeedbacks.length })}
                             </p>
                             {rhFeedbacks.length > 1 && (
                               <Button
@@ -380,8 +391,9 @@ export default function RequestCandidatesPage() {
                       {clientFeedbacks.length > 0 && (
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                              💭 {t("feedback.myFeedbacks", { count: clientFeedbacks.length })}
+                            <p className="text-xs font-medium text-gray-700 dark:text-gray-300 inline-flex items-center gap-1.5">
+                              <MessageCircle size={14} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
+                              {t("feedback.myFeedbacks", { count: clientFeedbacks.length })}
                             </p>
                             {clientFeedbacks.length > 2 && rhFeedbacks.length === 0 && (
                               <Button
@@ -415,8 +427,10 @@ export default function RequestCandidatesPage() {
                     setDetailCandidate(candidate);
                     setIsDetailModalOpen(true);
                   }}
+                  className="inline-flex items-center gap-1.5"
                 >
-                  👁 {t("consultApplication")}
+                  <Eye size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
+                  {t("consultApplication")}
                 </Button>
                 {/* Affichage conditionnel du CV selon is_anonymized */}
                 {candidate.is_anonymized ? (
@@ -469,8 +483,10 @@ export default function RequestCandidatesPage() {
                       }}
                       size="sm"
                       variant="outline"
+                      className="inline-flex items-center gap-1.5"
                     >
-                      📄 {t("viewCv")}
+                      <FileText size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
+                      {t("viewCv")}
                     </Button>
                   )
                 ) : (
@@ -483,8 +499,10 @@ export default function RequestCandidatesPage() {
                         })}
                         size="sm"
                         variant="outline"
+                        className="inline-flex items-center gap-1.5"
                       >
-                        👁️ {t("viewCv")}
+                        <Eye size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
+                        {t("viewCv")}
                       </Button>
                       <Button
                         onClick={() => candidate.cv?.id && downloadCvFile(candidate.cv.id, (candidate.cv as unknown as { file_name?: string }).file_name || 'CV.pdf').then((ok) => {
@@ -492,8 +510,10 @@ export default function RequestCandidatesPage() {
                         })}
                         size="sm"
                         variant="outline"
+                        className="inline-flex items-center gap-1.5"
                       >
-                        📄 {t("downloadCv")}
+                        <Download size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
+                        {t("downloadCv")}
                       </Button>
                     </>
                   )

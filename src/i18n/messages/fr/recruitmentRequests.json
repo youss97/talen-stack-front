@@ -43,7 +43,8 @@
     "exportExcel": "Exporter Excel",
     "addRequest": "Ajouter une demande",
     "kanban": "Kanban",
-    "assign": "Affecter"
+    "assign": "Affecter",
+    "duplicate": "Dupliquer"
   },
   "toast": {
     "noDataTitle": "Aucune donnée",
@@ -141,10 +142,20 @@
       "workType": "7. Type de Travail",
       "languages": "8. Langues Requises",
       "workflow": "Workflow du recrutement",
+      "questions": "Questions personnalisées (candidature publique)",
       "benefits": "9. Avantages et Primes",
       "priorityStatus": "10. Priorité et Statut",
       "datesProfiles": "11. Dates et Nombre de Profils",
       "notes": "Notes"
+    },
+    "questions": {
+      "hint": "Posées au candidat avant qu'il ne remplisse le formulaire de candidature, pour filtrer les profils qui ne correspondent pas (ex: expérience insuffisante).",
+      "textPlaceholder": "Ex: Combien d'années d'expérience avez-vous en Laravel ?",
+      "answerTypeNumber": "Réponse chiffrée",
+      "answerTypeYesNo": "Oui / Non",
+      "required": "Obligatoire",
+      "remove": "Supprimer",
+      "add": "+ Ajouter une question"
     },
     "fields": {
       "client": "Client",

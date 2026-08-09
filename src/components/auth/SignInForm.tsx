@@ -113,9 +113,9 @@ export default function SignInForm() {
                       className="absolute z-30 -translate-y-1/2 cursor-pointer end-4 top-1/2"
                     >
                       {showPassword ? (
-                        <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                        <EyeIcon className="text-gray-500 dark:text-gray-400" />
                       ) : (
-                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                        <EyeCloseIcon className="text-gray-500 dark:text-gray-400" />
                       )}
                     </span>
                   </div>

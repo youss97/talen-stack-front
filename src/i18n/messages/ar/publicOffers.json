@@ -13,6 +13,7 @@
       "contractType": "نوع العقد",
       "status": "الحالة",
       "views": "المشاهدات",
+      "applicationsCount": "الترشيحات",
       "createdAt": "تاريخ الإنشاء"
     },
     "statusPublic": "عام",
@@ -61,10 +62,20 @@
     "copyLink": "نسخ الرابط",
     "preview": "معاينة",
     "receivedApplications": "الترشيحات المستلمة (عرض عام)",
+    "filters": {
+      "allReferrers": "الكل"
+    },
     "deleteApplication": {
       "title": "حذف الترشيح",
       "message": "هل أنت متأكد أنك تريد حذف ترشيح {name}؟ هذا الإجراء لا رجعة فيه.",
       "confirm": "حذف",
+      "cancel": "إلغاء",
+      "pickTemplateTitle": "ما هو البريد الإلكتروني الذي سيتم إرساله إلى المرشح؟"
+    },
+    "convertApplication": {
+      "title": "تحويل إلى ترشيح",
+      "message": "هل تريد تحويل ترشيح العرض العام هذا إلى ترشيح داخلي؟ سيتم إضافة السيرة الذاتية إلى قاعدة المواهب.",
+      "confirm": "تحويل",
       "cancel": "إلغاء"
     },
     "toast": {
@@ -118,13 +129,26 @@
       "candidate": "المرشح",
       "contact": "التواصل",
       "receivedOn": "تاريخ الاستلام",
+      "referrer": "المُوصي",
       "actions": "الإجراءات"
     },
     "cv": "السيرة الذاتية",
     "convert": "→ ترشيح",
     "converted": "تم التحويل",
     "delete": "حذف",
-    "empty": "لا توجد ترشيحات لهذا التصفية"
+    "details": "التفاصيل",
+    "empty": "لا توجد ترشيحات لهذا التصفية",
+    "detailModal": {
+      "receivedOn": "تم الاستلام في {date}",
+      "contact": "معلومات التواصل",
+      "motivationLetter": "رسالة التحفيز",
+      "customAnswers": "إجابات الأسئلة",
+      "yes": "نعم",
+      "no": "لا",
+      "cv": "السيرة الذاتية",
+      "downloadCv": "تحميل السيرة الذاتية",
+      "close": "إغلاق"
+    }
   },
   "conversion": {
     "title": "جارٍ التحويل إلى ترشيح…",

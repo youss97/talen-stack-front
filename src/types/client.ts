@@ -112,6 +112,8 @@ export interface ClientPaginationParams {
   limit?: number;
   search?: string;
   status?: string;
+  sortBy?: string;
+  sortOrder?: "ASC" | "DESC";
 }
 
 export interface Manager {
@@ -128,6 +130,7 @@ export interface Manager {
   created_by?: string | null;
   creator?: { id: string; first_name: string; last_name: string; email: string } | null;
   creatorName?: string | null;
+  last_login?: string | null;
 }
 
 export const COUNTRY_LIST = [

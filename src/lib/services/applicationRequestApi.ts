@@ -38,6 +38,8 @@ export const applicationRequestApi = createApi({
           ...(params.location && { location: params.location }),
           ...(params.responsible_id && { responsible_id: params.responsible_id }),
           ...(params.unassigned && { unassigned: true }),
+          ...(params.sortBy && { sortBy: params.sortBy }),
+          ...(params.sortOrder && { sortOrder: params.sortOrder }),
         },
       }),
       providesTags: (result) =>
@@ -155,6 +157,16 @@ export const applicationRequestApi = createApi({
         { type: "ApplicationRequest", id: "INFINITE_LIST" },
       ],
     }),
+
+    // PUT /applications/requests/:id/questions - Remplace les questions personnalisées de l'offre publique
+    updateRequestQuestions: builder.mutation<void, { id: string; questions: Array<{ question_text: string; answer_type: "number" | "yesno"; is_required?: boolean }> }>({
+      query: ({ id, questions }) => ({
+        url: `/applications/requests/${id}/questions`,
+        method: "PUT",
+        body: { questions },
+      }),
+      invalidatesTags: (_result, _error, { id }) => [{ type: "ApplicationRequest", id }],
+    }),
   }),
 });
 
@@ -167,4 +179,5 @@ export const {
   useUpdateApplicationRequestMutation,
   useDeleteApplicationRequestMutation,
   useAssignApplicationRequestMutation,
+  useUpdateRequestQuestionsMutation,
 } = applicationRequestApi;

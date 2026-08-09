@@ -13,6 +13,7 @@
       "contractType": "Type de contrat",
       "status": "Statut",
       "views": "Vues",
+      "applicationsCount": "Candidatures",
       "createdAt": "Date de création"
     },
     "statusPublic": "Publique",
@@ -61,10 +62,20 @@
     "copyLink": "Copier le lien",
     "preview": "Prévisualiser",
     "receivedApplications": "Candidatures reçues (offre publique)",
+    "filters": {
+      "allReferrers": "Tous"
+    },
     "deleteApplication": {
       "title": "Supprimer la candidature",
       "message": "Êtes-vous sûr de vouloir supprimer la candidature de {name} ? Cette action est irréversible.",
       "confirm": "Supprimer",
+      "cancel": "Annuler",
+      "pickTemplateTitle": "Quel email envoyer au candidat ?"
+    },
+    "convertApplication": {
+      "title": "Transformer en candidature",
+      "message": "Voulez-vous transformer cette candidature d'offre publique en candidature interne ? Le CV sera ajouté au vivier de talents.",
+      "confirm": "Transformer",
       "cancel": "Annuler"
     },
     "toast": {
@@ -118,13 +129,26 @@
       "candidate": "Candidat",
       "contact": "Contact",
       "receivedOn": "Reçue le",
+      "referrer": "Recruteur",
       "actions": "Actions"
     },
     "cv": "CV",
     "convert": "→ Candidature",
     "converted": "Transformée",
     "delete": "Supprimer",
-    "empty": "Aucune candidature pour ce filtre"
+    "details": "Détails",
+    "empty": "Aucune candidature pour ce filtre",
+    "detailModal": {
+      "receivedOn": "Reçue le {date}",
+      "contact": "Coordonnées",
+      "motivationLetter": "Lettre de motivation",
+      "customAnswers": "Réponses aux questions",
+      "yes": "Oui",
+      "no": "Non",
+      "cv": "CV",
+      "downloadCv": "Télécharger le CV",
+      "close": "Fermer"
+    }
   },
   "conversion": {
     "title": "Transformation en candidature…",

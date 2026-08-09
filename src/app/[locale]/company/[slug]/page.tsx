@@ -5,6 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { useTranslations } from "next-intl";
 import ThreeParticles from "@/components/common/ThreeParticles";
 import LanguageSwitcher from "@/components/header/LanguageSwitcher";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 interface Offer {
   id: string;
@@ -242,7 +243,12 @@ export default function CompanyLandingPage() {
                 {o.contract_type && <span className="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">{o.contract_type}</span>}
                 {o.min_experience ? <span className="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">{t("experienceYears", { count: o.min_experience })}</span> : null}
               </div>
-              {o.description && <p className="mt-3 text-sm text-gray-500 line-clamp-3">{o.description}</p>}
+              {o.description && (
+                <div
+                  className="mt-3 text-sm text-gray-500 line-clamp-3"
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(o.description) }}
+                />
+              )}
               <a
                 href={o.public_slug ? `/apply/${o.public_slug}` : "#"}
                 className="mt-5 inline-flex items-center justify-center gap-1 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"

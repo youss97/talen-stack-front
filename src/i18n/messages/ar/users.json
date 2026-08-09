@@ -17,7 +17,8 @@
       "role": "الدور",
       "company": "الشركة",
       "status": "الحالة",
-      "createdBy": "أنشئ بواسطة"
+      "createdBy": "أنشئ بواسطة",
+      "lastLogin": "آخر تسجيل دخول"
     },
     "status": {
       "active": "نشط",

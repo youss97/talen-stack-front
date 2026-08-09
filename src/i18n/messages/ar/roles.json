@@ -106,7 +106,9 @@
       "manage": "إدارة",
       "resend": "إعادة الإرسال",
       "stats": "الإحصائيات",
-      "updateStatus": "تغيير الحالة"
+      "updateStatus": "تغيير الحالة",
+      "toggleStatus": "تبديل الحالة",
+      "configure": "تهيئة"
     }
   }
 }

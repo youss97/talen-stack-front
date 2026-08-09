@@ -19,6 +19,7 @@ import {
   useLazyGetApplicationRequestByIdQuery,
   useCreateApplicationRequestMutation,
   useUpdateApplicationRequestMutation,
+  useUpdateRequestQuestionsMutation,
   useDeleteApplicationRequestMutation,
   useAssignApplicationRequestMutation,
 } from "@/lib/services/applicationRequestApi";
@@ -30,7 +31,8 @@ import { formatDate } from "@/utils/dateFormat";
 import type { ApplicationRequest, UpdateApplicationRequestRequest } from "@/types/applicationRequest";
 import type { CreateApplicationRequestFormData } from "@/validations/applicationRequestValidation";
 import { getApiErrorMessage } from "@/utils/errorMessages";
-import { Plus, LayoutDashboard, UserPlus } from "lucide-react";
+import { useTableSort } from "@/hooks/useTableSort";
+import { Plus, LayoutDashboard, UserPlus, Copy } from "lucide-react";
 
 export default function RecruitmentPage() {
   const t = useTranslations("recruitmentRequests");
@@ -54,6 +56,7 @@ export default function RecruitmentPage() {
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<ApplicationRequest | null>(null);
   const [editingRequest, setEditingRequest] = useState<ApplicationRequest | null>(null);
+  const [isDuplicateMode, setIsDuplicateMode] = useState(false);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -85,6 +88,7 @@ export default function RecruitmentPage() {
   }, []);
 
   const [limit, setLimit] = useState(5);
+  const { sortBy, sortOrder, handleSort } = useTableSort();
 
   const { data, isLoading, isFetching, refetch } = useGetApplicationRequestsQuery({
     page,
@@ -95,11 +99,14 @@ export default function RecruitmentPage() {
     experience_level: experienceLevelFilter || undefined,
     contract_type: contractTypeFilter || undefined,
     location: locationFilter || undefined,
+    sortBy,
+    sortOrder,
   });
 
   const [getRequestById, { isLoading: isLoadingRequest }] = useLazyGetApplicationRequestByIdQuery();
   const [createRequest, { isLoading: isCreating }] = useCreateApplicationRequestMutation();
   const [updateRequest, { isLoading: isUpdating }] = useUpdateApplicationRequestMutation();
+  const [updateRequestQuestions] = useUpdateRequestQuestionsMutation();
   const [deleteRequest] = useDeleteApplicationRequestMutation();
   const [assignRequest] = useAssignApplicationRequestMutation();
 
@@ -125,6 +132,7 @@ export default function RecruitmentPage() {
 
   const handleAddClick = () => {
     setEditingRequest(null);
+    setIsDuplicateMode(false);
     setFormError(null);
     setIsFormModalOpen(true);
   };
@@ -147,9 +155,10 @@ export default function RecruitmentPage() {
 
   const handleEditClick = async (request: ApplicationRequest) => {
     setFormError(null);
+    setIsDuplicateMode(false);
     setIsFormModalOpen(true);
     setEditingRequest(null);
-    
+
     try {
       const fullData = await getRequestById(request.id).unwrap();
       setEditingRequest(fullData);
@@ -157,6 +166,26 @@ export default function RecruitmentPage() {
       console.error("Error loading request data:", error);
       addToast("error", t("toast.loadErrorTitle"), t("toast.loadErrorMessage"));
       setIsFormModalOpen(false);
+    }
+  };
+
+  const handleDuplicateClick = async (request: ApplicationRequest) => {
+    // Pré-remplir le formulaire d'ajout avec les infos de cette demande, sans jamais
+    // la modifier : seul le statut est réinitialisé (une nouvelle demande ne doit pas
+    // hériter d'un statut déjà avancé, ex. "clôturée", de la demande d'origine).
+    setFormError(null);
+    setIsFormModalOpen(true);
+    setEditingRequest(null);
+
+    try {
+      const fullData = await getRequestById(request.id).unwrap();
+      setEditingRequest({ ...fullData, status: undefined } as unknown as ApplicationRequest);
+      setIsDuplicateMode(true);
+    } catch (error) {
+      console.error("Error loading request data:", error);
+      addToast("error", t("toast.loadErrorTitle"), t("toast.loadErrorMessage"));
+      setIsFormModalOpen(false);
+      setIsDuplicateMode(false);
     }
   };
 
@@ -230,7 +259,7 @@ export default function RecruitmentPage() {
 
   const handleFormSubmit = async (formData: CreateApplicationRequestFormData) => {
     try {
-      if (editingRequest) {
+      if (editingRequest && !isDuplicateMode) {
         // Pour l'update, créer un objet avec seulement les champs définis
         const updateData: any = {};
         
@@ -269,6 +298,9 @@ export default function RecruitmentPage() {
           id: editingRequest.id,
           data: updateData,
         }).unwrap();
+        if ((formData as any).questions !== undefined) {
+          await updateRequestQuestions({ id: editingRequest.id, questions: (formData as any).questions }).unwrap();
+        }
         addToast("success", t("toast.updateSuccessTitle"), t("toast.updateSuccess"));
       } else {
         // Pour la création, envoyer seulement les champs définis
@@ -348,15 +380,19 @@ export default function RecruitmentPage() {
           );
         }
 
-        await createRequest({ ...createData, client_id: formData.client_id }).unwrap();
+        const createdRequest = await createRequest({ ...createData, client_id: formData.client_id }).unwrap();
+        if ((formData as any).questions?.length) {
+          await updateRequestQuestions({ id: createdRequest.id, questions: (formData as any).questions }).unwrap();
+        }
 
         addToast("success", t("toast.createSuccessTitle"), t("toast.createSuccess"));
       }
       setIsFormModalOpen(false);
       setEditingRequest(null);
+      setIsDuplicateMode(false);
     } catch (error) {
       console.error('Error creating/updating request:', error);
-      const defaultMsg = editingRequest
+      const defaultMsg = editingRequest && !isDuplicateMode
         ? t("toast.updateErrorDefault")
         : t("toast.createErrorDefault");
       { const _m = getErrorMessage(error, defaultMsg); setFormError(_m); addToast("error", t("toast.updateErrorTitle"), _m); }
@@ -488,6 +524,8 @@ export default function RecruitmentPage() {
       key: "title" as keyof ApplicationRequest,
       header: t("list.columns.request"),
       className: "min-w-[200px]",
+      sortable: true,
+      sortKey: "title",
       render: (value: unknown, row?: ApplicationRequest) => {
         return (
           <div>
@@ -501,6 +539,8 @@ export default function RecruitmentPage() {
       key: "id" as keyof ApplicationRequest,
       header: t("list.columns.client"),
       className: "min-w-[150px]",
+      sortable: true,
+      sortKey: "client",
       render: (_value: unknown, row?: ApplicationRequest) => {
         return <span className="truncate block max-w-[150px]">{row?.client?.name || "-"}</span>;
       },
@@ -509,6 +549,8 @@ export default function RecruitmentPage() {
       key: "contract_types" as keyof ApplicationRequest,
       header: t("list.columns.contract"),
       className: "min-w-[100px]",
+      sortable: true,
+      sortKey: "contract_type",
       render: (value: unknown, row: ApplicationRequest) => {
         const types = (value as string[]) || (row.contract_type ? [row.contract_type] : []);
         return <span className="text-sm">{types.length > 0 ? types.join(", ") : "-"}</span>;
@@ -538,6 +580,8 @@ export default function RecruitmentPage() {
       key: "status" as keyof ApplicationRequest,
       header: t("list.columns.status"),
       className: "min-w-[110px]",
+      sortable: true,
+      sortKey: "status",
       render: (value: unknown) => (
         <Badge
           variant="light"
@@ -729,9 +773,13 @@ export default function RecruitmentPage() {
             onView={handleRowClick}
             onEdit={canUpdate ? handleEditClick : undefined}
             onDelete={canDelete ? handleDeleteClick : undefined}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={(key) => { handleSort(key); setPage(1); }}
             customActions={[
               { label: t("actions.kanban"), icon: <KanbanIcon />, onClick: (row: ApplicationRequest) => router.push(`/recruitment-requests/${row.id}/kanban`) },
               ...(canAssign ? [{ label: t("actions.assign"), icon: <AssignIcon />, onClick: handleAssignClick }] : []),
+              ...(canUpdate ? [{ label: t("actions.duplicate"), icon: <DuplicateIcon />, onClick: handleDuplicateClick }] : []),
             ]}
             emptyMessage={t("list.emptyMessage")}
         />
@@ -756,10 +804,12 @@ export default function RecruitmentPage() {
         onClose={() => {
           setIsFormModalOpen(false);
           setEditingRequest(null);
+          setIsDuplicateMode(false);
           setFormError(null);
         }}
         onSubmit={handleFormSubmit}
         applicationRequest={editingRequest}
+        isDuplicate={isDuplicateMode}
         isLoading={isCreating || isUpdating || isLoadingRequest}
         serverError={formError}
       />
@@ -808,4 +858,8 @@ function KanbanIcon() {
 
 function AssignIcon() {
   return <UserPlus className="icon-glow" size={16} strokeWidth={1.8} />;
+}
+
+function DuplicateIcon() {
+  return <Copy className="icon-glow" size={16} strokeWidth={1.8} />;
 }

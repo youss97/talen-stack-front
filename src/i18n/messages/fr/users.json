@@ -17,7 +17,8 @@
       "role": "Rôle",
       "company": "Entreprise",
       "status": "Statut",
-      "createdBy": "Créé par"
+      "createdBy": "Créé par",
+      "lastLogin": "Dernière connexion"
     },
     "status": {
       "active": "Actif",

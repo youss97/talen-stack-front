@@ -2,6 +2,7 @@
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Plus, CheckCircle2, Lock, Unlock } from "lucide-react";
+import { formatDateTime } from "@/utils/dateFormat";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
 import Button from "@/components/ui/button/Button";
@@ -185,6 +186,15 @@ export default function UsersPage() {
       render: (_, row) => (
         <span className="text-gray-600 dark:text-gray-400">
           {row.creator ? `${row.creator.first_name} ${row.creator.last_name}` : "—"}
+        </span>
+      ),
+    },
+    {
+      key: "last_login",
+      header: t("list.columns.lastLogin"),
+      render: (value) => (
+        <span className="text-gray-600 dark:text-gray-400">
+          {value ? formatDateTime(value as string) : "—"}
         </span>
       ),
     },

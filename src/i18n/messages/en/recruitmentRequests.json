@@ -43,7 +43,8 @@
     "exportExcel": "Export Excel",
     "addRequest": "Add a request",
     "kanban": "Kanban",
-    "assign": "Assign"
+    "assign": "Assign",
+    "duplicate": "Duplicate"
   },
   "toast": {
     "noDataTitle": "No data",
@@ -141,10 +142,20 @@
       "workType": "7. Work Type",
       "languages": "8. Required Languages",
       "workflow": "Recruitment workflow",
+      "questions": "Custom questions (public application)",
       "benefits": "9. Benefits and Bonuses",
       "priorityStatus": "10. Priority and Status",
       "datesProfiles": "11. Dates and Number of Profiles",
       "notes": "Notes"
+    },
+    "questions": {
+      "hint": "Asked to the candidate before filling out the application form, to filter out profiles that don't match (e.g. insufficient experience).",
+      "textPlaceholder": "E.g. How many years of experience do you have with Laravel?",
+      "answerTypeNumber": "Number answer",
+      "answerTypeYesNo": "Yes / No",
+      "required": "Required",
+      "remove": "Remove",
+      "add": "+ Add a question"
     },
     "fields": {
       "client": "Client",

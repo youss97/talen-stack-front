@@ -24,7 +24,7 @@ export default function ContractTypesPage() {
   const t = useTranslations("settings.contractTypes");
   const tc = useTranslations("common");
   const [page, setPage] = useState(1);
-  const [limit] = useState(5);
+  const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedType, setSelectedType] = useState<ContractType | null>(null);
@@ -160,6 +160,7 @@ export default function ContractTypesPage() {
             totalItems={data.pagination.total}
             itemsPerPage={data.pagination.limit}
             onPageChange={setPage}
+            onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
           />
         </div>
       )}

@@ -8,6 +8,7 @@ import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import ManagerFormModal from "@/components/manager/ManagerFormModal";
+import { formatDateTime } from "@/utils/dateFormat";
 import ManagerDetailModal from "@/components/manager/ManagerDetailModal";
 import InfiniteSelect from "@/components/form/InfiniteSelect";
 import { useActions } from "@/hooks/useActions";
@@ -187,6 +188,15 @@ export default function ManagersPage() {
           </div>
         );
       },
+    },
+    {
+      key: "last_login",
+      header: t("list.columns.lastLogin"),
+      render: (value) => (
+        <div className="text-sm text-gray-600 dark:text-gray-300">
+          {value ? formatDateTime(value as string) : "—"}
+        </div>
+      ),
     },
   ];
 

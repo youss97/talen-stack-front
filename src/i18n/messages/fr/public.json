@@ -21,7 +21,7 @@
     },
     "success": {
       "title": "Candidature envoyée avec succès !",
-      "message": "Notre équipe RH vous recontactera dans les meilleurs délais."
+      "message": "Merci d'avoir postulé à cette offre.\n\nVotre candidature a bien été enregistrée et est actuellement en cours d'étude.\n\nSi votre profil correspond aux critères recherchés, vous serez contacté(e) dans les meilleurs délais.\n\nEn l'absence de retour sous deux semaines, vous pourrez considérer qu'un autre profil a été retenu pour cette opportunité.\n\nNous vous remercions de l'intérêt porté à cette offre et vous souhaitons pleine réussite dans la suite de votre parcours professionnel."
     },
     "sections": {
       "description": "Description du poste",
@@ -29,6 +29,9 @@
       "softSkills": "Softskills",
       "details": "Détails du poste"
     },
+    "showMore": "Voir plus",
+    "showLess": "Voir moins",
+    "viewAllOffers": "Voir toutes les offres de {company}",
     "sidebar": {
       "reference": "Référence",
       "contract": "Contrat",
@@ -51,6 +54,17 @@
       "button": "Postuler maintenant"
     },
     "sidebarCta": "Postuler maintenant",
+    "questionsModal": {
+      "title": "Quelques questions avant de postuler",
+      "yes": "Oui",
+      "no": "Non",
+      "numberPlaceholder": "Votre réponse",
+      "cancel": "Annuler",
+      "next": "Suivant",
+      "errors": {
+        "required": "Merci de répondre à toutes les questions obligatoires."
+      }
+    },
     "modal": {
       "title": "Postuler",
       "firstName": "Prénom",
@@ -61,6 +75,8 @@
       "emailPlaceholder": "jean@exemple.com",
       "phone": "Téléphone",
       "phonePlaceholder": "+212 6 00 00 00 00",
+      "city": "Ville",
+      "cityPlaceholder": "Casablanca",
       "cv": "CV (PDF, DOC, DOCX — max 5 MB)",
       "cvDropActive": "Déposez le fichier ici",
       "cvDropIdle": "Glisser ou cliquer pour déposer votre CV",

@@ -36,6 +36,7 @@
   "actions": {
     "viewDetails": "Voir les détails",
     "edit": "Modifier",
+    "duplicate": "Dupliquer",
     "sendEmail": "Envoyer email",
     "scheduleInterview": "Planifier entretien",
     "assign": "Affecter",

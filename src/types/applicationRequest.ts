@@ -5,6 +5,14 @@ export interface SkillWithLevel {
 
 export type SkillItem = string | SkillWithLevel;
 
+export interface RecruitmentRequestQuestion {
+  id?: string;
+  question_text: string;
+  answer_type: "number" | "yesno";
+  is_required: boolean;
+  display_order?: number;
+}
+
 export function getSkillName(skill: SkillItem): string {
   return typeof skill === "string" ? skill : skill.name;
 }
@@ -58,6 +66,9 @@ export interface ApplicationRequest {
 
   // Champs visibles sur l'offre publique (vide = tout)
   public_visible_fields?: string[];
+
+  // Questions personnalisées du formulaire de candidature publique (style LinkedIn)
+  questions?: RecruitmentRequestQuestion[];
 
   // Softskills
   soft_skills?: string[];
@@ -298,6 +309,8 @@ export interface ApplicationRequestPaginationParams {
   location?: string;
   responsible_id?: string;
   unassigned?: boolean;
+  sortBy?: string;
+  sortOrder?: "ASC" | "DESC";
 }
 
 export interface PaginatedApplicationRequestResponse {

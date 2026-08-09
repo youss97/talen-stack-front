@@ -7,6 +7,7 @@ import Badge from "@/components/ui/badge/Badge";
 import type { ApplicationRequest } from "@/types/applicationRequest";
 import { getSkillName, getSkillLevel } from "@/types/applicationRequest";
 import { Star } from "lucide-react";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 const StarIcon = ({ filled }: { filled: boolean }) => (
   <Star
@@ -249,9 +250,10 @@ export default function ApplicationRequestDetailModal({
               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 {t("detailModal.descriptionTitle")}
               </h4>
-              <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
-                {applicationRequest.description}
-              </p>
+              <div
+                className="text-sm text-gray-900 dark:text-white [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5 [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(applicationRequest.description) }}
+              />
             </div>
 
             {/* Compétences requises */}

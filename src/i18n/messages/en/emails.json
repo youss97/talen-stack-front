@@ -1,4 +1,16 @@
 {
+  "templatePicker": {
+    "subtitle": "Choose a saved template (optional), then review or edit the subject and body before sending. Edits are never saved back to the template.",
+    "templateLabel": "Saved template",
+    "selectPlaceholder": "Search a template...",
+    "noTemplate": "No saved template",
+    "default": "default",
+    "subjectLabel": "Email subject",
+    "bodyLabel": "Email body",
+    "variablesLabel": "Available variables",
+    "cancel": "Cancel",
+    "confirm": "Send"
+  },
   "page": {
     "title": "Email Management",
     "subtitle": "Send bulk emails to candidates, clients, users and managers",

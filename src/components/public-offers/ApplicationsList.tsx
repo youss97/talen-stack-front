@@ -1,11 +1,13 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
-import { Download, Trash2 } from "lucide-react";
+import { Download, Trash2, Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Badge from "@/components/ui/badge/Badge";
 import Button from "@/components/ui/button/Button";
 import Pagination from "@/components/tables/Pagination";
+import PublicApplicationDetailModal from "./PublicApplicationDetailModal";
 import type { PublicApplication } from "@/types/publicJobOffer";
+import { formatDateTime } from "@/utils/dateFormat";
 
 interface ApplicationsListProps {
   applications: PublicApplication[];
@@ -27,6 +29,8 @@ const deburr = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "");
 export default function ApplicationsList({ applications, offerTitle, onConvert, convertingId, onDelete, deletingId }: ApplicationsListProps) {
   const t = useTranslations("publicOffers.applications");
   const filteredApplications = applications;
+
+  const [detailApplication, setDetailApplication] = useState<PublicApplication | null>(null);
 
   // Pagination côté client
   const [page, setPage] = useState(1);
@@ -91,6 +95,7 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
                 <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{t("table.candidate")}</th>
                 <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{t("table.contact")}</th>
                 <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{t("table.receivedOn")}</th>
+                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{t("table.referrer")}</th>
                 <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs text-end">{t("table.actions")}</th>
               </tr>
             </thead>
@@ -120,12 +125,18 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
                       )}
                     </td>
                     <td className="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                      {new Date(application.created_at).toLocaleDateString("fr-FR", {
-                        day: "numeric", month: "short", year: "numeric",
-                      })}
+                      {formatDateTime(application.created_at)}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                      {application.referrer ? `${application.referrer.first_name} ${application.referrer.last_name}` : "—"}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
+                        <Button variant="outline" size="sm"
+                          onClick={() => setDetailApplication(application)}
+                          startIcon={<Eye className="icon-glow" size={16} strokeWidth={1.8} />}>
+                          {t("details")}
+                        </Button>
                         {application.cv_path && (
                           <Button variant="outline" size="sm"
                             onClick={() => downloadCV(application.cv_path!, application.first_name, application.last_name)}
@@ -184,6 +195,13 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
           />
         </div>
       )}
+
+      <PublicApplicationDetailModal
+        isOpen={!!detailApplication}
+        onClose={() => setDetailApplication(null)}
+        application={detailApplication}
+        onDownloadCv={(app) => app.cv_path && downloadCV(app.cv_path, app.first_name, app.last_name)}
+      />
     </div>
   );
 }

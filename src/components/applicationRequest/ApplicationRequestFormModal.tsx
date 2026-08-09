@@ -7,6 +7,7 @@ import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import TextArea from "@/components/form/input/TextArea";
+import RichTextEditor from "@/components/form/RichTextEditor";
 import Label from "@/components/form/Label";
 import InfiniteSelect from "@/components/form/InfiniteSelect";
 import MultiSelect from "@/components/form/MultiSelect";
@@ -25,7 +26,8 @@ import { useGetContractTypesQuery } from "@/lib/services/contractTypeApi";
 import { getCurrencyByCode, DEFAULT_CURRENCY } from "@/lib/currencies";
 import StarRating from "@/components/form/StarRating";
 import WorkflowStepsEditor, { type WorkflowStep } from "@/components/applicationRequest/WorkflowStepsEditor";
-import type { SkillWithLevel, SkillItem } from "@/types/applicationRequest";
+import type { SkillWithLevel, SkillItem, RecruitmentRequestQuestion } from "@/types/applicationRequest";
+import { Plus, Trash2 } from "lucide-react";
 import { getSkillName } from "@/types/applicationRequest";
 
 interface ApplicationRequestFormModalProps {
@@ -33,6 +35,9 @@ interface ApplicationRequestFormModalProps {
   onClose: () => void;
   onSubmit: (data: CreateApplicationRequestFormData) => void;
   applicationRequest?: ApplicationRequest | null;
+  /** Pré-remplissage depuis une autre demande ("Dupliquer") : le formulaire affiche les
+   * données de `applicationRequest` mais reste en mode création (titre/boutons, soumission). */
+  isDuplicate?: boolean;
   isLoading?: boolean;
   serverError?: string | null;
 }
@@ -64,6 +69,7 @@ export default function ApplicationRequestFormModal({
   onClose,
   onSubmit,
   applicationRequest,
+  isDuplicate = false,
   isLoading = false,
   serverError = null,
 }: ApplicationRequestFormModalProps) {
@@ -72,7 +78,7 @@ export default function ApplicationRequestFormModal({
     () => LANGUAGE_VALUES.map((v) => ({ value: v, label: t(`form.languageOptions.${v}`) })),
     [t]
   );
-  const isEditing = !!applicationRequest;
+  const isEditing = !!applicationRequest && !isDuplicate;
   const [skillInput, setSkillInput] = useState("");
   const [softSkillInput, setSoftSkillInput] = useState("");
   // Use useState for skills — more reliable than watch()+setValue() for form submission
@@ -82,6 +88,8 @@ export default function ApplicationRequestFormModal({
   const [languageLevels, setLanguageLevels] = useState<Record<string, number>>({});
   // 1.2 — Étapes du workflow
   const [workflowSteps, setWorkflowSteps] = useState<WorkflowStep[]>([]);
+  // Questions personnalisées du formulaire de candidature publique (style LinkedIn)
+  const [questionsState, setQuestionsState] = useState<RecruitmentRequestQuestion[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("France");
 
   const {
@@ -183,6 +191,7 @@ export default function ApplicationRequestFormModal({
         .map((s: SkillItem) => typeof s === "string" ? { name: s, level: 1 } : s) as SkillWithLevel[];
       setSkillsState(parsedSkills);
       setSoftSkillsState((applicationRequest.soft_skills as string[] | undefined) || []);
+      setQuestionsState((applicationRequest.questions as RecruitmentRequestQuestion[] | undefined) || []);
       setSelectedCountry(applicationRequest.country || "France");
       // 1.3 — niveaux des langues (gère string[] ou {language, level}[])
       const langLevels: Record<string, number> = {};
@@ -245,6 +254,7 @@ export default function ApplicationRequestFormModal({
     } else if (isOpen) {
       setSkillsState([]);
       setSoftSkillsState([]);
+      setQuestionsState([]);
       setLanguageLevels({});
       // Étapes par défaut : une nouvelle demande a toujours un workflow concret (personnalisable)
       setWorkflowSteps([
@@ -288,9 +298,16 @@ export default function ApplicationRequestFormModal({
     }
   }, [applicationRequest, isOpen, reset]);
 
-  const handleClientChange = (value: string) => {
+  const handleClientChange = (value: string, selectedItem?: Client) => {
     setValue("client_id", value);
     setValue("manager_id", "");
+    // Pré-remplir le pays avec celui du client — uniquement en création, pour ne jamais
+    // écraser le pays déjà enregistré d'une demande existante en cours d'édition.
+    if (!isEditing && selectedItem?.company_country) {
+      setValue("country", selectedItem.company_country);
+      setSelectedCountry(selectedItem.company_country);
+      setValue("location", "");
+    }
   };
 
   const handleAddSkill = () => {
@@ -384,6 +401,7 @@ export default function ApplicationRequestFormModal({
           languages: ((data.languages as string[]) || []).map((l) => ({ language: l, level: languageLevels[l] ?? 3 })),
           // 1.2 — étapes du workflow
           workflow_steps: workflowSteps.filter((s) => s.name.trim()).map((s, i) => ({ name: s.name.trim(), order: i })),
+          questions: questionsState.filter((q) => q.question_text.trim()),
         } as any),
         () => {
           // Scroll to first error when validation fails
@@ -464,11 +482,17 @@ export default function ApplicationRequestFormModal({
 
                 <div className="sm:col-span-2">
                   <Label>{t("form.fields.description")} <span className="text-error-500">*</span></Label>
-                  <TextArea
-                    placeholder={t("form.fields.descriptionPlaceholder")}
-                    {...register("description")}
-                    error={!!errors.description}
-                    rows={4}
+                  <Controller
+                    name="description"
+                    control={control}
+                    render={({ field }) => (
+                      <RichTextEditor
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder={t("form.fields.descriptionPlaceholder")}
+                        error={!!errors.description}
+                      />
+                    )}
                   />
                   {errors.description && (
                     <p className="mt-1 text-sm text-error-500">{errors.description.message}</p>
@@ -920,6 +944,74 @@ export default function ApplicationRequestFormModal({
                 {t("form.sections.workflow")}
               </h3>
               <WorkflowStepsEditor value={workflowSteps} onChange={setWorkflowSteps} />
+            </div>
+
+            {/* Section 8c: Questions personnalisées du formulaire de candidature publique */}
+            <div>
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
+                {t("form.sections.questions")}
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+                {t("form.questions.hint")}
+              </p>
+              <div className="space-y-3">
+                {questionsState.map((q, index) => (
+                  <div key={index} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <input
+                      type="text"
+                      value={q.question_text}
+                      onChange={(e) => {
+                        const updated = [...questionsState];
+                        updated[index] = { ...updated[index], question_text: e.target.value };
+                        setQuestionsState(updated);
+                      }}
+                      placeholder={t("form.questions.textPlaceholder")}
+                      className="flex-1 w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 text-sm text-gray-800 dark:text-white focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10"
+                    />
+                    <select
+                      value={q.answer_type}
+                      onChange={(e) => {
+                        const updated = [...questionsState];
+                        updated[index] = { ...updated[index], answer_type: e.target.value as "number" | "yesno" };
+                        setQuestionsState(updated);
+                      }}
+                      className="h-10 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 text-sm text-gray-800 dark:text-white focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10"
+                    >
+                      <option value="number">{t("form.questions.answerTypeNumber")}</option>
+                      <option value="yesno">{t("form.questions.answerTypeYesNo")}</option>
+                    </select>
+                    <label className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap px-1">
+                      <input
+                        type="checkbox"
+                        checked={q.is_required}
+                        onChange={(e) => {
+                          const updated = [...questionsState];
+                          updated[index] = { ...updated[index], is_required: e.target.checked };
+                          setQuestionsState(updated);
+                        }}
+                        className="h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500"
+                      />
+                      {t("form.questions.required")}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setQuestionsState(questionsState.filter((_, i) => i !== index))}
+                      className="p-2 rounded-lg text-gray-400 hover:text-error-600 hover:bg-error-50 dark:hover:bg-error-500/10 transition-colors flex-shrink-0"
+                      title={t("form.questions.remove")}
+                    >
+                      <Trash2 size={16} strokeWidth={1.8} className="icon-glow" />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setQuestionsState([...questionsState, { question_text: "", answer_type: "number", is_required: true }])}
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400"
+                >
+                  <Plus size={16} strokeWidth={1.8} className="icon-glow" />
+                  {t("form.questions.add")}
+                </button>
+              </div>
             </div>
 
             {/* Section 9: Avantages */}

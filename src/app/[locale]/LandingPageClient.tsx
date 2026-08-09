@@ -66,9 +66,10 @@ export default function LandingPageClient() {
       .catch(() => setContent({}));
   }, [locale]);
   
-  // Vérifier l'authentification au chargement
+  // Vérifier l'authentification au chargement — seulement si un token existe déjà en local,
+  // sinon l'appel est un 401 garanti pour chaque visiteur anonyme de la landing (bruit inutile).
   const { isLoading: isVerifying } = useVerifyUserQuery(undefined, {
-    skip: typeof window === 'undefined'
+    skip: typeof window === 'undefined' || !localStorage.getItem('token')
   });
 
   useEffect(() => {

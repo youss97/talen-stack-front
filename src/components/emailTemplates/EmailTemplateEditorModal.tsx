@@ -7,73 +7,86 @@ import InputField from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import RichTextEditor, { type RichTextEditorHandle } from "./RichTextEditor";
 import {
+  useGetEmailTemplateQuery,
+  useGetEmailTemplateDefaultQuery,
+  useCreateEmailTemplateMutation,
   useUpdateEmailTemplateMutation,
-  useResetEmailTemplateMutation,
   usePreviewEmailTemplateMutation,
 } from "@/lib/services/emailTemplateApi";
-import type { EmailTemplate } from "@/types/emailTemplate";
+import type { EmailTemplateType } from "@/types/emailTemplate";
 import { getApiErrorMessage } from "@/utils/errorMessages";
 
 interface EmailTemplateEditorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  template: EmailTemplate | null;
+  type: EmailTemplateType;
+  templateId: string | null; // null = création d'un nouveau template pour ce type
   label: string;
+  variables: string[];
+  onSaved: () => void;
   onToast: (variant: "success" | "error" | "warning" | "info", title: string, message?: string) => void;
 }
 
 export default function EmailTemplateEditorModal({
   isOpen,
   onClose,
-  template,
+  type,
+  templateId,
   label,
+  variables,
+  onSaved,
   onToast,
 }: EmailTemplateEditorModalProps) {
   const t = useTranslations("settings.emailTemplatesPage.editorModal");
+  const isCreating = !templateId;
+
+  const [name, setName] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [preview, setPreview] = useState<{ subject: string; html: string } | null>(null);
   const editorRef = useRef<RichTextEditorHandle>(null);
 
-  const [updateTemplate, { isLoading: isSaving }] = useUpdateEmailTemplateMutation();
-  const [resetTemplate, { isLoading: isResetting }] = useResetEmailTemplateMutation();
+  const { data: existingTemplate } = useGetEmailTemplateQuery(templateId as string, { skip: !isOpen || !templateId });
+  const { data: defaultContent } = useGetEmailTemplateDefaultQuery(type, { skip: !isOpen || !isCreating });
+
+  const [createTemplate, { isLoading: isCreatingSaving }] = useCreateEmailTemplateMutation();
+  const [updateTemplate, { isLoading: isUpdating }] = useUpdateEmailTemplateMutation();
   const [previewTemplate, { isLoading: isPreviewing }] = usePreviewEmailTemplateMutation();
+  const isSaving = isCreatingSaving || isUpdating;
 
   useEffect(() => {
-    if (isOpen && template) {
-      setSubject(template.subject);
-      setBody(template.body_html);
-      setPreview(null);
+    if (!isOpen) return;
+    if (existingTemplate) {
+      setName(existingTemplate.name);
+      setSubject(existingTemplate.subject);
+      setBody(existingTemplate.body_html);
+    } else if (isCreating && defaultContent) {
+      setName("");
+      setSubject(defaultContent.subject);
+      setBody(defaultContent.body_html);
     }
-  }, [isOpen, template]);
-
-  if (!template) return null;
+    setPreview(null);
+  }, [isOpen, existingTemplate, isCreating, defaultContent]);
 
   const handleSave = async () => {
     try {
-      await updateTemplate({ type: template.type, data: { subject, body_html: body } }).unwrap();
-      onToast("success", t("toasts.savedTitle"), t("toasts.savedMessage"));
+      if (isCreating) {
+        await createTemplate({ type, name, subject, body_html: body }).unwrap();
+        onToast("success", t("toasts.savedTitle"), t("toasts.createdMessage"));
+      } else {
+        await updateTemplate({ id: templateId!, data: { name, subject, body_html: body } }).unwrap();
+        onToast("success", t("toasts.savedTitle"), t("toasts.savedMessage"));
+      }
+      onSaved();
       onClose();
     } catch (error) {
       onToast("error", t("toasts.errorTitle"), getApiErrorMessage(error, t("toasts.saveError")));
     }
   };
 
-  const handleReset = async () => {
-    try {
-      const result = await resetTemplate(template.type).unwrap();
-      setSubject(result.subject);
-      setBody(result.body_html);
-      setPreview(null);
-      onToast("success", t("toasts.resetTitle"), t("toasts.resetMessage"));
-    } catch (error) {
-      onToast("error", t("toasts.errorTitle"), getApiErrorMessage(error, t("toasts.resetError")));
-    }
-  };
-
   const handlePreview = async () => {
     try {
-      const result = await previewTemplate({ type: template.type, data: { subject, body_html: body } }).unwrap();
+      const result = await previewTemplate({ type, data: { subject, body_html: body } }).unwrap();
       setPreview(result);
     } catch (error) {
       onToast("error", t("toasts.errorTitle"), getApiErrorMessage(error, t("toasts.previewError")));
@@ -85,11 +98,16 @@ export default function EmailTemplateEditorModal({
       <div className="flex-shrink-0 p-4 sm:p-6 pb-4 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{label}</h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          {t("subtitle")}
+          {isCreating ? t("subtitleCreate") : t("subtitle")}
         </p>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+        <div>
+          <Label>{t("nameLabel")}</Label>
+          <InputField value={name} onChange={(e) => setName(e.target.value)} placeholder={t("namePlaceholder")} />
+        </div>
+
         <div>
           <Label>{t("subjectLabel")}</Label>
           <InputField value={subject} onChange={(e) => setSubject(e.target.value)} placeholder={t("subjectPlaceholder")} />
@@ -103,7 +121,7 @@ export default function EmailTemplateEditorModal({
         <div>
           <Label>{t("variablesLabel")}</Label>
           <div className="flex flex-wrap gap-1.5">
-            {template.variables.map((v) => (
+            {variables.map((v) => (
               <button
                 key={v}
                 type="button"
@@ -135,21 +153,16 @@ export default function EmailTemplateEditorModal({
         )}
       </div>
 
-      <div className="flex-shrink-0 flex items-center justify-between gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
-        <Button variant="outline" onClick={handleReset} disabled={isResetting || !template.is_custom}>
-          {isResetting ? "..." : t("reset")}
+      <div className="flex-shrink-0 flex items-center justify-end gap-3 p-4 sm:p-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+        <Button variant="outline" onClick={handlePreview} disabled={isPreviewing}>
+          {isPreviewing ? "..." : t("preview")}
         </Button>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={handlePreview} disabled={isPreviewing}>
-            {isPreviewing ? "..." : t("preview")}
-          </Button>
-          <Button variant="outline" onClick={onClose}>
-            {t("cancel")}
-          </Button>
-          <Button onClick={handleSave} disabled={isSaving}>
-            {isSaving ? t("saving") : t("save")}
-          </Button>
-        </div>
+        <Button variant="outline" onClick={onClose}>
+          {t("cancel")}
+        </Button>
+        <Button onClick={handleSave} disabled={isSaving || !name.trim() || !subject.trim()}>
+          {isSaving ? t("saving") : t("save")}
+        </Button>
       </div>
     </Modal>
   );

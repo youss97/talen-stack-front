@@ -43,7 +43,8 @@
     "exportExcel": "تصدير إلى Excel",
     "addRequest": "إضافة طلب",
     "kanban": "لوحة كانبان",
-    "assign": "تعيين"
+    "assign": "تعيين",
+    "duplicate": "تكرار"
   },
   "toast": {
     "noDataTitle": "لا توجد بيانات",
@@ -141,10 +142,20 @@
       "workType": "7. نوع العمل",
       "languages": "8. اللغات المطلوبة",
       "workflow": "مسار سير التوظيف",
+      "questions": "أسئلة مخصصة (عرض عام)",
       "benefits": "9. المزايا والمكافآت",
       "priorityStatus": "10. الأولوية والحالة",
       "datesProfiles": "11. التواريخ وعدد الملفات",
       "notes": "ملاحظات"
+    },
+    "questions": {
+      "hint": "تُطرح على المرشح قبل ملء استمارة الترشيح، لاستبعاد الملفات التي لا تتطابق (مثل نقص الخبرة).",
+      "textPlaceholder": "مثال: كم سنة خبرة لديك في Laravel؟",
+      "answerTypeNumber": "إجابة رقمية",
+      "answerTypeYesNo": "نعم / لا",
+      "required": "إلزامي",
+      "remove": "حذف",
+      "add": "+ إضافة سؤال"
     },
     "fields": {
       "client": "العميل",

@@ -106,7 +106,9 @@
       "manage": "Gérer",
       "resend": "Renvoyer",
       "stats": "Statistiques",
-      "updateStatus": "Changer le statut"
+      "updateStatus": "Changer le statut",
+      "toggleStatus": "Basculer le statut",
+      "configure": "Configurer"
     }
   }
 }

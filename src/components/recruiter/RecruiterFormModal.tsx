@@ -30,6 +30,9 @@ interface RecruiterFormModalProps {
   onClose: () => void;
   onSubmit: (data: CreateRecruiterFormData) => void;
   recruiter?: Recruiter | null;
+  /** Pré-remplissage depuis une autre candidature ("Dupliquer") : le formulaire affiche les
+   * données de `recruiter` mais reste en mode création (schéma de validation + soumission). */
+  isDuplicate?: boolean;
   isLoading?: boolean;
   serverError?: string | null;
 }
@@ -39,12 +42,13 @@ export default function RecruiterFormModal({
   onClose,
   onSubmit,
   recruiter,
+  isDuplicate = false,
   isLoading = false,
   serverError = null,
 }: RecruiterFormModalProps) {
   const t = useTranslations("applications.form");
   const tc = useTranslations("common");
-  const isEditing = !!recruiter;
+  const isEditing = !!recruiter && !isDuplicate;
   const [selectedCV, setSelectedCV] = useState<CV | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<ApplicationRequest | null>(null);
   const [languages, setLanguages] = useState<LanguageSkill[]>([]);
@@ -149,9 +153,11 @@ export default function RecruiterFormModal({
   //   }
   // }, [cvId, getCVById, isEditing]);
 
-  // Load Request details when selected
+  // Load Request details when selected — se déclenche uniquement pour une sélection manuelle
+  // en création vierge : ni en édition, ni en duplication (où `request_id` est déjà pré-rempli
+  // et ne doit pas être écrasé par les valeurs par défaut de la demande).
   useEffect(() => {
-    if (requestId && !isEditing) {
+    if (requestId && !recruiter) {
       getRequestById(requestId).unwrap().then((request) => {
         setSelectedRequest(request);
         // Auto-fill offer contract types
@@ -174,7 +180,7 @@ export default function RecruiterFormModal({
         }
       }).catch(console.error);
     }
-  }, [requestId, getRequestById, setValue, isEditing]);
+  }, [requestId, getRequestById, setValue, recruiter]);
 
   useEffect(() => {
     if (recruiter && isOpen) {

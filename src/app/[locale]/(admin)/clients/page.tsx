@@ -6,6 +6,7 @@ import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
+import { useTableSort } from "@/hooks/useTableSort";
 import ClientFormModal from "@/components/client/ClientFormModal";
 import ClientDetailModal from "@/components/client/ClientDetailModal";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -50,12 +51,15 @@ export default function ClientsPage() {
   const [isRemoving, setIsRemoving] = useState(false);
 
   const [limit, setLimit] = useState(5);
+  const { sortBy, sortOrder, handleSort } = useTableSort();
 
   const { data, isLoading, isFetching } = useGetClientsQuery({
     page,
     limit,
     search: search || undefined,
     status: statusFilter || undefined,
+    sortBy,
+    sortOrder,
   });
 
   const { data: selectedClient, isLoading: isLoadingDetail } =
@@ -218,6 +222,7 @@ export default function ClientsPage() {
       key: "name",
       header: t("list.columns.name"),
       className: "font-medium",
+      sortable: true,
       render: (value, row) => {
         const logoSrc = getImageUrl(row.company_logo_path as string | undefined);
         return (
@@ -244,6 +249,7 @@ export default function ClientsPage() {
     {
       key: "company_email",
       header: t("list.columns.email"),
+      sortable: true,
       render: (value) => (
         <span>{(value as string) || "-"}</span>
       ),
@@ -251,6 +257,7 @@ export default function ClientsPage() {
     {
       key: "company_phone",
       header: t("list.columns.phone"),
+      sortable: true,
       render: (value) => (
         <span>{(value as string) || "-"}</span>
       ),
@@ -258,6 +265,7 @@ export default function ClientsPage() {
     {
       key: "company_city",
       header: t("list.columns.city"),
+      sortable: true,
       render: (value) => (
         <span>{(value as string) || "-"}</span>
       ),
@@ -265,6 +273,7 @@ export default function ClientsPage() {
     {
       key: "company_country",
       header: t("list.columns.country"),
+      sortable: true,
       render: (value) => (
         <span>{(value as string) || "-"}</span>
       ),
@@ -272,6 +281,7 @@ export default function ClientsPage() {
     {
       key: "status",
       header: t("list.columns.status"),
+      sortable: true,
       render: (value) => {
         const statusMap: Record<string, { label: string; color: "success" | "error" | "warning" }> = {
           active: { label: t("list.status.active"), color: "success" },
@@ -352,6 +362,9 @@ export default function ClientsPage() {
           onEdit={canUpdate ? handleEditClick : undefined}
           onDelete={canDelete ? handleDeleteClick : undefined}
           canDeleteRow={(row) => row.status !== "deleted"}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSort={(key) => { handleSort(key); setPage(1); }}
           customActions={canUpdate ? [
             {
               label: t("list.rowActions.deactivate"),

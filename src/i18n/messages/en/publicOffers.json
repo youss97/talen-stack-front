@@ -13,6 +13,7 @@
       "contractType": "Contract type",
       "status": "Status",
       "views": "Views",
+      "applicationsCount": "Applications",
       "createdAt": "Creation date"
     },
     "statusPublic": "Public",
@@ -61,10 +62,20 @@
     "copyLink": "Copy link",
     "preview": "Preview",
     "receivedApplications": "Applications received (public offer)",
+    "filters": {
+      "allReferrers": "All"
+    },
     "deleteApplication": {
       "title": "Delete application",
       "message": "Are you sure you want to delete the application from {name}? This action is irreversible.",
       "confirm": "Delete",
+      "cancel": "Cancel",
+      "pickTemplateTitle": "Which email should be sent to the candidate?"
+    },
+    "convertApplication": {
+      "title": "Convert to application",
+      "message": "Do you want to convert this public offer application into an internal application? The CV will be added to the talent pool.",
+      "confirm": "Convert",
       "cancel": "Cancel"
     },
     "toast": {
@@ -118,13 +129,26 @@
       "candidate": "Candidate",
       "contact": "Contact",
       "receivedOn": "Received on",
+      "referrer": "Referrer",
       "actions": "Actions"
     },
     "cv": "CV",
     "convert": "→ Application",
     "converted": "Converted",
     "delete": "Delete",
-    "empty": "No application for this filter"
+    "details": "Details",
+    "empty": "No application for this filter",
+    "detailModal": {
+      "receivedOn": "Received on {date}",
+      "contact": "Contact",
+      "motivationLetter": "Cover letter",
+      "customAnswers": "Answers to questions",
+      "yes": "Yes",
+      "no": "No",
+      "cv": "CV",
+      "downloadCv": "Download CV",
+      "close": "Close"
+    }
   },
   "conversion": {
     "title": "Converting to application…",

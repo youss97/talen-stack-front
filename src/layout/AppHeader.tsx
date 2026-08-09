@@ -1,5 +1,5 @@
 "use client";
-import { X, Menu, MoreHorizontal } from "lucide-react";
+import { X, Menu, ChevronDown, ChevronUp } from "lucide-react";
 import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
@@ -66,9 +66,14 @@ const AppHeader: React.FC = () => {
           <GlobalSearch />
           <button
             onClick={toggleApplicationMenu}
+            aria-label="Toggle header menu"
             className="flex items-center justify-center w-10 h-10 text-gray-700 rounded-lg z-99999 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 lg:hidden"
           >
-            <MoreHorizontal size={22} strokeWidth={1.8} className="icon-glow" />
+            {isApplicationMenuOpen ? (
+              <ChevronUp size={22} strokeWidth={1.8} className="icon-glow" />
+            ) : (
+              <ChevronDown size={22} strokeWidth={1.8} className="icon-glow" />
+            )}
           </button>
 
           {/* <div className="hidden lg:block">

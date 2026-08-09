@@ -36,6 +36,7 @@
   "actions": {
     "viewDetails": "عرض التفاصيل",
     "edit": "تعديل",
+    "duplicate": "تكرار",
     "sendEmail": "إرسال بريد إلكتروني",
     "scheduleInterview": "جدولة مقابلة",
     "assign": "إسناد",
