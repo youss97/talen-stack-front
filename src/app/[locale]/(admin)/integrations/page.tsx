@@ -15,7 +15,7 @@ import IntegrationDetailModal from '@/components/integrations/IntegrationDetailM
 import EditIntegrationModal from '@/components/integrations/EditIntegrationModal';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/lib/store';
-import { Plus, BarChart3, Hourglass, CheckCircle2, Target, RotateCcw, XCircle, ListFilter } from 'lucide-react';
+import { Plus, BarChart3, Hourglass, CheckCircle2, Target, RotateCcw, XCircle, ListFilter, CircleCheck, CircleX } from 'lucide-react';
 
 export default function IntegrationsPage() {
   const t = useTranslations('integrations');
@@ -284,13 +284,13 @@ export default function IntegrationsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="relative">
               {statusFilter === 'in_progress' ? (
-                <Hourglass size={16} strokeWidth={1.8} className="icon-glow absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                <Hourglass size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               ) : statusFilter === 'completed' ? (
-                <CheckCircle2 size={16} strokeWidth={1.8} className="icon-glow absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                <CheckCircle2 size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               ) : statusFilter === 'failed' ? (
-                <XCircle size={16} strokeWidth={1.8} className="icon-glow absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                <XCircle size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               ) : (
-                <ListFilter size={16} strokeWidth={1.8} className="icon-glow absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                <ListFilter size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               )}
               <select
                 value={statusFilter}
@@ -298,7 +298,7 @@ export default function IntegrationsPage() {
                   setStatusFilter(e.target.value as IntegrationStatus | '');
                   setPage(1);
                 }}
-                className="h-11 w-full appearance-none rounded-lg border border-gray-300 ps-9 pe-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                className="relative h-11 w-full appearance-none rounded-lg border border-gray-300 bg-white ps-9 pe-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
               >
                 <option value="">{t('page.filters.allStatuses')}</option>
                 <option value="in_progress">{t('page.filters.statusInProgress')}</option>
@@ -306,14 +306,23 @@ export default function IntegrationsPage() {
                 <option value="failed">{t('page.filters.statusFailed')}</option>
               </select>
             </div>
-            <div>
+            <div className="relative">
+              {trialFilter === 'in_progress' ? (
+                <Hourglass size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              ) : trialFilter === 'validated' ? (
+                <CircleCheck size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              ) : trialFilter === 'not_validated' ? (
+                <CircleX size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              ) : (
+                <ListFilter size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              )}
               <select
                 value={trialFilter}
                 onChange={(e) => {
                   setTrialFilter(e.target.value as TrialPeriodStatus | '');
                   setPage(1);
                 }}
-                className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                className="relative h-11 w-full appearance-none rounded-lg border border-gray-300 bg-white ps-9 pe-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
               >
                 <option value="">{t('page.filters.allTrialPeriods')}</option>
                 <option value="in_progress">{t('page.filters.trialInProgress')}</option>

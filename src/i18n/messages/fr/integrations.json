@@ -15,9 +15,9 @@
       "statusCompleted": "Terminée",
       "statusFailed": "Échec",
       "allTrialPeriods": "Toutes les périodes",
-      "trialInProgress": "⏳ En cours",
-      "trialValidated": "✅ Validée",
-      "trialNotValidated": "❌ Non validée",
+      "trialInProgress": "En cours",
+      "trialValidated": "Validée",
+      "trialNotValidated": "Non validée",
       "reset": "Réinitialiser"
     },
     "table": {

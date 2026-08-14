@@ -15,9 +15,9 @@
       "statusCompleted": "منتهية",
       "statusFailed": "فشل",
       "allTrialPeriods": "جميع فترات التجربة",
-      "trialInProgress": "⏳ قيد التنفيذ",
-      "trialValidated": "✅ مُصادق عليها",
-      "trialNotValidated": "❌ غير مُصادق عليها",
+      "trialInProgress": "قيد التنفيذ",
+      "trialValidated": "مُصادق عليها",
+      "trialNotValidated": "غير مُصادق عليها",
       "reset": "إعادة تعيين"
     },
     "table": {
