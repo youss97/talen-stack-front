@@ -15,7 +15,7 @@ import IntegrationDetailModal from '@/components/integrations/IntegrationDetailM
 import EditIntegrationModal from '@/components/integrations/EditIntegrationModal';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/lib/store';
-import { Plus, BarChart3, Hourglass, CheckCircle2, Target, RotateCcw } from 'lucide-react';
+import { Plus, BarChart3, Hourglass, CheckCircle2, Target, RotateCcw, XCircle, ListFilter } from 'lucide-react';
 
 export default function IntegrationsPage() {
   const t = useTranslations('integrations');
@@ -282,14 +282,23 @@ export default function IntegrationsPage() {
         {/* Filtres */}
         <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
+            <div className="relative">
+              {statusFilter === 'in_progress' ? (
+                <Hourglass size={16} strokeWidth={1.8} className="icon-glow absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              ) : statusFilter === 'completed' ? (
+                <CheckCircle2 size={16} strokeWidth={1.8} className="icon-glow absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              ) : statusFilter === 'failed' ? (
+                <XCircle size={16} strokeWidth={1.8} className="icon-glow absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              ) : (
+                <ListFilter size={16} strokeWidth={1.8} className="icon-glow absolute start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              )}
               <select
                 value={statusFilter}
                 onChange={(e) => {
                   setStatusFilter(e.target.value as IntegrationStatus | '');
                   setPage(1);
                 }}
-                className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                className="h-11 w-full appearance-none rounded-lg border border-gray-300 ps-9 pe-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
               >
                 <option value="">{t('page.filters.allStatuses')}</option>
                 <option value="in_progress">{t('page.filters.statusInProgress')}</option>

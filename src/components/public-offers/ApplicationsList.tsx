@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import Badge from "@/components/ui/badge/Badge";
 import Button from "@/components/ui/button/Button";
 import Pagination from "@/components/tables/Pagination";
+import { Link } from "@/i18n/navigation";
 import PublicApplicationDetailModal from "./PublicApplicationDetailModal";
 import type { PublicApplication } from "@/types/publicJobOffer";
 import { formatDateTime } from "@/utils/dateFormat";
@@ -146,7 +147,9 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
                         )}
                         {onConvert && (
                           synced ? (
-                            <Badge color="success" variant="light" size="sm">✓ {t("converted")}</Badge>
+                            <Link href={`/applications/${synced}`}>
+                              <Badge color="success" variant="light" size="sm">✓ {t("converted")}</Badge>
+                            </Link>
                           ) : (
                             <Button size="sm" onClick={() => onConvert(application.id)} disabled={convertingId === application.id}>
                               {convertingId === application.id ? "..." : t("convert")}

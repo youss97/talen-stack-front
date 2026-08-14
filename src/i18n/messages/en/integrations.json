@@ -12,8 +12,8 @@
     "filters": {
       "allStatuses": "All statuses",
       "statusInProgress": "In progress",
-      "statusCompleted": "✅ Completed",
-      "statusFailed": "❌ Failed",
+      "statusCompleted": "Completed",
+      "statusFailed": "Failed",
       "allTrialPeriods": "All trial periods",
       "trialInProgress": "⏳ In progress",
       "trialValidated": "✅ Validated",

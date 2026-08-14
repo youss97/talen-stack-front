@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { MoreVertical } from "lucide-react";
 
@@ -36,6 +36,21 @@ export default function ActionsMenu({ actions }: ActionsMenuProps) {
     });
   };
 
+  // Après le premier rendu du menu (position provisoire sous le bouton), corrige la position
+  // si le menu dépasse le bas du viewport — le fait bascule au-dessus du bouton à la place.
+  useLayoutEffect(() => {
+    if (!isOpen || !menuPos || !menuRef.current || !buttonRef.current) return;
+    const menuRect = menuRef.current.getBoundingClientRect();
+    if (menuRect.bottom > window.innerHeight) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      const flippedTop = Math.max(8, buttonRect.top - menuRect.height - 4);
+      if (Math.abs(flippedTop - menuPos.top) > 1) {
+        setMenuPos((prev) => (prev ? { ...prev, top: flippedTop } : prev));
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, menuPos?.top, menuPos?.right]);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -50,7 +65,14 @@ export default function ActionsMenu({ actions }: ActionsMenuProps) {
       }
     };
 
-    const closeOnScroll = () => setMenuPos(null);
+    // Ignore le scroll qui se produit À L'INTÉRIEUR du menu (sa propre liste scrollable) —
+    // seul un scroll de la page/d'un autre conteneur doit fermer le menu.
+    const closeOnScroll = (e: Event) => {
+      if (menuRef.current && e.target instanceof Node && menuRef.current.contains(e.target)) {
+        return;
+      }
+      setMenuPos(null);
+    };
 
     document.addEventListener("mousedown", close);
     window.addEventListener("scroll", closeOnScroll, true);

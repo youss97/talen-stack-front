@@ -9,7 +9,8 @@
     "bodyLabel": "Corps de l'email",
     "variablesLabel": "Variables disponibles",
     "cancel": "Annuler",
-    "confirm": "Envoyer"
+    "confirm": "Envoyer",
+    "skipEmail": "Supprimer sans email"
   },
   "page": {
     "title": "Gestion des Emails",

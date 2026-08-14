@@ -12,8 +12,8 @@
     "filters": {
       "allStatuses": "جميع الحالات",
       "statusInProgress": "قيد التنفيذ",
-      "statusCompleted": "✅ منتهية",
-      "statusFailed": "❌ فشل",
+      "statusCompleted": "منتهية",
+      "statusFailed": "فشل",
       "allTrialPeriods": "جميع فترات التجربة",
       "trialInProgress": "⏳ قيد التنفيذ",
       "trialValidated": "✅ مُصادق عليها",

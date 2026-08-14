@@ -107,7 +107,8 @@ export default function PublicOfferDetailPage() {
 
   const performDelete = async (
     application: PublicApplication,
-    payload?: { templateId?: string; subject: string; body_html: string }
+    payload?: { templateId?: string; subject: string; body_html: string },
+    options?: { skipEmail?: boolean }
   ) => {
     setDeletingId(application.id);
     try {
@@ -117,6 +118,7 @@ export default function PublicOfferDetailPage() {
         templateId: payload?.templateId,
         subject: payload?.subject,
         body_html: payload?.body_html,
+        skipEmail: options?.skipEmail,
       }).unwrap();
       addToast("success", t("toast.deleted"), t("toast.deletedMessage"));
       setConfirmDelete({ isOpen: false, application: null });
@@ -400,6 +402,9 @@ export default function PublicOfferDetailPage() {
         isConfirming={!!deletingId}
         onConfirm={(payload) => {
           if (confirmDelete.application) performDelete(confirmDelete.application, payload);
+        }}
+        onSkipEmail={() => {
+          if (confirmDelete.application) performDelete(confirmDelete.application, undefined, { skipEmail: true });
         }}
       />
 

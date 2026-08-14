@@ -51,7 +51,7 @@ export default function LanguageSwitcher() {
         <Globe size={20} strokeWidth={1.6} className="icon-glow" />
       </button>
       {isOpen && (
-        <div className="absolute end-0 mt-2 w-40 rounded-lg border border-gray-200 bg-white py-1 shadow-lg z-50 dark:border-gray-800 dark:bg-gray-900">
+        <div className="absolute end-0 mt-2 w-40 max-w-[calc(100vw-2rem)] rounded-lg border border-gray-200 bg-white py-1 shadow-lg z-50 dark:border-gray-800 dark:bg-gray-900">
           {routing.locales.map((loc) => (
             <button
               key={loc}

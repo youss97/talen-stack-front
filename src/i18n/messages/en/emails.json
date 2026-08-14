@@ -9,7 +9,8 @@
     "bodyLabel": "Email body",
     "variablesLabel": "Available variables",
     "cancel": "Cancel",
-    "confirm": "Send"
+    "confirm": "Send",
+    "skipEmail": "Delete without email"
   },
   "page": {
     "title": "Email Management",

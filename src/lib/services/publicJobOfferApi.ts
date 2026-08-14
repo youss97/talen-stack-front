@@ -72,11 +72,11 @@ export const publicJobOfferApi = createApi({
     }),
 
     // Supprimer une candidature d'offre publique (non transformée)
-    deletePublicApplication: builder.mutation<void, { id: string; requestId: string; templateId?: string; subject?: string; body_html?: string }>({
-      query: ({ id, templateId, subject, body_html }) => ({
+    deletePublicApplication: builder.mutation<void, { id: string; requestId: string; templateId?: string; subject?: string; body_html?: string; skipEmail?: boolean }>({
+      query: ({ id, templateId, subject, body_html, skipEmail }) => ({
         url: `/public-applications/${id}`,
         method: 'DELETE',
-        body: { templateId, subject, body_html },
+        body: { templateId, subject, body_html, skipEmail },
       }),
       invalidatesTags: (result, error, { requestId }) => [{ type: 'PublicApplication', id: requestId }],
     }),

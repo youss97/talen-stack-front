@@ -22,6 +22,8 @@ interface TemplatePickerModalProps {
   title: string;
   onConfirm: (payload: { templateId?: string; subject: string; body_html: string }) => void;
   isConfirming?: boolean;
+  /** Si fourni, affiche un bouton supplémentaire pour effectuer l'action sans envoyer d'email. */
+  onSkipEmail?: () => void;
 }
 
 /**
@@ -36,6 +38,7 @@ export default function TemplatePickerModal({
   title,
   onConfirm,
   isConfirming = false,
+  onSkipEmail,
 }: TemplatePickerModalProps) {
   const t = useTranslations("emails.templatePicker");
   const [selectedId, setSelectedId] = useState<string>("");
@@ -130,6 +133,11 @@ export default function TemplatePickerModal({
         <Button variant="outline" onClick={onClose}>
           {t("cancel")}
         </Button>
+        {onSkipEmail && (
+          <Button variant="outline" onClick={onSkipEmail} disabled={isConfirming}>
+            {t("skipEmail")}
+          </Button>
+        )}
         <Button
           onClick={() => onConfirm({ templateId: selectedId || undefined, subject, body_html: body })}
           disabled={isConfirming || !subject.trim()}

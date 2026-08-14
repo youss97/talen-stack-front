@@ -47,7 +47,7 @@
       "fileName": "CV.pdf"
     },
     "actions": {
-      "view": "👁️ View",
+      "view": "View",
       "download": "Download CV",
       "close": "Close"
     },
