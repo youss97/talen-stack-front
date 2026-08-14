@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
@@ -15,7 +15,64 @@ import IntegrationDetailModal from '@/components/integrations/IntegrationDetailM
 import EditIntegrationModal from '@/components/integrations/EditIntegrationModal';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/lib/store';
-import { Plus, BarChart3, Hourglass, CheckCircle2, Target, RotateCcw, XCircle, ListFilter, CircleCheck, CircleX } from 'lucide-react';
+import { Plus, BarChart3, Hourglass, CheckCircle2, Target, RotateCcw, XCircle, ListFilter, CircleCheck, CircleX, ChevronDown } from 'lucide-react';
+import { Dropdown } from '@/components/ui/dropdown/Dropdown';
+
+interface FilterOption<T extends string> {
+  value: T | '';
+  label: string;
+  icon: ReactNode;
+}
+
+/** Select "maison" (bouton + Dropdown) — un <select> natif ne peut pas afficher d'icône
+ * dans ses <option>, seulement du texte brut. Remplace le <select> pour permettre une
+ * icône lucide-react par option, y compris dans la liste ouverte. */
+function FilterSelect<T extends string>({
+  value,
+  onChange,
+  options,
+}: {
+  value: T | '';
+  onChange: (value: T | '') => void;
+  options: FilterOption<T>[];
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const selected = options.find((o) => o.value === value) || options[0];
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setIsOpen((v) => !v)}
+        className="dropdown-toggle h-11 w-full flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+      >
+        <span className="text-gray-400">{selected.icon}</span>
+        <span className="flex-1 text-left truncate">{selected.label}</span>
+        <ChevronDown size={16} strokeWidth={1.8} className={`icon-glow text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      <Dropdown isOpen={isOpen} onClose={() => setIsOpen(false)} className="w-full py-1">
+        {options.map((option) => (
+          <button
+            key={option.value || 'all'}
+            type="button"
+            onClick={() => {
+              onChange(option.value);
+              setIsOpen(false);
+            }}
+            className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left transition-colors ${
+              option.value === value
+                ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400'
+                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+            }`}
+          >
+            <span className="text-gray-400">{option.icon}</span>
+            {option.label}
+          </button>
+        ))}
+      </Dropdown>
+    </div>
+  );
+}
 
 export default function IntegrationsPage() {
   const t = useTranslations('integrations');
@@ -282,54 +339,26 @@ export default function IntegrationsPage() {
         {/* Filtres */}
         <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="relative">
-              {statusFilter === 'in_progress' ? (
-                <Hourglass size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              ) : statusFilter === 'completed' ? (
-                <CheckCircle2 size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              ) : statusFilter === 'failed' ? (
-                <XCircle size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              ) : (
-                <ListFilter size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              )}
-              <select
-                value={statusFilter}
-                onChange={(e) => {
-                  setStatusFilter(e.target.value as IntegrationStatus | '');
-                  setPage(1);
-                }}
-                className="relative h-11 w-full appearance-none rounded-lg border border-gray-300 bg-white ps-9 pe-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
-              >
-                <option value="">{t('page.filters.allStatuses')}</option>
-                <option value="in_progress">{t('page.filters.statusInProgress')}</option>
-                <option value="completed">{t('page.filters.statusCompleted')}</option>
-                <option value="failed">{t('page.filters.statusFailed')}</option>
-              </select>
-            </div>
-            <div className="relative">
-              {trialFilter === 'in_progress' ? (
-                <Hourglass size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              ) : trialFilter === 'validated' ? (
-                <CircleCheck size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              ) : trialFilter === 'not_validated' ? (
-                <CircleX size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              ) : (
-                <ListFilter size={16} strokeWidth={1.8} className="icon-glow absolute z-10 start-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-              )}
-              <select
-                value={trialFilter}
-                onChange={(e) => {
-                  setTrialFilter(e.target.value as TrialPeriodStatus | '');
-                  setPage(1);
-                }}
-                className="relative h-11 w-full appearance-none rounded-lg border border-gray-300 bg-white ps-9 pe-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
-              >
-                <option value="">{t('page.filters.allTrialPeriods')}</option>
-                <option value="in_progress">{t('page.filters.trialInProgress')}</option>
-                <option value="validated">{t('page.filters.trialValidated')}</option>
-                <option value="not_validated">{t('page.filters.trialNotValidated')}</option>
-              </select>
-            </div>
+            <FilterSelect<IntegrationStatus>
+              value={statusFilter}
+              onChange={(v) => { setStatusFilter(v); setPage(1); }}
+              options={[
+                { value: '', label: t('page.filters.allStatuses'), icon: <ListFilter size={16} strokeWidth={1.8} className="icon-glow" /> },
+                { value: IntegrationStatus.IN_PROGRESS, label: t('page.filters.statusInProgress'), icon: <Hourglass size={16} strokeWidth={1.8} className="icon-glow" /> },
+                { value: IntegrationStatus.COMPLETED, label: t('page.filters.statusCompleted'), icon: <CheckCircle2 size={16} strokeWidth={1.8} className="icon-glow" /> },
+                { value: IntegrationStatus.FAILED, label: t('page.filters.statusFailed'), icon: <XCircle size={16} strokeWidth={1.8} className="icon-glow" /> },
+              ]}
+            />
+            <FilterSelect<TrialPeriodStatus>
+              value={trialFilter}
+              onChange={(v) => { setTrialFilter(v); setPage(1); }}
+              options={[
+                { value: '', label: t('page.filters.allTrialPeriods'), icon: <ListFilter size={16} strokeWidth={1.8} className="icon-glow" /> },
+                { value: TrialPeriodStatus.IN_PROGRESS, label: t('page.filters.trialInProgress'), icon: <Hourglass size={16} strokeWidth={1.8} className="icon-glow" /> },
+                { value: TrialPeriodStatus.VALIDATED, label: t('page.filters.trialValidated'), icon: <CircleCheck size={16} strokeWidth={1.8} className="icon-glow" /> },
+                { value: TrialPeriodStatus.NOT_VALIDATED, label: t('page.filters.trialNotValidated'), icon: <CircleX size={16} strokeWidth={1.8} className="icon-glow" /> },
+              ]}
+            />
             <div>
               <button
                 onClick={() => {
