@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import type { RootState } from "@/lib/store";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
+import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import {
   useGetBusinessCardsQuery,
@@ -40,6 +41,8 @@ export default function BusinessCardsPage() {
   const [form, setForm] = useState<Form>({ owner_type: "RH", custom_fields: [], template: "snow" });
   const [qrCard, setQrCard] = useState<BusinessCard | null>(null);
   const [cardImageUrl, setCardImageUrl] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState<{ isOpen: boolean; card: BusinessCard | null }>({ isOpen: false, card: null });
+  const [isDeleting, setIsDeleting] = useState(false);
   const company = (user as unknown as { company?: { public_brand_color?: string; logo_path?: string; name?: string } } | null)?.company;
   const brandColor = company?.public_brand_color || "#8AB925";
   const companyLogo = company?.logo_path;
@@ -209,9 +212,22 @@ export default function BusinessCardsPage() {
   const toggleActive = async (c: BusinessCard) => {
     try { await updateCard({ id: c.id, data: { is_active: !c.is_active } }).unwrap(); } catch { /* */ }
   };
-  const remove = async (c: BusinessCard) => {
-    if (!confirm(t("confirmDelete", { name: c.full_name }))) return;
-    try { await deleteCard(c.id).unwrap(); addToast("success", tc("status.success"), t("toasts.cardDeleted")); } catch { /* */ }
+  const remove = (c: BusinessCard) => {
+    setConfirmDelete({ isOpen: true, card: c });
+  };
+  const handleConfirmDelete = async () => {
+    const c = confirmDelete.card;
+    if (!c) return;
+    setIsDeleting(true);
+    try {
+      await deleteCard(c.id).unwrap();
+      addToast("success", tc("status.success"), t("toasts.cardDeleted"));
+      setConfirmDelete({ isOpen: false, card: null });
+    } catch (err) {
+      addToast("error", tc("status.error"), getApiErrorMessage(err, t("toasts.saveError")));
+    } finally {
+      setIsDeleting(false);
+    }
   };
   const copyLink = (c: BusinessCard) => {
     navigator.clipboard.writeText(`${window.location.origin}/card/${c.id}`);
@@ -343,6 +359,18 @@ export default function BusinessCardsPage() {
           </div>
         </div>
       </Modal>
+
+      <ConfirmModal
+        isOpen={confirmDelete.isOpen}
+        onClose={() => setConfirmDelete({ isOpen: false, card: null })}
+        onConfirm={handleConfirmDelete}
+        title={t("confirmDeleteTitle")}
+        message={t("confirmDelete", { name: confirmDelete.card?.full_name || "" })}
+        confirmText={tc("actions.delete")}
+        cancelText={tc("actions.cancel")}
+        variant="danger"
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

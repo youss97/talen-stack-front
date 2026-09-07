@@ -12,6 +12,7 @@ import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import InputField from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Pagination from "@/components/tables/Pagination";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 
 interface ApplicationStatus {
   id: string;
@@ -24,7 +25,7 @@ export default function ApplicationStatusesPage() {
   const t = useTranslations("settings.applicationStatuses");
   const tc = useTranslations("common");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("settings-application-statuses", 20);
   const [search, setSearch] = useState("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<ApplicationStatus | null>(null);

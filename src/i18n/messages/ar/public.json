@@ -45,6 +45,7 @@
       "remote": "العمل عن بعد",
       "remoteYes": "متاح",
       "remoteNo": "غير متاح",
+      "remoteHybrid": "هجين ({count} يوم عمل عن بعد/أسبوع)",
       "deadline": "آخر أجل للترشح",
       "startDate": "تاريخ الانطلاق المرغوب",
       "industry": "القطاع"
@@ -77,6 +78,8 @@
       "phonePlaceholder": "+212 6 00 00 00 00",
       "city": "المدينة",
       "cityPlaceholder": "الدار البيضاء",
+      "linkedin": "لينكد إن (اختياري)",
+      "linkedinPlaceholder": "https://www.linkedin.com/in/...",
       "cv": "السيرة الذاتية (PDF، DOC، DOCX — بحد أقصى 5 ميغابايت)",
       "cvDropActive": "أفلت الملف هنا",
       "cvDropIdle": "اسحب وأفلت أو انقر لإرفاق سيرتك الذاتية",

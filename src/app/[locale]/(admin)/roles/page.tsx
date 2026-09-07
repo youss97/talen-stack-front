@@ -1,9 +1,10 @@
 "use client";
 import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Plus } from "lucide-react";
+import { Plus, Lock, Pencil } from "lucide-react";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import Button from "@/components/ui/button/Button";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
@@ -30,7 +31,7 @@ export default function RolesPage() {
   const tc = useTranslations("common");
   const { canCreate, canUpdate, canDelete } = useActions("/roles");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("roles", 20);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
@@ -109,13 +110,15 @@ export default function RolesPage() {
         const role = row as Role;
         if (role.is_protected) {
           return (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+              <Lock size={12} strokeWidth={1.8} className="icon-glow" />
               {t("list.status.protected")}
             </span>
           );
         }
         return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+            <Pencil size={12} strokeWidth={1.8} className="icon-glow" />
             {t("list.status.editable")}
           </span>
         );

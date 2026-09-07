@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useTranslations, useLocale } from "next-intl";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import Badge from "@/components/ui/badge/Badge";
 import { useGetLogsQuery } from "@/lib/services/logApi";
 import type { RootState } from "@/lib/store";
@@ -13,7 +14,7 @@ export default function LogsPage() {
   const t = useTranslations("logs");
   const locale = useLocale();
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("logs", 20);
   const [actionFilter, setActionFilter] = useState<string>("");
   const [tableNameFilter, setTableNameFilter] = useState<string>("");
 

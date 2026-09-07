@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { Lock } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import DatePicker from "@/components/ui/datepicker/DatePicker";
@@ -368,7 +369,7 @@ export default function ScheduleInterviewModal({
               className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
             />
             <div className="flex items-start gap-2 mt-2">
-              <span className="text-amber-600 dark:text-amber-400 text-sm">🔒</span>
+              <Lock size={14} strokeWidth={1.8} className="icon-glow text-amber-600 dark:text-amber-400 mt-0.5" />
               <p className="text-xs text-amber-700 dark:text-amber-300">
                 {t("internalNotesHint")}
               </p>

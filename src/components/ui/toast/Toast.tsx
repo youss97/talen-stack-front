@@ -1,6 +1,9 @@
 "use client";
-import React, { useEffect } from "react";
-import { CheckCircle2, XCircle, AlertTriangle, Info, X } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
+import { usePathname } from "@/i18n/navigation";
+import { CheckCircle2, XCircle, AlertTriangle, Info, X, LifeBuoy } from "lucide-react";
+import { useReportErrorMutation } from "@/lib/services/supportApi";
 
 export interface ToastProps {
   id: string;
@@ -19,6 +22,20 @@ const Toast: React.FC<ToastProps> = ({
   duration = 5000,
   onClose,
 }) => {
+  const tc = useTranslations("common");
+  const pathname = usePathname();
+  const [reportError, { isLoading: isReporting }] = useReportErrorMutation();
+  const [reportStatus, setReportStatus] = useState<"idle" | "sent" | "error">("idle");
+
+  const handleContactSupport = async () => {
+    try {
+      await reportError({ page: pathname, action: title, message: message || title }).unwrap();
+      setReportStatus("sent");
+    } catch {
+      setReportStatus("error");
+    }
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose(id);
@@ -69,6 +86,16 @@ const Toast: React.FC<ToastProps> = ({
           <p className="text-sm font-medium text-gray-900 dark:text-white">{title}</p>
           {message && (
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{message}</p>
+          )}
+          {variant === "error" && (
+            <button
+              onClick={handleContactSupport}
+              disabled={isReporting || reportStatus !== "idle"}
+              className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-error-600 hover:text-error-700 dark:text-error-400 dark:hover:text-error-300 disabled:opacity-70"
+            >
+              <LifeBuoy size={13} strokeWidth={1.8} className="icon-glow" />
+              {reportStatus === "sent" ? tc("support.sent") : reportStatus === "error" ? tc("support.error") : isReporting ? tc("support.sending") : tc("support.contactButton")}
+            </button>
           )}
         </div>
         <button

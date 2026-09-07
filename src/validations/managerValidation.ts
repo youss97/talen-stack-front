@@ -8,6 +8,7 @@ export const createManagerSchema = z.object({
   phone: z.string().optional(),
   position: z.string().optional(),
   photo: z.union([z.instanceof(File), z.null(), z.undefined()]).optional(),
+  internal_note: z.string().optional(),
 });
 
 export type CreateManagerFormData = z.infer<typeof createManagerSchema>;

@@ -29,6 +29,7 @@ export interface User {
   updated_at?: string;
   created_by?: string | null;
   creator?: { id: string; first_name: string; last_name: string; email: string } | null;
+  internal_note?: string | null;
 }
 
 export interface CreateUserRequest {
@@ -40,6 +41,7 @@ export interface CreateUserRequest {
   role_id: string;
   company_id: string;
   status: "active" | "inactive";
+  internal_note?: string;
 }
 
 export interface UpdateUserRequest {
@@ -51,6 +53,7 @@ export interface UpdateUserRequest {
   role_id?: string;
   company_id?: string;
   status?: "active" | "inactive";
+  internal_note?: string;
 }
 
 export interface UserPaginationParams {

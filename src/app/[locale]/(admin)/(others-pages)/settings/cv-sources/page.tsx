@@ -12,6 +12,7 @@ import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import InputField from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Pagination from "@/components/tables/Pagination";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 
 interface CvSourceRow {
   id: string;
@@ -24,7 +25,7 @@ export default function CvSourcesPage() {
   const t = useTranslations("settings.cvSources");
   const tc = useTranslations("common");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("settings-cv-sources", 20);
   const [search, setSearch] = useState("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [selectedSource, setSelectedSource] = useState<CvSourceRow | null>(null);

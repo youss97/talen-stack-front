@@ -54,6 +54,7 @@
     "printTitle": "Carte {name}"
   },
   "confirmDelete": "Supprimer la carte de {name} ?",
+  "confirmDeleteTitle": "Supprimer la carte",
   "toasts": {
     "cardUpdated": "Carte modifiée",
     "cardCreated": "Carte créée",

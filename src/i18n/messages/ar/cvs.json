@@ -28,6 +28,7 @@
       "geographicMobility": "الحركية الجغرافية",
       "contractTypes": "أنواع العقود المفضلة",
       "notes": "ملاحظات",
+      "internalNote": "ملاحظة داخلية (غير مرئية للعميل)",
       "document": "وثيقة السيرة الذاتية"
     },
     "fields": {
@@ -79,6 +80,8 @@
       "emailPlaceholder": "mohamed@example.com",
       "phone": "الهاتف",
       "phonePlaceholder": "+212 6 12 34 56 78",
+      "linkedin": "لينكد إن",
+      "linkedinPlaceholder": "https://www.linkedin.com/in/...",
       "lastPosition": "المنصب الحالي",
       "lastPositionPlaceholder": "مطور Full Stack",
       "totalExperience": "سنوات الخبرة",
@@ -97,7 +100,10 @@
       "contractTypesPlaceholder": "عقد غير محدد المدة، عقد محدد المدة، عمل حر",
       "remotePreferred": "مستعد للعمل عن بُعد فقط",
       "status": "الحالة",
-      "selectStatus": "اختر..."
+      "selectStatus": "اختر...",
+      "internalNote": "ملاحظة داخلية (غير مرئية للعميل)",
+      "internalNotePlaceholder": "ملاحظة مرئية داخليًا فقط...",
+      "internalNoteHint": "لا تظهر هذه الملاحظة أبدًا للعميل."
     },
     "buttons": {
       "cancel": "إلغاء",

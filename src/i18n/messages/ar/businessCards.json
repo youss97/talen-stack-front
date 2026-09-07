@@ -54,6 +54,7 @@
     "printTitle": "بطاقة {name}"
   },
   "confirmDelete": "هل تريد حذف بطاقة {name}؟",
+  "confirmDeleteTitle": "حذف البطاقة",
   "toasts": {
     "cardUpdated": "تم تعديل البطاقة",
     "cardCreated": "تم إنشاء البطاقة",

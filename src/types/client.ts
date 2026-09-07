@@ -24,6 +24,7 @@ export interface Client {
   linked_company_id?: string;
   vat_rate?: string;
   payment_terms?: string | null;
+  internal_note?: string | null;
   created_by?: string | null;
   creator?: { id: string; first_name: string; last_name: string; email: string } | null;
   // Company fields from linked company
@@ -105,6 +106,7 @@ export interface UpdateClientRequest {
   company_size?: string;
   logo?: string | File;
   status?: "active" | "inactive";
+  internal_note?: string;
 }
 
 export interface ClientPaginationParams {
@@ -131,6 +133,7 @@ export interface Manager {
   creator?: { id: string; first_name: string; last_name: string; email: string } | null;
   creatorName?: string | null;
   last_login?: string | null;
+  internal_note?: string | null;
 }
 
 export const COUNTRY_LIST = [

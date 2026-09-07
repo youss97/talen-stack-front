@@ -89,20 +89,27 @@ function InfiniteSelectInner<T extends Record<string, unknown>>(
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Close dropdown on scroll or resize
+  // Close dropdown on scroll or resize — mais ignore le scroll interne à la liste
+  // (sinon impossible de scroller les options : chaque scroll de la liste ferme le dropdown)
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleScrollOrResize = () => {
+    const handleScroll = (e: Event) => {
+      if (dropdownRef.current && e.target instanceof Node && dropdownRef.current.contains(e.target)) {
+        return;
+      }
+      setIsOpen(false);
+    };
+    const handleResize = () => {
       setIsOpen(false);
     };
 
-    window.addEventListener("scroll", handleScrollOrResize, true);
-    window.addEventListener("resize", handleScrollOrResize);
+    window.addEventListener("scroll", handleScroll, true);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("scroll", handleScrollOrResize, true);
-      window.removeEventListener("resize", handleScrollOrResize);
+      window.removeEventListener("scroll", handleScroll, true);
+      window.removeEventListener("resize", handleResize);
     };
   }, [isOpen]);
 

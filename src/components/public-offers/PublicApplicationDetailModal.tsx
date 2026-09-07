@@ -1,7 +1,7 @@
 "use client";
 import type { ComponentType } from "react";
 import { useTranslations } from "next-intl";
-import { Mail, Phone, MapPin, Calendar, User, MessageSquare, HelpCircle, FileText, Download, Link2 } from "lucide-react";
+import { Mail, Phone, MapPin, Calendar, User, MessageSquare, HelpCircle, FileText, Download, Link2, ExternalLink } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import type { PublicApplication } from "@/types/publicJobOffer";
@@ -40,6 +40,11 @@ export default function PublicApplicationDetailModal({
             <InfoChip icon={Mail} text={application.email} />
             {application.phone && <InfoChip icon={Phone} text={application.phone} />}
             {application.city && <InfoChip icon={MapPin} text={application.city} />}
+            {application.linkedin_url && (
+              <a href={application.linkedin_url} target="_blank" rel="noopener noreferrer">
+                <InfoChip icon={ExternalLink} text="LinkedIn" />
+              </a>
+            )}
             <InfoChip icon={Calendar} text={formatDateTime(application.created_at)} />
             {application.referrer && (
               <InfoChip icon={Link2} text={`${application.referrer.first_name} ${application.referrer.last_name}`} />

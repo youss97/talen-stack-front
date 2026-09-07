@@ -12,6 +12,8 @@ export interface PublicJobOffer {
   max_salary?: number;
   currency?: string;
   location: string;
+  work_type?: "on_site" | "remote" | "hybrid";
+  remote_days_per_week?: number;
   remote_possible?: boolean;
   urgency?: string;
   status?: string;
@@ -85,6 +87,7 @@ export interface PublicApplication {
   email: string;
   phone: string;
   city?: string;
+  linkedin_url?: string;
   cv_path?: string;
   original_cv_filename?: string;
   message?: string;
@@ -129,6 +132,7 @@ export interface CreatePublicApplicationData {
   email: string;
   phone: string;
   city?: string;
+  linkedin_url?: string;
   message?: string;
   source?: 'qr' | 'direct' | 'linkedin' | 'other';
 }

@@ -32,6 +32,7 @@ import type { ApplicationRequest, UpdateApplicationRequestRequest } from "@/type
 import type { CreateApplicationRequestFormData } from "@/validations/applicationRequestValidation";
 import { getApiErrorMessage } from "@/utils/errorMessages";
 import { useTableSort } from "@/hooks/useTableSort";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import { Plus, LayoutDashboard, UserPlus, Copy } from "lucide-react";
 
 export default function RecruitmentPage() {
@@ -87,7 +88,7 @@ export default function RecruitmentPage() {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("recruitment-requests", 20);
   const { sortBy, sortOrder, handleSort } = useTableSort();
 
   const { data, isLoading, isFetching, refetch } = useGetApplicationRequestsQuery({
@@ -631,12 +632,15 @@ export default function RecruitmentPage() {
     },
     {
       id: "created_by_manager",
-      key: "manager" as keyof ApplicationRequest,
+      key: "creator" as keyof ApplicationRequest,
       header: t("list.columns.createdBy"),
       className: "min-w-[130px]",
       render: (_value: unknown, row?: ApplicationRequest) => {
-        const m = row?.manager;
-        const name = m ? `${m.first_name || ""} ${m.last_name || ""}`.trim() : "";
+        // Le créateur réel (created_by/creator) — absent sur les demandes créées avant
+        // l'ajout de ce champ, dans quel cas on retombe sur le contact client (manager)
+        // pour ne pas laisser la colonne vide sur les anciennes lignes.
+        const c = row?.creator || row?.manager;
+        const name = c ? `${c.first_name || ""} ${c.last_name || ""}`.trim() : "";
         return (
           <span className="text-sm text-gray-700 dark:text-gray-300 truncate block max-w-[130px]">
             {name || "-"}

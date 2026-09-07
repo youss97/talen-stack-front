@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { RefreshCw, Plus, Lock, Unlock } from "lucide-react";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -36,7 +37,7 @@ export default function CompaniesPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/companies");
   const currentUser = useSelector((state: RootState) => state.auth.user);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("companies", 20);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);

@@ -172,7 +172,7 @@ function ApplyModal({
 }) {
   const t = useTranslations("public.apply.modal");
   const [submitApplication, { isLoading: isSubmitting }] = useSubmitPublicApplicationMutation();
-  const [formData, setFormData] = useState({ first_name: "", last_name: "", email: "", phone: "", city: "", message: "" });
+  const [formData, setFormData] = useState({ first_name: "", last_name: "", email: "", phone: "", city: "", linkedin_url: "", message: "" });
   const [cvFile, setCvFile]   = useState<File | null>(null);
   const [error,  setError]    = useState("");
 
@@ -295,12 +295,21 @@ function ApplyModal({
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                {t("city")}
-              </label>
-              <input type="text" name="city" value={formData.city}
-                onChange={handleChange} placeholder={t("cityPlaceholder")} className={inputCls} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  {t("city")}
+                </label>
+                <input type="text" name="city" value={formData.city}
+                  onChange={handleChange} placeholder={t("cityPlaceholder")} className={inputCls} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  {t("linkedin")}
+                </label>
+                <input type="url" name="linkedin_url" value={formData.linkedin_url}
+                  onChange={handleChange} placeholder={t("linkedinPlaceholder")} className={inputCls} />
+              </div>
             </div>
 
             {/* CV drop zone */}
@@ -480,8 +489,15 @@ export default function PublicOfferApplyView({
       })(),
     },
     vis("contract_duration") && offer.contract_duration && { icon:"⏱",  label:t("sidebar.duration"),  value: offer.contract_duration },
-    vis("remote_possible") && offer.remote_possible !== undefined && {
-      icon:"🏠", label:t("sidebar.remote"), value: offer.remote_possible ? t("sidebar.remoteYes") : t("sidebar.remoteNo"),
+    vis("remote_possible") && (offer.work_type !== undefined || offer.remote_possible !== undefined) && {
+      icon:"🏠", label:t("sidebar.remote"),
+      value: offer.work_type === "hybrid"
+        ? (offer.remote_days_per_week ? t("sidebar.remoteHybrid", { count: offer.remote_days_per_week }) : t("sidebar.remoteYes"))
+        : offer.work_type === "remote"
+        ? t("sidebar.remoteYes")
+        : offer.work_type === "on_site"
+        ? t("sidebar.remoteNo")
+        : offer.remote_possible ? t("sidebar.remoteYes") : t("sidebar.remoteNo"),
     },
     vis("deadline") && offer.deadline && { icon:"⏳", label:t("sidebar.deadline"),
       value: formatDate(offer.deadline, { day:"numeric", month:"long", year:"numeric" }) },

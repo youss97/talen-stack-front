@@ -23,6 +23,7 @@ import { statsApi } from './services/statsApi';
 import { businessCardApi } from './services/businessCardApi';
 import { notificationApi } from './services/notificationApi';
 import { landingApi } from './services/landingApi';
+import { supportApi } from './services/supportApi';
 import authReducer, { logout } from './slices/authSlice';
 import { errorToastMiddleware } from './errorToastMiddleware';
 
@@ -51,6 +52,7 @@ const apiMiddlewares = [
   businessCardApi.middleware,
   notificationApi.middleware,
   landingApi.middleware,
+  supportApi.middleware,
 ];
 
 const apiResetters = [
@@ -78,6 +80,7 @@ const apiResetters = [
   businessCardApi.util.resetApiState,
   notificationApi.util.resetApiState,
   landingApi.util.resetApiState,
+  supportApi.util.resetApiState,
 ];
 
 const appReducer = combineReducers({
@@ -106,6 +109,7 @@ const appReducer = combineReducers({
   [businessCardApi.reducerPath]: businessCardApi.reducer,
   [notificationApi.reducerPath]: notificationApi.reducer,
   [landingApi.reducerPath]: landingApi.reducer,
+  [supportApi.reducerPath]: supportApi.reducer,
 });
 
 const baseStore = configureStore({

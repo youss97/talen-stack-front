@@ -65,9 +65,12 @@
       "company": "Informations de la société",
       "contact": "Contact",
       "admin": "Administrateur du client",
-      "extra": "Informations supplémentaires"
+      "extra": "Informations supplémentaires",
+      "internalNote": "Note interne"
     },
     "fields": {
+      "internalNotePlaceholder": "Note visible uniquement en interne...",
+      "internalNoteEmpty": "Aucune note interne",
       "logo": "Logo du client",
       "logoHelper": "Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)",
       "name": "Raison sociale",

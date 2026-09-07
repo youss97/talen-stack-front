@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Plus, Pencil, Send, Ban } from "lucide-react";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -22,7 +23,7 @@ const EmailsPage = () => {
   const t = useTranslations("emails");
   const { canCreate, canDelete } = useActions("/emails");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("emails", 20);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [toasts, setToasts] = useState<ToastItem[]>([]);

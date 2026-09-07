@@ -3,61 +3,46 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslations } from "next-intl";
-import { useRouter, Link } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import LanguageSwitcher from "@/components/header/LanguageSwitcher";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
-import { useLoginMutation } from "@/lib/services/authApi";
-import { loginSchema } from "@/validations/authValidation";
+import { useResetPasswordMutation } from "@/lib/services/authApi";
+import { resetPasswordSchema, type ResetPasswordFormData } from "@/validations/authValidation";
 import type { ApiError } from "@/types/auth";
 
-interface LoginFormInputs {
-  email: string;
-  password: string;
-}
-
-export default function SignInForm() {
-  const t = useTranslations("auth.signin");
+export default function ResetPasswordForm() {
+  const t = useTranslations("auth.resetPassword");
   const router = useRouter();
-  const [login, { isLoading }] = useLoginMutation();
-
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const [showPassword, setShowPassword] = useState(false);
   const [apiError, setApiError] = useState<string>("");
+  const [success, setSuccess] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormInputs>({
+  } = useForm<ResetPasswordFormData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: yupResolver(loginSchema) as any,
+    resolver: yupResolver(resetPasswordSchema) as any,
     mode: "onSubmit",
   });
 
-  const onSubmit = async (data: LoginFormInputs) => {
+  const onSubmit = async (data: ResetPasswordFormData) => {
+    if (!token) return;
     setApiError("");
-
     try {
-      const response = await login(data).unwrap();
-      console.log('🔐 Connexion réussie:', response);
-
-      // Page d'accueil = Statistiques pour tous les rôles, SAUF l'espace client
-      // qui n'a pas accès aux statistiques (voir usePermissions.ts::canAccessPath).
-      const u = response?.user as unknown as {
-        company?: { parent_company_id?: string | null };
-        client_id?: string | null;
-        role?: { code?: string };
-      } | undefined;
-      const isClientSpace =
-        !!u?.company?.parent_company_id ||
-        !!u?.client_id ||
-        (u?.role?.code || "").toUpperCase().startsWith("CLIENT_MANAGER");
-      router.push(isClientSpace ? '/my-requests' : '/statistics');
+      await resetPassword({ token, newPassword: data.newPassword }).unwrap();
+      setSuccess(true);
+      setTimeout(() => router.push("/signin"), 2000);
     } catch (error) {
       const err = error as ApiError;
-      console.error('❌ Erreur de connexion:', err);
       setApiError(err?.data?.message || t("genericError"));
     }
   };
@@ -77,7 +62,32 @@ export default function SignInForm() {
               {t("subtitle")}
             </p>
           </div>
-          <div>
+
+          {!token ? (
+            <div className="space-y-5">
+              <div className="p-3 text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                {t("missingToken")}
+              </div>
+              <Link
+                href="/forgot-password"
+                className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
+              >
+                {t("requestNewLink")}
+              </Link>
+            </div>
+          ) : success ? (
+            <div className="space-y-5">
+              <div className="p-3 text-sm text-success-600 bg-success-50 dark:bg-success-500/10 rounded-lg">
+                {t("successMessage")}
+              </div>
+              <Link
+                href="/signin"
+                className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
+              >
+                {t("backToSignin")}
+              </Link>
+            </div>
+          ) : (
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="space-y-5">
                 {apiError && (
@@ -87,26 +97,13 @@ export default function SignInForm() {
                 )}
                 <div>
                   <Label>
-                    {t("email")} <span className="text-error-500">*</span>{" "}
-                  </Label>
-                  <Input
-                    placeholder="info@gmail.com"
-                    type="email"
-                    {...register("email")}
-                  />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
-                  )}
-                </div>
-                <div>
-                  <Label>
-                    {t("password")} <span className="text-error-500">*</span>{" "}
+                    {t("newPassword")} <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      placeholder={t("passwordPlaceholder")}
-                      {...register("password")}
+                      placeholder={t("newPasswordPlaceholder")}
+                      {...register("newPassword")}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -119,17 +116,22 @@ export default function SignInForm() {
                       )}
                     </span>
                   </div>
-                  {errors.password && (
-                    <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+                  {errors.newPassword && (
+                    <p className="mt-1 text-sm text-red-500">{errors.newPassword.message}</p>
                   )}
                 </div>
-                <div className="flex items-center justify-end">
-                  <Link
-                    href="/forgot-password"
-                    className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                  >
-                    {t("forgotPassword")}
-                  </Link>
+                <div>
+                  <Label>
+                    {t("confirmPassword")} <span className="text-error-500">*</span>{" "}
+                  </Label>
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder={t("confirmPasswordPlaceholder")}
+                    {...register("confirmPassword")}
+                  />
+                  {errors.confirmPassword && (
+                    <p className="mt-1 text-sm text-red-500">{errors.confirmPassword.message}</p>
+                  )}
                 </div>
                 <div className="pt-2">
                   <Button className="w-full" size="sm" type="submit" disabled={isLoading}>
@@ -138,7 +140,7 @@ export default function SignInForm() {
                 </div>
               </div>
             </form>
-          </div>
+          )}
         </div>
       </div>
     </div>

@@ -10,6 +10,7 @@ import ImageUpload from "../form/input/ImageUpload";
 import Label from "../form/Label";
 import { generatePassword } from "@/utils/generatePassword";
 import { EyeIcon, EyeCloseIcon } from "@/icons";
+import { Lock } from "lucide-react";
 import type { Manager } from "@/types/client";
 import {
   createManagerSchema,
@@ -52,6 +53,7 @@ export default function ManagerFormModal({
       phone: "",
       position: "",
       photo: undefined,
+      internal_note: "",
     },
   });
 
@@ -68,6 +70,7 @@ export default function ManagerFormModal({
         phone: mgr.phone || "",
         position: mgr.position || "",
         photo: undefined,
+        internal_note: mgr.internal_note || "",
       });
       // Afficher la photo existante si disponible
       if (mgr.photo_path) {
@@ -86,6 +89,7 @@ export default function ManagerFormModal({
         phone: "",
         position: "",
         photo: undefined,
+        internal_note: "",
       });
       setPhotoPreview(null);
     }
@@ -250,6 +254,23 @@ export default function ManagerFormModal({
                   error={!!errors.position}
                   hint={errors.position?.message}
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="internal_note">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Lock size={14} strokeWidth={1.8} />
+                    {t("internalNote")}
+                  </span>
+                </Label>
+                <textarea
+                  id="internal_note"
+                  {...register("internal_note")}
+                  rows={3}
+                  placeholder={t("internalNotePlaceholder")}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+                />
+                <p className="mt-1 text-xs text-gray-400">{t("internalNoteHint")}</p>
               </div>
             </div>
           </div>

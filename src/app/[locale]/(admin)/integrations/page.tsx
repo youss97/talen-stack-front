@@ -8,6 +8,7 @@ import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import DataTable from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import { useGetIntegrationsQuery, useGetStatisticsQuery } from '@/lib/services/integrationApi';
 import { IntegrationStatus, TrialPeriodStatus, Integration } from '@/types/integration';
 import CreateIntegrationModal from '@/components/integrations/CreateIntegrationModal';
@@ -81,7 +82,7 @@ export default function IntegrationsPage() {
   // Le manager d'une société liée (client) consulte ses intégrations en lecture seule
   const isClientUser = !!currentUser?.company?.parent_company_id;
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("integrations", 20);
   const [statusFilter, setStatusFilter] = useState<IntegrationStatus | ''>('');
   const [trialFilter, setTrialFilter] = useState<TrialPeriodStatus | ''>('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);

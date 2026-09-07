@@ -44,6 +44,7 @@ import type { CreateRecruiterRequest, UpdateRecruiterRequest, WorkflowStatus } f
 import type { CreateInterviewRequest } from "@/types/interview";
 import { getApiErrorMessage } from "@/utils/errorMessages";
 import { useTableSort } from "@/hooks/useTableSort";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import { Plus, UserPlus, Eye, Pencil, Trash2, Copy } from "lucide-react";
 
 export default function ApplicationsPage() {
@@ -52,7 +53,7 @@ export default function ApplicationsPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/applications");
   const canAssign = canUpdate;
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("applications", 20);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [workflowStatusFilter, setWorkflowStatusFilter] = useState<WorkflowStatus | "">("");

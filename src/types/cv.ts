@@ -65,6 +65,7 @@ export interface CV {
   company_id?: string;
   candidate_email?: string;
   candidate_phone?: string;
+  linkedin_url?: string;
   candidate_first_name?: string;
   candidate_last_name?: string;
   profile_title?: string;
@@ -108,6 +109,7 @@ export interface CV {
   details?: CVDetails;
   status?: "new" | "reviewed" | "shortlisted" | "interviewed" | "hired" | "rejected" | "archived";
   source?: string;
+  internal_note?: string;
   created_at?: string;
   updated_at?: string;
   created_by_name?: string;
@@ -124,6 +126,7 @@ export interface CreateCVRequest {
   file: File;
   candidate_email?: string;
   candidate_phone?: string;
+  linkedin_url?: string;
   candidate_first_name?: string;
   candidate_last_name?: string;
   additional_skills?: string[];
@@ -138,6 +141,7 @@ export interface CreateCVRequest {
   remote_preferred?: boolean;
   status?: string;
   source?: string;
+  internal_note?: string;
   experiences?: CvExperience[];
   formations?: CvFormation[];
 }
@@ -145,6 +149,7 @@ export interface CreateCVRequest {
 export interface UpdateCVRequest {
   candidate_email?: string;
   candidate_phone?: string;
+  linkedin_url?: string;
   candidate_first_name?: string;
   candidate_last_name?: string;
   additional_skills?: string[];
@@ -159,6 +164,7 @@ export interface UpdateCVRequest {
   remote_preferred?: boolean;
   status?: string;
   source?: string;
+  internal_note?: string;
   experiences?: CvExperience[];
   formations?: CvFormation[];
 }

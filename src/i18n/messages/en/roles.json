@@ -11,8 +11,8 @@
       "createdBy": "Created by"
     },
     "status": {
-      "protected": "🔒 Protected",
-      "editable": "✏️ Editable"
+      "protected": "Protected",
+      "editable": "Editable"
     }
   },
   "toasts": {

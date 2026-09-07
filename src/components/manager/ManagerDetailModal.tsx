@@ -56,6 +56,7 @@ export default function ManagerDetailModal({ isOpen, onClose, manager }: Props) 
         <Row label={t("detail.phone")} value={mgr.phone || "-"} />
         <Row label={t("detail.position")} value={mgr.position} />
         <Row label={t("detail.status")} value={getStatusBadge(mgr.status)} />
+        <Row label={t("detail.internalNote")} value={mgr.internal_note} />
       </div>
 
       <div className="flex justify-end gap-3 p-6 sm:p-8 pt-4 border-t border-gray-100 dark:border-gray-800">

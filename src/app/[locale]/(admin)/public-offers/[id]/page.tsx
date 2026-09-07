@@ -13,16 +13,23 @@ import {
   useGetPublicJobOfferByIdQuery,
   useGetPublicApplicationsByRequestQuery,
   useGetRequestResponsibleUsersQuery,
-  useConvertPublicApplicationMutation,
+  usePrepareCvForPublicApplicationMutation,
+  useFinalizePublicApplicationConversionMutation,
   useDeletePublicApplicationMutation,
 } from "@/lib/services/publicJobOfferApi";
+import { useCreateRecruiterMutation } from "@/lib/services/recruiterApi";
+import { useLazyGetCVByIdQuery, useDeleteCVMutation } from "@/lib/services/cvApi";
 import ApplicationsList from "@/components/public-offers/ApplicationsList";
 import ConversionLoader from "@/components/public-offers/ConversionLoader";
 import TemplatePickerModal from "@/components/email/TemplatePickerModal";
+import RecruiterFormModal from "@/components/recruiter/RecruiterFormModal";
 import { getApiErrorMessage } from "@/utils/errorMessages";
 import { getCurrencyByCode, DEFAULT_CURRENCY } from "@/lib/currencies";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import type { PublicApplication } from "@/types/publicJobOffer";
+import type { Recruiter } from "@/types/recruiter";
+import type { CreateRecruiterFormData } from "@/validations/recruiterValidation";
+import type { CreateRecruiterRequest } from "@/types/recruiter";
 
 export default function PublicOfferDetailPage() {
   const t = useTranslations("publicOffers.detail");
@@ -41,8 +48,15 @@ export default function PublicOfferDetailPage() {
     { requestId: id, referrerId: referrerFilter === "all" ? undefined : referrerFilter },
     { skip: !id }
   );
+  // Une candidature déjà transformée en vraie candidature ne doit plus apparaître ici —
+  // elle vit désormais dans le vivier/les candidatures, pas dans les "candidatures reçues".
+  const visiblePublicApps = publicApps.filter((a) => !a.synced_application_id);
   const { data: responsibleUsers = [] } = useGetRequestResponsibleUsersQuery(id, { skip: !id || !isAdmin });
-  const [convertPublicApp] = useConvertPublicApplicationMutation();
+  const [prepareCv] = usePrepareCvForPublicApplicationMutation();
+  const [finalizeConversion] = useFinalizePublicApplicationConversionMutation();
+  const [createApplication] = useCreateRecruiterMutation();
+  const [getCVById] = useLazyGetCVByIdQuery();
+  const [deleteCV] = useDeleteCVMutation();
   const [deletePublicApp] = useDeletePublicApplicationMutation();
   const [convertingId, setConvertingId] = useState<string | null>(null);
   const [convertDone, setConvertDone] = useState(false);
@@ -53,28 +67,43 @@ export default function PublicOfferDetailPage() {
   });
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
 
-  const [confirmConvert, setConfirmConvert] = useState<{ isOpen: boolean; appId: string | null }>({
-    isOpen: false,
-    appId: null,
-  });
+  // Nouveau flux "Candidature" : formulaire complet pré-rempli avant transformation — le
+  // recruteur peut tout modifier/compléter (ex. en temps réel pendant l'entretien) avant de
+  // valider. Le CV vivier est préparé (via prepare-cv) dès l'ouverture pour être sélectionnable
+  // dans le formulaire, mais la candidature publique n'est marquée convertie qu'à la soumission.
+  const [candidatureModal, setCandidatureModal] = useState<{
+    isOpen: boolean;
+    publicApplication: PublicApplication | null;
+    cvId: string | null;
+    isNewCv: boolean;
+    seed: Partial<Recruiter> | null;
+  }>({ isOpen: false, publicApplication: null, cvId: null, isNewCv: false, seed: null });
+  const [isSubmittingCandidature, setIsSubmittingCandidature] = useState(false);
+  const [candidatureFormError, setCandidatureFormError] = useState<string | null>(null);
 
-  const performConvert = async (appId: string) => {
+  const handleCandidatureClick = async (appId: string) => {
+    const application = visiblePublicApps.find((a) => a.id === appId);
+    if (!application) return;
     setConvertingId(appId);
     setConvertDone(false);
     try {
-      const result = await convertPublicApp({ id: appId, requestId: id }).unwrap();
-      // Afficher brièvement les étapes validées avant de fermer l'overlay
+      const { cv_id, is_new_cv } = await prepareCv(appId).unwrap();
+      const cv = await getCVById(cv_id).unwrap();
       setConvertDone(true);
-      await new Promise((r) => setTimeout(r, 900));
-      if (result.extraction_warning) {
-        addToast(
-          "warning",
-          t("toast.convertedWithWarning"),
-          result.extraction_warning
-        );
-      } else {
-        addToast("success", t("toast.converted"), t("toast.convertedMessage"));
-      }
+      await new Promise((r) => setTimeout(r, 500));
+      setCandidatureModal({
+        isOpen: true,
+        publicApplication: application,
+        cvId: cv_id,
+        isNewCv: is_new_cv,
+        seed: {
+          cv_id,
+          request_id: id,
+          cv: cv as unknown as Recruiter["cv"],
+          request: offer ? ({ id: offer.id, title: offer.title } as unknown as Recruiter["request"]) : undefined,
+          qualification_report: application.message ? `Message du candidat : ${application.message}` : undefined,
+        },
+      });
     } catch (e) {
       addToast("error", t("toast.error"), getApiErrorMessage(e, t("toast.convertError")));
     } finally {
@@ -83,14 +112,37 @@ export default function PublicOfferDetailPage() {
     }
   };
 
-  const handleConvertClick = (appId: string) => {
-    setConfirmConvert({ isOpen: true, appId });
+  const handleCandidatureSubmit = async (data: CreateRecruiterFormData) => {
+    if (!candidatureModal.publicApplication || !candidatureModal.cvId) return;
+    setIsSubmittingCandidature(true);
+    setCandidatureFormError(null);
+    try {
+      const created = await createApplication(data as CreateRecruiterRequest).unwrap();
+      await finalizeConversion({
+        id: candidatureModal.publicApplication.id,
+        requestId: id,
+        cv_id: candidatureModal.cvId,
+        application_id: created.id,
+      }).unwrap();
+      addToast("success", t("toast.converted"), t("toast.convertedMessage"));
+      setCandidatureModal({ isOpen: false, publicApplication: null, cvId: null, isNewCv: false, seed: null });
+    } catch (e) {
+      const msg = getApiErrorMessage(e, t("toast.convertError"));
+      setCandidatureFormError(msg);
+      addToast("error", t("toast.error"), msg);
+    } finally {
+      setIsSubmittingCandidature(false);
+    }
   };
 
-  const handleConfirmConvert = async () => {
-    const appId = confirmConvert.appId;
-    setConfirmConvert({ isOpen: false, appId: null });
-    if (appId) await performConvert(appId);
+  const handleCandidatureCancel = async () => {
+    // Rollback complet si le CV vient d'être créé par cette préparation — jamais un profil
+    // vivier préexistant (même email), qui n'a rien à voir avec cette annulation.
+    if (candidatureModal.isNewCv && candidatureModal.cvId) {
+      try { await deleteCV(candidatureModal.cvId).unwrap(); } catch { /* best-effort */ }
+    }
+    setCandidatureModal({ isOpen: false, publicApplication: null, cvId: null, isNewCv: false, seed: null });
+    setCandidatureFormError(null);
   };
 
   const handleDeleteClick = (application: PublicApplication) => {
@@ -357,7 +409,7 @@ export default function PublicOfferDetailPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
             {t("receivedApplications")}
-            <span className="ms-2 text-sm text-gray-400">({publicApps.length})</span>
+            <span className="ms-2 text-sm text-gray-400">({visiblePublicApps.length})</span>
           </h2>
           {isAdmin && responsibleUsers.length > 0 && (
             <select
@@ -373,9 +425,9 @@ export default function PublicOfferDetailPage() {
           )}
         </div>
         <ApplicationsList
-          applications={publicApps}
+          applications={visiblePublicApps}
           offerTitle={offer.title}
-          onConvert={handleConvertClick}
+          onConvert={handleCandidatureClick}
           convertingId={convertingId}
           onDelete={handleDeleteClick}
           deletingId={deletingId}
@@ -408,16 +460,14 @@ export default function PublicOfferDetailPage() {
         }}
       />
 
-      <ConfirmModal
-        isOpen={confirmConvert.isOpen}
-        onClose={() => setConfirmConvert({ isOpen: false, appId: null })}
-        onConfirm={handleConfirmConvert}
-        title={t("convertApplication.title")}
-        message={t("convertApplication.message")}
-        confirmText={t("convertApplication.confirm")}
-        cancelText={t("convertApplication.cancel")}
-        variant="info"
-        isLoading={!!convertingId}
+      <RecruiterFormModal
+        isOpen={candidatureModal.isOpen}
+        onClose={handleCandidatureCancel}
+        onSubmit={handleCandidatureSubmit}
+        recruiter={candidatureModal.seed as Recruiter | null}
+        isDuplicate
+        isLoading={isSubmittingCandidature}
+        serverError={candidatureFormError}
       />
     </div>
   );

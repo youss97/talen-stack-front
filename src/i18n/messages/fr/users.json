@@ -89,7 +89,10 @@
       "roleEmpty": "Aucun rôle trouvé",
       "status": "Statut",
       "statusActive": "Actif",
-      "statusInactive": "Inactif"
+      "statusInactive": "Inactif",
+      "internalNote": "Note interne",
+      "internalNotePlaceholder": "Note visible uniquement en interne...",
+      "internalNoteEmpty": "Aucune note interne"
     },
     "buttons": {
       "saving": "Enregistrement...",

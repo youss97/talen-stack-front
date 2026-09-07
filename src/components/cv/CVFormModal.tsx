@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useForm, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Lock } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
@@ -51,6 +52,7 @@ export default function CVFormModal({
       candidate_phone: "",
       candidate_first_name: "",
       candidate_last_name: "",
+      linkedin_url: "",
       total_experience: undefined,
       last_education: "",
       last_position: "",
@@ -58,6 +60,7 @@ export default function CVFormModal({
       industry_experience: "",
       remote_preferred: false,
       status: undefined,
+      internal_note: "",
     },
   });
 
@@ -68,6 +71,7 @@ export default function CVFormModal({
         candidate_phone: cv.candidate_phone || "",
         candidate_first_name: cv.candidate_first_name || "",
         candidate_last_name: cv.candidate_last_name || "",
+        linkedin_url: cv.linkedin_url || "",
         total_experience: cv.total_experience,
         last_education: cv.last_education || "",
         last_position: cv.last_position || "",
@@ -75,6 +79,7 @@ export default function CVFormModal({
         industry_experience: cv.industry_experience || "",
         remote_preferred: cv.remote_preferred || false,
         status: cv.status || undefined,
+        internal_note: cv.internal_note || "",
       });
       setSkillsInput(cv.additional_skills?.join(", ") || "");
       setMobilityInput(cv.geographic_mobility?.join(", ") || "");
@@ -85,6 +90,7 @@ export default function CVFormModal({
         candidate_phone: "",
         candidate_first_name: "",
         candidate_last_name: "",
+        linkedin_url: "",
         total_experience: undefined,
         last_education: "",
         last_position: "",
@@ -92,6 +98,7 @@ export default function CVFormModal({
         industry_experience: "",
         remote_preferred: false,
         status: undefined,
+        internal_note: "",
       });
       setSelectedFile(null);
       setSkillsInput("");
@@ -119,6 +126,7 @@ export default function CVFormModal({
     if (data.candidate_phone) formData.append("candidate_phone", data.candidate_phone);
     if (data.candidate_first_name) formData.append("candidate_first_name", data.candidate_first_name);
     if (data.candidate_last_name) formData.append("candidate_last_name", data.candidate_last_name);
+    if (data.linkedin_url) formData.append("linkedin_url", data.linkedin_url);
     if (data.total_experience !== undefined) formData.append("total_experience", String(data.total_experience));
     if (data.last_education) formData.append("last_education", data.last_education);
     if (data.last_position) formData.append("last_position", data.last_position);
@@ -126,6 +134,7 @@ export default function CVFormModal({
     if (data.industry_experience) formData.append("industry_experience", data.industry_experience);
     if (data.remote_preferred !== undefined) formData.append("remote_preferred", String(data.remote_preferred));
     if (data.status) formData.append("status", data.status);
+    if (data.internal_note) formData.append("internal_note", data.internal_note);
 
     if (skillsInput) {
       const skills = skillsInput.split(",").map(s => s.trim()).filter(Boolean);
@@ -250,6 +259,16 @@ export default function CVFormModal({
 
             <div className="grid grid-cols-2 gap-4">
               <Input
+                label={t("formModal.fields.linkedin")}
+                placeholder={t("formModal.fields.linkedinPlaceholder")}
+                {...register("linkedin_url")}
+                error={!!errors.linkedin_url}
+                hint={errors.linkedin_url?.message}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Input
                 label={t("formModal.fields.lastPosition")}
                 placeholder={t("formModal.fields.lastPositionPlaceholder")}
                 {...register("last_position")}
@@ -348,6 +367,22 @@ export default function CVFormModal({
                 <option value="approved">{t("status.approved")}</option>
                 <option value="rejected">{t("status.rejected")}</option>
               </select>
+            </div>
+
+            <div>
+              <Label>
+                <span className="inline-flex items-center gap-1.5">
+                  <Lock size={14} strokeWidth={1.8} />
+                  {t("formModal.fields.internalNote")}
+                </span>
+              </Label>
+              <textarea
+                {...register("internal_note")}
+                rows={3}
+                placeholder={t("formModal.fields.internalNotePlaceholder")}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+              />
+              <p className="mt-1 text-xs text-gray-400">{t("formModal.fields.internalNoteHint")}</p>
             </div>
 
           </div>

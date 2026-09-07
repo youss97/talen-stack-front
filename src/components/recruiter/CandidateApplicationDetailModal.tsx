@@ -5,6 +5,7 @@ import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
 import { getFeedbackCardColor } from "@/utils/feedbackColors";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
 import type { Recruiter } from "@/types/recruiter";
 import WorkflowStepper from "./WorkflowStepper";
@@ -269,9 +270,10 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
               {t("candidateDetail.qualificationSection")}
             </h3>
-            <div className="rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-              {candidate.qualification_report}
-            </div>
+            <div
+              className="rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-700 dark:text-gray-300 [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5 [&_a]:underline"
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(candidate.qualification_report) }}
+            />
           </section>
         )}
 

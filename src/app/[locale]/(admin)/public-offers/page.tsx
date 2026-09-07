@@ -11,6 +11,7 @@ import Badge from "@/components/ui/badge/Badge";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
 import { useTableSort } from "@/hooks/useTableSort";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import { formatDateTime } from "@/utils/dateFormat";
 import {
@@ -34,7 +35,7 @@ export default function PublicOffersPage() {
   const currentUser = useSelector((state: RootState) => state.auth.user);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("public-offers", 20);
   const [search, setSearch] = useState("");
   const [configOffer, setConfigOffer] = useState<PublicJobOffer | null>(null);
   const { sortBy, sortOrder, handleSort } = useTableSort();

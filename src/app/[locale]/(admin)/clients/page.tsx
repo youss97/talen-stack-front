@@ -7,6 +7,7 @@ import Badge from "@/components/ui/badge/Badge";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
 import { useTableSort } from "@/hooks/useTableSort";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import ClientFormModal from "@/components/client/ClientFormModal";
 import ClientDetailModal from "@/components/client/ClientDetailModal";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -50,7 +51,7 @@ export default function ClientsPage() {
   }>({ isOpen: false, client: null });
   const [isRemoving, setIsRemoving] = useState(false);
 
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("clients", 20);
   const { sortBy, sortOrder, handleSort } = useTableSort();
 
   const { data, isLoading, isFetching } = useGetClientsQuery({
@@ -170,6 +171,7 @@ export default function ClientsPage() {
           phone: formData.phone,
           email: formData.email,
           status: formData.status,
+          internal_note: formData.internal_note,
         };
         await updateClient({ id: editingClient.id, data: updateData }).unwrap();
         addToast("success", tc("status.success"), t("toasts.updateSuccess"));

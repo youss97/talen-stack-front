@@ -175,6 +175,13 @@ export interface ApplicationRequest {
   };
   created_at?: string;
   updated_at?: string;
+  created_by?: string | null;
+  creator?: {
+    id: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+  };
   responsible_id?: string | null;
   responsible?: {
     id: string;

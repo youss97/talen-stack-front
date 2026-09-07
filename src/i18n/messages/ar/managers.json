@@ -80,6 +80,7 @@
     "phone": "الهاتف",
     "position": "المنصب",
     "status": "الحالة",
+    "internalNote": "ملاحظة داخلية",
     "close": "إغلاق"
   },
   "formModal": {
@@ -97,6 +98,9 @@
     "phone": "الهاتف",
     "position": "المنصب",
     "positionPlaceholder": "مدير الموارد البشرية",
+    "internalNote": "ملاحظة داخلية (غير مرئية للعميل)",
+    "internalNotePlaceholder": "ملاحظة مرئية داخليًا فقط...",
+    "internalNoteHint": "لا تظهر هذه الملاحظة أبدًا للعميل.",
     "cancel": "إلغاء",
     "submitting": "جارٍ الإنشاء...",
     "updating": "جارٍ التعديل...",

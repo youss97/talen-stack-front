@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
 import { getFeedbackCardColor } from "@/utils/feedbackColors";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
@@ -802,9 +803,10 @@ export default function RecruiterDetailModal({
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   {t("qualificationSection")}
                 </h3>
-                <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
-                  {recruiter.qualification_report}
-                </p>
+                <div
+                  className="text-sm text-gray-800 dark:text-gray-200 [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5 [&_a]:underline"
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(recruiter.qualification_report) }}
+                />
               </div>
             )}
 

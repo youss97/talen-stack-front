@@ -45,6 +45,7 @@
       "remote": "Remote work",
       "remoteYes": "Possible",
       "remoteNo": "No",
+      "remoteHybrid": "Hybrid ({count} day(s) remote/week)",
       "deadline": "Application deadline",
       "startDate": "Desired start date",
       "industry": "Industry"
@@ -77,6 +78,8 @@
       "phonePlaceholder": "+212 6 00 00 00 00",
       "city": "City",
       "cityPlaceholder": "Casablanca",
+      "linkedin": "LinkedIn (optional)",
+      "linkedinPlaceholder": "https://www.linkedin.com/in/...",
       "cv": "Resume (PDF, DOC, DOCX — max 5 MB)",
       "cvDropActive": "Drop the file here",
       "cvDropIdle": "Drag and drop or click to upload your resume",

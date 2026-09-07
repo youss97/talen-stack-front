@@ -45,6 +45,7 @@
       "remote": "Télétravail",
       "remoteYes": "Possible",
       "remoteNo": "Non",
+      "remoteHybrid": "Hybride ({count} j télétravail/semaine)",
       "deadline": "Date limite",
       "startDate": "Début souhaité",
       "industry": "Secteur"
@@ -77,6 +78,8 @@
       "phonePlaceholder": "+212 6 00 00 00 00",
       "city": "Ville",
       "cityPlaceholder": "Casablanca",
+      "linkedin": "LinkedIn (optionnel)",
+      "linkedinPlaceholder": "https://www.linkedin.com/in/...",
       "cv": "CV (PDF, DOC, DOCX — max 5 MB)",
       "cvDropActive": "Déposez le fichier ici",
       "cvDropIdle": "Glisser ou cliquer pour déposer votre CV",

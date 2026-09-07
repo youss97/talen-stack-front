@@ -65,9 +65,12 @@
       "company": "Company information",
       "contact": "Contact",
       "admin": "Client administrator",
-      "extra": "Additional information"
+      "extra": "Additional information",
+      "internalNote": "Internal note"
     },
     "fields": {
+      "internalNotePlaceholder": "Note visible internally only...",
+      "internalNoteEmpty": "No internal note",
       "logo": "Client logo",
       "logoHelper": "Accepted formats: JPEG, PNG, GIF, WebP (max 5MB)",
       "name": "Company name",

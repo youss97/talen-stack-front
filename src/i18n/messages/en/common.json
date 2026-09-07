@@ -51,5 +51,11 @@
   "confirmDialog": {
     "deleteTitle": "Confirm deletion",
     "deleteMessage": "This action cannot be undone. Do you want to continue?"
+  },
+  "support": {
+    "contactButton": "Contact support",
+    "sending": "Sending...",
+    "sent": "Reported to support ✓",
+    "error": "Failed to send"
   }
 }

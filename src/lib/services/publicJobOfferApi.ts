@@ -62,11 +62,31 @@ export const publicJobOfferApi = createApi({
       invalidatesTags: (result, error, { id }) => [{ type: 'PublicJobOffer', id }, 'PublicJobOffer'],
     }),
 
-    // Transformer une candidature publique en vraie candidature
+    // Transformer une candidature publique en vraie candidature (ancien flux direct)
     convertPublicApplication: builder.mutation<{ application_id: string; cv_id: string; extraction_warning: string | null }, { id: string; requestId: string }>({
       query: ({ id }) => ({
         url: `/public-applications/${id}/convert`,
         method: 'POST',
+      }),
+      invalidatesTags: (result, error, { requestId }) => [{ type: 'PublicApplication', id: requestId }],
+    }),
+
+    // Nouveau flux "Candidature" — étape 1 : prépare/complète le CV vivier sans marquer la
+    // candidature publique comme convertie (sert à préremplir le formulaire de candidature).
+    prepareCvForPublicApplication: builder.mutation<{ cv_id: string; is_new_cv: boolean; extraction_warning: string | null }, string>({
+      query: (id) => ({
+        url: `/public-applications/${id}/prepare-cv`,
+        method: 'POST',
+      }),
+    }),
+
+    // Nouveau flux "Candidature" — étape 2 : marque la candidature publique comme convertie
+    // une fois la vraie candidature créée depuis le formulaire pré-rempli.
+    finalizePublicApplicationConversion: builder.mutation<void, { id: string; requestId: string; cv_id: string; application_id: string }>({
+      query: ({ id, cv_id, application_id }) => ({
+        url: `/public-applications/${id}/finalize-conversion`,
+        method: 'POST',
+        body: { cv_id, application_id },
       }),
       invalidatesTags: (result, error, { requestId }) => [{ type: 'PublicApplication', id: requestId }],
     }),
@@ -148,6 +168,8 @@ export const {
   useGetRequestResponsibleUsersQuery,
   useUpdatePublicOfferConfigMutation,
   useConvertPublicApplicationMutation,
+  usePrepareCvForPublicApplicationMutation,
+  useFinalizePublicApplicationConversionMutation,
   useDeletePublicApplicationMutation,
   useGetSpontaneousApplicationsQuery,
   useConvertSpontaneousApplicationMutation,

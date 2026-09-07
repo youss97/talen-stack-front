@@ -51,5 +51,11 @@
   "confirmDialog": {
     "deleteTitle": "Confirmer la suppression",
     "deleteMessage": "Cette action est irréversible. Voulez-vous continuer ?"
+  },
+  "support": {
+    "contactButton": "Contacter le support",
+    "sending": "Envoi...",
+    "sent": "Signalé au support ✓",
+    "error": "Échec de l'envoi"
   }
 }

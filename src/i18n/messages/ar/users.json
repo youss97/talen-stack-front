@@ -89,7 +89,10 @@
       "roleEmpty": "لم يتم العثور على أي دور",
       "status": "الحالة",
       "statusActive": "نشط",
-      "statusInactive": "غير نشط"
+      "statusInactive": "غير نشط",
+      "internalNote": "ملاحظة داخلية",
+      "internalNotePlaceholder": "ملاحظة مرئية داخليًا فقط...",
+      "internalNoteEmpty": "لا توجد ملاحظة داخلية"
     },
     "buttons": {
       "saving": "جاري الحفظ...",

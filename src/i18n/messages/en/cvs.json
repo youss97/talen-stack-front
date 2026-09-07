@@ -28,6 +28,7 @@
       "geographicMobility": "Geographic mobility",
       "contractTypes": "Preferred contract types",
       "notes": "Notes",
+      "internalNote": "Internal note (not visible to the client)",
       "document": "CV document"
     },
     "fields": {
@@ -79,6 +80,8 @@
       "emailPlaceholder": "john@example.com",
       "phone": "Phone",
       "phonePlaceholder": "+1 555 123 4567",
+      "linkedin": "LinkedIn",
+      "linkedinPlaceholder": "https://www.linkedin.com/in/...",
       "lastPosition": "Current position",
       "lastPositionPlaceholder": "Full Stack Developer",
       "totalExperience": "Years of experience",
@@ -97,7 +100,10 @@
       "contractTypesPlaceholder": "Permanent, Fixed-term, Freelance",
       "remotePreferred": "Open to remote work only",
       "status": "Status",
-      "selectStatus": "Select..."
+      "selectStatus": "Select...",
+      "internalNote": "Internal note (not visible to the client)",
+      "internalNotePlaceholder": "Note visible internally only...",
+      "internalNoteHint": "This note is never visible to the client."
     },
     "buttons": {
       "cancel": "Cancel",

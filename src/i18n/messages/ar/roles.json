@@ -11,8 +11,8 @@
       "createdBy": "أنشئ بواسطة"
     },
     "status": {
-      "protected": "🔒 محمي",
-      "editable": "✏️ قابل للتعديل"
+      "protected": "محمي",
+      "editable": "قابل للتعديل"
     }
   },
   "toasts": {

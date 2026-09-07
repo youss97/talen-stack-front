@@ -21,6 +21,8 @@ import {
   Check,
   Eye,
   Download,
+  ExternalLink,
+  Lock,
 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
@@ -145,6 +147,11 @@ export default function CVDetailModal({
               <div className="mt-3.5 flex flex-wrap gap-2">
                 {cv.candidate_email && <InfoChip icon={Mail} text={cv.candidate_email} />}
                 {cv.candidate_phone && <InfoChip icon={Phone} text={cv.candidate_phone} />}
+                {cv.linkedin_url && (
+                  <a href={cv.linkedin_url} target="_blank" rel="noopener noreferrer">
+                    <InfoChip icon={ExternalLink} text="LinkedIn" />
+                  </a>
+                )}
                 {cv.total_experience ? <InfoChip icon={Target} text={t("detailModal.yearsExperience", { years: cv.total_experience })} /> : null}
                 {cv.last_education && <InfoChip icon={GraduationCap} text={cv.last_education} />}
                 {cv.remote_preferred && <InfoChip icon={Home} text={t("detailModal.remoteWork")} />}
@@ -369,6 +376,18 @@ export default function CVDetailModal({
                   style={{ background: "var(--amber-soft, #FDF6EC)", borderInlineStart: "4px solid var(--amber)", color: "var(--text)" }}
                 >
                   {effectiveNotes}
+                </p>
+              </Section>
+            )}
+
+            {/* Note interne (jamais visible par le client) */}
+            {cv.internal_note && (
+              <Section title={t("detailModal.sections.internalNote")} icon={Lock}>
+                <p
+                  className="text-sm leading-relaxed rounded-lg p-3.5 whitespace-pre-wrap"
+                  style={{ background: "var(--surface)", borderInlineStart: "4px solid var(--brand-500, #465fff)", color: "var(--text)" }}
+                >
+                  {cv.internal_note}
                 </p>
               </Section>
             )}

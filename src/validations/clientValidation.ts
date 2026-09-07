@@ -53,6 +53,9 @@ export const createClientSchema = yup.object({
   adminPosition: yup
     .string()
     .optional(),
+  internal_note: yup
+    .string()
+    .optional(),
 });
 
 export const updateClientSchema = yup.object({
@@ -69,6 +72,7 @@ export const updateClientSchema = yup.object({
   phone: yup.string(),
   email: yup.string().email("Email invalide"),
   status: yup.string().oneOf(["active", "inactive"], "Statut invalide"),
+  internal_note: yup.string().optional(),
 });
 
 export type CreateClientFormData = yup.InferType<typeof createClientSchema> & {

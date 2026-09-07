@@ -2,6 +2,7 @@
 import { useState, useCallback } from "react";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import Button from "@/components/ui/button/Button";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
@@ -42,7 +43,7 @@ export default function CVsPage() {
   const { canCreate, canUpdate, canDelete } = useActions("/cvs");
   const canAssign = canUpdate;
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("cvs", 20);
   const [search, setSearch] = useState("");
   const [skillsFilter, setSkillsFilter] = useState<string>("");
   const [minExperience, setMinExperience] = useState<string>("");

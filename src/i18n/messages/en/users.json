@@ -89,7 +89,10 @@
       "roleEmpty": "No role found",
       "status": "Status",
       "statusActive": "Active",
-      "statusInactive": "Inactive"
+      "statusInactive": "Inactive",
+      "internalNote": "Internal note",
+      "internalNotePlaceholder": "Note visible internally only...",
+      "internalNoteEmpty": "No internal note"
     },
     "buttons": {
       "saving": "Saving...",

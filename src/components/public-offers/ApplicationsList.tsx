@@ -2,10 +2,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { Download, Trash2, Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Badge from "@/components/ui/badge/Badge";
 import Button from "@/components/ui/button/Button";
 import Pagination from "@/components/tables/Pagination";
-import { Link } from "@/i18n/navigation";
 import PublicApplicationDetailModal from "./PublicApplicationDetailModal";
 import type { PublicApplication } from "@/types/publicJobOffer";
 import { formatDateTime } from "@/utils/dateFormat";
@@ -102,7 +100,6 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
             </thead>
             <tbody>
               {pagedApplications.map((application) => {
-                const synced = (application as { synced_application_id?: string }).synced_application_id;
                 return (
                   <tr key={application.id} className="border-t" style={{ borderColor: "var(--border)" }}>
                     <td className="px-4 py-3">
@@ -146,17 +143,11 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
                           </Button>
                         )}
                         {onConvert && (
-                          synced ? (
-                            <Link href={`/applications/${synced}`}>
-                              <Badge color="success" variant="light" size="sm">✓ {t("converted")}</Badge>
-                            </Link>
-                          ) : (
-                            <Button size="sm" onClick={() => onConvert(application.id)} disabled={convertingId === application.id}>
-                              {convertingId === application.id ? "..." : t("convert")}
-                            </Button>
-                          )
+                          <Button size="sm" onClick={() => onConvert(application.id)} disabled={convertingId === application.id}>
+                            {convertingId === application.id ? "..." : t("convert")}
+                          </Button>
                         )}
-                        {onDelete && !synced && (
+                        {onDelete && (
                           <Button
                             variant="danger"
                             size="sm"

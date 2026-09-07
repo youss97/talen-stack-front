@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -31,7 +32,7 @@ export default function ManagersPage() {
   const tc = useTranslations("common");
   const { canCreate, canUpdate, canDelete } = useActions("/managers");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useLimitPreference("managers", 20);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [selectedClientId, setSelectedClientId] = useState<string>("");
@@ -223,6 +224,9 @@ export default function ManagersPage() {
       }
       if (formData.position) {
         formDataToSend.append("position", formData.position);
+      }
+      if (formData.internal_note !== undefined) {
+        formDataToSend.append("internal_note", formData.internal_note);
       }
       // N'ajouter la photo que si elle existe
       if (formData.photo && formData.photo instanceof File) {

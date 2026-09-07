@@ -23,6 +23,7 @@ export const createUserSchema = yup.object({
     .string()
     .oneOf(["active", "inactive"], "Statut invalide")
     .required("Le statut est requis"),
+  internal_note: yup.string().optional(),
 });
 
 export const updateUserSchema = yup.object({
@@ -44,6 +45,7 @@ export const updateUserSchema = yup.object({
   role_id: yup.string(),
   phone: yup.string().optional(),
   status: yup.string().oneOf(["active", "inactive"], "Statut invalide"),
+  internal_note: yup.string().optional(),
 });
 
 export type CreateUserFormData = yup.InferType<typeof createUserSchema> & {

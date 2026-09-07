@@ -19,6 +19,7 @@ import { useGetRolesForSelectInfiniteQuery } from "@/lib/services/roleApi";
 import type { User } from "@/types/user";
 import type { Role } from "@/types/role";
 import { EyeIcon, EyeCloseIcon } from "@/icons";
+import { Lock } from "lucide-react";
 import { getImageUrl } from "@/utils/imageHelper";
 import { generatePassword } from "@/utils/generatePassword";
 
@@ -65,6 +66,7 @@ export default function UserFormModal({
       role_id: "",
       phone: "",
       status: "active",
+      internal_note: "",
     },
   });
 
@@ -78,6 +80,7 @@ export default function UserFormModal({
         role_id: user.role_id,
         phone: user.phone || "",
         status: user.status === "deleted" ? "inactive" : user.status,
+        internal_note: user.internal_note || "",
       });
       setPhotoPreview(getImageUrl(user.photo_path || user.photo));
     } else {
@@ -89,6 +92,7 @@ export default function UserFormModal({
         role_id: "",
         phone: "",
         status: "active",
+        internal_note: "",
       });
       setPhotoPreview(null);
     }
@@ -347,6 +351,27 @@ export default function UserFormModal({
                 <p className="mt-1 text-sm text-error-500">
                   {errors.status.message}
                 </p>
+              )}
+            </div>
+
+            <div className="sm:col-span-2">
+              <Label>
+                <span className="inline-flex items-center gap-1.5">
+                  <Lock size={14} strokeWidth={1.8} />
+                  {t("form.fields.internalNote")}
+                </span>
+              </Label>
+              {readOnly ? (
+                <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
+                  {user?.internal_note || t("form.fields.internalNoteEmpty")}
+                </p>
+              ) : (
+                <textarea
+                  {...register("internal_note")}
+                  rows={3}
+                  placeholder={t("form.fields.internalNotePlaceholder")}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+                />
               )}
             </div>
           </div>

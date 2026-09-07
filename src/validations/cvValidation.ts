@@ -6,6 +6,10 @@ export const createCVSchema = yup.object({
   candidate_phone: yup.string().required("Le téléphone est requis"),
   candidate_first_name: yup.string().required("Le prénom est requis"),
   candidate_last_name: yup.string().required("Le nom est requis"),
+  linkedin_url: yup.string()
+    .transform((value) => (value === "" ? undefined : value))
+    .url("URL invalide")
+    .optional(),
   skills: yup.array().of(yup.string()).optional(),
   total_experience: yup.number()
     .transform((value, originalValue) => originalValue === "" ? undefined : value)
@@ -18,6 +22,7 @@ export const createCVSchema = yup.object({
   contract_type_preferences: yup.string().required("Champs requis"),
   remote_preferred: yup.boolean().optional(),
   status: yup.string().oneOf(["new", "reviewed", "shortlisted", "interviewed", "hired", "rejected", "archived"], "Champs requis").required("Champs requis"),
+  internal_note: yup.string().optional(),
 });
 
 export const updateCVSchema = yup.object({
@@ -25,6 +30,10 @@ export const updateCVSchema = yup.object({
   candidate_phone: yup.string().required("Le téléphone est requis"),
   candidate_first_name: yup.string().required("Le prénom est requis"),
   candidate_last_name: yup.string().required("Le nom est requis"),
+  linkedin_url: yup.string()
+    .transform((value) => (value === "" ? undefined : value))
+    .url("URL invalide")
+    .optional(),
   skills: yup.array().of(yup.string()).optional(),
   total_experience: yup.number()
     .transform((value, originalValue) => originalValue === "" ? undefined : value)
@@ -37,6 +46,7 @@ export const updateCVSchema = yup.object({
   contract_type_preferences: yup.string().required("Champs requis"),
   remote_preferred: yup.boolean().optional(),
   status: yup.string().oneOf(["new", "reviewed", "shortlisted", "interviewed", "hired", "rejected", "archived"], "Champs requis").required("Champs requis"),
+  internal_note: yup.string().optional(),
 });
 
 export type CreateCVFormData = yup.InferType<typeof createCVSchema>;

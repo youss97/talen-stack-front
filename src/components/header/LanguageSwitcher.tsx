@@ -1,10 +1,12 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Globe } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { useClampedDropdownPosition } from "@/hooks/useClampedDropdownPosition";
 
 const LOCALE_LABELS: Record<string, string> = {
   fr: "Français",
@@ -19,17 +21,25 @@ export default function LanguageSwitcher() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const pos = useClampedDropdownPosition(buttonRef, dropdownRef, isOpen);
 
   useEffect(() => {
+    if (!isOpen) return;
     const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        buttonRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [isOpen]);
 
   const handleSelect = (nextLocale: string) => {
     setIsOpen(false);
@@ -41,8 +51,9 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative">
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen((v) => !v)}
         aria-label={t("language")}
         style={{ borderColor: "var(--border-strong)" }}
@@ -50,8 +61,13 @@ export default function LanguageSwitcher() {
       >
         <Globe size={20} strokeWidth={1.6} className="icon-glow" />
       </button>
-      {isOpen && (
-        <div className="absolute end-0 mt-2 w-40 max-w-[calc(100vw-2rem)] rounded-lg border border-gray-200 bg-white py-1 shadow-lg z-50 dark:border-gray-800 dark:bg-gray-900">
+      {isOpen && pos && typeof document !== "undefined" && createPortal(
+        <div
+          ref={dropdownRef}
+          style={{ position: "fixed", top: pos.top, left: pos.left }}
+          className="z-[9999] w-40 max-w-[calc(100vw-1rem)] rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-800 dark:bg-gray-900"
+          onClick={(e) => e.stopPropagation()}
+        >
           {routing.locales.map((loc) => (
             <button
               key={loc}
@@ -63,7 +79,8 @@ export default function LanguageSwitcher() {
               {LOCALE_LABELS[loc] || loc}
             </button>
           ))}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

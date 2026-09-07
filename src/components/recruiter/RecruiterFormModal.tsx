@@ -1,7 +1,7 @@
 "use client";
 import { Star, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useForm, Resolver } from "react-hook-form";
+import { useForm, Resolver, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
@@ -12,6 +12,7 @@ import CVInfiniteSelect from "@/components/form/CVInfiniteSelect";
 import MultiSelect from "@/components/form/MultiSelect";
 import CurrencySelector from "@/components/ui/currency-selector/CurrencySelector";
 import DatePicker from "@/components/form/date-picker";
+import RichTextEditor from "@/components/form/RichTextEditor";
 import {
   createRecruiterSchema,
   updateRecruiterSchema,
@@ -78,6 +79,7 @@ export default function RecruiterFormModal({
     watch,
     setValue,
     register,
+    control,
     formState: { errors },
   } = useForm<CreateRecruiterFormData>({
     resolver: yupResolver(isEditing ? updateRecruiterSchema : createRecruiterSchema) as unknown as Resolver<CreateRecruiterFormData>,
@@ -886,21 +888,17 @@ export default function RecruiterFormModal({
                 <Label>
                   {t("qualificationReportLabel")} <span className="text-error-500">*</span>
                 </Label>
-                <textarea
-                  {...register("qualification_report")}
-                  rows={5}
-                  placeholder={t("qualificationReportPlaceholder")}
-                  className={`w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 resize-none ${
-                    errors.qualification_report
-                      ? "border-error-500 focus:border-error-500 focus:ring-error-500/10"
-                      : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700 dark:focus:border-brand-800"
-                  }`}
-                  style={{ minHeight: '120px' }}
-                  onInput={(e) => {
-                    const target = e.target as HTMLTextAreaElement;
-                    target.style.height = 'auto';
-                    target.style.height = target.scrollHeight + 'px';
-                  }}
+                <Controller
+                  name="qualification_report"
+                  control={control}
+                  render={({ field }) => (
+                    <RichTextEditor
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder={t("qualificationReportPlaceholder")}
+                      error={!!errors.qualification_report}
+                    />
+                  )}
                 />
                 {errors.qualification_report && (
                   <p className="mt-1 text-sm text-error-500">

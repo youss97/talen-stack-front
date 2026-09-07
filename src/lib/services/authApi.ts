@@ -41,7 +41,32 @@ export const authApi = createApi({
         body,
       }),
     }),
+
+    // POST /auth/forgot-password - Demander un lien de réinitialisation
+    forgotPassword: builder.mutation<{ message: string }, { email: string }>({
+      query: (body) => ({
+        url: '/auth/forgot-password',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    // POST /auth/reset-password - Réinitialiser le mot de passe avec un token
+    resetPassword: builder.mutation<{ message: string }, { token: string; newPassword: string }>({
+      query: (body) => ({
+        url: '/auth/reset-password',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useVerifyUserQuery, useLogoutMutation, useRefreshMutation } = authApi;
+export const {
+  useLoginMutation,
+  useVerifyUserQuery,
+  useLogoutMutation,
+  useRefreshMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+} = authApi;

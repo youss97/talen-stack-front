@@ -65,9 +65,12 @@
       "company": "معلومات الشركة",
       "contact": "جهة الاتصال",
       "admin": "مسؤول العميل",
-      "extra": "معلومات إضافية"
+      "extra": "معلومات إضافية",
+      "internalNote": "ملاحظة داخلية"
     },
     "fields": {
+      "internalNotePlaceholder": "ملاحظة مرئية داخليًا فقط...",
+      "internalNoteEmpty": "لا توجد ملاحظة داخلية",
       "logo": "شعار العميل",
       "logoHelper": "الصيغ المقبولة: JPEG، PNG، GIF، WebP (بحد أقصى 5 ميجابايت)",
       "name": "الاسم التجاري",

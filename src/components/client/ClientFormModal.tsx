@@ -20,6 +20,7 @@ import {
 import type { Client } from "@/types/client";
 import { COUNTRY_LIST } from "@/types/client";
 import { EyeIcon, EyeCloseIcon } from "@/icons";
+import { Lock } from "lucide-react";
 import { getImageUrl } from "@/utils/imageHelper";
 
 interface ClientFormModalProps {
@@ -80,6 +81,7 @@ export default function ClientFormModal({
       adminLastName: "",
       adminPhone: "",
       adminPosition: "",
+      internal_note: "",
     },
   });
 
@@ -111,6 +113,7 @@ export default function ClientFormModal({
           adminLastName: "",
           adminPhone: "",
           adminPosition: "",
+          internal_note: client.internal_note || "",
         });
         setLogoPreview(getImageUrl(client.company_logo_path || client.logo) || null);
         setLogoFile(null);
@@ -135,6 +138,7 @@ export default function ClientFormModal({
           adminLastName: "",
           adminPhone: "",
           adminPosition: "",
+          internal_note: "",
         });
         setLogoPreview(null);
         setLogoFile(null);
@@ -389,6 +393,30 @@ export default function ClientFormModal({
               </div>
               )}
             </div>
+          </section>
+
+          {/* ── Section Note interne (jamais visible par le client) ── */}
+          <section>
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+              <span className="inline-flex items-center gap-1.5">
+                <Lock size={14} strokeWidth={1.8} />
+                {t("sections.internalNote")}
+              </span>
+            </h3>
+            {readOnly ? (
+              client?.internal_note ? (
+                <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{client.internal_note}</p>
+              ) : (
+                <p className="text-sm text-gray-400">{t("fields.internalNoteEmpty")}</p>
+              )
+            ) : (
+              <textarea
+                {...register("internal_note")}
+                rows={3}
+                placeholder={t("fields.internalNotePlaceholder")}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+              />
+            )}
           </section>
 
           {/* ── Admin info (read-only view) ── */}

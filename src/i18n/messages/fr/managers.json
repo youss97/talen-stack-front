@@ -80,6 +80,7 @@
     "phone": "Téléphone",
     "position": "Position",
     "status": "Statut",
+    "internalNote": "Note interne",
     "close": "Fermer"
   },
   "formModal": {
@@ -97,6 +98,9 @@
     "phone": "Téléphone",
     "position": "Position",
     "positionPlaceholder": "Directeur des Ressources Humaines",
+    "internalNote": "Note interne (non visible par le client)",
+    "internalNotePlaceholder": "Note visible uniquement en interne...",
+    "internalNoteHint": "Cette note n'est jamais visible par le client.",
     "cancel": "Annuler",
     "submitting": "Création...",
     "updating": "Modification...",

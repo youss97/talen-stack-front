@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Bell } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
-import { Dropdown } from "../ui/dropdown/Dropdown";
 import {
   useGetNotificationsQuery,
   useGetUnreadCountQuery,
@@ -12,6 +12,7 @@ import {
   type AppNotification,
 } from "@/lib/services/notificationApi";
 import { useNotificationText } from "@/hooks/useNotificationText";
+import { useClampedDropdownPosition } from "@/hooks/useClampedDropdownPosition";
 
 function timeAgo(date: string, t: ReturnType<typeof useTranslations>): string {
   const diff = Date.now() - new Date(date).getTime();
@@ -36,6 +37,25 @@ export default function NotificationDropdown() {
   const getNotificationText = useNotificationText();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const pos = useClampedDropdownPosition(buttonRef, dropdownRef, isOpen);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const close = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        buttonRef.current &&
+        !dropdownRef.current.contains(e.target as Node) &&
+        !buttonRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [isOpen]);
 
   const { data: countData } = useGetUnreadCountQuery(undefined, { pollingInterval: 60000 });
   const { data, isLoading } = useGetNotificationsQuery({ page: 1, limit: 10 }, { skip: !isOpen });
@@ -54,6 +74,7 @@ export default function NotificationDropdown() {
   return (
     <div className="relative">
       <button
+        ref={buttonRef}
         style={{ borderColor: "var(--border-strong)" }}
         className="relative flex items-center justify-center transition-colors border rounded-full h-11 w-11 text-gray-600 hover:text-gray-900 hover:bg-[var(--brand-soft)] dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10"
         onClick={() => setIsOpen((v) => !v)}
@@ -66,11 +87,13 @@ export default function NotificationDropdown() {
         )}
         <Bell size={20} strokeWidth={1.8} className="icon-glow" />
       </button>
-      <Dropdown
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        className="absolute end-0 mt-[17px] flex max-h-[480px] w-[350px] max-w-[calc(100vw-2rem)] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark sm:w-[380px]"
-      >
+      {isOpen && pos && typeof document !== "undefined" && createPortal(
+        <div
+          ref={dropdownRef}
+          style={{ position: "fixed", top: pos.top, left: pos.left }}
+          className="z-[9999] flex max-h-[480px] w-[350px] max-w-[calc(100vw-1rem)] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark sm:w-[380px]"
+          onClick={(e) => e.stopPropagation()}
+        >
         <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100 dark:border-gray-700">
           <h5 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
             {t("page.title")} {unread > 0 && <span className="text-sm font-normal text-gray-400">({unread})</span>}
@@ -120,7 +143,9 @@ export default function NotificationDropdown() {
         >
           {t("dropdown.viewAll")}
         </Link>
-      </Dropdown>
+        </div>,
+        document.body,
+      )}
     </div>
   );
 }

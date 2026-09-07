@@ -54,6 +54,7 @@
     "printTitle": "Card {name}"
   },
   "confirmDelete": "Delete {name}'s card?",
+  "confirmDeleteTitle": "Delete card",
   "toasts": {
     "cardUpdated": "Card updated",
     "cardCreated": "Card created",

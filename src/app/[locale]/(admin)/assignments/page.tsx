@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { UserPlus, UserMinus } from "lucide-react";
 import DataTableWithSelection, { type Column } from "@/components/tables/DataTableWithSelection";
 import Pagination from "@/components/tables/Pagination";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import { ToastContainer, type ToastItem } from "@/components/ui/toast/Toast";
 import AssignModal from "@/components/assign/AssignModal";
 import { useGetCVsQuery, useAssignCVMutation } from "@/lib/services/cvApi";
@@ -65,7 +66,7 @@ export default function AssignmentsPage() {
   const [unassignedOnly, setUnassignedOnly] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useLimitPreference("assignments", 20);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   // Selection state (reset on tab change)
