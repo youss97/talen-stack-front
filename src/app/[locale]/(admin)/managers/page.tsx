@@ -213,7 +213,10 @@ export default function ManagersPage() {
       formDataToSend.append("first_name", formData.first_name);
       formDataToSend.append("last_name", formData.last_name);
       formDataToSend.append("email", formData.email);
-      
+      if ((formData as { login?: string }).login) {
+        formDataToSend.append("login", (formData as { login?: string }).login as string);
+      }
+
       // En mode édition, le mot de passe est optionnel
       if (formData.password) {
         formDataToSend.append("password", formData.password);

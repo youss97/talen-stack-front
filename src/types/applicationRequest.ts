@@ -78,8 +78,11 @@ export interface ApplicationRequest {
   bonuses?: string;
   variables?: string;
 
-  // Priorité
+  // Urgence (visible par le client)
   priority: "low" | "normal" | "high" | "urgent";
+
+  // Priorité interne (cabinet RH uniquement, jamais exposée au client)
+  internal_priority?: "critical" | "high" | "medium" | "low";
 
   // Statut
   status: "in_progress" | "standby" | "abandoned" | "filled" | "open" | "archived";
@@ -250,9 +253,12 @@ export interface CreateApplicationRequestRequest {
   bonuses?: string;
   variables?: string;
 
-  // Priorité
+  // Urgence (visible par le client)
   priority: "low" | "normal" | "high" | "urgent";
-  
+
+  // Priorité interne (cabinet RH uniquement)
+  internal_priority?: "critical" | "high" | "medium" | "low";
+
   // Statut
   status?: "in_progress" | "standby" | "abandoned" | "filled";
   
@@ -297,6 +303,7 @@ export interface UpdateApplicationRequestRequest {
   bonuses?: string;
   variables?: string;
   priority?: "low" | "normal" | "high" | "urgent";
+  internal_priority?: "critical" | "high" | "medium" | "low";
   status?: "in_progress" | "standby" | "abandoned" | "filled" | "archived";
   desired_start_date?: string;
   number_of_profiles?: number;

@@ -24,6 +24,7 @@ export interface Company {
   name: string;
   siret?: string;
   ice?: string;
+  company_identifier?: string;
   address: string;
   city: string;
   postal_code: string;
@@ -42,6 +43,7 @@ export interface Company {
 export interface CreateCompanyRequest {
   name: string;
   siret: string;
+  company_identifier?: string;
   address: string;
   city: string;
   postal_code: string;
@@ -51,6 +53,7 @@ export interface CreateCompanyRequest {
   logo?: string;
   status: "active" | "inactive";
   adminEmail: string;
+  adminLogin?: string;
   adminPassword: string;
   adminFirstName: string;
   adminLastName: string;
@@ -60,6 +63,7 @@ export interface CreateCompanyRequest {
 export interface UpdateCompanyRequest {
   name?: string;
   siret?: string;
+  company_identifier?: string;
   address?: string;
   city?: string;
   postal_code?: string;
@@ -75,6 +79,8 @@ export interface CompanyPaginationParams {
   limit?: number;
   search?: string;
   status?: string;
+  excludeClientCompanies?: boolean;
+  onlySubscribed?: boolean;
 }
 
 export interface PaginatedResponse<T> {

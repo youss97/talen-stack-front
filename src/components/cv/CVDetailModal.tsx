@@ -1,5 +1,6 @@
 "use client";
-import type { ComponentType } from "react";
+import { useState, type ComponentType } from "react";
+import AnonymizedCvOptionsModal from "./AnonymizedCvOptionsModal";
 import { useTranslations } from "next-intl";
 import {
   Mail,
@@ -20,21 +21,40 @@ import {
   Pin,
   Check,
   Eye,
-  Download,
   ExternalLink,
   Lock,
+  ShieldCheck,
 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import type { CV } from "@/types/cv";
-import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
+import { openCvInNewTab } from "@/utils/cvView";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 interface CVDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   cv: CV | null;
   isLoading?: boolean;
+}
+
+// Valeurs vides ou "Non spécifié" (renvoyées par l'extraction IA) : traitées comme absentes.
+const PLACEHOLDER_VALUES = ["non spécifié", "non spécifiée", "non specifie", "not specified", "n/a", "-"];
+function cleanValue(value: unknown): string {
+  if (typeof value !== "string") return "";
+  const trimmed = value.trim();
+  return PLACEHOLDER_VALUES.includes(trimmed.toLowerCase()) ? "" : trimmed;
+}
+
+// Début + fin : "début - fin" ; fin seule : "fin" (sans tiret) ; début sans fin : "début - En cours".
+function formatPeriod(start: unknown, end: unknown, ongoingLabel: string): string {
+  const s = cleanValue(start);
+  const e = cleanValue(end);
+  if (s && e) return `${s} - ${e}`;
+  if (e) return e;
+  if (s) return `${s} - ${ongoingLabel}`;
+  return "";
 }
 
 export default function CVDetailModal({
@@ -44,6 +64,7 @@ export default function CVDetailModal({
   isLoading = false,
 }: CVDetailModalProps) {
   const t = useTranslations("cvs");
+  const [isAnonymizedOptionsOpen, setIsAnonymizedOptionsOpen] = useState(false);
   if (!cv && !isLoading) return null;
 
   const getStatusLabel = (status?: string) => {
@@ -86,17 +107,23 @@ export default function CVDetailModal({
     .filter(Boolean)
     .join(" ") || t("detailModal.defaultCandidateName") : t("detailModal.defaultTitle");
 
-  // Fallbacks: findOne returns raw entity without cv.details, findAll builds it.
-  // Use cv.experiences / cv.formations / cv.skills / cv.full_information as fallback.
+  // cv.experiences / cv.formations sont les champs live, directement modifiables par le
+  // recruteur (formulaire d'édition du CV) — ils doivent toujours prévaloir. cv.details.* est un
+  // instantané figé de l'extraction IA initiale (construit uniquement par findAll, absent de
+  // findOne) : un ancien snapshot qui, pris en priorité, masquait silencieusement toute date ou
+  // info corrigée manuellement après coup. On ne s'y replie donc que si le champ live est vide.
   const fullInfoExtraction = (cv?.full_information as any)?.extraction || {};
   const fullInfoUserData = (cv?.full_information as any)?.user_provided_data || {};
-  const effectiveExperiences: any[] = cv?.details?.experiences?.length
-    ? cv.details.experiences
-    : (cv?.experiences as any[]) || [];
-  const effectiveFormations: any[] = cv?.details?.formations?.length
-    ? cv.details.formations
-    : (cv?.formations as any[]) || [];
-  const effectiveSummary = cv?.details?.summary || fullInfoExtraction.summary || null;
+  const effectiveExperiences: any[] = (cv?.experiences as any[])?.length
+    ? (cv?.experiences as any[])
+    : (cv?.details?.experiences || []);
+  const effectiveFormations: any[] = (cv?.formations as any[])?.length
+    ? (cv?.formations as any[])
+    : (cv?.details?.formations || []);
+  // Le résumé saisi manuellement vit dans full_information.summary (à plat) ; celui extrait par
+  // l'IA dans full_information.extraction.summary — le champ live doit prévaloir sur le
+  // snapshot IA, comme pour experiences/formations ci-dessus.
+  const effectiveSummary = (cv?.full_information as any)?.summary || fullInfoExtraction.summary || cv?.details?.summary || null;
   const effectiveTechnicalSkills: string[] = cv?.details?.technical_skills?.length
     ? cv.details.technical_skills
     : (cv?.skills as string[]) || [];
@@ -152,6 +179,11 @@ export default function CVDetailModal({
                     <InfoChip icon={ExternalLink} text="LinkedIn" />
                   </a>
                 )}
+                {cv.portfolio_url && (
+                  <a href={cv.portfolio_url} target="_blank" rel="noopener noreferrer">
+                    <InfoChip icon={ExternalLink} text={t("detailModal.portfolio")} />
+                  </a>
+                )}
                 {cv.total_experience ? <InfoChip icon={Target} text={t("detailModal.yearsExperience", { years: cv.total_experience })} /> : null}
                 {cv.last_education && <InfoChip icon={GraduationCap} text={cv.last_education} />}
                 {cv.remote_preferred && <InfoChip icon={Home} text={t("detailModal.remoteWork")} />}
@@ -174,8 +206,9 @@ export default function CVDetailModal({
               <Section title={t("detailModal.sections.information")} icon={Info}>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4">
                   {cv.specialty && <DetailItem label={t("detailModal.fields.specialty")} value={cv.specialty} />}
+                  {cv.location && <DetailItem label={t("detailModal.fields.location")} value={cv.location} />}
                   <DetailItem label={t("detailModal.fields.sector")} value={cv.industry_experience || "-"} />
-                  <DetailItem label={t("detailModal.fields.remote")} value={cv.remote_preferred ? t("detailModal.fields.yes") : t("detailModal.fields.no")} />
+                  <DetailItem label={t("detailModal.fields.remote")} value={cv.remote_preferred ? t("detailModal.fields.remoteOnly") : t("detailModal.fields.no")} />
                   <DetailItem label={t("detailModal.fields.source")} value={cv.source || "-"} />
                 </div>
               </Section>
@@ -198,9 +231,11 @@ export default function CVDetailModal({
             {/* Résumé professionnel */}
             {effectiveSummary && (
               <Section title={t("detailModal.sections.summary")} icon={NotebookText}>
-                <p className="text-sm leading-relaxed" style={{ color: "var(--text)" }}>
-                  {effectiveSummary}
-                </p>
+                <div
+                  className="text-sm leading-relaxed [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5"
+                  style={{ color: "var(--text)" }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(effectiveSummary) }}
+                />
               </Section>
             )}
 
@@ -218,23 +253,29 @@ export default function CVDetailModal({
                       style={{ background: "var(--surface)", borderInlineStartColor: "var(--brand)", boxShadow: "var(--ds-shadow-card)" }}
                     >
                       <div className="flex justify-between items-start gap-3 mb-1.5">
-                        <h4 className="font-semibold" style={{ color: "var(--text)" }}>
-                          {exp.title || t("detailModal.fallbacks.positionNotSpecified")}
-                        </h4>
-                        {exp.duration && (
+                        {exp.title && (
+                          <h4 className="font-semibold" style={{ color: "var(--text)" }}>
+                            {exp.title}
+                          </h4>
+                        )}
+                        {(cleanValue(exp.duration) || formatPeriod(exp.start_date, exp.end_date, t("detailModal.fallbacks.ongoing"))) && (
                           <span className="shrink-0 text-xs px-2.5 py-1 rounded-full" style={{ background: "var(--brand-soft)", color: "var(--brand-deep)" }}>
-                            {exp.duration}
+                            {cleanValue(exp.duration) || formatPeriod(exp.start_date, exp.end_date, t("detailModal.fallbacks.ongoing"))}
                           </span>
                         )}
                       </div>
-                      <p className="text-sm" style={{ color: "var(--text-2)" }}>
-                        <strong style={{ color: "var(--text)" }}>{exp.company || t("detailModal.fallbacks.companyNotSpecified")}</strong>
-                        {exp.location && ` · ${exp.location}`}
-                      </p>
-                      {exp.description && (
-                        <p className="text-sm mt-2 leading-relaxed" style={{ color: "var(--text-2)" }}>
-                          {exp.description}
+                      {exp.company && (
+                        <p className="text-sm" style={{ color: "var(--text-2)" }}>
+                          <strong style={{ color: "var(--text)" }}>{exp.company}</strong>
+                          {exp.location && ` · ${exp.location}`}
                         </p>
+                      )}
+                      {exp.description && (
+                        <div
+                          className="text-sm mt-2 leading-relaxed [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5"
+                          style={{ color: "var(--text-2)" }}
+                          dangerouslySetInnerHTML={{ __html: sanitizeHtml(exp.description) }}
+                        />
                       )}
                     </div>
                   ))}
@@ -255,18 +296,22 @@ export default function CVDetailModal({
                       className="rounded-xl p-4 border-s-4"
                       style={{ background: "var(--surface)", borderInlineStartColor: "var(--brand-strong)", boxShadow: "var(--ds-shadow-card)" }}
                     >
-                      <h4 className="font-semibold mb-0.5" style={{ color: "var(--text)" }}>
-                        {form.degree || t("detailModal.fallbacks.degreeNotSpecified")}
-                      </h4>
-                      {form.field && (
-                        <p className="text-sm" style={{ color: "var(--text-2)" }}>{form.field}</p>
+                      {cleanValue(form.degree) && (
+                        <h4 className="font-semibold mb-0.5" style={{ color: "var(--text)" }}>
+                          {cleanValue(form.degree)}
+                        </h4>
                       )}
-                      <p className="text-sm" style={{ color: "var(--text-2)" }}>
-                        {form.institution || t("detailModal.fallbacks.institutionNotSpecified")}
-                      </p>
-                      {(form.start_date || form.end_date) && (
+                      {cleanValue(form.field) && (
+                        <p className="text-sm" style={{ color: "var(--text-2)" }}>{cleanValue(form.field)}</p>
+                      )}
+                      {cleanValue(form.institution) && (
+                        <p className="text-sm" style={{ color: "var(--text-2)" }}>
+                          {cleanValue(form.institution)}
+                        </p>
+                      )}
+                      {formatPeriod(form.start_date, form.end_date, t("detailModal.fallbacks.ongoing")) && (
                         <p className="text-xs mt-1" style={{ color: "var(--text-3)" }}>
-                          {form.start_date} {form.end_date && `- ${form.end_date}`}
+                          {formatPeriod(form.start_date, form.end_date, t("detailModal.fallbacks.ongoing"))}
                         </p>
                       )}
                     </div>
@@ -384,7 +429,7 @@ export default function CVDetailModal({
             {cv.internal_note && (
               <Section title={t("detailModal.sections.internalNote")} icon={Lock}>
                 <p
-                  className="text-sm leading-relaxed rounded-lg p-3.5 whitespace-pre-wrap"
+                  className="text-sm leading-relaxed rounded-lg p-3.5 whitespace-pre-wrap break-words"
                   style={{ background: "var(--surface)", borderInlineStart: "4px solid var(--brand-500, #465fff)", color: "var(--text)" }}
                 >
                   {cv.internal_note}
@@ -405,17 +450,28 @@ export default function CVDetailModal({
                     <Eye size={16} strokeWidth={1.8} className="icon-glow" />
                     {t("detailModal.actions.view")}
                   </Button>
-                  <Button variant="outline" size="sm" className="inline-flex items-center gap-1.5" onClick={() => cv.id && downloadCvFile(cv.id, cv.file_name || t("detailModal.fallbacks.fileName")).then((ok) => {
-                    if (!ok) alert(t("detailModal.errors.downloadFailed"));
-                  })}>
-                    <Download size={16} strokeWidth={1.8} className="icon-glow" />
-                    {t("detailModal.actions.download")}
+                  <Button variant="outline" size="sm" className="inline-flex items-center gap-1.5" onClick={() => setIsAnonymizedOptionsOpen(true)}>
+                    <ShieldCheck size={16} strokeWidth={1.8} className="icon-glow" />
+                    {t("detailModal.actions.viewAnonymized")}
                   </Button>
                 </div>
               </Section>
             )}
           </div>
         ) : null}
+
+        {cv?.id && (
+          <AnonymizedCvOptionsModal
+            isOpen={isAnonymizedOptionsOpen}
+            onClose={() => setIsAnonymizedOptionsOpen(false)}
+            cvId={cv.id}
+            initialTitle={(cv.profile_title as string) || (cv.last_position as string) || ""}
+            initialSummary={String(effectiveSummary || "").replace(/<br\s*\/?>|<\/p>|<\/li>/gi, "\n").replace(/<li[^>]*>/gi, "- ").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").trim()}
+            initialSkills={((cv as any).skills?.length ? (cv as any).skills : effectiveTechnicalSkills) as string[]}
+            initialExperiences={effectiveExperiences}
+            initialFormations={effectiveFormations}
+          />
+        )}
       </div>
 
       <div className="flex-shrink-0 flex justify-end gap-3 p-4 sm:p-5 border-t" style={{ borderColor: "var(--border)" }}>

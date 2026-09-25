@@ -1,6 +1,6 @@
 {
-  "name": "Talent Stack",
-  "short_name": "TalentStack",
+  "name": "Hire Stack",
+  "short_name": "HireStack",
   "description": "Application de gestion des talents et recrutement",
   "start_url": "/",
   "display": "standalone",

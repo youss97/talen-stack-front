@@ -1,4 +1,18 @@
 {
+  "statsModal": {
+    "action": "Statistiques",
+    "title": "Statistiques du client",
+    "kpis": {
+      "requests": "Demandes de recrutement",
+      "applications": "Candidatures",
+      "integrations": "Intégrations"
+    },
+    "charts": {
+      "applicationsPerMonth": "Candidatures par mois",
+      "requestsByStatus": "Demandes par statut",
+      "applicationsByStatus": "Candidatures par statut"
+    }
+  },
   "list": {
     "title": "Liste des clients",
     "subtitle": "Gérez vos clients et leurs administrateurs",
@@ -66,17 +80,20 @@
       "contact": "Contact",
       "admin": "Administrateur du client",
       "extra": "Informations supplémentaires",
-      "internalNote": "Note interne"
+      "internalNote": "Note interne",
+      "source": "Source d'acquisition"
     },
     "fields": {
       "internalNotePlaceholder": "Note visible uniquement en interne...",
       "internalNoteEmpty": "Aucune note interne",
+      "sourcePlaceholder": "Ex : Recommandation, LinkedIn, Salon professionnel...",
+      "sourceEmpty": "Non renseignée",
       "logo": "Logo du client",
       "logoHelper": "Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)",
       "name": "Raison sociale",
       "namePlaceholder": "Tech Solutions SARL",
-      "ice": "ICE / SIRET",
-      "icePlaceholder": "123456789012345",
+      "ice": "Identifiant de l'entreprise",
+      "icePlaceholder": "ICE, SIRET, RC...",
       "country": "Pays",
       "address": "Adresse",
       "addressPlaceholder": "12 rue de la Paix",
@@ -94,6 +111,9 @@
       "firstName": "Prénom",
       "lastName": "Nom",
       "adminEmailPlaceholder": "admin@example.com",
+      "adminLogin": "Identifiant de connexion",
+      "adminLoginPlaceholder": "Laisser vide pour utiliser l'email",
+      "adminLoginHint": "Optionnel — utile si cette personne a déjà un compte ailleurs avec le même email.",
       "adminFirstNamePlaceholder": "John",
       "adminLastNamePlaceholder": "Doe",
       "password": "Mot de passe",

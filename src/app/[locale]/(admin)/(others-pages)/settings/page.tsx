@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
-import { CheckCircle, FileText, Menu, Globe, LayoutTemplate, Mail, CreditCard, ChevronRight } from "lucide-react";
+import { CheckCircle, FileText, Menu, Globe, LayoutTemplate, Mail, CreditCard, ChevronRight, Building2 } from "lucide-react";
 
 export default function SettingsPage() {
   const t = useTranslations("settings.hub");
@@ -118,6 +118,16 @@ export default function SettingsPage() {
       ),
       href: "/business-cards",
       color: "green",
+    },
+    {
+      id: "crm-industries",
+      title: t("categories.crmIndustries.title"),
+      description: t("categories.crmIndustries.description"),
+      icon: (
+        <Building2 className="icon-glow" size={24} strokeWidth={1.8} />
+      ),
+      href: "/settings/crm-industries",
+      color: "blue",
     },
   ];
 

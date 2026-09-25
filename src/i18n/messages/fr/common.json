@@ -1,4 +1,17 @@
 {
+  "voiceNote": {
+    "record": "Enregistrer un message vocal",
+    "stopRecording": "Arrêter ({time})",
+    "remove": "Supprimer le message vocal",
+    "permissionError": "Micro inaccessible : autorisez l'accès au micro dans votre navigateur.",
+    "listen": "Message vocal"
+  },
+  "voiceInput": {
+    "start": "Dicter avec la voix",
+    "stop": "Arrêter la dictée",
+    "listening": "Écoute en cours...",
+    "notSupported": "Dictée vocale non disponible sur ce navigateur"
+  },
   "actions": {
     "save": "Enregistrer",
     "cancel": "Annuler",
@@ -19,18 +32,25 @@
     "create": "Créer",
     "update": "Mettre à jour",
     "submit": "Envoyer",
-    "loadMore": "Charger plus"
+    "loadMore": "Charger plus",
+    "viewDetails": "Voir les détails"
   },
   "status": {
     "loading": "Chargement...",
     "noData": "Aucune donnée",
     "noResults": "Aucun résultat",
+    "noDataAvailable": "Aucune donnée disponible",
     "success": "Succès",
     "error": "Erreur",
     "warning": "Attention",
     "info": "Information"
   },
+  "views": {
+    "table": "Tableau",
+    "cards": "Cartes"
+  },
   "labels": {
+    "home": "Accueil",
     "actions": "Actions",
     "status": "Statut",
     "date": "Date",
@@ -52,10 +72,23 @@
     "deleteTitle": "Confirmer la suppression",
     "deleteMessage": "Cette action est irréversible. Voulez-vous continuer ?"
   },
+  "bulkActions": {
+    "selectedCount": "{count, plural, one {# candidature sélectionnée} other {# candidatures sélectionnées}}",
+    "clearSelection": "Tout désélectionner",
+    "sendEmail": "Envoyer email",
+    "assign": "Affecter",
+    "delete": "Supprimer",
+    "deleteTitle": "Supprimer les candidatures",
+    "deleteMessage": "{count, plural, one {Êtes-vous sûr de vouloir supprimer # candidature ? Cette action est irréversible.} other {Êtes-vous sûr de vouloir supprimer # candidatures ? Cette action est irréversible.}}"
+  },
   "support": {
     "contactButton": "Contacter le support",
     "sending": "Envoi...",
     "sent": "Signalé au support ✓",
-    "error": "Échec de l'envoi"
+    "error": "Échec de l'envoi",
+    "modalTitle": "Décrivez le problème",
+    "modalSubtitle": "Quelques mots sur ce qui s'est passé nous aideront à résoudre le problème plus vite.",
+    "modalPlaceholder": "Ex : j'ai cliqué sur Enregistrer et rien ne s'est passé...",
+    "modalSubmit": "Envoyer au support"
   }
 }

@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
@@ -29,6 +30,20 @@ export default function RichTextEditor({ value, onChange, placeholder, error }: 
       onChange?.(editor.getHTML());
     },
   });
+
+  // `content` sur useEditor n'est appliqué qu'à la création de l'éditeur — si `value` arrive
+  // après coup (ex. reset() du formulaire une fois la demande chargée en asynchrone), TipTap
+  // ne se resynchronise jamais tout seul et le champ reste visuellement vide. On ne pousse le
+  // contenu externe que s'il diffère réellement de celui de l'éditeur, pour ne pas court-circuiter
+  // la frappe en cours de l'utilisateur (onUpdate déclenche aussi ce changement de `value`).
+  useEffect(() => {
+    if (!editor) return;
+    const incoming = value || "";
+    if (incoming !== editor.getHTML()) {
+      editor.commands.setContent(incoming, { emitUpdate: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor, value]);
 
   if (!editor) return null;
 

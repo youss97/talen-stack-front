@@ -35,6 +35,8 @@ export const createClientSchema = yup.object({
     .string()
     .required("L'email de l'administrateur est requis")
     .email("Email invalide"),
+  adminLogin: yup.string().optional(),
+  source: yup.string().optional(),
   adminPassword: yup
     .string()
     .required("Le mot de passe est requis")

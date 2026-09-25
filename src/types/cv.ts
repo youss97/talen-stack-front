@@ -66,6 +66,7 @@ export interface CV {
   candidate_email?: string;
   candidate_phone?: string;
   linkedin_url?: string;
+  portfolio_url?: string;
   candidate_first_name?: string;
   candidate_last_name?: string;
   profile_title?: string;
@@ -77,6 +78,9 @@ export interface CV {
   last_position?: string;
   industry_experience?: string;
   specialty?: string;
+  location?: string;
+  soft_skills?: string[];
+  certifications?: string[];
   geographic_mobility?: string[];
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
@@ -127,6 +131,7 @@ export interface CreateCVRequest {
   candidate_email?: string;
   candidate_phone?: string;
   linkedin_url?: string;
+  portfolio_url?: string;
   candidate_first_name?: string;
   candidate_last_name?: string;
   additional_skills?: string[];
@@ -136,6 +141,9 @@ export interface CreateCVRequest {
   last_position?: string;
   industry_experience?: string;
   specialty?: string;
+  location?: string;
+  soft_skills?: string[];
+  certifications?: string[];
   geographic_mobility?: string[];
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
@@ -147,9 +155,12 @@ export interface CreateCVRequest {
 }
 
 export interface UpdateCVRequest {
+  profile_title?: string;
+  summary?: string;
   candidate_email?: string;
   candidate_phone?: string;
   linkedin_url?: string;
+  portfolio_url?: string;
   candidate_first_name?: string;
   candidate_last_name?: string;
   additional_skills?: string[];
@@ -159,6 +170,9 @@ export interface UpdateCVRequest {
   last_position?: string;
   industry_experience?: string;
   specialty?: string;
+  location?: string;
+  soft_skills?: string[];
+  certifications?: string[];
   geographic_mobility?: string[];
   contract_type_preferences?: string[];
   remote_preferred?: boolean;

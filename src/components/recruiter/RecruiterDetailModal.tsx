@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import { Eye, Download, ShieldCheck, CalendarClock } from "lucide-react";
+import { Eye, ShieldCheck, CalendarClock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
-import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
+import { openCvInNewTab } from "@/utils/cvView";
 import { getFeedbackCardColor } from "@/utils/feedbackColors";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
@@ -14,6 +14,7 @@ import StatusHistoryModal from "./StatusHistoryModal";
 import FeedbackListModal from "./FeedbackListModal";
 import FeedbackModal from "./FeedbackModal";
 import SendEmailModal from "./SendEmailModal";
+import AnonymizedCvOptionsModal from "@/components/cv/AnonymizedCvOptionsModal";
 import ScheduleInterviewModal from "./ScheduleInterviewModal";
 import EditInterviewNotesModal from "../interviews/EditInterviewNotesModal";
 import CancelInterviewModal from "../interviews/CancelInterviewModal";
@@ -63,8 +64,6 @@ export default function RecruiterDetailModal({
   );
   
   const isLoading = externalLoading || isLoadingRecruiter;
-
-  const cvAny = recruiter?.cv as unknown as { file_name?: string } | undefined;
 
   // Prétentions affichées selon les types de contrat SOUHAITÉS pour l'offre — même règle
   // que RecruiterFormModal.tsx : CDI souhaité → salaire, Freelance souhaité → TJM,
@@ -121,6 +120,7 @@ export default function RecruiterDetailModal({
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isAddFeedbackModalOpen, setIsAddFeedbackModalOpen] = useState(false);
   const [isSendEmailModalOpen, setIsSendEmailModalOpen] = useState(false);
+  const [isAnonymizedCvOpen, setIsAnonymizedCvOpen] = useState(false);
   const [isScheduleInterviewModalOpen, setIsScheduleInterviewModalOpen] = useState(false);
   const [isEditInterviewNotesModalOpen, setIsEditInterviewNotesModalOpen] = useState(false);
   const [isCancelInterviewModalOpen, setIsCancelInterviewModalOpen] = useState(false);
@@ -135,7 +135,7 @@ export default function RecruiterDetailModal({
   const [createFeedback, { isLoading: isCreatingFeedback }] = useCreateFeedbackMutation();
   const [changeStep, { isLoading: isChangingStep }] = useChangeApplicationStepMutation();
 
-  const handleChangeStep = async (step: string, feedbackDescription?: string) => {
+  const handleChangeStep = async (step: string, feedbackDescription?: string, audio?: Blob | null) => {
     if (!recruiter) return;
     const terminal = ["Accepté", "KO", "Désistement"].includes(step);
     try {
@@ -143,6 +143,7 @@ export default function RecruiterDetailModal({
         id: recruiter.id,
         step,
         feedback_description: feedbackDescription,
+        audio,
         ...(terminal ? { status: step } : {}),
       }).unwrap();
       success(t("toast.stepUpdatedTitle"), t("toast.stepUpdatedMessage", { step }));
@@ -152,10 +153,10 @@ export default function RecruiterDetailModal({
   };
 
   // Ajouter un feedback à une étape SANS changer l'étape courante
-  const handleAddStepFeedback = async (step: string, description: string) => {
+  const handleAddStepFeedback = async (step: string, description: string, audio?: Blob | null) => {
     if (!recruiter) return;
     try {
-      await createFeedback({ id: recruiter.id, title: t("feedbackTitleForStep", { step }), description, step }).unwrap();
+      await createFeedback({ id: recruiter.id, title: t("feedbackTitleForStep", { step }), description, step, audio }).unwrap();
       success(t("toast.feedbackAddedTitle"), t("toast.feedbackAddedForStepMessage", { step }));
     } catch {
       showError(t("toast.stepUpdateErrorTitle"), t("toast.feedbackAddErrorMessage"));
@@ -230,14 +231,15 @@ export default function RecruiterDetailModal({
     }
   };
 
-  const handleCreateFeedback = async (title: string, description: string) => {
+  const handleCreateFeedback = async (title: string, description: string, audio?: Blob | null) => {
     if (!recruiter) return;
-    
+
     try {
       const result = await createFeedback({
         id: recruiter.id,
         title,
         description,
+        audio,
       }).unwrap();
       
       console.log('✅ Feedback créé avec succès:', result);
@@ -260,7 +262,7 @@ export default function RecruiterDetailModal({
     }
   };
 
-  const handleSendEmail = async (recipients: ('candidate' | 'client')[], subject: string, message: string) => {
+  const handleSendEmail = async (recipients: ('candidate' | 'client')[], subject: string, message: string, cc: string[], bcc: string[]) => {
     if (!recruiter) return;
 
     try {
@@ -269,6 +271,8 @@ export default function RecruiterDetailModal({
         recipients,
         subject,
         message,
+        ...(cc.length > 0 && { cc }),
+        ...(bcc.length > 0 && { bcc }),
       }).unwrap();
 
       console.log('✅ Email envoyé:', result);
@@ -437,50 +441,11 @@ export default function RecruiterDetailModal({
                           {t("viewCv")}
                         </Button>
                       )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => recruiter.cv?.id && downloadCvFile(recruiter.cv.id, cvAny?.file_name || 'CV.pdf').then((ok) => {
-                          if (!ok) showError(t("toast.stepUpdateErrorTitle"), t("downloadCvError"));
-                        })}
-                        className="inline-flex items-center gap-1.5"
-                      >
-                        <Download size={16} strokeWidth={1.8} className="icon-glow" />
-                        {t("downloadCv")}
-                      </Button>
                       {recruiter.cv.id && (
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={async () => {
-                            try {
-                              const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-                              const token = localStorage.getItem('token');
-
-                              const response = await fetch(`${apiUrl}/cvs/${recruiter.cv?.id}/anonymized`, {
-                                headers: {
-                                  'Authorization': `Bearer ${token}`
-                                }
-                              });
-
-                              if (!response.ok) {
-                                throw new Error(t("downloadError"));
-                              }
-
-                              const blob = await response.blob();
-                              const url = window.URL.createObjectURL(blob);
-                              const a = document.createElement('a');
-                              a.href = url;
-                              a.download = `cv-anonymise-${recruiter.cv?.id.substring(0, 8)}.pdf`;
-                              document.body.appendChild(a);
-                              a.click();
-                              window.URL.revokeObjectURL(url);
-                              document.body.removeChild(a);
-                            } catch (err) {
-                              console.error('Erreur:', err);
-                              showError(t("toast.stepUpdateErrorTitle"), t("downloadAnonymizedCvError"));
-                            }
-                          }}
+                          onClick={() => setIsAnonymizedCvOpen(true)}
                           className="inline-flex items-center gap-1.5"
                         >
                           <ShieldCheck size={16} strokeWidth={1.8} className="icon-glow" />
@@ -687,15 +652,17 @@ export default function RecruiterDetailModal({
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 {t("workflowSection")}
               </h3>
-              <WorkflowStepper
-                steps={recruiter.request?.workflow_steps || []}
-                currentStep={recruiter.current_step}
-                canEdit={canAddFeedback}
-                isSaving={isChangingStep}
-                onChangeStep={handleChangeStep}
-                onAddFeedback={handleAddStepFeedback}
-                isAddingFeedback={isCreatingFeedback}
-              />
+              <div className="rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 p-4">
+                <WorkflowStepper
+                  steps={recruiter.request?.workflow_steps || []}
+                  currentStep={recruiter.current_step}
+                  canEdit={canAddFeedback}
+                  isSaving={isChangingStep}
+                  onChangeStep={handleChangeStep}
+                  onAddFeedback={handleAddStepFeedback}
+                  isAddingFeedback={isCreatingFeedback}
+                />
+              </div>
             </div>
 
             {/* Informations candidature */}
@@ -800,36 +767,55 @@ export default function RecruiterDetailModal({
             {/* Compte-rendu de qualification */}
             {recruiter.qualification_report && (
               <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  {t("qualificationSection")}
-                </h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {t("qualificationSection")}
+                  </h3>
+                  {recruiter.qualification_score != null && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 dark:bg-brand-900/30 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:text-brand-300">
+                      {t("qualificationScoreBadge", { score: recruiter.qualification_score })}
+                    </span>
+                  )}
+                </div>
                 <div
-                  className="text-sm text-gray-800 dark:text-gray-200 [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5 [&_a]:underline"
+                  className="rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-800 dark:text-gray-200 [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5 [&_a]:underline"
                   dangerouslySetInnerHTML={{ __html: sanitizeHtml(recruiter.qualification_report) }}
                 />
               </div>
             )}
 
-            {/* Langues */}
-            {recruiter.languages && recruiter.languages.filter(l => l && l.language).length > 0 && (
-              <div className="border-t border-[color:var(--border)] pt-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  {t("languagesSection")}
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {recruiter.languages
-                    .filter(l => l && l.language)
-                    .map((l, i) => (
-                      <span
-                        key={i}
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                      >
-                        {t("languageLevel", { language: l.language, level: l.level })}
-                      </span>
-                    ))}
+            {/* Langues — priorité aux langues évaluées sur la candidature, repli sur les langues du CV */}
+            {(() => {
+              const appLanguages = (recruiter.languages || []).filter((l) => l && l.language);
+              const cvLanguages = recruiter.cv?.languages || [];
+              if (appLanguages.length === 0 && cvLanguages.length === 0) return null;
+              return (
+                <div className="border-t border-[color:var(--border)] pt-4">
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    {t("languagesSection")}
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {appLanguages.length > 0
+                      ? appLanguages.map((l, i) => (
+                          <span
+                            key={i}
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                          >
+                            {t("languageLevel", { language: l.language, level: l.level })}
+                          </span>
+                        ))
+                      : cvLanguages.map((lang, i) => (
+                          <span
+                            key={i}
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                          >
+                            {lang}
+                          </span>
+                        ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             {/* Notes du recruteur */}
             {recruiter.recruiter_notes && (
@@ -837,7 +823,7 @@ export default function RecruiterDetailModal({
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   {t("recruiterNotesSection")}
                 </h3>
-                <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+                <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-words">
                   {recruiter.recruiter_notes}
                 </p>
               </div>
@@ -883,9 +869,12 @@ export default function RecruiterDetailModal({
                           {feedback.title}
                         </h4>
                       </div>
-                      <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap line-clamp-2 mb-3">
-                        {feedback.description}
-                      </p>
+                      {feedback.description && (
+                        <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words line-clamp-2 mb-3">
+                          {feedback.description}
+                        </p>
+                      )}
+                      {feedback.audio_url && <audio controls preload="none" src={feedback.audio_url} className="mb-3 h-9 w-full" />}
                       <div className="flex items-center justify-between text-xs">
                         <div className="flex items-center gap-2">
                           <span className="text-gray-600 dark:text-gray-400 font-medium">
@@ -1024,6 +1013,11 @@ export default function RecruiterDetailModal({
       onSubmit={handleCreateFeedback}
       isLoading={isCreatingFeedback}
     />
+
+    {/* CV anonymisé : aperçu, modification et téléchargement */}
+    {recruiter?.cv?.id && (
+      <AnonymizedCvOptionsModal isOpen={isAnonymizedCvOpen} onClose={() => setIsAnonymizedCvOpen(false)} cvId={recruiter.cv.id} />
+    )}
 
     {/* Send Email Modal */}
     <SendEmailModal

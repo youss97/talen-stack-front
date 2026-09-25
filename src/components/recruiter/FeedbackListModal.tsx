@@ -77,9 +77,12 @@ export default function FeedbackListModal({
                     </span>
                   </div>
                   
-                  <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap mb-3">
-                    {feedback.description}
-                  </p>
+                  {feedback.description && (
+                    <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words mb-3">
+                      {feedback.description}
+                    </p>
+                  )}
+                  {feedback.audio_url && <audio controls preload="none" src={feedback.audio_url} className="mb-3 h-9 w-full" />}
                   
                   <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                     <span className="font-medium">

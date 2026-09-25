@@ -7,7 +7,7 @@
     "allStatuses": "جميع الحالات",
     "columns": {
       "name": "الاسم",
-      "siret": "السجل التجاري",
+      "companyIdentifier": "معرف الشركة",
       "city": "المدينة",
       "email": "البريد الإلكتروني",
       "phone": "الهاتف",
@@ -64,7 +64,7 @@
       "logo": "شعار الشركة",
       "logoHelper": "الصيغ المقبولة: JPEG، PNG، GIF، WebP (بحد أقصى 5 ميغابايت)",
       "companyName": "الاسم القانوني",
-      "ice": "المعرف الضريبي",
+      "companyIdentifier": "معرف الشركة",
       "address": "العنوان",
       "city": "المدينة",
       "postalCode": "الرمز البريدي",
@@ -78,6 +78,8 @@
       "firstName": "الاسم الأول",
       "lastName": "اسم العائلة",
       "adminEmail": "البريد الإلكتروني",
+      "adminLogin": "معرّف الدخول",
+      "adminLoginHint": "اختياري — اتركه فارغًا لاستخدام البريد الإلكتروني. مفيد إذا كان هذا الشخص يدير بالفعل شركة أخرى بنفس البريد الإلكتروني.",
       "password": "كلمة المرور",
       "notEditable": "غير قابل للتعديل",
       "adminPhone": "هاتف المسؤول",
@@ -93,7 +95,7 @@
     },
     "placeholders": {
       "companyName": "Tech Solutions SARL",
-      "ice": "123456789000000",
+      "companyIdentifier": "123456789000000",
       "address": "12 rue de la Paix",
       "city": "الدار البيضاء",
       "postalCode": "75001",
@@ -102,6 +104,7 @@
       "firstName": "جون",
       "lastName": "دو",
       "adminEmail": "admin@example.com",
+      "adminLogin": "اتركه فارغًا لاستخدام البريد الإلكتروني",
       "password": "StrongPassword123",
       "adminPhone": "+212612345678",
       "position": "مدير الموارد البشرية"

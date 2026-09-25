@@ -190,6 +190,12 @@ export default function EvaluationNotesModal({
                   value={formData.evaluation_notes}
                   onChange={(e) => setFormData({ ...formData, evaluation_notes: e.target.value })}
                   rows={8}
+                  style={{ minHeight: '180px' }}
+                  onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    target.style.height = target.scrollHeight + 'px';
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder={t('modals.evaluationNotes.notesSection.placeholder')}
                   required

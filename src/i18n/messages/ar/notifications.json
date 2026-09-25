@@ -95,6 +95,18 @@
         "messageWithLabel": "تم إلغاء المقابلة الخاصة بالترشيح {label}. السبب: {reason}.",
         "messageNoLabel": "تم إلغاء مقابلة. السبب: {reason}."
       }
+    },
+    "crm_deal": {
+      "stage_changed": {
+        "title": "تم تحديث الفرصة",
+        "message": "انتقلت الفرصة « {dealTitle} » إلى مرحلة « {stage} »."
+      }
+    },
+    "crm_task": {
+      "reminder": {
+        "title": "مهمة CRM مستحقة",
+        "message": "المهمة « {taskTitle} » مستحقة بتاريخ {dueDate}."
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Lock, Unlock } from "lucide-react";
+import { Plus, Lock, Unlock, BarChart3 } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import DataTable, { type Column } from "@/components/tables/DataTable";
@@ -10,6 +10,7 @@ import { useTableSort } from "@/hooks/useTableSort";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
 import ClientFormModal from "@/components/client/ClientFormModal";
 import ClientDetailModal from "@/components/client/ClientDetailModal";
+import ClientStatsModal from "@/components/client/ClientStatsModal";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import {
@@ -39,6 +40,7 @@ export default function ClientsPage() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [statsClient, setStatsClient] = useState<Client | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -172,6 +174,7 @@ export default function ClientsPage() {
           email: formData.email,
           status: formData.status,
           internal_note: formData.internal_note,
+          source: (formData as { source?: string }).source,
         };
         await updateClient({ id: editingClient.id, data: updateData }).unwrap();
         addToast("success", tc("status.success"), t("toasts.updateSuccess"));
@@ -187,11 +190,14 @@ export default function ClientsPage() {
         formDataToSend.append("email", formData.email);
         formDataToSend.append("status", formData.status);
         formDataToSend.append("adminEmail", formData.adminEmail);
+        if (formData.adminLogin) formDataToSend.append("adminLogin", formData.adminLogin);
         formDataToSend.append("adminPassword", formData.adminPassword);
         formDataToSend.append("adminFirstName", formData.adminFirstName);
         formDataToSend.append("adminLastName", formData.adminLastName);
         if (formData.adminPhone) formDataToSend.append("adminPhone", formData.adminPhone);
         if (formData.adminPosition) formDataToSend.append("adminPosition", formData.adminPosition);
+        if (formData.internal_note) formDataToSend.append("internal_note", formData.internal_note);
+        if ((formData as { source?: string }).source) formDataToSend.append("source", (formData as { source?: string }).source as string);
 
         const logo = (formData as any).logo;
         const adminPhoto = (formData as any).adminPhoto;
@@ -367,22 +373,29 @@ export default function ClientsPage() {
           sortBy={sortBy}
           sortOrder={sortOrder}
           onSort={(key) => { handleSort(key); setPage(1); }}
-          customActions={canUpdate ? [
+          customActions={[
             {
-              label: t("list.rowActions.deactivate"),
-              icon: <LockIcon />,
-              color: "warning",
-              onClick: (row) => handleToggleClick(row),
-              hidden: (row) => row.status !== "active",
+              label: t("statsModal.action"),
+              icon: <BarChart3 size={16} strokeWidth={1.8} />,
+              onClick: (row) => setStatsClient(row),
             },
-            {
-              label: t("list.rowActions.activate"),
-              icon: <UnlockIcon />,
-              color: "success",
-              onClick: (row) => handleToggleClick(row),
-              hidden: (row) => row.status === "active" || row.status === "deleted",
-            },
-          ] : undefined}
+            ...(canUpdate ? [
+              {
+                label: t("list.rowActions.deactivate"),
+                icon: <LockIcon />,
+                color: "warning" as const,
+                onClick: (row: Client) => handleToggleClick(row),
+                hidden: (row: Client) => row.status !== "active",
+              },
+              {
+                label: t("list.rowActions.activate"),
+                icon: <UnlockIcon />,
+                color: "success" as const,
+                onClick: (row: Client) => handleToggleClick(row),
+                hidden: (row: Client) => row.status === "active" || row.status === "deleted",
+              },
+            ] : []),
+          ]}
           emptyMessage={t("list.emptyState")}
         />
 
@@ -449,6 +462,13 @@ export default function ClientsPage() {
         cancelText={tc("actions.cancel")}
         variant="danger"
         isLoading={isRemoving}
+      />
+
+      <ClientStatsModal
+        isOpen={!!statsClient}
+        onClose={() => setStatsClient(null)}
+        clientId={statsClient?.id || null}
+        clientName={statsClient?.name}
       />
     </div>
   );

@@ -1,8 +1,8 @@
 {
   "list": {
-    "title": "عروض التوظيف الخاصة بي",
-    "subtitle": "قم بإدارة عروضك واطّلع على المرشحين المقترحين",
-    "newOffer": "+ عرض جديد",
+    "title": "توظيفاتي",
+    "subtitle": "قم بإدارة توظيفاتك واطّلع على المرشحين المقترحين",
+    "newOffer": "+ إضافة طلب",
     "searchPlaceholder": "البحث حسب العنوان أو المرجع...",
     "allStatuses": "كل الحالات",
     "allContracts": "كل أنواع العقود",
@@ -21,9 +21,9 @@
       "low": "منخفضة"
     },
     "empty": {
-      "title": "لم يتم العثور على أي عرض",
+      "title": "لم يتم العثور على أي توظيف",
       "filtered": "حاول تعديل عوامل التصفية الخاصة بك",
-      "noOffers": "لا توجد عروض توظيف حاليًا"
+      "noOffers": "لا يوجد توظيف حاليًا"
     },
     "reference": "المرجع: {ref}",
     "years": "سنوات",
@@ -36,27 +36,55 @@
     "toast": {
       "success": "نجاح",
       "error": "خطأ",
-      "createSuccess": "تم إنشاء العرض بنجاح",
-      "createError": "خطأ أثناء إنشاء العرض",
-      "editSuccess": "تم تعديل العرض بنجاح",
+      "createSuccess": "تم إنشاء التوظيف بنجاح",
+      "createError": "خطأ أثناء إنشاء التوظيف",
+      "editSuccess": "تم تعديل التوظيف بنجاح",
       "editError": "خطأ أثناء التعديل",
       "statusUpdateSuccess": "تم تحديث الحالة",
       "statusUpdateError": "خطأ أثناء تحديث الحالة"
     }
   },
   "candidates": {
-    "backToOffers": "العودة إلى العروض",
+    "backToOffers": "العودة إلى التوظيفات",
     "title": "المرشحون المقترحون",
     "subtitle": "اطّلع على المرشحين وأضف تعليقاتك",
-    "offerDetails": "تفاصيل العرض",
-    "editOffer": "تعديل العرض",
+    "subtitleForOffer": "التوظيف: {title}",
+    "qualificationScoreBadge": "الدرجة: {score}/100",
+    "qualificationScoreHint": "درجة تأهيل المرشح، من 100، يقيّمها المُجنِّد بناءً على المعايير المطلوبة لهذا المنصب.",
+    "allSources": "جميع المصادر",
+    "experienceYears": "{years} سنوات خبرة",
+    "desiredSalaryValue": "التطلعات: {amount} {currency}",
+    "desiredDailyRateValue": "المعدل اليومي المطلوب: {amount} {currency}/يوم",
+    "availabilityOptions": {
+      "immediate": "فورية",
+      "less_than_one_month": "أقل من شهر",
+      "one_month": "شهر واحد",
+      "two_months": "شهران",
+      "three_months": "ثلاثة أشهر",
+      "other": "أخرى"
+    },
+    "terminalSteps": {
+      "accepted": "مقبول",
+      "ko": "مرفوض",
+      "withdrawn": "انسحاب"
+    },
+    "identityReveal": {
+      "button": "طلب معلومات الاتصال",
+      "requested": "تم إرسال الطلب",
+      "feedbackTitle": "طلب معلومات الاتصال",
+      "feedbackDescription": "يرغب العميل في الحصول على معلومات الاتصال الخاصة بهذا المرشح المجهول.",
+      "error": "خطأ أثناء إرسال الطلب"
+    },
+    "offerDetails": "تفاصيل التوظيف",
+    "kanbanView": "عرض كانبان",
+    "editOffer": "تعديل التوظيف",
     "refresh": "تحديث",
     "searchPlaceholder": "البحث حسب الاسم أو البريد الإلكتروني...",
     "allStatuses": "كل الحالات",
     "empty": {
       "title": "لم يتم العثور على أي مرشح",
       "filtered": "حاول تعديل عوامل التصفية الخاصة بك",
-      "noCandidates": "لم يتم اقتراح أي مرشح لهذا العرض بعد"
+      "noCandidates": "لم يتم اقتراح أي مرشح لهذا التوظيف بعد"
     },
     "years": "سنوات",
     "skillsLabel": "المهارات:",
@@ -76,10 +104,10 @@
     }
   },
   "form": {
-    "createTitle": "عرض توظيف جديد",
-    "editTitle": "تعديل عرض التوظيف",
+    "createTitle": "إضافة طلب",
+    "editTitle": "تعديل التوظيف",
     "createSubtitle": "صف الملف الشخصي الذي تبحث عنه",
-    "editSubtitle": "قم بتعديل معلومات عرضك",
+    "editSubtitle": "قم بتعديل معلومات توظيفك",
     "statusLabel": "الحالة",
     "statusHint": "يمكنك تعليق هذا الطلب، أو تعليمه كمكتمل، أو التخلي عنه إذا لم يعد ذا صلة.",
     "statusValues": {
@@ -134,7 +162,8 @@
     "cityRequired": "المدينة مطلوبة",
     "minExperience": "الحد الأدنى للخبرة (سنوات)",
     "maxExperience": "الحد الأقصى للخبرة (سنوات)",
-    "priority": "الأولوية",
+    "priority": "الإلحاح",
+    "priorityHint": "ما مدى إلحاح هذا الطلب بالنسبة لك؟",
     "priorities": {
       "low": "منخفضة",
       "normal": "عادية",
@@ -148,13 +177,13 @@
     "benefitsPlaceholder": "تأمين صحي، قسائم مطعم، سيارة الشركة...",
     "bonuses": "المكافآت",
     "bonusesPlaceholder": "مكافأة الأداء، الشهر الثالث عشر...",
-    "note": "ملاحظة",
+    "note": "ملاحظة العميل",
     "notePlaceholder": "معلومات إضافية لفريق الموارد البشرية...",
     "noteHint": "مرئية لك ولفريق الموارد البشرية",
     "cancel": "إلغاء",
     "saving": "جارٍ الحفظ...",
-    "createSubmit": "إنشاء العرض",
-    "editSubmit": "تعديل العرض",
+    "createSubmit": "إنشاء التوظيف",
+    "editSubmit": "تعديل التوظيف",
     "defaultWorkflowSteps": {
       "proposed": "مقترح",
       "hrInterview": "مقابلة الموارد البشرية",

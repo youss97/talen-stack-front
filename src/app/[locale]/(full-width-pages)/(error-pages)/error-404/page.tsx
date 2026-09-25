@@ -1,7 +1,7 @@
 ﻿import GridShape from "@/components/common/GridShape";
 import { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import React from "react";
 
 export const metadata: Metadata = {

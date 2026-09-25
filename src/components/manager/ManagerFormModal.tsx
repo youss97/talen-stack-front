@@ -49,6 +49,7 @@ export default function ManagerFormModal({
       first_name: "",
       last_name: "",
       email: "",
+      login: "",
       password: "",
       phone: "",
       position: "",
@@ -66,6 +67,7 @@ export default function ManagerFormModal({
         first_name: mgr.firstName || mgr.first_name || "",
         last_name: mgr.lastName || mgr.last_name || "",
         email: mgr.email || "",
+        login: mgr.login || "",
         password: "", // Ne pas pré-remplir le mot de passe
         phone: mgr.phone || "",
         position: mgr.position || "",
@@ -85,6 +87,7 @@ export default function ManagerFormModal({
         first_name: "",
         last_name: "",
         email: "",
+        login: "",
         password: "",
         phone: "",
         position: "",
@@ -193,6 +196,18 @@ export default function ManagerFormModal({
                   {...register("email")}
                   error={!!errors.email}
                   hint={errors.email?.message}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="login">{t("login")}</Label>
+                <InputField
+                  id="login"
+                  type="text"
+                  placeholder={t("loginPlaceholder")}
+                  {...register("login")}
+                  error={!!errors.login}
+                  hint={errors.login?.message || t("loginHint")}
                 />
               </div>
 

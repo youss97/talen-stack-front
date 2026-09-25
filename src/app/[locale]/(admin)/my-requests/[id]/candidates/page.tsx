@@ -5,8 +5,8 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { useGetCandidatesForRequestQuery, useGetManagerRequestByIdQuery, useUpdateManagerOwnRequestMutation } from "@/lib/services/clientManagerApi";
+import { useGetCvSourcesQuery } from "@/lib/services/cvSourceApi";
 import { useCreateFeedbackMutation } from "@/lib/services/recruiterApi";
-import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
 import Button from "@/components/ui/button/Button";
 import InputField from "@/components/form/input/InputField";
 import FeedbackModal from "@/components/recruiter/FeedbackModal";
@@ -17,12 +17,11 @@ import ManagerRequestFormModal from "@/components/applicationRequest/ManagerRequ
 import Pagination from "@/components/tables/Pagination";
 import { useDebounce } from "@/hooks/useDebounce";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
-import { openCvInNewTab, downloadCvFile } from "@/utils/cvView";
+import { openCvInNewTab, openAnonymizedCvInNewTab } from "@/utils/cvView";
 import { getFeedbackCardColor } from "@/utils/feedbackColors";
-import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
 import type { Recruiter } from "@/types/recruiter";
 import type { ApplicationRequest } from "@/types/applicationRequest";
-import { Users, Mail, Phone, Eye, Pencil, RefreshCw, ClipboardList, MessageCircle, FileText, Download } from "lucide-react";
+import { Users, Eye, Pencil, RefreshCw, ClipboardList, MessageCircle, FileText, LayoutGrid, Info } from "lucide-react";
 
 export default function RequestCandidatesPage() {
   const t = useTranslations("myRequests.candidates");
@@ -36,6 +35,9 @@ export default function RequestCandidatesPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [sourceFilter, setSourceFilter] = useState("");
+  const { data: cvSourcesData } = useGetCvSourcesQuery({ is_active: true });
+  const cvSources = cvSourcesData?.data || [];
   const [selectedCandidate, setSelectedCandidate] = useState<Recruiter | null>(null);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isFeedbackListModalOpen, setIsFeedbackListModalOpen] = useState(false);
@@ -50,15 +52,6 @@ export default function RequestCandidatesPage() {
   const { data: offer } = useGetManagerRequestByIdQuery(requestId, { skip: !requestId });
   const [updateOwnRequest, { isLoading: isUpdatingOffer }] = useUpdateManagerOwnRequestMutation();
 
-  // Récupérer les statuts de candidature
-  const { data: applicationStatusesData } = useGetApplicationStatusesQuery({
-    page: 1,
-    limit: 100,
-    is_active: true
-  });
-
-  const applicationStatuses = applicationStatusesData?.data || [];
-
   const { data, isLoading, isFetching, refetch } = useGetCandidatesForRequestQuery({
     requestId,
     page,
@@ -66,7 +59,8 @@ export default function RequestCandidatesPage() {
     // pour la retrouver quelle que soit sa page normale, puis ouvrir directement son détail.
     limit: targetApplicationId ? 1000 : 5,
     search: debouncedSearch,
-    status: statusFilter || undefined,
+    step: statusFilter || undefined,
+    source: sourceFilter || undefined,
   }, { pollingInterval: 30000 });
 
   // Auto-ouverture du détail de la candidature ciblée par la notification (une seule fois)
@@ -83,6 +77,21 @@ export default function RequestCandidatesPage() {
   }, [targetApplicationId, data]);
 
   const [createFeedback, { isLoading: isCreatingFeedback }] = useCreateFeedbackMutation();
+  const [revealRequestedIds, setRevealRequestedIds] = useState<string[]>([]);
+
+  const handleRequestIdentityReveal = async (candidate: Recruiter) => {
+    try {
+      await createFeedback({
+        id: candidate.id,
+        title: t("identityReveal.feedbackTitle"),
+        description: t("identityReveal.feedbackDescription"),
+        step: candidate.current_step || "Proposé",
+      }).unwrap();
+      setRevealRequestedIds((prev) => [...prev, candidate.id]);
+    } catch {
+      alert(t("identityReveal.error"));
+    }
+  };
 
   const handleOpenFeedbackListModal = (candidate: Recruiter) => {
     setSelectedCandidate(candidate);
@@ -100,14 +109,15 @@ export default function RequestCandidatesPage() {
     }
   };
 
-  const handleCreateFeedback = async (title: string, description: string) => {
+  const handleCreateFeedback = async (title: string, description: string, audio?: Blob | null) => {
     if (!selectedCandidate) return;
-    
+
     try {
       await createFeedback({
         id: selectedCandidate.id,
         title,
         description,
+        audio,
       }).unwrap();
       
       setIsFeedbackModalOpen(false);
@@ -126,53 +136,6 @@ export default function RequestCandidatesPage() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    const statusObj = applicationStatuses.find(s => s.name === status);
-    
-    if (!statusObj) {
-      return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300">
-          {resolveStatusLabel(status, applicationStatuses)}
-        </span>
-      );
-    }
-
-    // Mapper les couleurs selon le type de statut
-    let className = "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300";
-    
-    switch (statusObj.color?.toLowerCase()) {
-      case "blue":
-      case "info":
-        className = "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
-        break;
-      case "yellow":
-      case "warning":
-        className = "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300";
-        break;
-      case "green":
-      case "success":
-        className = "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
-        break;
-      case "red":
-      case "error":
-      case "danger":
-        className = "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
-        break;
-      case "purple":
-        className = "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300";
-        break;
-      case "indigo":
-        className = "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300";
-        break;
-    }
-
-    return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${className}`}>
-        {statusObj.name}
-      </span>
-    );
-  };
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -188,6 +151,9 @@ export default function RequestCandidatesPage() {
           </Button>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             {t("title")}
+            {offer?.title && (
+              <span className="text-brand-600 dark:text-brand-400"> — {offer.title}</span>
+            )}
           </h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {t("subtitle")}
@@ -202,6 +168,15 @@ export default function RequestCandidatesPage() {
           >
             <Eye size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
             {t("offerDetails")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push(`/my-requests/${requestId}/kanban`)}
+            className="inline-flex items-center gap-1.5"
+          >
+            <LayoutGrid size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
+            {t("kanbanView")}
           </Button>
           {offer?.is_owner && (
             <Button
@@ -232,7 +207,7 @@ export default function RequestCandidatesPage() {
 
       {/* Filters */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <InputField
               placeholder={t("searchPlaceholder")}
@@ -247,10 +222,29 @@ export default function RequestCandidatesPage() {
               className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
             >
               <option value="">{t("allStatuses")}</option>
-              {applicationStatuses.map((status) => (
-                <option key={status.id} value={status.name}>
-                  {status.name}
-                </option>
+              {/* Le client ne voit que les étapes du workflow (pas le statut interne RH) + les statuts de clôture */}
+              {(offer?.workflow_steps || [])
+                .slice()
+                .sort((a, b) => a.order - b.order)
+                .map((step) => (
+                  <option key={step.name} value={step.name}>
+                    {step.name}
+                  </option>
+                ))}
+              <option value="Accepté">{t("terminalSteps.accepted")}</option>
+              <option value="KO">{t("terminalSteps.ko")}</option>
+              <option value="Désistement">{t("terminalSteps.withdrawn")}</option>
+            </select>
+          </div>
+          <div>
+            <select
+              value={sourceFilter}
+              onChange={(e) => setSourceFilter(e.target.value)}
+              className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+            >
+              <option value="">{t("allSources")}</option>
+              {cvSources.map((s) => (
+                <option key={s.id} value={s.name}>{s.name}</option>
               ))}
             </select>
           </div>
@@ -287,21 +281,48 @@ export default function RequestCandidatesPage() {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                       {candidate.cv?.candidate_first_name} {candidate.cv?.candidate_last_name}
                     </h3>
-                    {getStatusBadge(candidate.status)}
+                    {/* Le client ne voit que l'étape (pas le statut interne RH) */}
+                    {candidate.current_step && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                        {candidate.current_step}
+                      </span>
+                    )}
+                    {candidate.qualification_score != null && (
+                      <span
+                        className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 dark:bg-brand-900/30 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:text-brand-300"
+                        title={t("qualificationScoreHint")}
+                      >
+                        {t("qualificationScoreBadge", { score: candidate.qualification_score })}
+                        <Info size={13} strokeWidth={2} className="opacity-70" />
+                      </span>
+                    )}
                   </div>
-                  
+
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
-                    {candidate.cv?.candidate_email && (
+                    {(candidate.adjusted_experience ?? candidate.cv?.total_experience) != null && (
                       <div className="flex items-center gap-1">
-                        <Mail className="icon-glow" size={16} strokeWidth={1.8} />
-                        <span>{candidate.cv.candidate_email}</span>
+                        <ClipboardList className="icon-glow" size={16} strokeWidth={1.8} />
+                        <span>{t("experienceYears", { years: (candidate.adjusted_experience ?? candidate.cv?.total_experience)! })}</span>
                       </div>
                     )}
-
-                    {candidate.cv?.candidate_phone && (
+                    {candidate.availability_type && (
                       <div className="flex items-center gap-1">
-                        <Phone className="icon-glow" size={16} strokeWidth={1.8} />
-                        <span>{candidate.cv.candidate_phone}</span>
+                        <RefreshCw className="icon-glow" size={16} strokeWidth={1.8} />
+                        <span>
+                          {t.has(`availabilityOptions.${candidate.availability_type}`)
+                            ? t(`availabilityOptions.${candidate.availability_type}`)
+                            : candidate.availability_type}
+                        </span>
+                      </div>
+                    )}
+                    {!candidate.desired_salary_deferred && candidate.salary_expectation != null && (
+                      <div className="flex items-center gap-1">
+                        <span>{t("desiredSalaryValue", { amount: candidate.salary_expectation.toLocaleString("fr-FR"), currency: candidate.currency || "MAD" })}</span>
+                      </div>
+                    )}
+                    {!candidate.desired_salary_deferred && candidate.daily_rate_expectation != null && (
+                      <div className="flex items-center gap-1">
+                        <span>{t("desiredDailyRateValue", { amount: candidate.daily_rate_expectation.toLocaleString("fr-FR"), currency: candidate.currency || "MAD" })}</span>
                       </div>
                     )}
                   </div>
@@ -437,50 +458,9 @@ export default function RequestCandidatesPage() {
                   // Candidature anonyme: afficher uniquement le CV anonymisé
                   candidate.cv?.id && (
                     <Button
-                      onClick={async () => {
-                        try {
-                          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-                          const token = localStorage.getItem('token');
-                          
-                          console.log('📥 Téléchargement CV anonymisé:', {
-                            cvId: candidate.cv!.id,
-                            url: `${apiUrl}/cvs/${candidate.cv!.id}/anonymized`
-                          });
-
-                          const response = await fetch(`${apiUrl}/cvs/${candidate.cv!.id}/anonymized`, {
-                            headers: {
-                              'Authorization': `Bearer ${token}`
-                            }
-                          });
-                          
-                          console.log('📡 Réponse:', {
-                            status: response.status,
-                            statusText: response.statusText,
-                            ok: response.ok
-                          });
-                          
-                          if (!response.ok) {
-                            const errorText = await response.text();
-                            console.error('❌ Erreur backend:', errorText);
-                            throw new Error(`Erreur ${response.status}: ${errorText}`);
-                          }
-                          
-                          const blob = await response.blob();
-                          const url = window.URL.createObjectURL(blob);
-                          const a = document.createElement('a');
-                          a.href = url;
-                          a.download = `cv-anonymise-${candidate.cv!.id.substring(0, 8)}.pdf`;
-                          document.body.appendChild(a);
-                          a.click();
-                          window.URL.revokeObjectURL(url);
-                          document.body.removeChild(a);
-                          
-                          console.log('✅ CV téléchargé avec succès');
-                        } catch (error: any) {
-                          console.error('❌ Erreur complète:', error);
-                          alert(t("errors.cvDownloadError", { message: error.message }));
-                        }
-                      }}
+                      onClick={() => candidate.cv?.id && openAnonymizedCvInNewTab(candidate.cv.id).then((ok) => {
+                        if (!ok) alert(t("errors.cvOpenFailed"));
+                      })}
                       size="sm"
                       variant="outline"
                       className="inline-flex items-center gap-1.5"
@@ -489,33 +469,34 @@ export default function RequestCandidatesPage() {
                       {t("viewCv")}
                     </Button>
                   )
-                ) : (
-                  // Candidature non anonyme: afficher le CV normal
+                ) : null}
+                {candidate.is_anonymized && (
+                  <Button
+                    onClick={() => handleRequestIdentityReveal(candidate)}
+                    size="sm"
+                    variant="outline"
+                    disabled={isCreatingFeedback || revealRequestedIds.includes(candidate.id)}
+                    className="inline-flex items-center gap-1.5"
+                  >
+                    <Users size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
+                    {revealRequestedIds.includes(candidate.id) ? t("identityReveal.requested") : t("identityReveal.button")}
+                  </Button>
+                )}
+                {!candidate.is_anonymized && (
+                  // Candidature non anonyme: afficher le CV normal — uniquement "Voir", pas de
+                  // téléchargement côté client.
                   candidate.cv?.id && (
-                    <>
-                      <Button
-                        onClick={() => candidate.cv?.id && openCvInNewTab(candidate.cv.id).then((ok) => {
-                          if (!ok) alert(t("errors.cvOpenFailed"));
-                        })}
-                        size="sm"
-                        variant="outline"
-                        className="inline-flex items-center gap-1.5"
-                      >
-                        <Eye size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
-                        {t("viewCv")}
-                      </Button>
-                      <Button
-                        onClick={() => candidate.cv?.id && downloadCvFile(candidate.cv.id, (candidate.cv as unknown as { file_name?: string }).file_name || 'CV.pdf').then((ok) => {
-                          if (!ok) alert(t("errors.cvDownloadFailed"));
-                        })}
-                        size="sm"
-                        variant="outline"
-                        className="inline-flex items-center gap-1.5"
-                      >
-                        <Download size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
-                        {t("downloadCv")}
-                      </Button>
-                    </>
+                    <Button
+                      onClick={() => candidate.cv?.id && openCvInNewTab(candidate.cv.id).then((ok) => {
+                        if (!ok) alert(t("errors.cvOpenFailed"));
+                      })}
+                      size="sm"
+                      variant="outline"
+                      className="inline-flex items-center gap-1.5"
+                    >
+                      <Eye size={16} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
+                      {t("viewCv")}
+                    </Button>
                   )
                 )}
                 <Button

@@ -58,7 +58,7 @@ function AreaChart({ title, name, points }: { title: string; name: string; point
           stroke: { curve: "smooth", width: 3 },
           fill: { type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05 } },
           xaxis: { categories: points.map((m) => m.month), labels: { style: { colors: "#9ca3af" } } },
-          yaxis: { labels: { style: { colors: "#9ca3af" } } },
+          yaxis: { labels: { style: { colors: "#9ca3af" }, formatter: (v: number) => String(Math.round(v)) }, min: 0, forceNiceScale: true, decimalsInFloat: 0 },
           grid: { borderColor: "#f1f5f9", strokeDashArray: 4 },
         }}
       />
@@ -66,7 +66,7 @@ function AreaChart({ title, name, points }: { title: string; name: string; point
   );
 }
 
-function DonutChart({ title, rows }: { title: string; rows?: { status: string; count: number }[] }) {
+function DonutChart({ title, rows, getLabel }: { title: string; rows?: { status: string; count: number }[]; getLabel?: (status: string) => string }) {
   if (!rows || rows.length === 0) return null;
   return (
     <ChartCard title={title}>
@@ -75,7 +75,7 @@ function DonutChart({ title, rows }: { title: string; rows?: { status: string; c
         height={280}
         series={rows.map((r) => r.count)}
         options={{
-          labels: rows.map((r) => r.status || "—"),
+          labels: rows.map((r) => (r.status ? (getLabel ? getLabel(r.status) : r.status) : "—")),
           colors: PALETTE,
           legend: { position: "bottom", labels: { colors: "#9ca3af" } },
           dataLabels: { enabled: true },
@@ -99,8 +99,10 @@ function BarChart({ title, items, seriesName }: { title: string; items?: { name:
           colors: [BRAND],
           plotOptions: { bar: { horizontal: true, borderRadius: 6, barHeight: "55%" } },
           dataLabels: { enabled: false },
-          xaxis: { categories: items.map((t) => t.name), labels: { style: { colors: "#9ca3af" } } },
+          // Axe des valeurs = comptages entiers (pas de graduation 0,5)
+          xaxis: { categories: items.map((t) => t.name), labels: { style: { colors: "#9ca3af" }, formatter: (v: string) => String(Math.round(Number(v))) }, min: 0 },
           yaxis: { labels: { style: { colors: "#9ca3af" } } },
+          tooltip: { y: { formatter: (v: number) => String(Math.round(v)) } },
           grid: { borderColor: "#f1f5f9", strokeDashArray: 4 },
         }}
       />
@@ -111,6 +113,12 @@ function BarChart({ title, items, seriesName }: { title: string; items?: { name:
 export default function StatisticsPage() {
   const t = useTranslations("statistics");
   const tc = useTranslations("common");
+  const tDash = useTranslations("dashboard");
+  const STATUS_KEYS: Record<string, "inProgress" | "standby" | "abandoned" | "filled" | "open" | "archived" | "completed" | "failed"> = {
+    in_progress: "inProgress", standby: "standby", abandoned: "abandoned", filled: "filled",
+    open: "open", archived: "archived", completed: "completed", failed: "failed",
+  };
+  const statusLabel = (status: string) => (STATUS_KEYS[status] ? tDash(`charts.statusLabels.${STATUS_KEYS[status]}`) : status);
   const currentUser = useSelector((s: RootState) => s.auth.user);
   const isSuperAdminUser = currentUser?.role?.code === "super_admin";
   const [startDate, setStartDate] = useState("");
@@ -132,6 +140,9 @@ export default function StatisticsPage() {
     applications: t("kpis.applications"),
     integrations: t("kpis.integrations"),
     users: t("kpis.users"),
+    crmProspects: t("kpis.crmProspects"),
+    crmOpenDeals: t("kpis.crmOpenDeals"),
+    crmWonDeals: t("kpis.crmWonDeals"),
   };
 
   const handleRangeChange = useCallback((dates: Date[]) => {
@@ -233,6 +244,7 @@ export default function StatisticsPage() {
   const isSuperAdmin = !!data?.monthlyCompanies;
 
   const topClientsItems = (data?.topClients || []).map((c) => ({ name: c.name, value: c.requestsCount || 0 }));
+  const topCompaniesItems = (data?.topCompanies || []).map((c) => ({ name: c.name, value: c.clientsCount || 0 }));
 
   return (
     <div className="w-full">
@@ -244,6 +256,9 @@ export default function StatisticsPage() {
         {totalEntries.map(([key, value]) => (
           <KpiCard key={key} label={TOTAL_LABELS[key]} value={value as number} />
         ))}
+        {data?.crmPipelineValue != null && (
+          <KpiCard label={t("kpis.crmPipelineValue")} value={data.crmPipelineValue} />
+        )}
       </div>
 
       {/* Charts */}
@@ -252,14 +267,17 @@ export default function StatisticsPage() {
           <>
             <AreaChart title={t("charts.newCompaniesPerMonth")} name={t("charts.series.companies")} points={data?.monthlyCompanies} />
             <AreaChart title={t("charts.applicationsPerMonthGlobal")} name={t("charts.series.applications")} points={data?.monthlyApplications} />
+            <AreaChart title={t("charts.requestsPerMonth")} name={t("charts.series.requests")} points={data?.monthlyRequests} />
             <DonutChart title={t("charts.companiesByStatus")} rows={data?.companiesByStatus} />
             <BarChart title={t("charts.trafficByCompany")} items={data?.topCompaniesTraffic} seriesName={t("charts.series.total")} />
+            <BarChart title={t("charts.topCompaniesByClients")} items={topCompaniesItems} seriesName={t("charts.series.total")} />
           </>
         ) : (
           <>
             <AreaChart title={t("charts.applicationsPerMonth")} name={t("charts.series.applications")} points={data?.applicationsByMonth} />
-            <DonutChart title={t("charts.requestsByStatus")} rows={data?.requestsByStatus} />
-            <DonutChart title={t("charts.integrationsByStatus")} rows={data?.integrationsByStatus} />
+            <AreaChart title={t("charts.requestsPerMonth")} name={t("charts.series.requests")} points={data?.monthlyRequests} />
+            <DonutChart title={t("charts.requestsByStatus")} rows={data?.requestsByStatus} getLabel={statusLabel} />
+            <DonutChart title={t("charts.integrationsByStatus")} rows={data?.integrationsByStatus} getLabel={statusLabel} />
             <BarChart title={t("charts.topClients")} items={topClientsItems} seriesName={t("charts.series.total")} />
           </>
         )}

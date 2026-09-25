@@ -11,6 +11,7 @@
       "status": "Statut",
       "publication": "Publication",
       "urgency": "Urgence",
+      "internalPriority": "Priorité",
       "startDate": "Début",
       "createdBy": "Créé par",
       "reference": "Réf: {ref}",
@@ -29,12 +30,19 @@
       "standby": "Standby",
       "abandoned": "Abandonnée",
       "filled": "Comblée",
-      "open": "Ouverte"
+      "open": "Ouverte",
+      "archived": "Archivée"
     },
     "urgencyLabels": {
       "urgent": "Urgente",
       "high": "Haute",
       "normal": "Normale",
+      "low": "Basse"
+    },
+    "internalPriorityLabels": {
+      "critical": "Critique",
+      "high": "Haute",
+      "medium": "Moyenne",
       "low": "Basse"
     },
     "emptyMessage": "Aucune demande trouvée"
@@ -136,17 +144,17 @@
       "skills": "2. Compétences Requises",
       "softSkills": "3. Softskills",
       "experience": "4. Expérience",
-      "contractType": "4. Type de Contrat",
-      "budget": "5. Budget",
-      "location": "6. Localisation",
-      "workType": "7. Type de Travail",
-      "languages": "8. Langues Requises",
-      "workflow": "Workflow du recrutement",
-      "questions": "Questions personnalisées (candidature publique)",
-      "benefits": "9. Avantages et Primes",
-      "priorityStatus": "10. Priorité et Statut",
-      "datesProfiles": "11. Dates et Nombre de Profils",
-      "notes": "Notes"
+      "contractType": "5. Type de Contrat",
+      "budget": "6. Budget",
+      "location": "7. Localisation",
+      "workType": "8. Type de Travail",
+      "languages": "9. Langues Requises",
+      "workflow": "10. Workflow du recrutement",
+      "questions": "11. Questions personnalisées (candidature publique)",
+      "benefits": "12. Avantages et Primes",
+      "priorityStatus": "13. Urgence, Priorité et Statut",
+      "datesProfiles": "14. Dates et Nombre de Profils",
+      "notes": "15. Notes"
     },
     "questions": {
       "hint": "Posées au candidat avant qu'il ne remplisse le formulaire de candidature, pour filtrer les profils qui ne correspondent pas (ex: expérience insuffisante).",
@@ -206,7 +214,10 @@
       "bonusesPlaceholder": "Ex: Prime annuelle sur objectifs...",
       "variablesLabel": "Part variable",
       "variablesPlaceholder": "Ex: Variable trimestrielle sur CA...",
-      "priority": "Priorité",
+      "priority": "Urgence",
+      "priorityHelp": "Visible par le client — exprime si le besoin est urgent pour lui",
+      "internalPriority": "Priorité",
+      "internalPriorityHelp": "Visible uniquement par le cabinet RH — pour organiser en interne le traitement des besoins",
       "status": "Statut",
       "noteClient": "Note client",
       "noteClientPlaceholder": "Note visible par le client et l'équipe RH...",
@@ -221,11 +232,18 @@
       "high": "Haute",
       "urgent": "Urgente"
     },
+    "internalPriorityOptions": {
+      "critical": "Critique",
+      "high": "Haute",
+      "medium": "Moyenne",
+      "low": "Basse"
+    },
     "statusOptions": {
       "in_progress": "En cours",
       "standby": "Standby",
       "abandoned": "Abandonnée",
-      "filled": "Comblée"
+      "filled": "Comblée",
+      "archived": "Archivée"
     },
     "languageOptions": {
       "FR": "Français",
@@ -314,7 +332,7 @@
   },
   "workflowStepsEditor": {
     "label": "Étapes du workflow",
-    "help": "Définissez les étapes que suivront les candidatures de cette demande (ex. Entretien RH → Entretien client → Offre).",
+    "help": "Définissez les étapes que suivront les candidatures de cette demande (ex. Entretien RH → Entretien client → Offre). \"Proposé\" est toujours la première étape automatique, inutile de l'ajouter.",
     "stepPlaceholder": "Étape {index}",
     "addStep": "+ Ajouter une étape",
     "suggestions": {

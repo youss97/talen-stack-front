@@ -10,6 +10,10 @@ export const createCVSchema = yup.object({
     .transform((value) => (value === "" ? undefined : value))
     .url("URL invalide")
     .optional(),
+  portfolio_url: yup.string()
+    .transform((value) => (value === "" ? undefined : value))
+    .url("URL invalide")
+    .optional(),
   skills: yup.array().of(yup.string()).optional(),
   total_experience: yup.number()
     .transform((value, originalValue) => originalValue === "" ? undefined : value)
@@ -31,6 +35,10 @@ export const updateCVSchema = yup.object({
   candidate_first_name: yup.string().required("Le prénom est requis"),
   candidate_last_name: yup.string().required("Le nom est requis"),
   linkedin_url: yup.string()
+    .transform((value) => (value === "" ? undefined : value))
+    .url("URL invalide")
+    .optional(),
+  portfolio_url: yup.string()
     .transform((value) => (value === "" ? undefined : value))
     .url("URL invalide")
     .optional(),

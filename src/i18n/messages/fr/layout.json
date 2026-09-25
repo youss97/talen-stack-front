@@ -2,6 +2,7 @@
   "nav": {
     "groups": {
       "Pilotage": "Pilotage",
+      "Commercial": "Commercial",
       "Recrutement": "Recrutement",
       "Talents": "Talents",
       "Suivi": "Suivi",
@@ -21,14 +22,20 @@
       "/interviews": "Entretiens",
       "/integrations": "Intégrations",
       "/cvs": "Vivier de talents",
-      "/my-requests": "Mes Offres",
+      "/my-requests": "Mes Recrutements",
       "/public-offers": "Offres Publiques",
       "/emails": "Emails",
       "/logs": "Logs",
       "/roles": "Rôles",
       "/subscriptions": "Abonnements",
       "/assignments": "Affectations",
-      "/business-cards": "Cartes de visite"
+      "/business-cards": "Cartes de visite",
+      "/crm-companies": "Prospects",
+      "/crm-deals": "Opportunités",
+      "/crm-dashboard": "Tableau de bord CRM",
+      "/test-questions": "Tests techniques & psychotechniques",
+      "/test-sessions": "Tests envoyés",
+      "/coding-challenges": "Exercices de code"
     }
   },
   "sidebar": {

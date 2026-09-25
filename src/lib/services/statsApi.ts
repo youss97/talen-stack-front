@@ -9,6 +9,9 @@ export interface StatsTotals {
   applications?: number;
   integrations?: number;
   users?: number;
+  crmProspects?: number;
+  crmOpenDeals?: number;
+  crmWonDeals?: number;
 }
 
 export interface StatusCount {
@@ -32,10 +35,12 @@ export interface DashboardStats {
   monthlyApplications?: MonthCount[];
   monthlyRequests?: MonthCount[];
   applicationsByMonth?: MonthCount[];
+  applicationsByStatus?: StatusCount[];
   requestsByStatus?: StatusCount[];
   integrationsByStatus?: StatusCount[];
   topCompanies?: TopItem[];
   topClients?: TopItem[];
+  crmPipelineValue?: number;
   // Vue super admin centrée entreprises
   monthlyCompanies?: MonthCount[];
   companiesByStatus?: StatusCount[];
@@ -91,13 +96,14 @@ export const statsApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ['Stats'],
   endpoints: (builder) => ({
-    getDashboardStats: builder.query<DashboardStats, { startDate?: string; endDate?: string; companyId?: string } | void>({
+    getDashboardStats: builder.query<DashboardStats, { startDate?: string; endDate?: string; companyId?: string; clientId?: string } | void>({
       query: (params) => ({
         url: '/stats',
         params: {
           ...(params && params.startDate ? { startDate: params.startDate } : {}),
           ...(params && params.endDate ? { endDate: params.endDate } : {}),
           ...(params && params.companyId ? { companyId: params.companyId } : {}),
+          ...(params && params.clientId ? { clientId: params.clientId } : {}),
         },
       }),
       providesTags: ['Stats'],

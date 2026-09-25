@@ -1,4 +1,17 @@
 {
+  "voiceNote": {
+    "record": "Record a voice message",
+    "stopRecording": "Stop ({time})",
+    "remove": "Delete the voice message",
+    "permissionError": "Microphone unavailable: allow microphone access in your browser.",
+    "listen": "Voice message"
+  },
+  "voiceInput": {
+    "start": "Dictate with voice",
+    "stop": "Stop dictation",
+    "listening": "Listening...",
+    "notSupported": "Voice dictation not available on this browser"
+  },
   "actions": {
     "save": "Save",
     "cancel": "Cancel",
@@ -19,18 +32,25 @@
     "create": "Create",
     "update": "Update",
     "submit": "Submit",
-    "loadMore": "Load more"
+    "loadMore": "Load more",
+    "viewDetails": "View details"
   },
   "status": {
     "loading": "Loading...",
     "noData": "No data",
     "noResults": "No results",
+    "noDataAvailable": "No data available",
     "success": "Success",
     "error": "Error",
     "warning": "Warning",
     "info": "Information"
   },
+  "views": {
+    "table": "Table",
+    "cards": "Cards"
+  },
   "labels": {
+    "home": "Home",
     "actions": "Actions",
     "status": "Status",
     "date": "Date",
@@ -52,10 +72,23 @@
     "deleteTitle": "Confirm deletion",
     "deleteMessage": "This action cannot be undone. Do you want to continue?"
   },
+  "bulkActions": {
+    "selectedCount": "{count, plural, one {# application selected} other {# applications selected}}",
+    "clearSelection": "Clear selection",
+    "sendEmail": "Send email",
+    "assign": "Assign",
+    "delete": "Delete",
+    "deleteTitle": "Delete applications",
+    "deleteMessage": "{count, plural, one {Are you sure you want to delete # application? This action cannot be undone.} other {Are you sure you want to delete # applications? This action cannot be undone.}}"
+  },
   "support": {
     "contactButton": "Contact support",
     "sending": "Sending...",
     "sent": "Reported to support ✓",
-    "error": "Failed to send"
+    "error": "Failed to send",
+    "modalTitle": "Describe the problem",
+    "modalSubtitle": "A few words about what happened will help us fix it faster.",
+    "modalPlaceholder": "E.g. I clicked Save and nothing happened...",
+    "modalSubmit": "Send to support"
   }
 }

@@ -60,6 +60,7 @@ export default function UserFormModal({
     resolver: yupResolver(isEditing ? updateUserSchema : createUserSchema) as Resolver<CreateUserFormData>,
     defaultValues: {
       email: "",
+      login: "",
       password: "",
       first_name: "",
       last_name: "",
@@ -74,6 +75,7 @@ export default function UserFormModal({
     if (user) {
       reset({
         email: user.email,
+        login: (user as { login?: string }).login || "",
         password: "",
         first_name: user.first_name,
         last_name: user.last_name,
@@ -86,6 +88,7 @@ export default function UserFormModal({
     } else {
       reset({
         email: "",
+        login: "",
         password: "",
         first_name: "",
         last_name: "",
@@ -236,6 +239,24 @@ export default function UserFormModal({
             </div>
 
             <div className="sm:col-span-2">
+              <Label>{t("form.fields.login")}</Label>
+              <Input
+                type="text"
+                placeholder={t("form.fields.loginPlaceholder")}
+                autoComplete="off"
+                {...register("login")}
+                error={!!errors.login}
+                disabled={readOnly}
+              />
+              <p className="mt-1 text-xs text-gray-400">{t("form.fields.loginHint")}</p>
+              {errors.login && !readOnly && (
+                <p className="mt-1 text-sm text-error-500">
+                  {errors.login.message}
+                </p>
+              )}
+            </div>
+
+            <div className="sm:col-span-2">
               <Label>{t("form.fields.phone")}</Label>
               <Input
                 type="tel"
@@ -362,7 +383,7 @@ export default function UserFormModal({
                 </span>
               </Label>
               {readOnly ? (
-                <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
+                <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap break-words">
                   {user?.internal_note || t("form.fields.internalNoteEmpty")}
                 </p>
               ) : (

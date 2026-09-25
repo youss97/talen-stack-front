@@ -170,7 +170,7 @@ const EmailDetailModal: React.FC<EmailDetailModalProps> = ({
                 {t("detailModal.message")}
               </h3>
               <div className="mt-2 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
-                <p className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">
+                <p className="whitespace-pre-wrap break-words text-sm text-gray-700 dark:text-gray-300">
                   {email.body}
                 </p>
               </div>

@@ -96,6 +96,12 @@ export function getApiErrorMessage(
       ? rtkStatus
       : err.response?.status ?? data?.statusCode;
 
+  // 0. Conflit métier (ex. "login déjà utilisé", "ICE déjà utilisé") : le backend renvoie une
+  // phrase précise et déjà en français — plus utile que le message générique du code CONFLICT.
+  if (data?.code === "CONFLICT" && typeof data?.message === "string" && isFrenchAndClean(data.message)) {
+    return data.message;
+  }
+
   // 1. Code applicatif structuré (notre filtre backend)
   if (data?.code && CODE_MESSAGES[data.code]) {
     return CODE_MESSAGES[data.code];

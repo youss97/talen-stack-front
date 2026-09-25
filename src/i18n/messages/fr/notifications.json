@@ -95,6 +95,18 @@
         "messageWithLabel": "L'entretien pour la candidature {label} a été annulé. Motif : {reason}.",
         "messageNoLabel": "Un entretien a été annulé. Motif : {reason}."
       }
+    },
+    "crm_deal": {
+      "stage_changed": {
+        "title": "Opportunité mise à jour",
+        "message": "L'opportunité « {dealTitle} » est passée à l'étape « {stage} »."
+      }
+    },
+    "crm_task": {
+      "reminder": {
+        "title": "Tâche CRM à faire",
+        "message": "La tâche « {taskTitle} » est due le {dueDate}."
+      }
     }
   }
 }

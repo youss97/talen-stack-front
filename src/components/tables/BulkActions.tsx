@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Mail, Trash2, UserPlus } from 'lucide-react';
 import Button from '@/components/ui/button/Button';
 import ConfirmModal from '@/components/ui/modal/ConfirmModal';
@@ -22,6 +23,7 @@ export default function BulkActions({
   onBulkAssign,
   isDeleting = false,
 }: BulkActionsProps) {
+  const t = useTranslations('common.bulkActions');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   if (selectedCount === 0) return null;
@@ -41,16 +43,16 @@ export default function BulkActions({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-sm font-medium text-brand-700 dark:text-brand-300">
-              {selectedCount} candidature{selectedCount > 1 ? 's' : ''} sélectionnée{selectedCount > 1 ? 's' : ''}
+              {t('selectedCount', { count: selectedCount })}
             </span>
             <button
               onClick={onClearSelection}
               className="text-sm text-brand-600 dark:text-brand-400 hover:text-brand-800 dark:hover:text-brand-200 underline"
             >
-              Tout désélectionner
+              {t('clearSelection')}
             </button>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
@@ -59,7 +61,7 @@ export default function BulkActions({
               className="flex items-center gap-2"
             >
               <EmailIcon />
-              Envoyer email
+              {t('sendEmail')}
             </Button>
             {onBulkAssign && (
               <Button
@@ -69,7 +71,7 @@ export default function BulkActions({
                 className="flex items-center gap-2 text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-300"
               >
                 <AssignIcon />
-                Affecter
+                {t('assign')}
               </Button>
             )}
             <Button
@@ -79,7 +81,7 @@ export default function BulkActions({
               className="flex items-center gap-2 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
             >
               <TrashIcon />
-              Supprimer
+              {t('delete')}
             </Button>
           </div>
         </div>
@@ -89,10 +91,8 @@ export default function BulkActions({
         isOpen={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
         onConfirm={handleBulkDelete}
-        title="Supprimer les candidatures"
-        message={`Êtes-vous sûr de vouloir supprimer ${selectedCount} candidature${selectedCount > 1 ? 's' : ''} ? Cette action est irréversible.`}
-        confirmText="Supprimer"
-        cancelText="Annuler"
+        title={t('deleteTitle')}
+        message={t('deleteMessage', { count: selectedCount })}
         variant="danger"
         isLoading={isDeleting}
       />

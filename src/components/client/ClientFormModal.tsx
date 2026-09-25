@@ -76,12 +76,14 @@ export default function ClientFormModal({
       email: "",
       status: "active",
       adminEmail: "",
+      adminLogin: "",
       adminPassword: "",
       adminFirstName: "",
       adminLastName: "",
       adminPhone: "",
       adminPosition: "",
       internal_note: "",
+      source: "",
     },
   });
 
@@ -108,12 +110,14 @@ export default function ClientFormModal({
           email: displayEmail,
           status: client.status === "deleted" ? "inactive" : client.status,
           adminEmail: "",
+          adminLogin: "",
           adminPassword: "",
           adminFirstName: "",
           adminLastName: "",
           adminPhone: "",
           adminPosition: "",
           internal_note: client.internal_note || "",
+          source: (client as { source?: string }).source || "",
         });
         setLogoPreview(getImageUrl(client.company_logo_path || client.logo) || null);
         setLogoFile(null);
@@ -133,12 +137,14 @@ export default function ClientFormModal({
           email: "",
           status: "active",
           adminEmail: "",
+          adminLogin: "",
           adminPassword: "",
           adminFirstName: "",
           adminLastName: "",
           adminPhone: "",
           adminPosition: "",
           internal_note: "",
+          source: "",
         });
         setLogoPreview(null);
         setLogoFile(null);
@@ -395,6 +401,33 @@ export default function ClientFormModal({
             </div>
           </section>
 
+          {/* ── Source d'acquisition ── */}
+          <section>
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+              {t("sections.source")}
+            </h3>
+            {readOnly ? (
+              <p className="text-sm text-gray-900 dark:text-white">{client?.source || t("fields.sourceEmpty")}</p>
+            ) : (
+              <>
+                <input
+                  {...register("source")}
+                  list="client-source-suggestions"
+                  placeholder={t("fields.sourcePlaceholder")}
+                  className="w-full h-11 rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+                />
+                <datalist id="client-source-suggestions">
+                  <option value="Recommandation" />
+                  <option value="LinkedIn" />
+                  <option value="Salon professionnel" />
+                  <option value="Démarchage direct" />
+                  <option value="Site web" />
+                  <option value="Ancien client" />
+                </datalist>
+              </>
+            )}
+          </section>
+
           {/* ── Section Note interne (jamais visible par le client) ── */}
           <section>
             <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
@@ -405,7 +438,7 @@ export default function ClientFormModal({
             </h3>
             {readOnly ? (
               client?.internal_note ? (
-                <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{client.internal_note}</p>
+                <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap break-words">{client.internal_note}</p>
               ) : (
                 <p className="text-sm text-gray-400">{t("fields.internalNoteEmpty")}</p>
               )
@@ -529,6 +562,13 @@ export default function ClientFormModal({
                   <Label>{t("fields.email")} <span className="text-error-500">*</span></Label>
                   <Input type="email" placeholder={t("fields.adminEmailPlaceholder")} autoComplete="off" {...register("adminEmail")} error={!!errors.adminEmail} />
                   {errors.adminEmail && <p className="mt-1 text-sm text-error-500">{errors.adminEmail.message}</p>}
+                </div>
+
+                <div>
+                  <Label>{t("fields.adminLogin")}</Label>
+                  <Input type="text" placeholder={t("fields.adminLoginPlaceholder")} autoComplete="off" {...register("adminLogin")} error={!!errors.adminLogin} />
+                  <p className="mt-1 text-xs text-gray-400">{t("fields.adminLoginHint")}</p>
+                  {errors.adminLogin && <p className="mt-1 text-sm text-error-500">{errors.adminLogin.message}</p>}
                 </div>
 
                 <div>

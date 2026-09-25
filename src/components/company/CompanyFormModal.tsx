@@ -103,9 +103,9 @@ export default function CompanyFormModal({
       isEditing ? updateCompanySchema : createCompanySchema
     ) as unknown as Resolver<CreateCompanyFormData>,
     defaultValues: {
-      name: "", ice: "", address: "", city: "", postal_code: "",
+      name: "", company_identifier: "", address: "", city: "", postal_code: "",
       country: "Maroc", phone: "", email: "", status: "active",
-      adminEmail: "", adminPassword: "", adminFirstName: "", adminLastName: "",
+      adminEmail: "", adminLogin: "", adminPassword: "", adminFirstName: "", adminLastName: "",
       adminPhone: "", adminPosition: "",
     },
   });
@@ -114,10 +114,10 @@ export default function CompanyFormModal({
     if (company) {
       const adminUser = company.users && company.users.length > 0 ? company.users[0] : null;
       reset({
-        name: company.name, ice: company.ice || "", address: company.address,
+        name: company.name, company_identifier: company.company_identifier || company.ice || company.siret || "", address: company.address,
         city: company.city, postal_code: company.postal_code, country: company.country,
         phone: company.phone, email: company.email, status: company.status,
-        adminEmail: adminUser?.email || "", adminPassword: "",
+        adminEmail: adminUser?.email || "", adminLogin: (adminUser as { login?: string })?.login || "", adminPassword: "",
         adminFirstName: adminUser?.first_name || "", adminLastName: adminUser?.last_name || "",
         adminPhone: adminUser?.phone || "", adminPosition: adminUser?.position || "",
       });
@@ -125,9 +125,9 @@ export default function CompanyFormModal({
       setAdminPhotoPreview(getImageUrl(adminUser?.photo_path || adminUser?.photo));
     } else {
       reset({
-        name: "", ice: "", address: "", city: "", postal_code: "",
+        name: "", company_identifier: "", address: "", city: "", postal_code: "",
         country: "Maroc", phone: "", email: "", status: "active",
-        adminEmail: "", adminPassword: "", adminFirstName: "", adminLastName: "",
+        adminEmail: "", adminLogin: "", adminPassword: "", adminFirstName: "", adminLastName: "",
         adminPhone: "", adminPosition: "",
       });
       setLogoPreview(null);
@@ -255,9 +255,9 @@ export default function CompanyFormModal({
                 </div>
 
                 <div>
-                  <Label>{t("form.fields.ice")}</Label>
-                  <Input placeholder={t("form.placeholders.ice")} {...register("ice")} error={!!errors.ice} disabled={readOnly} />
-                  {errors.ice && <p className="mt-1 text-sm text-error-500">{errors.ice.message}</p>}
+                  <Label>{t("form.fields.companyIdentifier")}</Label>
+                  <Input placeholder={t("form.placeholders.companyIdentifier")} {...register("company_identifier")} error={!!errors.company_identifier} disabled={readOnly} />
+                  {errors.company_identifier && <p className="mt-1 text-sm text-error-500">{errors.company_identifier.message}</p>}
                 </div>
 
                 <div className="sm:col-span-2">
@@ -400,6 +400,15 @@ export default function CompanyFormModal({
                     {errors.adminEmail && !readOnly && <p className="mt-1 text-sm text-error-500">{errors.adminEmail.message}</p>}
                     {isEditing && !readOnly && <p className="mt-1 text-xs text-gray-400">{t("form.fields.notEditable")}</p>}
                   </div>
+
+                  {!isEditing && !readOnly && (
+                    <div>
+                      <Label>{t("form.fields.adminLogin")}</Label>
+                      <Input type="text" autoComplete="off" placeholder={t("form.placeholders.adminLogin")} {...register("adminLogin")} error={!!errors.adminLogin} disabled={readOnly} />
+                      <p className="mt-1 text-xs text-gray-400">{t("form.fields.adminLoginHint")}</p>
+                      {errors.adminLogin && !readOnly && <p className="mt-1 text-sm text-error-500">{errors.adminLogin.message}</p>}
+                    </div>
+                  )}
 
                   {!isEditing && !readOnly && (
                     <div>

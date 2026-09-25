@@ -11,7 +11,11 @@
     "recruitmentRequests": "طلبات التوظيف",
     "applications": "الترشيحات",
     "integrations": "التكاملات",
-    "users": "المستخدمون"
+    "users": "المستخدمون",
+    "crmProspects": "عملاء CRM المحتملون",
+    "crmOpenDeals": "الفرص المفتوحة",
+    "crmWonDeals": "الفرص المكتسبة",
+    "crmPipelineValue": "قيمة مسار CRM"
   },
   "filters": {
     "presets": {
@@ -34,9 +38,12 @@
     "requestsByStatus": "الطلبات حسب الحالة",
     "integrationsByStatus": "التكاملات حسب الحالة",
     "topClients": "أفضل العملاء (الطلبات)",
+    "requestsPerMonth": "طلبات التوظيف شهريًا",
+    "topCompaniesByClients": "أفضل الشركات (العملاء)",
     "series": {
       "companies": "الشركات",
       "applications": "الترشيحات",
+      "requests": "الطلبات",
       "total": "الإجمالي"
     }
   },

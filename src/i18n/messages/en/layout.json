@@ -2,6 +2,7 @@
   "nav": {
     "groups": {
       "Pilotage": "Overview",
+      "Commercial": "Commercial",
       "Recrutement": "Recruitment",
       "Talents": "Talents",
       "Suivi": "Tracking",
@@ -28,7 +29,13 @@
       "/roles": "Roles",
       "/subscriptions": "Subscriptions",
       "/assignments": "Assignments",
-      "/business-cards": "Business Cards"
+      "/business-cards": "Business Cards",
+      "/crm-companies": "Prospects",
+      "/crm-deals": "Deals",
+      "/crm-dashboard": "CRM Dashboard",
+      "/test-questions": "Technical & psychometric tests",
+      "/test-sessions": "Sent tests",
+      "/coding-challenges": "Coding exercises"
     }
   },
   "sidebar": {

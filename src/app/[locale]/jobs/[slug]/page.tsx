@@ -248,7 +248,7 @@ export default function PublicJobPage() {
                 <span className="w-1 h-5 rounded-full" style={{ background: BRAND }} />
                 {t("sections.about")}
               </h2>
-              <p className="text-gray-600 whitespace-pre-wrap leading-7 text-[15px]">
+              <p className="text-gray-600 whitespace-pre-wrap break-words leading-7 text-[15px]">
                 {offer.description}
               </p>
             </motion.div>

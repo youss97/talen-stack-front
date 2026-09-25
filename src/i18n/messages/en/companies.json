@@ -7,7 +7,7 @@
     "allStatuses": "All statuses",
     "columns": {
       "name": "Name",
-      "siret": "SIRET",
+      "companyIdentifier": "Company identifier",
       "city": "City",
       "email": "Email",
       "phone": "Phone",
@@ -64,7 +64,7 @@
       "logo": "Company logo",
       "logoHelper": "Accepted formats: JPEG, PNG, GIF, WebP (max 5MB)",
       "companyName": "Company name",
-      "ice": "Tax ID",
+      "companyIdentifier": "Company identifier",
       "address": "Address",
       "city": "City",
       "postalCode": "Postal code",
@@ -78,6 +78,8 @@
       "firstName": "First name",
       "lastName": "Last name",
       "adminEmail": "Email",
+      "adminLogin": "Login",
+      "adminLoginHint": "Optional — leave empty to use the email. Useful if this person already administers another company with the same email.",
       "password": "Password",
       "notEditable": "Not editable",
       "adminPhone": "Administrator phone",
@@ -93,7 +95,7 @@
     },
     "placeholders": {
       "companyName": "Tech Solutions SARL",
-      "ice": "123456789000000",
+      "companyIdentifier": "123456789000000",
       "address": "12 rue de la Paix",
       "city": "Paris",
       "postalCode": "75001",
@@ -102,6 +104,7 @@
       "firstName": "John",
       "lastName": "Doe",
       "adminEmail": "admin@example.com",
+      "adminLogin": "Leave empty to use the email",
       "password": "StrongPassword123",
       "adminPhone": "+212612345678",
       "position": "HR Director"

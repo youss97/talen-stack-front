@@ -5,6 +5,8 @@
   "addResponsible": "Ajouter un responsable",
   "searchPlaceholder": "Rechercher un utilisateur...",
   "emptyResults": "Aucun utilisateur trouvé",
+  "primaryHint": "Cliquez sur l'étoile pour désigner le responsable principal.",
+  "setPrimary": "Désigner comme responsable principal",
   "clearAll": "Retirer toutes les affectations",
   "assign": "Affecter",
   "assigning": "Affectation..."

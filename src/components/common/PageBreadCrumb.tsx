@@ -1,5 +1,6 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import React from "react";
+import { useTranslations } from "next-intl";
 import { ChevronRight } from "lucide-react";
 
 interface BreadcrumbProps {
@@ -7,6 +8,7 @@ interface BreadcrumbProps {
 }
 
 const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
+  const t = useTranslations("common");
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
       <h2
@@ -22,7 +24,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
               className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
               href="/"
             >
-              Home
+              {t("labels.home")}
               <ChevronRight size={16} strokeWidth={1.5} className="icon-glow stroke-current" />
             </Link>
           </li>

@@ -167,13 +167,20 @@ export const recruiterApi = createApi({
     // POST /applications/:id/feedbacks - Create feedback (avec step optionnel — 3.3)
     createFeedback: builder.mutation<
       ApplicationFeedback,
-      { id: string; title: string; description: string; step?: string }
+      { id: string; title: string; description: string; step?: string; audio?: Blob | null }
     >({
-      query: ({ id, title, description, step }) => ({
-        url: `/applications/${id}/feedbacks`,
-        method: "POST",
-        body: { title, description, step },
-      }),
+      query: ({ id, title, description, step, audio }) => {
+        // Avec un message vocal : envoi multipart (le navigateur fixe lui-même le Content-Type)
+        if (audio) {
+          const form = new FormData();
+          form.append("title", title);
+          form.append("description", description);
+          if (step) form.append("step", step);
+          form.append("audio", audio, "message-vocal.webm");
+          return { url: `/applications/${id}/feedbacks`, method: "POST", body: form };
+        }
+        return { url: `/applications/${id}/feedbacks`, method: "POST", body: { title, description, step } };
+      },
       invalidatesTags: (result, error, { id }) => [
         { type: "Recruiter", id },
       ],
@@ -182,13 +189,21 @@ export const recruiterApi = createApi({
     // PATCH /applications/:id/step - Changer l'étape (workflow) + feedback optionnel (3.2/3.3, 4.3)
     changeApplicationStep: builder.mutation<
       Recruiter,
-      { id: string; step: string; feedback_title?: string; feedback_description?: string; status?: string }
+      { id: string; step: string; feedback_title?: string; feedback_description?: string; status?: string; audio?: Blob | null }
     >({
-      query: ({ id, step, feedback_title, feedback_description, status }) => ({
-        url: `/applications/${id}/step`,
-        method: "PATCH",
-        body: { step, feedback_title, feedback_description, status },
-      }),
+      query: ({ id, step, feedback_title, feedback_description, status, audio }) => {
+        // Avec un message vocal : envoi multipart (le navigateur fixe lui-même le Content-Type)
+        if (audio) {
+          const form = new FormData();
+          form.append("step", step);
+          if (feedback_title) form.append("feedback_title", feedback_title);
+          if (feedback_description) form.append("feedback_description", feedback_description);
+          if (status) form.append("status", status);
+          form.append("audio", audio, "message-vocal.webm");
+          return { url: `/applications/${id}/step`, method: "PATCH", body: form };
+        }
+        return { url: `/applications/${id}/step`, method: "PATCH", body: { step, feedback_title, feedback_description, status } };
+      },
       invalidatesTags: (result, error, { id }) => [
         { type: "Recruiter", id },
         { type: "Recruiter", id: "LIST" },
@@ -206,12 +221,12 @@ export const recruiterApi = createApi({
     // POST /applications/:id/send-email - Send email to candidate, client, or both
     sendApplicationEmail: builder.mutation<
       { success: boolean; message: string },
-      { id: string; recipients: ('candidate' | 'client')[]; subject: string; message: string }
+      { id: string; recipients: ('candidate' | 'client')[]; subject: string; message: string; cc?: string[]; bcc?: string[] }
     >({
-      query: ({ id, recipients, subject, message }) => ({
+      query: ({ id, recipients, subject, message, cc, bcc }) => ({
         url: `/applications/${id}/send-email`,
         method: "POST",
-        body: { recipients, subject, message },
+        body: { recipients, subject, message, cc, bcc },
       }),
     }),
 

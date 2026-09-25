@@ -181,7 +181,7 @@ export default function CompanyLandingPage() {
             </div>
           </div>
           {c.description && (
-            <p className="mt-6 max-w-2xl mx-auto sm:mx-0 text-white/90 leading-relaxed whitespace-pre-wrap text-center sm:text-start">
+            <p className="mt-6 max-w-2xl mx-auto sm:mx-0 text-white/90 leading-relaxed whitespace-pre-wrap break-words text-center sm:text-start">
               {c.description}
             </p>
           )}

@@ -1,8 +1,8 @@
 {
   "list": {
-    "title": "My Recruitment Offers",
-    "subtitle": "Manage your offers and review proposed candidates",
-    "newOffer": "+ New offer",
+    "title": "My Recruitments",
+    "subtitle": "Manage your recruitments and review proposed candidates",
+    "newOffer": "+ Add a request",
     "searchPlaceholder": "Search by title, reference...",
     "allStatuses": "All statuses",
     "allContracts": "All contracts",
@@ -21,9 +21,9 @@
       "low": "Low"
     },
     "empty": {
-      "title": "No offers found",
+      "title": "No recruitments found",
       "filtered": "Try adjusting your filters",
-      "noOffers": "No recruitment offers yet"
+      "noOffers": "No recruitments yet"
     },
     "reference": "Reference: {ref}",
     "years": "years",
@@ -38,27 +38,55 @@
     "toast": {
       "success": "Success",
       "error": "Error",
-      "createSuccess": "Offer created successfully",
-      "createError": "Error creating the offer",
-      "editSuccess": "Offer updated successfully",
+      "createSuccess": "Recruitment created successfully",
+      "createError": "Error creating the recruitment",
+      "editSuccess": "Recruitment updated successfully",
       "editError": "Error updating the offer",
       "statusUpdateSuccess": "Status updated",
       "statusUpdateError": "Error updating the status"
     }
   },
   "candidates": {
-    "backToOffers": "Back to offers",
+    "backToOffers": "Back to recruitments",
     "title": "Proposed Candidates",
     "subtitle": "Review candidates and add your comments",
-    "offerDetails": "Offer details",
-    "editOffer": "Edit offer",
+    "subtitleForOffer": "Recruitment: {title}",
+    "qualificationScoreBadge": "Score: {score}/100",
+    "qualificationScoreHint": "The candidate's qualification score, out of 100, assessed by the recruiter against the criteria sought for this role.",
+    "allSources": "All sources",
+    "experienceYears": "{years} years of experience",
+    "desiredSalaryValue": "Expected: {amount} {currency}",
+    "desiredDailyRateValue": "Expected rate: {amount} {currency}/day",
+    "availabilityOptions": {
+      "immediate": "Immediate",
+      "less_than_one_month": "< 1 month",
+      "one_month": "1 month",
+      "two_months": "2 months",
+      "three_months": "3 months",
+      "other": "Other"
+    },
+    "terminalSteps": {
+      "accepted": "Accepted",
+      "ko": "Rejected",
+      "withdrawn": "Withdrawn"
+    },
+    "identityReveal": {
+      "button": "Request contact details",
+      "requested": "Request sent",
+      "feedbackTitle": "Contact details request",
+      "feedbackDescription": "The client would like to obtain this anonymous candidate's contact details.",
+      "error": "Error sending the request"
+    },
+    "offerDetails": "Recruitment details",
+    "kanbanView": "Kanban view",
+    "editOffer": "Edit recruitment",
     "refresh": "Refresh",
     "searchPlaceholder": "Search by name, email...",
     "allStatuses": "All statuses",
     "empty": {
       "title": "No candidates found",
       "filtered": "Try adjusting your filters",
-      "noCandidates": "No candidate has been proposed for this offer yet"
+      "noCandidates": "No candidate has been proposed for this recruitment yet"
     },
     "years": "years",
     "skillsLabel": "Skills:",
@@ -78,10 +106,10 @@
     }
   },
   "form": {
-    "createTitle": "New recruitment offer",
-    "editTitle": "Edit recruitment offer",
+    "createTitle": "Add a request",
+    "editTitle": "Edit recruitment",
     "createSubtitle": "Describe the profile you are looking for",
-    "editSubtitle": "Update your offer's information",
+    "editSubtitle": "Update your recruitment's information",
     "statusLabel": "Status",
     "statusHint": "You can put this request on standby, mark it as filled, or abandon it if it's no longer relevant.",
     "statusValues": {
@@ -136,7 +164,8 @@
     "cityRequired": "City is required",
     "minExperience": "Min experience (years)",
     "maxExperience": "Max experience (years)",
-    "priority": "Priority",
+    "priority": "Urgency",
+    "priorityHint": "How urgent is this need for you?",
     "priorities": {
       "low": "Low",
       "normal": "Normal",
@@ -150,13 +179,13 @@
     "benefitsPlaceholder": "Health insurance, meal vouchers, company car...",
     "bonuses": "Bonuses",
     "bonusesPlaceholder": "Performance bonus, 13th month...",
-    "note": "Note",
+    "note": "Client note",
     "notePlaceholder": "Additional information for the HR team...",
     "noteHint": "Visible to you and the HR team",
     "cancel": "Cancel",
     "saving": "Saving...",
-    "createSubmit": "Create offer",
-    "editSubmit": "Update offer",
+    "createSubmit": "Create recruitment",
+    "editSubmit": "Update recruitment",
     "defaultWorkflowSteps": {
       "proposed": "Proposed",
       "hrInterview": "HR interview",

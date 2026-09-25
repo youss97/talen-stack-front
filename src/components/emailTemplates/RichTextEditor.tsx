@@ -3,6 +3,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { Link2, X } from "lucide-react";
 
 export interface RichTextEditorHandle {
   insertVariable: (name: string) => void;
@@ -71,10 +72,10 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorProps>(fun
           }}
           label="Lien"
         >
-          🔗
+          <Link2 size={14} strokeWidth={1.8} className="icon-glow" />
         </ToolbarButton>
         <ToolbarButton onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()} label="Effacer le format">
-          ✕
+          <X size={14} strokeWidth={1.8} className="icon-glow" />
         </ToolbarButton>
       </div>
       <EditorContent editor={editor} />

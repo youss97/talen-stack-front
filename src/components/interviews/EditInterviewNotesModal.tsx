@@ -186,8 +186,14 @@ export default function EditInterviewNotesModal({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
+              style={{ minHeight: '110px' }}
+              onInput={(e) => {
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = 'auto';
+                target.style.height = target.scrollHeight + 'px';
+              }}
               placeholder={t("notesFieldPlaceholder")}
-              className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+              className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 resize-none"
             />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               {t("notesFieldHint")}
@@ -203,8 +209,14 @@ export default function EditInterviewNotesModal({
               value={internalNotes}
               onChange={(e) => setInternalNotes(e.target.value)}
               rows={3}
+              style={{ minHeight: '90px' }}
+              onInput={(e) => {
+                const target = e.target as HTMLTextAreaElement;
+                target.style.height = 'auto';
+                target.style.height = target.scrollHeight + 'px';
+              }}
               placeholder={t("internalNotesPlaceholder")}
-              className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+              className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 resize-none"
             />
             <div className="flex items-start gap-2 mt-2">
               <span className="text-amber-600 dark:text-amber-400 text-sm">🔒</span>

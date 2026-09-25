@@ -25,6 +25,8 @@ interface InfiniteSelectProps<T> {
   error?: boolean;
   placeholder?: string;
   initialSelectedItems?: T[];
+  /** Valeurs (itemValueKey) à exclure de la liste de suggestions — ex: personnes déjà sélectionnées ailleurs dans le formulaire. */
+  excludeValues?: string[];
 }
 
 function InfiniteSelectInner<T extends Record<string, unknown>>(
@@ -42,6 +44,7 @@ function InfiniteSelectInner<T extends Record<string, unknown>>(
     error = false,
     placeholder = "Sélectionner...",
     initialSelectedItems = [],
+    excludeValues,
   }: InfiniteSelectProps<T>,
   _ref: React.ForwardedRef<HTMLDivElement>
 ) {
@@ -141,8 +144,10 @@ function InfiniteSelectInner<T extends Record<string, unknown>>(
 
   // Flatten pages to get all items
   const options: T[] = useMemo(() => {
-    return data?.pages?.flatMap((page) => page.data || page.results || []) || [];
-  }, [data?.pages]);
+    const all = data?.pages?.flatMap((page) => page.data || page.results || []) || [];
+    if (!excludeValues || excludeValues.length === 0) return all;
+    return all.filter((item) => !excludeValues.includes(String(item[itemValueKey])));
+  }, [data?.pages, excludeValues, itemValueKey]);
 
   // Infinite scroll observer
   useEffect(() => {

@@ -95,6 +95,18 @@
         "messageWithLabel": "The interview for the application {label} was cancelled. Reason: {reason}.",
         "messageNoLabel": "An interview was cancelled. Reason: {reason}."
       }
+    },
+    "crm_deal": {
+      "stage_changed": {
+        "title": "Deal updated",
+        "message": "The deal \"{dealTitle}\" moved to stage \"{stage}\"."
+      }
+    },
+    "crm_task": {
+      "reminder": {
+        "title": "CRM task due",
+        "message": "The task \"{taskTitle}\" is due on {dueDate}."
+      }
     }
   }
 }

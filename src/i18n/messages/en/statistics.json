@@ -11,7 +11,11 @@
     "recruitmentRequests": "Recruitments",
     "applications": "Applications",
     "integrations": "Integrations",
-    "users": "Users"
+    "users": "Users",
+    "crmProspects": "CRM prospects",
+    "crmOpenDeals": "Open deals",
+    "crmWonDeals": "Won deals",
+    "crmPipelineValue": "CRM pipeline value"
   },
   "filters": {
     "presets": {
@@ -34,9 +38,12 @@
     "requestsByStatus": "Requests by status",
     "integrationsByStatus": "Integrations by status",
     "topClients": "Top clients (requests)",
+    "requestsPerMonth": "Recruitment requests per month",
+    "topCompaniesByClients": "Top companies (clients)",
     "series": {
       "companies": "Companies",
       "applications": "Applications",
+      "requests": "Requests",
       "total": "Total"
     }
   },

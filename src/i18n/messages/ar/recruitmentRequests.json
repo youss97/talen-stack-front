@@ -10,7 +10,8 @@
       "responsible": "المسؤول",
       "status": "الحالة",
       "publication": "النشر",
-      "urgency": "الأولوية",
+      "urgency": "الإلحاح",
+      "internalPriority": "الأولوية",
       "startDate": "تاريخ البدء",
       "createdBy": "أنشئ بواسطة",
       "reference": "المرجع: {ref}",
@@ -29,12 +30,19 @@
       "standby": "معلّق",
       "abandoned": "متوقف",
       "filled": "مكتمل",
-      "open": "مفتوح"
+      "open": "مفتوح",
+      "archived": "مؤرشف"
     },
     "urgencyLabels": {
       "urgent": "عاجل",
       "high": "مرتفعة",
       "normal": "عادية",
+      "low": "منخفضة"
+    },
+    "internalPriorityLabels": {
+      "critical": "حرجة",
+      "high": "مرتفعة",
+      "medium": "متوسطة",
       "low": "منخفضة"
     },
     "emptyMessage": "لم يتم العثور على أي طلب"
@@ -136,17 +144,17 @@
       "skills": "2. المهارات المطلوبة",
       "softSkills": "3. المهارات الشخصية",
       "experience": "4. الخبرة",
-      "contractType": "4. نوع العقد",
-      "budget": "5. الميزانية",
-      "location": "6. الموقع",
-      "workType": "7. نوع العمل",
-      "languages": "8. اللغات المطلوبة",
-      "workflow": "مسار سير التوظيف",
-      "questions": "أسئلة مخصصة (عرض عام)",
-      "benefits": "9. المزايا والمكافآت",
-      "priorityStatus": "10. الأولوية والحالة",
-      "datesProfiles": "11. التواريخ وعدد الملفات",
-      "notes": "ملاحظات"
+      "contractType": "5. نوع العقد",
+      "budget": "6. الميزانية",
+      "location": "7. الموقع",
+      "workType": "8. نوع العمل",
+      "languages": "9. اللغات المطلوبة",
+      "workflow": "10. مسار سير التوظيف",
+      "questions": "11. أسئلة مخصصة (عرض عام)",
+      "benefits": "12. المزايا والمكافآت",
+      "priorityStatus": "13. الإلحاح والأولوية والحالة",
+      "datesProfiles": "14. التواريخ وعدد الملفات",
+      "notes": "15. ملاحظات"
     },
     "questions": {
       "hint": "تُطرح على المرشح قبل ملء استمارة الترشيح، لاستبعاد الملفات التي لا تتطابق (مثل نقص الخبرة).",
@@ -206,7 +214,10 @@
       "bonusesPlaceholder": "مثال: مكافأة سنوية على الأهداف...",
       "variablesLabel": "الجزء المتغير",
       "variablesPlaceholder": "مثال: جزء متغير فصلي حسب رقم الأعمال...",
-      "priority": "الأولوية",
+      "priority": "الإلحاح",
+      "priorityHelp": "مرئي للعميل — يعبر عن مدى إلحاح الحاجة بالنسبة له",
+      "internalPriority": "الأولوية",
+      "internalPriorityHelp": "مرئية فقط لفريق التوظيف — لتنظيم معالجة الاحتياجات داخليًا",
       "status": "الحالة",
       "noteClient": "ملاحظة العميل",
       "noteClientPlaceholder": "ملاحظة مرئية للعميل وفريق الموارد البشرية...",
@@ -221,11 +232,18 @@
       "high": "مرتفعة",
       "urgent": "عاجلة"
     },
+    "internalPriorityOptions": {
+      "critical": "حرجة",
+      "high": "مرتفعة",
+      "medium": "متوسطة",
+      "low": "منخفضة"
+    },
     "statusOptions": {
       "in_progress": "قيد التنفيذ",
       "standby": "معلّق",
       "abandoned": "متوقف",
-      "filled": "مكتمل"
+      "filled": "مكتمل",
+      "archived": "مؤرشف"
     },
     "languageOptions": {
       "FR": "الفرنسية",
@@ -314,7 +332,7 @@
   },
   "workflowStepsEditor": {
     "label": "مراحل سير العمل",
-    "help": "حدد المراحل التي ستمر بها طلبات الترشيح لهذا الطلب (مثال: مقابلة الموارد البشرية ← مقابلة العميل ← عرض).",
+    "help": "حدد المراحل التي ستمر بها طلبات الترشيح لهذا الطلب (مثال: مقابلة الموارد البشرية ← مقابلة العميل ← عرض). \"مقترح\" هي دائمًا المرحلة الأولى التلقائية، لا داعي لإضافتها.",
     "stepPlaceholder": "المرحلة {index}",
     "addStep": "+ إضافة مرحلة",
     "suggestions": {

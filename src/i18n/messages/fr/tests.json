@@ -1,0 +1,198 @@
+{
+  "page": {
+    "title": "Tests techniques & psychotechniques",
+    "subtitle": "Banque de questions pour évaluer les candidats",
+    "addButton": "Ajouter une question",
+    "searchPlaceholder": "Rechercher une question...",
+    "allTypes": "Tous les types",
+    "allCategories": "Toutes les catégories",
+    "emptyState": "Aucune question trouvée"
+  },
+  "types": {
+    "technique": "Technique",
+    "psychotechnique": "Psychotechnique"
+  },
+  "difficulties": {
+    "easy": "Facile",
+    "medium": "Moyen",
+    "hard": "Difficile"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "domains": {
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "fullstack": "Fullstack",
+    "devops": "DevOps"
+  },
+  "columns": {
+    "type": "Type",
+    "category": "Catégorie",
+    "question": "Question",
+    "difficulty": "Difficulté",
+    "status": "Statut"
+  },
+  "form": {
+    "titles": { "add": "Nouvelle question", "edit": "Modifier la question" },
+    "fields": {
+      "type": "Type",
+      "domain": "Domaine IT",
+      "domainNone": "Aucun domaine spécifique",
+      "category": "Catégorie",
+      "categoryPlaceholder": "Ex: JavaScript, Logique...",
+      "question": "Énoncé de la question",
+      "options": "Réponses possibles",
+      "optionPlaceholder": "Réponse {n}",
+      "optionsHint": "Cochez la case à gauche de la bonne réponse",
+      "markCorrect": "Marquer comme bonne réponse",
+      "difficulty": "Difficulté",
+      "active": "Active"
+    },
+    "buttons": { "cancel": "Annuler", "save": "Enregistrer", "add": "Créer", "saving": "Enregistrement..." }
+  },
+  "deleteConfirm": {
+    "title": "Supprimer cette question ?",
+    "message": "Cette action est irréversible."
+  },
+  "toasts": {
+    "createSuccess": "Question créée avec succès",
+    "updateSuccess": "Question modifiée avec succès",
+    "deleteSuccess": "Question supprimée avec succès",
+    "saveError": "Erreur lors de l'enregistrement",
+    "deleteError": "Erreur lors de la suppression"
+  },
+  "prepareModal": {
+    "button": "Préparer un test",
+    "title": "Préparer un test",
+    "modeVivier": "Depuis le vivier",
+    "modeManual": "Candidat externe",
+    "candidate": "Candidat",
+    "candidatePlaceholder": "Rechercher un candidat...",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "type": "Type de test",
+    "types": { "both": "Technique + Psychotechnique", "technique": "Technique uniquement", "psychotechnique": "Psychotechnique uniquement", "personality": "Personnalité (Big Five + comportement pro)" },
+    "personalityHint": "Le candidat répond à une série d'affirmations sur une échelle d'accord (pas de bonne ou mauvaise réponse). Résultat : un profil par dimension (Big Five + échelles comportementales professionnelles).",
+    "questionCount": "Nombre de questions",
+    "timePerQuestion": "Temps par question (secondes)",
+    "timePerQuestionHint": "Le candidat passe automatiquement à la question suivante une fois ce temps écoulé.",
+    "difficulty": "Difficulté",
+    "difficultyAny": "Toutes difficultés",
+    "difficulties": { "easy": "Facile", "medium": "Moyen", "hard": "Difficile" },
+    "domain": "Domaine IT",
+    "domainAny": "Tous domaines",
+    "domains": { "frontend": "Frontend", "backend": "Backend", "fullstack": "Fullstack", "devops": "DevOps" },
+    "includeCoding": "Inclure des exercices de code réels (exécutés en sandbox)",
+    "codingChallengeCount": "Nombre d'exercices de code",
+    "codingHint": "Le candidat écrira du code réellement exécuté et vérifié automatiquement contre des cas de test.",
+    "randomHint": "Les questions sont sélectionnées aléatoirement à chaque génération, pour que le candidat ne passe jamais deux fois le même test.",
+    "cancel": "Annuler",
+    "generate": "Générer le lien",
+    "generating": "Génération...",
+    "linkGenerated": "Le test a été préparé. Partagez ce lien avec le candidat :",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "close": "Fermer",
+    "error": "Erreur lors de la préparation du test"
+  },
+  "sessions": {
+    "title": "Tests envoyés",
+    "subtitle": "Suivez les tests préparés et leurs résultats",
+    "addButton": "Nouveau test",
+    "emptyState": "Aucun test envoyé",
+    "cheatingDetected": "Triche détectée (changement d'onglet)",
+    "searchPlaceholder": "Rechercher un candidat...",
+    "allStatuses": "Tous les statuts",
+    "allTypes": "Tous les types",
+    "columns": {
+      "candidate": "Candidat",
+      "type": "Type",
+      "status": "Statut",
+      "score": "Score",
+      "link": "Lien"
+    },
+    "types": { "both": "Technique + Psycho", "technique": "Technique", "psychotechnique": "Psychotechnique", "personality": "Personnalité" },
+    "statuses": { "pending": "En attente", "in_progress": "En cours", "completed": "Terminé", "expired": "Expiré" },
+    "dimensions": {
+      "openness": "Ouverture à l'expérience",
+      "conscientiousness": "Conscienciosité",
+      "extraversion": "Extraversion",
+      "agreeableness": "Agréabilité",
+      "neuroticism": "Stabilité émotionnelle",
+      "pace": "Rythme d'action",
+      "leadership": "Leadership / prise de décision",
+      "detail_orientation": "Sens du détail",
+      "authority_relation": "Rapport à l'autorité",
+      "results_orientation": "Orientation résultats"
+    },
+    "personalityResultsSection": "Résultats du test de personnalité",
+    "personalityResultsHint": "Score moyen par dimension sur une échelle de 1 à 5 (pas de bonne ou mauvaise réponse).",
+    "copyLink": "Copier le lien",
+    "copied": "Copié !",
+    "deleteConfirm": { "title": "Supprimer ce test ?", "message": "Cette action est irréversible." },
+    "toasts": { "deleteSuccess": "Test supprimé", "deleteError": "Erreur lors de la suppression" },
+    "detail": {
+      "notCompletedYet": "Ce test n'a pas encore été soumis par le candidat.",
+      "cheatingDetected": "Triche détectée",
+      "cheatingCount": "{count} changement(s) d'onglet détecté(s) pendant le test",
+      "overallScore": "Score global",
+      "mcqScore": "Score QCM",
+      "codingScore": "Score code",
+      "questionsTitle": "Questions & réponses",
+      "correct": "Correct",
+      "incorrect": "Incorrect",
+      "candidateChoice": "Réponse du candidat",
+      "codingTitle": "Exercices de code",
+      "testCasesPassed": "{passed}/{total} cas de test réussis",
+      "noCodeSubmitted": "Aucun code soumis",
+      "close": "Fermer"
+    }
+  },
+  "coding": {
+    "page": {
+      "title": "Exercices de code",
+      "subtitle": "Gérez les exercices de code exécutés réellement (technique et évalués automatiquement)",
+      "addButton": "Ajouter un exercice",
+      "emptyState": "Aucun exercice trouvé",
+      "searchPlaceholder": "Rechercher un exercice...",
+      "allDomains": "Tous les domaines",
+      "allDifficulties": "Toutes les difficultés"
+    },
+    "columns": {
+      "domain": "Domaine",
+      "title": "Titre",
+      "difficulty": "Difficulté",
+      "testCases": "Cas de test",
+      "status": "Statut"
+    },
+    "deleteConfirm": { "title": "Supprimer cet exercice ?", "message": "Cette action est irréversible." },
+    "toasts": {
+      "createSuccess": "Exercice créé avec succès",
+      "updateSuccess": "Exercice modifié avec succès",
+      "deleteSuccess": "Exercice supprimé avec succès",
+      "saveError": "Erreur lors de l'enregistrement",
+      "deleteError": "Erreur lors de la suppression"
+    }
+  },
+  "codingForm": {
+    "titles": { "add": "Nouvel exercice de code", "edit": "Modifier l'exercice" },
+    "fields": {
+      "domain": "Domaine",
+      "difficulty": "Difficulté",
+      "title": "Titre",
+      "description": "Énoncé",
+      "starterCode": "Code de départ",
+      "testCases": "Cas de test (entrée → sortie attendue)",
+      "addTestCase": "Ajouter un cas de test",
+      "testInputPlaceholder": "Entrée",
+      "testOutputPlaceholder": "Sortie attendue",
+      "testCasesHint": "Ces cas de test sont cachés du candidat et servent à vérifier automatiquement sa solution.",
+      "active": "Actif"
+    },
+    "buttons": { "cancel": "Annuler", "save": "Enregistrer", "add": "Créer", "saving": "Enregistrement..." }
+  }
+}

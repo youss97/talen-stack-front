@@ -14,8 +14,10 @@ interface Props {
 
 export default function WorkflowStepsEditor({ value, onChange }: Props) {
   const t = useTranslations("recruitmentRequests.workflowStepsEditor");
+  // "Proposé" n'est pas proposé ici : c'est toujours l'étape implicite de départ, appliquée
+  // automatiquement dès qu'un candidat est proposé — inutile (et source de confusion) de la
+  // faire configurer/déplacer manuellement dans ce workflow.
   const DEFAULT_SUGGESTIONS = [
-    t("suggestions.proposed"),
     t("suggestions.hrInterview"),
     t("suggestions.clientInterview"),
     t("suggestions.offer"),

@@ -1,0 +1,285 @@
+{
+  "prospecting": {
+    "sectionTitle": "متابعة الاستقطاب",
+    "syncHint": "هذه القيم تخص العميل المحتمل: تعديلها هنا يعدلها أيضًا في ملفه.",
+    "noPole": "بدون قطب",
+    "fields": {
+      "leadStatus": "حالة العميل المحتمل",
+      "pipelineStage": "مرحلة المسار",
+      "priority": "الأولوية",
+      "datePlaceholder": "اختر تاريخًا",
+      "lastContactDate": "تاريخ آخر اتصال",
+      "nextAction": "الإجراء التالي",
+      "nextActionPlaceholder": "مثال: المتابعة عبر الهاتف",
+      "nextActionDate": "تاريخ الإجراء التالي"
+    },
+    "leadStatus": {
+      "new": "جديد", "toContact": "للاتصال", "contacted": "تم الاتصال", "qualified": "مؤهل",
+      "meetingScheduled": "موعد مجدول", "proposalSent": "تم إرسال العرض", "won": "ربح", "lost": "خسارة"
+    },
+    "pipelineStage": {
+      "prospecting": "الاستقطاب", "firstContact": "أول اتصال", "qualification": "التأهيل",
+      "proposal": "العرض", "negotiation": "التفاوض", "signed": "تم التوقيع", "lost": "خسارة"
+    },
+    "source": {
+      "linkedin": "LinkedIn", "website": "الموقع الإلكتروني", "referral": "توصية", "event": "معرض/فعالية",
+      "coldCall": "اتصال مباشر", "emailing": "بريد إلكتروني جماعي", "other": "أخرى"
+    },
+    "priority": { "high": "عالية", "medium": "متوسطة", "low": "منخفضة" },
+    "matrix": {
+      "title": "الشركات حسب القطب والحالة",
+      "pole": "القطب",
+      "total": "المجموع",
+      "empty": "لا توجد شركات مستهدفة حاليًا"
+    },
+    "filters": { "allLeadStatuses": "جميع حالات العملاء المحتملين", "allPriorities": "جميع الأولويات", "allPoles": "جميع الأقطاب" }
+  },
+  "companies": {
+    "list": {
+      "title": "العملاء المحتملون",
+      "subtitle": "أدر الشركات المحتملة قبل التوقيع",
+      "addButton": "إضافة عميل محتمل",
+      "searchPlaceholder": "البحث عن عميل محتمل...",
+      "allStages": "جميع الحالات",
+      "allIndustries": "جميع القطاعات",
+      "allResponsibles": "جميع المسؤولين",
+      "columns": {
+        "name": "الشركة",
+        "industry": "القطاع",
+        "stage": "الحالة",
+        "responsible": "المسؤول",
+        "createdBy": "أنشئ بواسطة",
+        "createdAt": "تاريخ الإنشاء"
+      },
+      "stage": {
+        "prospect": "محتمل",
+        "client": "عميل",
+        "perdu": "خسارة"
+      }
+    },
+    "form": {
+      "titles": { "add": "عميل محتمل جديد", "edit": "تعديل العميل المحتمل", "view": "بطاقة العميل المحتمل" },
+      "subtitles": { "add": "أضف شركة محتملة إلى مسار المبيعات", "edit": "عدّل معلومات العميل المحتمل" },
+      "fields": {
+        "name": "اسم الشركة",
+        "namePlaceholder": "Acme Corp",
+        "industry": "القطاع",
+        "industryPlaceholder": "اختر قطاعًا...",
+        "size": "الحجم",
+        "address": "العنوان",
+        "city": "المدينة",
+        "country": "البلد",
+        "source": "المصدر",
+        "sourcePlaceholder": "اختر مصدرًا",
+        "website": "الموقع الإلكتروني",
+        "pole": "القطب",
+        "polePlaceholder": "مثال: قطب تكنولوجيا المعلومات...",
+        "stage": "الحالة",
+        "internalNote": "ملاحظة داخلية",
+        "internalNotePlaceholder": "ملاحظة مرئية داخليًا فقط..."
+      },
+      "buttons": { "cancel": "إلغاء", "save": "حفظ", "add": "إضافة", "saving": "جارٍ الحفظ..." }
+    },
+    "contacts": {
+      "title": "جهات الاتصال",
+      "addButton": "إضافة جهة اتصال",
+      "empty": "لا توجد جهة اتصال",
+      "primary": "رئيسي",
+      "fields": { "firstName": "الاسم الأول", "lastName": "اسم العائلة", "position": "المنصب", "email": "البريد الإلكتروني", "phone": "الهاتف" },
+      "add": "إضافة"
+    },
+    "deals": {
+      "title": "الفرص المرتبطة",
+      "empty": "لا توجد فرصة"
+    },
+    "toasts": {
+      "createSuccess": "تم إنشاء العميل المحتمل بنجاح",
+      "updateSuccess": "تم تعديل العميل المحتمل بنجاح",
+      "deleteSuccess": "تم حذف العميل المحتمل بنجاح",
+      "createError": "خطأ أثناء الإنشاء",
+      "updateError": "خطأ أثناء التعديل",
+      "deleteError": "خطأ أثناء الحذف",
+      "contactAdded": "تمت إضافة جهة الاتصال",
+      "contactError": "خطأ في جهة الاتصال"
+    },
+    "deleteConfirm": {
+      "title": "حذف هذا العميل المحتمل؟",
+      "message": "هذا الإجراء نهائي. سيتم أيضًا حذف جهات الاتصال والفرص المرتبطة."
+    },
+    "convertToClient": {
+      "button": "تحويل إلى عميل",
+      "title": "تحويل هذا العميل المحتمل إلى عميل",
+      "subtitle": "ينشئ حساب العميل والوصول إلى البوابة مباشرة من ملف العميل المحتمل هذا.",
+      "alreadyConverted": "تم تحويله بالفعل إلى عميل"
+    },
+    "close": "إغلاق"
+  },
+  "deals": {
+    "list": {
+      "title": "الفرص التجارية",
+      "subtitle": "تابع مسار مبيعاتك",
+      "addButton": "فرصة جديدة",
+      "settingsButton": "مراحل المسار",
+      "noDeals": "لا توجد فرصة في هذه المرحلة",
+      "searchPlaceholder": "البحث عن فرصة أو عميل محتمل...",
+      "allResponsibles": "جميع المسؤولين"
+    },
+    "form": {
+      "titles": { "add": "فرصة جديدة", "edit": "تعديل الفرصة" },
+      "fields": {
+        "company": "الشركة المحتملة",
+        "companyPlaceholder": "البحث عن عميل محتمل...",
+        "title": "العنوان",
+        "titlePlaceholder": "مثال: توظيف 3 مطورين",
+        "description": "الوصف",
+        "estimatedValue": "القيمة التقديرية",
+        "currency": "العملة",
+        "expectedCloseDate": "تاريخ الإغلاق المتوقع",
+        "stage": "المرحلة"
+      },
+      "contacts": {
+        "label": "جهات اتصال الفرصة",
+        "selectCompanyFirst": "اختر عميلاً محتملاً أولاً لاختيار جهات الاتصال الخاصة به.",
+        "none": "لا توجد جهات اتصال لهذا العميل المحتمل بعد.",
+        "add": "إضافة جهة اتصال",
+        "lastName": "اللقب",
+        "firstName": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "position": "المنصب",
+        "nameRequired": "الاسم واللقب لجهة الاتصال إلزاميان.",
+        "createError": "تعذر إضافة جهة الاتصال.",
+        "cancel": "إلغاء",
+        "save": "إضافة",
+        "saving": "جارٍ الإضافة..."
+      },
+      "buttons": { "cancel": "إلغاء", "save": "حفظ", "add": "إنشاء", "saving": "جارٍ الحفظ..." }
+    },
+    "detail": {
+      "contacts": "جهات الاتصال",
+      "responsible": "المسؤول",
+      "createdBy": "أنشئ بواسطة",
+      "status": { "open": "جارية", "won": "مكسوبة", "lost": "خاسرة" },
+      "markWon": "تحديد كمكسوبة",
+      "markLost": "تحديد كخاسرة",
+      "lostReasonLabel": "سبب الخسارة",
+      "lostReasonPlaceholder": "لماذا خُسرت هذه الفرصة...",
+      "convertButton": "تحويل إلى عميل",
+      "convertTitle": "تحويل إلى عميل",
+      "convertSubtitle": "ينشئ حساب العميل والوصول إلى البوابة من هذه الفرصة المكسوبة.",
+      "alreadyConverted": "تم التحويل إلى عميل بالفعل"
+    },
+    "convertForm": {
+      "adminEmail": "بريد المسؤول",
+      "adminPassword": "كلمة المرور",
+      "adminFirstName": "الاسم الأول",
+      "adminLastName": "اسم العائلة",
+      "adminPhone": "الهاتف",
+      "submit": "تحويل",
+      "converting": "جارٍ التحويل..."
+    },
+    "toasts": {
+      "createSuccess": "تم إنشاء الفرصة بنجاح",
+      "updateSuccess": "تم تعديل الفرصة بنجاح",
+      "deleteSuccess": "تم حذف الفرصة بنجاح",
+      "convertSuccess": "تم إنشاء العميل بنجاح",
+      "convertError": "خطأ أثناء التحويل",
+      "createError": "خطأ أثناء الإنشاء",
+      "updateError": "خطأ أثناء التعديل"
+    },
+    "deleteConfirm": {
+      "title": "حذف هذه الفرصة؟",
+      "message": "هذا الإجراء نهائي."
+    }
+  },
+  "pipelineSettings": {
+    "title": "مراحل المسار",
+    "subtitle": "خصص مراحل مسار مبيعاتك",
+    "addStage": "إضافة مرحلة",
+    "stageNamePlaceholder": "اسم المرحلة",
+    "save": "حفظ",
+    "saved": "تم حفظ المراحل",
+    "saveError": "خطأ أثناء الحفظ"
+  },
+  "activities": {
+    "title": "الأنشطة",
+    "empty": "لا يوجد نشاط مسجل",
+    "addButton": "إضافة نشاط",
+    "types": { "call": "مكالمة", "email": "بريد إلكتروني", "meeting": "اجتماع", "note": "ملاحظة" },
+    "fields": {
+      "type": "النوع",
+      "summary": "الملخص",
+      "summaryPlaceholder": "ما تم قوله أو فعله...",
+      "outcome": "النتيجة",
+      "outcomePlaceholder": "نتيجة التفاعل (اختياري)",
+      "occurredAt": "التاريخ"
+    },
+    "buttons": { "cancel": "إلغاء", "save": "حفظ" },
+    "toasts": { "createSuccess": "تمت إضافة النشاط", "createError": "خطأ أثناء الإضافة", "deleteSuccess": "تم حذف النشاط", "deleteError": "خطأ أثناء الحذف" },
+    "deleteConfirm": { "title": "حذف هذا النشاط؟", "message": "هذا الإجراء نهائي." }
+  },
+  "tasks": {
+    "title": "المهام",
+    "empty": "لا توجد مهام",
+    "addButton": "إضافة مهمة",
+    "fields": { "title": "العنوان", "titlePlaceholder": "مثال: الاتصال لتأكيد العرض", "dueDate": "تاريخ الاستحقاق", "assignedTo": "مسندة إلى" },
+    "status": { "pending": "قيد الإنجاز", "done": "منجزة", "cancelled": "ملغاة" },
+    "markDone": "وضع علامة منجزة",
+    "buttons": { "cancel": "إلغاء", "save": "حفظ" },
+    "toasts": { "createSuccess": "تمت إضافة المهمة", "createError": "خطأ أثناء الإضافة", "updateSuccess": "تم تحديث المهمة", "updateError": "خطأ أثناء التحديث", "deleteSuccess": "تم حذف المهمة", "deleteError": "خطأ أثناء الحذف" },
+    "deleteConfirm": { "title": "حذف هذه المهمة؟", "message": "هذا الإجراء نهائي." },
+    "overdue": "متأخرة"
+  },
+  "followupEmail": {
+    "title": "إرسال بريد متابعة",
+    "recipientEmail": "بريد المستلم",
+    "recipientName": "اسم المستلم",
+    "subjectPlaceholder": "موضوع البريد",
+    "messagePlaceholder": "رسالتك...",
+    "send": "إرسال",
+    "sending": "جارٍ الإرسال...",
+    "cancel": "إلغاء",
+    "error": "خطأ أثناء إرسال البريد",
+    "button": "متابعة"
+  },
+  "dashboard": {
+    "title": "لوحة تحكم CRM",
+    "subtitle": "نظرة عامة على مسار مبيعاتك",
+    "sections": {
+      "pipeline": "المسار",
+      "results": "النتائج",
+      "activity": "الاستقطاب والنشاط",
+      "tasks": "المهام"
+    },
+    "kpis": {
+      "openValue": "قيمة المسار المفتوح",
+      "openCount": "الفرص المفتوحة",
+      "avgDealSize": "متوسط حجم الفرصة",
+      "conversionRate": "معدل التحويل",
+      "totalProspects": "العملاء المحتملون",
+      "newProspectsThisMonth": "عملاء محتملون جدد هذا الشهر",
+      "wonCount": "مكتسبة",
+      "wonValue": "القيمة المكتسبة",
+      "lostCount": "خاسرة",
+      "avgSalesCycleDays": "متوسط دورة البيع",
+      "daysValue": "{count} يومًا",
+      "totalClients": "تم تحويلهم إلى عملاء",
+      "activitiesThisMonth": "الأنشطة هذا الشهر",
+      "pendingTasks": "المهام الجارية",
+      "overdueTasks": "المهام المتأخرة",
+      "overdueTasksCountLabel": "{count} متأخرة"
+    },
+    "charts": {
+      "byStage": "الفرص حسب المرحلة",
+      "valueByStage": "قيمة المسار حسب المرحلة",
+      "wonVsLost": "مكتسبة مقابل خاسرة",
+      "topResponsibles": "أفضل المندوبين (القيمة المكتسبة)",
+      "count": "العدد",
+      "series": {
+        "won": "مكتسبة",
+        "lost": "خاسرة",
+        "wonValue": "القيمة المكتسبة"
+      }
+    }
+  }
+}

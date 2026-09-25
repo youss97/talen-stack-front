@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { CheckCircle2, XCircle, AlertTriangle, Info, X, LifeBuoy } from "lucide-react";
 import { useReportErrorMutation } from "@/lib/services/supportApi";
+import SupportReportModal from "./SupportReportModal";
 
 export interface ToastProps {
   id: string;
@@ -23,26 +24,47 @@ const Toast: React.FC<ToastProps> = ({
   onClose,
 }) => {
   const tc = useTranslations("common");
+  const tNav = useTranslations("layout.nav");
   const pathname = usePathname();
   const [reportError, { isLoading: isReporting }] = useReportErrorMutation();
   const [reportStatus, setReportStatus] = useState<"idle" | "sent" | "error">("idle");
+  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
 
-  const handleContactSupport = async () => {
+  // Libellé de page lisible pour l'email de support — réutilise la table de correspondance
+  // route → nom déjà utilisée par la barre latérale, plutôt que le chemin brut (ex. "Vivier
+  // de talents" au lieu de "/cvs").
+  const getPageLabel = () => {
+    const items = tNav.raw("items") as Record<string, string>;
+    const pageKey = "/" + (pathname.split("/").filter(Boolean)[0] || "");
+    return items?.[pageKey] || pathname;
+  };
+
+  const handleSubmitSupportReport = async (description: string) => {
     try {
-      await reportError({ page: pathname, action: title, message: message || title }).unwrap();
+      await reportError({
+        page: getPageLabel(),
+        action: title,
+        message: message || title,
+        description,
+      }).unwrap();
       setReportStatus("sent");
+      setIsSupportModalOpen(false);
     } catch {
       setReportStatus("error");
+      setIsSupportModalOpen(false);
     }
   };
 
   useEffect(() => {
+    // Ne pas fermer automatiquement le toast pendant que l'utilisateur rédige sa description
+    // dans la popup support — sinon le toast (et la popup qu'il porte) disparaît sous ses yeux.
+    if (isSupportModalOpen) return;
     const timer = setTimeout(() => {
       onClose(id);
     }, duration);
 
     return () => clearTimeout(timer);
-  }, [id, duration, onClose]);
+  }, [id, duration, onClose, isSupportModalOpen]);
 
   const variantClasses = {
     success: {
@@ -89,11 +111,11 @@ const Toast: React.FC<ToastProps> = ({
           )}
           {variant === "error" && (
             <button
-              onClick={handleContactSupport}
+              onClick={() => setIsSupportModalOpen(true)}
               disabled={isReporting || reportStatus !== "idle"}
-              className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-error-600 hover:text-error-700 dark:text-error-400 dark:hover:text-error-300 disabled:opacity-70"
+              className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-error-600 hover:text-error-700 dark:text-error-400 dark:hover:text-error-300 disabled:opacity-70"
             >
-              <LifeBuoy size={13} strokeWidth={1.8} className="icon-glow" />
+              <LifeBuoy size={16} strokeWidth={2} className="icon-glow" />
               {reportStatus === "sent" ? tc("support.sent") : reportStatus === "error" ? tc("support.error") : isReporting ? tc("support.sending") : tc("support.contactButton")}
             </button>
           )}
@@ -106,6 +128,14 @@ const Toast: React.FC<ToastProps> = ({
         </button>
       </div>
       <div className={`absolute bottom-0 left-0 h-1 ${variantClasses[variant].bar} animate-shrink`} style={{ animationDuration: `${duration}ms` }} />
+      {variant === "error" && (
+        <SupportReportModal
+          isOpen={isSupportModalOpen}
+          onClose={() => setIsSupportModalOpen(false)}
+          onSubmit={handleSubmitSupportReport}
+          isLoading={isReporting}
+        />
+      )}
     </div>
   );
 };

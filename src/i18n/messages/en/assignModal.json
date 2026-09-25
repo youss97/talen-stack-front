@@ -5,6 +5,8 @@
   "addResponsible": "Add a responsible",
   "searchPlaceholder": "Search for a user...",
   "emptyResults": "No user found",
+  "primaryHint": "Click the star to set the primary responsible.",
+  "setPrimary": "Set as primary responsible",
   "clearAll": "Remove all assignments",
   "assign": "Assign",
   "assigning": "Assigning..."

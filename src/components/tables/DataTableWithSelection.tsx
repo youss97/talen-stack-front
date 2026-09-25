@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Eye, Pencil, Trash2, Mail, CalendarDays, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import {
   Table,
@@ -45,6 +46,8 @@ export interface DataTableWithSelectionProps<T> {
   useActionsMenu?: boolean; // Nouvelle prop pour forcer l'utilisation du menu
   enableViewToggle?: boolean;
   defaultView?: "table" | "cards";
+  /** Onglet supplémentaire à côté de Tableau / Cartes (ex. Kanban) : navigue au clic au lieu de changer la vue */
+  extraViewTab?: { label: string; onClick: () => void };
   /** Tri par colonne (clé actuellement triée) */
   sortBy?: string;
   sortOrder?: "ASC" | "DESC";
@@ -64,14 +67,17 @@ function DataTableWithSelection<T extends { id: string }>({
   customActions,
   actions,
   isLoading = false,
-  emptyMessage = "Aucune donnée disponible",
+  emptyMessage,
   useActionsMenu = true, // Par défaut, utiliser le menu d'actions
   enableViewToggle = true,
   defaultView = "table",
+  extraViewTab,
   sortBy,
   sortOrder,
   onSort,
 }: DataTableWithSelectionProps<T>) {
+  const t = useTranslations("common");
+  const resolvedEmptyMessage = emptyMessage ?? t("status.noDataAvailable");
   const hasActionHandlers = onView || onEdit || onDelete || customActions;
   const [view, setView] = useState<"table" | "cards">(defaultView);
 
@@ -81,7 +87,7 @@ function DataTableWithSelection<T extends { id: string }>({
 
     if (onView) {
       menuActions.push({
-        label: "Voir les détails",
+        label: t("actions.viewDetails"),
         icon: <ViewIcon />,
         onClick: () => onView(row),
         color: 'default' as const,
@@ -90,7 +96,7 @@ function DataTableWithSelection<T extends { id: string }>({
 
     if (onEdit) {
       menuActions.push({
-        label: "Modifier",
+        label: t("actions.edit"),
         icon: <EditIcon />,
         onClick: () => onEdit(row),
         color: 'default' as const,
@@ -106,7 +112,7 @@ function DataTableWithSelection<T extends { id: string }>({
 
     if (onDelete) {
       menuActions.push({
-        label: "Supprimer",
+        label: t("actions.delete"),
         icon: <TrashIcon />,
         onClick: () => onDelete(row),
         color: 'error' as const,
@@ -114,7 +120,7 @@ function DataTableWithSelection<T extends { id: string }>({
     }
 
     return menuActions;
-  }, [onView, onEdit, onDelete, customActions]);
+  }, [onView, onEdit, onDelete, customActions, t]);
 
   const getValue = (row: T, key: string): T[keyof T] => {
     const keys = key.split(".");
@@ -152,13 +158,13 @@ function DataTableWithSelection<T extends { id: string }>({
       ) : (
         <div className="flex items-center gap-1">
           {onView && (
-            <button onClick={() => onView(row)} className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title="Voir les détails"><ViewIcon /></button>
+            <button onClick={() => onView(row)} className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title={t("actions.viewDetails")}><ViewIcon /></button>
           )}
           {onEdit && (
-            <button onClick={() => onEdit(row)} className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title="Modifier"><EditIcon /></button>
+            <button onClick={() => onEdit(row)} className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title={t("actions.edit")}><EditIcon /></button>
           )}
           {onDelete && (
-            <button onClick={() => onDelete(row)} className="p-2 text-gray-500 hover:text-error-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title="Supprimer"><TrashIcon /></button>
+            <button onClick={() => onDelete(row)} className="p-2 text-gray-500 hover:text-error-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title={t("actions.delete")}><TrashIcon /></button>
           )}
         </div>
       )}
@@ -168,8 +174,11 @@ function DataTableWithSelection<T extends { id: string }>({
   const ViewToggle = enableViewToggle ? (
     <div className="mb-3 flex justify-end">
       <div className="inline-flex rounded-lg border border-[color:var(--border)] p-0.5 bg-[var(--surface-2)]">
-        <button onClick={() => setView("table")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "table" ? "bg-[var(--surface)] text-[var(--brand-deep)] shadow-sm" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>Tableau</button>
-        <button onClick={() => setView("cards")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "cards" ? "bg-[var(--surface)] text-[var(--brand-deep)] shadow-sm" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>Cartes</button>
+        <button onClick={() => setView("table")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "table" ? "bg-[var(--surface)] text-[var(--brand-deep)] shadow-sm" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>{t("views.table")}</button>
+        <button onClick={() => setView("cards")} className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "cards" ? "bg-[var(--surface)] text-[var(--brand-deep)] shadow-sm" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>{t("views.cards")}</button>
+        {extraViewTab && (
+          <button onClick={extraViewTab.onClick} className="px-3 py-1.5 text-xs font-medium rounded-md transition-colors text-[var(--text-2)] hover:text-[var(--text)]">{extraViewTab.label}</button>
+        )}
       </div>
     </div>
   ) : null;
@@ -189,7 +198,7 @@ function DataTableWithSelection<T extends { id: string }>({
     {view === "cards" ? (
       data.length === 0 ? (
         <div className="gw-card">
-          <EmptyState title={emptyMessage} />
+          <EmptyState title={resolvedEmptyMessage} />
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -293,7 +302,7 @@ function DataTableWithSelection<T extends { id: string }>({
                 className="px-5 py-4"
                 colSpan={columns.length + 2}
               >
-                <EmptyState title={emptyMessage} />
+                <EmptyState title={resolvedEmptyMessage} />
               </TableCell>
             </TableRow>
           ) : (

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Clock, Save, Calendar, LayoutTemplate } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm, Controller } from "react-hook-form";
 import { Modal } from "@/components/ui/modal";
@@ -18,6 +18,7 @@ import { useGetUsersForSelectInfiniteQuery } from "@/lib/services/userApi";
 import { useGetClientManagersForSelectInfiniteQuery } from "@/lib/services/clientApi";
 import { BulkEmailType, type SendEmailRequest, type Email } from "@/types/email";
 import type { CV } from "@/types/cv";
+import TemplatePickerModal from "./TemplatePickerModal";
 
 interface EmailFormModalProps {
   isOpen: boolean;
@@ -78,6 +79,9 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
   const [scheduledAt, setScheduledAt] = useState(""); // valeur datetime-local
   // Mode de soumission choisi par le bouton cliqué
   const submitModeRef = React.useRef<"send" | "schedule" | "draft">("send");
+
+  // Sélection d'un modèle pour préremplir sujet/message
+  const [isTemplatePickerOpen, setIsTemplatePickerOpen] = useState(false);
 
   const { control, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<FormData>({
     defaultValues: {
@@ -306,6 +310,7 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
   );
 
   return (
+    <>
     <Modal isOpen={isOpen} onClose={handleClose} className="max-w-2xl mx-4 my-4 max-h-[95vh] flex flex-col modal-responsive">
       <div className="flex-shrink-0 p-4 sm:p-6 pb-4 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{isEditing ? t("formModal.titleEdit") : t("formModal.titleAdd")}</h2>
@@ -597,7 +602,17 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
 
             {/* ══ Sujet ══ */}
             <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
-              <Label htmlFor="subject">{t("formModal.subject")} <span className="text-error-500">*</span></Label>
+              <div className="flex items-center justify-between mb-1.5">
+                <Label htmlFor="subject" className="mb-0">{t("formModal.subject")} <span className="text-error-500">*</span></Label>
+                <button
+                  type="button"
+                  onClick={() => setIsTemplatePickerOpen(true)}
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400"
+                >
+                  <LayoutTemplate size={14} strokeWidth={1.8} className="icon-glow" />
+                  {t("formModal.chooseTemplate")}
+                </button>
+              </div>
               <Controller
                 name="subject"
                 control={control}
@@ -659,7 +674,8 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                   : "border-gray-300 text-gray-600 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
               }`}
             >
-              🕐 {showSchedule ? t("formModal.footer.scheduleEnabled") : t("formModal.footer.scheduleSend")}
+              <Clock size={14} strokeWidth={1.8} className="icon-glow" />
+              {showSchedule ? t("formModal.footer.scheduleEnabled") : t("formModal.footer.scheduleSend")}
             </button>
             {showSchedule && (
               <input
@@ -677,8 +693,8 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
 
             {isEditing ? (
               /* Mode édition : un seul bouton d'enregistrement */
-              <Button type="submit" disabled={isUpdating}>
-                {isUpdating ? t("formModal.footer.saving") : `💾 ${t("formModal.footer.saveChanges")}`}
+              <Button type="submit" disabled={isUpdating} startIcon={!isUpdating ? <Save size={16} strokeWidth={1.8} className="icon-glow" /> : undefined}>
+                {isUpdating ? t("formModal.footer.saving") : t("formModal.footer.saveChanges")}
               </Button>
             ) : (
               <>
@@ -688,8 +704,9 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                   variant="outline"
                   disabled={isSending}
                   onClick={() => { submitModeRef.current = "draft"; }}
+                  startIcon={<Save size={16} strokeWidth={1.8} className="icon-glow" />}
                 >
-                  💾 {t("formModal.footer.draft")}
+                  {t("formModal.footer.draft")}
                 </Button>
 
                 {/* Programmer (si toggle activé) sinon Envoyer */}
@@ -698,8 +715,9 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
                     type="submit"
                     disabled={isSending || (totalTo === 0 && totalCC === 0 && bccRecipients.length === 0)}
                     onClick={() => { submitModeRef.current = "schedule"; }}
+                    startIcon={!isSending ? <Calendar size={16} strokeWidth={1.8} className="icon-glow" /> : undefined}
                   >
-                    {isSending ? "..." : `📅 ${t("formModal.footer.programSchedule")}`}
+                    {isSending ? "..." : t("formModal.footer.programSchedule")}
                   </Button>
                 ) : (
                   <Button
@@ -716,6 +734,18 @@ const EmailFormModal: React.FC<EmailFormModalProps> = ({ isOpen, onClose, onSucc
         </div>
       </form>
     </Modal>
+    <TemplatePickerModal
+      isOpen={isTemplatePickerOpen}
+      onClose={() => setIsTemplatePickerOpen(false)}
+      type="APPLICATION_MANUAL"
+      title={t("formModal.chooseTemplate")}
+      onConfirm={({ subject, body_html }) => {
+        setValue("subject", subject, { shouldValidate: true });
+        setValue("body", body_html, { shouldValidate: true });
+        setIsTemplatePickerOpen(false);
+      }}
+    />
+    </>
   );
 };
 

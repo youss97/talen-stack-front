@@ -1,7 +1,7 @@
 "use client";
 import type { ComponentType } from "react";
 import { useTranslations } from "next-intl";
-import { Mail, Phone, MapPin, Calendar, User, MessageSquare, HelpCircle, FileText, Download, Link2, ExternalLink } from "lucide-react";
+import { Mail, Phone, MapPin, Calendar, User, MessageSquare, HelpCircle, FileText, Eye, Link2, ExternalLink } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import type { PublicApplication } from "@/types/publicJobOffer";
@@ -11,14 +11,14 @@ interface PublicApplicationDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   application: PublicApplication | null;
-  onDownloadCv?: (application: PublicApplication) => void;
+  onViewCv?: (application: PublicApplication) => void;
 }
 
 export default function PublicApplicationDetailModal({
   isOpen,
   onClose,
   application,
-  onDownloadCv,
+  onViewCv,
 }: PublicApplicationDetailModalProps) {
   const t = useTranslations("publicOffers.applications.detailModal");
   if (!application) return null;
@@ -54,7 +54,7 @@ export default function PublicApplicationDetailModal({
 
         {application.message && (
           <Section title={t("motivationLetter")} icon={MessageSquare}>
-            <p className="text-sm whitespace-pre-wrap leading-relaxed" style={{ color: "var(--text)" }}>
+            <p className="text-sm whitespace-pre-wrap break-words leading-relaxed" style={{ color: "var(--text)" }}>
               {application.message}
             </p>
           </Section>
@@ -80,10 +80,10 @@ export default function PublicApplicationDetailModal({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => onDownloadCv?.(application)}
-              startIcon={<Download className="icon-glow" size={16} strokeWidth={1.8} />}
+              onClick={() => onViewCv?.(application)}
+              startIcon={<Eye className="icon-glow" size={16} strokeWidth={1.8} />}
             >
-              {t("downloadCv")}
+              {t("viewCv")}
             </Button>
           </Section>
         )}

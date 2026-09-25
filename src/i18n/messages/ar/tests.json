@@ -1,0 +1,198 @@
+{
+  "page": {
+    "title": "اختبارات تقنية ونفسية تقنية",
+    "subtitle": "بنك الأسئلة لتقييم المرشحين",
+    "addButton": "إضافة سؤال",
+    "searchPlaceholder": "البحث عن سؤال...",
+    "allTypes": "جميع الأنواع",
+    "allCategories": "جميع الفئات",
+    "emptyState": "لم يتم العثور على أي سؤال"
+  },
+  "types": {
+    "technique": "تقني",
+    "psychotechnique": "نفسي تقني"
+  },
+  "difficulties": {
+    "easy": "سهل",
+    "medium": "متوسط",
+    "hard": "صعب"
+  },
+  "status": {
+    "active": "نشط",
+    "inactive": "غير نشط"
+  },
+  "domains": {
+    "frontend": "الواجهة الأمامية",
+    "backend": "الخلفية",
+    "fullstack": "Fullstack",
+    "devops": "DevOps"
+  },
+  "columns": {
+    "type": "النوع",
+    "category": "الفئة",
+    "question": "السؤال",
+    "difficulty": "الصعوبة",
+    "status": "الحالة"
+  },
+  "form": {
+    "titles": { "add": "سؤال جديد", "edit": "تعديل السؤال" },
+    "fields": {
+      "type": "النوع",
+      "domain": "المجال التقني",
+      "domainNone": "لا مجال محدد",
+      "category": "الفئة",
+      "categoryPlaceholder": "مثال: JavaScript، المنطق...",
+      "question": "نص السؤال",
+      "options": "خيارات الإجابة",
+      "optionPlaceholder": "الإجابة {n}",
+      "optionsHint": "حدد المربع بجانب الإجابة الصحيحة",
+      "markCorrect": "وضع علامة كإجابة صحيحة",
+      "difficulty": "الصعوبة",
+      "active": "نشط"
+    },
+    "buttons": { "cancel": "إلغاء", "save": "حفظ", "add": "إنشاء", "saving": "جارٍ الحفظ..." }
+  },
+  "deleteConfirm": {
+    "title": "حذف هذا السؤال؟",
+    "message": "هذا الإجراء نهائي."
+  },
+  "toasts": {
+    "createSuccess": "تم إنشاء السؤال بنجاح",
+    "updateSuccess": "تم تعديل السؤال بنجاح",
+    "deleteSuccess": "تم حذف السؤال بنجاح",
+    "saveError": "خطأ أثناء الحفظ",
+    "deleteError": "خطأ أثناء الحذف"
+  },
+  "prepareModal": {
+    "button": "تحضير اختبار",
+    "title": "تحضير اختبار",
+    "modeVivier": "من قاعدة المرشحين",
+    "modeManual": "مرشح خارجي",
+    "candidate": "المرشح",
+    "candidatePlaceholder": "البحث عن مرشح...",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "type": "نوع الاختبار",
+    "types": { "both": "تقني + نفسي تقني", "technique": "تقني فقط", "psychotechnique": "نفسي تقني فقط", "personality": "الشخصية (Big Five + سلوك مهني)" },
+    "personalityHint": "يجيب المرشح على سلسلة من العبارات على مقياس درجة الموافقة (لا توجد إجابة صحيحة أو خاطئة). النتيجة: ملف تعريف حسب البعد (Big Five + مقاييس سلوكية مهنية).",
+    "questionCount": "عدد الأسئلة",
+    "timePerQuestion": "الوقت لكل سؤال (ثوانٍ)",
+    "timePerQuestionHint": "ينتقل المرشح تلقائيًا إلى السؤال التالي بعد انتهاء هذا الوقت.",
+    "difficulty": "الصعوبة",
+    "difficultyAny": "جميع المستويات",
+    "difficulties": { "easy": "سهل", "medium": "متوسط", "hard": "صعب" },
+    "domain": "المجال التقني",
+    "domainAny": "جميع المجالات",
+    "domains": { "frontend": "الواجهة الأمامية", "backend": "الخلفية", "fullstack": "Fullstack", "devops": "DevOps" },
+    "includeCoding": "تضمين تمارين برمجة حقيقية (تنفيذ في بيئة معزولة)",
+    "codingChallengeCount": "عدد تمارين البرمجة",
+    "codingHint": "سيكتب المرشح كودًا يتم تنفيذه فعليًا والتحقق منه تلقائيًا مقابل حالات اختبار.",
+    "randomHint": "يتم اختيار الأسئلة عشوائيًا في كل مرة، حتى لا يجتاز المرشح نفس الاختبار مرتين.",
+    "cancel": "إلغاء",
+    "generate": "إنشاء الرابط",
+    "generating": "جارٍ الإنشاء...",
+    "linkGenerated": "تم تحضير الاختبار. شارك هذا الرابط مع المرشح:",
+    "copy": "نسخ",
+    "copied": "تم النسخ!",
+    "close": "إغلاق",
+    "error": "خطأ أثناء تحضير الاختبار"
+  },
+  "sessions": {
+    "title": "الاختبارات المرسلة",
+    "subtitle": "تتبع الاختبارات المحضّرة ونتائجها",
+    "addButton": "اختبار جديد",
+    "emptyState": "لا يوجد اختبار مرسل",
+    "cheatingDetected": "تم اكتشاف غش (تبديل علامة التبويب)",
+    "searchPlaceholder": "البحث عن مرشح...",
+    "allStatuses": "جميع الحالات",
+    "allTypes": "جميع الأنواع",
+    "columns": {
+      "candidate": "المرشح",
+      "type": "النوع",
+      "status": "الحالة",
+      "score": "النتيجة",
+      "link": "الرابط"
+    },
+    "types": { "both": "تقني + نفسي", "technique": "تقني", "psychotechnique": "نفسي تقني", "personality": "الشخصية" },
+    "statuses": { "pending": "في الانتظار", "in_progress": "قيد التقدم", "completed": "منتهٍ", "expired": "منتهي الصلاحية" },
+    "dimensions": {
+      "openness": "الانفتاح على التجربة",
+      "conscientiousness": "الضمير المهني",
+      "extraversion": "الانبساط",
+      "agreeableness": "الوداعة",
+      "neuroticism": "الاستقرار العاطفي",
+      "pace": "إيقاع العمل",
+      "leadership": "القيادة / اتخاذ القرار",
+      "detail_orientation": "الاهتمام بالتفاصيل",
+      "authority_relation": "العلاقة مع السلطة",
+      "results_orientation": "التوجه نحو النتائج"
+    },
+    "personalityResultsSection": "نتائج اختبار الشخصية",
+    "personalityResultsHint": "متوسط النتيجة لكل بعد على مقياس من 1 إلى 5 (لا توجد إجابة صحيحة أو خاطئة).",
+    "copyLink": "نسخ الرابط",
+    "copied": "تم النسخ!",
+    "deleteConfirm": { "title": "حذف هذا الاختبار؟", "message": "هذا الإجراء نهائي." },
+    "toasts": { "deleteSuccess": "تم حذف الاختبار", "deleteError": "خطأ أثناء الحذف" },
+    "detail": {
+      "notCompletedYet": "لم يتم إرسال هذا الاختبار من طرف المرشح بعد.",
+      "cheatingDetected": "تم اكتشاف غش",
+      "cheatingCount": "تم اكتشاف {count} تبديل (تبديلات) للعلامة التبويب أثناء الاختبار",
+      "overallScore": "النتيجة الإجمالية",
+      "mcqScore": "نتيجة الأسئلة",
+      "codingScore": "نتيجة البرمجة",
+      "questionsTitle": "الأسئلة والإجابات",
+      "correct": "صحيح",
+      "incorrect": "غير صحيح",
+      "candidateChoice": "إجابة المرشح",
+      "codingTitle": "تمارين البرمجة",
+      "testCasesPassed": "{passed}/{total} حالة اختبار ناجحة",
+      "noCodeSubmitted": "لم يتم إرسال أي كود",
+      "close": "إغلاق"
+    }
+  },
+  "coding": {
+    "page": {
+      "title": "تمارين البرمجة",
+      "subtitle": "إدارة تمارين البرمجة المنفذة فعليًا والمقيّمة تلقائيًا",
+      "addButton": "إضافة تمرين",
+      "emptyState": "لم يتم العثور على أي تمرين",
+      "searchPlaceholder": "البحث عن تمرين...",
+      "allDomains": "جميع المجالات",
+      "allDifficulties": "جميع مستويات الصعوبة"
+    },
+    "columns": {
+      "domain": "المجال",
+      "title": "العنوان",
+      "difficulty": "الصعوبة",
+      "testCases": "حالات الاختبار",
+      "status": "الحالة"
+    },
+    "deleteConfirm": { "title": "حذف هذا التمرين؟", "message": "هذا الإجراء نهائي." },
+    "toasts": {
+      "createSuccess": "تم إنشاء التمرين بنجاح",
+      "updateSuccess": "تم تعديل التمرين بنجاح",
+      "deleteSuccess": "تم حذف التمرين بنجاح",
+      "saveError": "خطأ أثناء الحفظ",
+      "deleteError": "خطأ أثناء الحذف"
+    }
+  },
+  "codingForm": {
+    "titles": { "add": "تمرين برمجة جديد", "edit": "تعديل التمرين" },
+    "fields": {
+      "domain": "المجال",
+      "difficulty": "الصعوبة",
+      "title": "العنوان",
+      "description": "الوصف",
+      "starterCode": "الكود الأولي",
+      "testCases": "حالات الاختبار (مدخل ← مخرج متوقع)",
+      "addTestCase": "إضافة حالة اختبار",
+      "testInputPlaceholder": "المدخل",
+      "testOutputPlaceholder": "المخرج المتوقع",
+      "testCasesHint": "حالات الاختبار هذه مخفية عن المرشح وتُستخدم للتحقق التلقائي من حله.",
+      "active": "نشط"
+    },
+    "buttons": { "cancel": "إلغاء", "save": "حفظ", "add": "إنشاء", "saving": "جارٍ الحفظ..." }
+  }
+}

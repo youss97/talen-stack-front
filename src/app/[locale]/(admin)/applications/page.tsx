@@ -16,6 +16,8 @@ import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import RecruiterFormModal from "@/components/recruiter/RecruiterFormModal";
 import RecruiterDetailModal from "@/components/recruiter/RecruiterDetailModal";
 import BulkEmailModal from "@/components/recruiter/BulkEmailModal";
+import ApplicationsKanbanBoard from "@/components/recruiter/ApplicationsKanbanBoard";
+import ApplicationsViewTabs from "@/components/recruiter/ApplicationsViewTabs";
 import AssignRecruiterModal from "@/components/recruiter/AssignRecruiterModal";
 import AssignModal from "@/components/assign/AssignModal";
 import CreateInterviewSimpleModal from "@/components/interviews/CreateInterviewSimpleModal";
@@ -43,6 +45,7 @@ import type { Recruiter } from "@/types/recruiter";
 import type { CreateRecruiterRequest, UpdateRecruiterRequest, WorkflowStatus } from "@/types/recruiter";
 import type { CreateInterviewRequest } from "@/types/interview";
 import { getApiErrorMessage } from "@/utils/errorMessages";
+import { formatDate } from "@/utils/dateFormat";
 import { useTableSort } from "@/hooks/useTableSort";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
 import { Plus, UserPlus, Eye, Pencil, Trash2, Copy } from "lucide-react";
@@ -129,6 +132,27 @@ export default function ApplicationsPage() {
     sortBy,
     sortOrder,
   });
+
+  // Vue Kanban = même page (mêmes filtres, mêmes actions), seule la zone du tableau change.
+  // Le Kanban n'est pas paginé : toutes les candidatures correspondant aux filtres sont chargées.
+  const searchParamsForView = useSearchParams();
+  const [isKanbanView, setIsKanbanView] = useState(searchParamsForView.get("view") === "kanban");
+  const [listView, setListView] = useState<"table" | "cards">("table");
+  const {
+    data: kanbanData,
+    isLoading: isKanbanLoading,
+    refetch: refetchKanban,
+  } = useGetRecruitersQuery(
+    {
+      limit: 1000,
+      search: search || undefined,
+      status: statusFilter || undefined,
+      workflow_status: workflowStatusFilter || undefined,
+      client_id: clientFilter || undefined,
+      request_id: requestFilter || undefined,
+    },
+    { skip: !isKanbanView },
+  );
 
   // Récupérer les statuts de candidature
   const { data: applicationStatusesData } = useGetApplicationStatusesQuery({
@@ -310,12 +334,19 @@ export default function ApplicationsPage() {
       header: t("list.columns.candidate"),
       className: "min-w-[200px]",
       render: (value: unknown) => {
-        const cv = value as { candidate_first_name: string; candidate_last_name: string; candidate_email: string };
+        const cv = value as {
+          candidate_first_name: string; candidate_last_name: string; candidate_email: string;
+          profile_title?: string; last_position?: string;
+        };
+        const poste = cv?.profile_title || cv?.last_position;
         return (
           <div>
             <div className="font-medium text-gray-900 dark:text-white">
               {cv?.candidate_first_name} {cv?.candidate_last_name}
             </div>
+            {poste && (
+              <div className="text-xs text-gray-600 dark:text-gray-300 truncate max-w-[180px]">{poste}</div>
+            )}
             <div className="text-xs text-gray-500 dark:text-gray-400">{cv?.candidate_email || "-"}</div>
           </div>
         );
@@ -436,27 +467,12 @@ export default function ApplicationsPage() {
       ),
     },
     {
-      id: "created_by_recruiter",
-      key: "recruiter" as keyof Recruiter,
-      header: t("list.columns.createdBy"),
-      className: "min-w-[130px]",
-      render: (_value: unknown, row: Recruiter) => {
-        const r = row.recruiter as { first_name?: string; last_name?: string } | undefined;
-        const name = r ? `${r.first_name || ""} ${r.last_name || ""}`.trim() : "";
-        return (
-          <span className="text-sm text-gray-700 dark:text-gray-300 truncate block max-w-[130px]">
-            {name || "-"}
-          </span>
-        );
-      },
-    },
-    {
-      key: "recruiter_notes",
-      header: t("list.columns.notes"),
-      className: "min-w-[150px]",
+      key: "created_at",
+      header: t("list.columns.date"),
+      className: "min-w-[110px]",
       render: (value: any) => (
-        <span className="truncate max-w-[150px] block text-sm">
-          {(value as string) || "-"}
+        <span className="text-sm text-gray-700 dark:text-gray-300">
+          {value ? formatDate(value as string) : "-"}
         </span>
       ),
     },
@@ -641,6 +657,52 @@ export default function ApplicationsPage() {
     }
   };
 
+  // Mêmes actions pour une ligne du tableau/carte et pour une carte du Kanban
+  const rowActions = (row: Recruiter) => [
+    {
+      label: t("actions.viewDetails"),
+      icon: <ViewIcon />,
+      onClick: () => handleRowClick(row),
+      color: 'default' as const,
+    },
+    ...(canUpdate ? [{
+      label: t("actions.edit"),
+      icon: <EditIcon />,
+      onClick: () => handleEditClick(row),
+      color: 'default' as const,
+    }] : []),
+    ...(canUpdate ? [{
+      label: t("actions.duplicate"),
+      icon: <DuplicateIcon />,
+      onClick: () => handleDuplicateClick(row),
+      color: 'default' as const,
+    }] : []),
+    {
+      label: t("actions.sendEmail"),
+      icon: <EmailIcon />,
+      onClick: () => handleSendEmail(row),
+      color: 'primary' as const,
+    },
+    {
+      label: t("actions.scheduleInterview"),
+      icon: <CalendarIcon />,
+      onClick: () => handleScheduleInterview(row),
+      color: 'success' as const,
+    },
+    ...(canAssign ? [{
+      label: t("actions.assign"),
+      icon: <AssignIcon />,
+      onClick: () => handleAssignResponsibleClick(row),
+      color: 'default' as const,
+    }] : []),
+    ...(canDelete ? [{
+      label: t("actions.delete"),
+      icon: <TrashIcon />,
+      onClick: () => handleDeleteClick(row),
+      color: 'error' as const,
+    }] : []),
+  ];
+
   return (
     <div>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
@@ -771,70 +833,44 @@ export default function ApplicationsPage() {
           isDeleting={isBulkDeleting}
         />
 
+        {isKanbanView ? (
+          <>
+            <ApplicationsViewTabs
+              onTable={() => { setListView("table"); setIsKanbanView(false); }}
+              onCards={() => { setListView("cards"); setIsKanbanView(false); }}
+            />
+            <ApplicationsKanbanBoard
+              candidates={kanbanData?.data || []}
+              isLoading={isKanbanLoading}
+              requestIds={requestFilter ? [requestFilter] : []}
+              onOpen={handleRowClick}
+              cardActions={rowActions}
+              onChanged={refetchKanban}
+              addToast={addToast}
+            />
+          </>
+        ) : (
         <div className="overflow-x-auto">
           <DataTableWithSelection
+            key={listView}
+            defaultView={listView}
             columns={columns}
             data={data?.data || []}
             selectedItems={selectedItems}
             onSelectionChange={handleSelectionChange}
             isLoading={isLoading || isFetching}
             onView={handleRowClick}
+            extraViewTab={{ label: t("list.kanbanButton"), onClick: () => setIsKanbanView(true) }}
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSort={(key) => { handleSort(key); setPage(1); }}
-            actions={(row: Recruiter) => (
-              <ActionsMenu
-                actions={[
-                  {
-                    label: t("actions.viewDetails"),
-                    icon: <ViewIcon />,
-                    onClick: () => handleRowClick(row),
-                    color: 'default',
-                  },
-                  ...(canUpdate ? [{
-                    label: t("actions.edit"),
-                    icon: <EditIcon />,
-                    onClick: () => handleEditClick(row),
-                    color: 'default' as const,
-                  }] : []),
-                  ...(canUpdate ? [{
-                    label: t("actions.duplicate"),
-                    icon: <DuplicateIcon />,
-                    onClick: () => handleDuplicateClick(row),
-                    color: 'default' as const,
-                  }] : []),
-                  {
-                    label: t("actions.sendEmail"),
-                    icon: <EmailIcon />,
-                    onClick: () => handleSendEmail(row),
-                    color: 'primary' as const,
-                  },
-                  {
-                    label: t("actions.scheduleInterview"),
-                    icon: <CalendarIcon />,
-                    onClick: () => handleScheduleInterview(row),
-                    color: 'success' as const,
-                  },
-                  ...(canAssign ? [{
-                    label: t("actions.assign"),
-                    icon: <AssignIcon />,
-                    onClick: () => handleAssignResponsibleClick(row),
-                    color: 'default' as const,
-                  }] : []),
-                  ...(canDelete ? [{
-                    label: t("actions.delete"),
-                    icon: <TrashIcon />,
-                    onClick: () => handleDeleteClick(row),
-                    color: 'error' as const,
-                  }] : []),
-                ]}
-              />
-            )}
+            actions={(row: Recruiter) => <ActionsMenu actions={rowActions(row)} />}
             emptyMessage={t("list.emptyMessage")}
         />
         </div>
+        )}
 
-        {data && data.pagination && (
+        {!isKanbanView && data && data.pagination && (
           <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
             <Pagination
               currentPage={page}

@@ -141,6 +141,24 @@ export function useNotificationText() {
               };
         }
 
+        case "crm_deal.stage_changed":
+          return {
+            title: t("crm_deal.stage_changed.title"),
+            message: t("crm_deal.stage_changed.message", {
+              dealTitle: String(p.dealTitle ?? ""),
+              stage: String(p.stage ?? ""),
+            }),
+          };
+
+        case "crm_task.reminder":
+          return {
+            title: t("crm_task.reminder.title"),
+            message: t("crm_task.reminder.message", {
+              taskTitle: String(p.taskTitle ?? ""),
+              dueDate: String(p.dueDate ?? ""),
+            }),
+          };
+
         default:
           return { title: n.title || "", message: n.message || "" };
       }

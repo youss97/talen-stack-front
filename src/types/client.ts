@@ -25,6 +25,7 @@ export interface Client {
   vat_rate?: string;
   payment_terms?: string | null;
   internal_note?: string | null;
+  source?: string | null;
   created_by?: string | null;
   creator?: { id: string; first_name: string; last_name: string; email: string } | null;
   // Company fields from linked company
@@ -81,6 +82,7 @@ export interface CreateClientRequest {
   logo?: string | File;
   status: "active" | "inactive";
   adminEmail: string;
+  adminLogin?: string;
   adminPassword: string;
   adminFirstName: string;
   adminLastName: string;
@@ -107,6 +109,7 @@ export interface UpdateClientRequest {
   logo?: string | File;
   status?: "active" | "inactive";
   internal_note?: string;
+  source?: string;
 }
 
 export interface ClientPaginationParams {

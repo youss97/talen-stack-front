@@ -11,6 +11,7 @@
       "status": "Status",
       "publication": "Publication",
       "urgency": "Urgency",
+      "internalPriority": "Priority",
       "startDate": "Start",
       "createdBy": "Created by",
       "reference": "Ref: {ref}",
@@ -29,12 +30,19 @@
       "standby": "Standby",
       "abandoned": "Abandoned",
       "filled": "Filled",
-      "open": "Open"
+      "open": "Open",
+      "archived": "Archived"
     },
     "urgencyLabels": {
       "urgent": "Urgent",
       "high": "High",
       "normal": "Normal",
+      "low": "Low"
+    },
+    "internalPriorityLabels": {
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
       "low": "Low"
     },
     "emptyMessage": "No requests found"
@@ -136,17 +144,17 @@
       "skills": "2. Required Skills",
       "softSkills": "3. Soft Skills",
       "experience": "4. Experience",
-      "contractType": "4. Contract Type",
-      "budget": "5. Budget",
-      "location": "6. Location",
-      "workType": "7. Work Type",
-      "languages": "8. Required Languages",
-      "workflow": "Recruitment workflow",
-      "questions": "Custom questions (public application)",
-      "benefits": "9. Benefits and Bonuses",
-      "priorityStatus": "10. Priority and Status",
-      "datesProfiles": "11. Dates and Number of Profiles",
-      "notes": "Notes"
+      "contractType": "5. Contract Type",
+      "budget": "6. Budget",
+      "location": "7. Location",
+      "workType": "8. Work Type",
+      "languages": "9. Required Languages",
+      "workflow": "10. Recruitment workflow",
+      "questions": "11. Custom questions (public application)",
+      "benefits": "12. Benefits and Bonuses",
+      "priorityStatus": "13. Urgency, Priority and Status",
+      "datesProfiles": "14. Dates and Number of Profiles",
+      "notes": "15. Notes"
     },
     "questions": {
       "hint": "Asked to the candidate before filling out the application form, to filter out profiles that don't match (e.g. insufficient experience).",
@@ -206,7 +214,10 @@
       "bonusesPlaceholder": "E.g.: Annual bonus based on targets...",
       "variablesLabel": "Variable pay",
       "variablesPlaceholder": "E.g.: Quarterly variable based on revenue...",
-      "priority": "Priority",
+      "priority": "Urgency",
+      "priorityHelp": "Visible by the client — expresses whether the need is urgent for them",
+      "internalPriority": "Priority",
+      "internalPriorityHelp": "Visible only by the agency — used to internally organize how needs are handled",
       "status": "Status",
       "noteClient": "Client note",
       "noteClientPlaceholder": "Note visible by the client and the HR team...",
@@ -221,11 +232,18 @@
       "high": "High",
       "urgent": "Urgent"
     },
+    "internalPriorityOptions": {
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
     "statusOptions": {
       "in_progress": "In progress",
       "standby": "Standby",
       "abandoned": "Abandoned",
-      "filled": "Filled"
+      "filled": "Filled",
+      "archived": "Archived"
     },
     "languageOptions": {
       "FR": "French",
@@ -314,7 +332,7 @@
   },
   "workflowStepsEditor": {
     "label": "Workflow steps",
-    "help": "Define the steps applications for this request will follow (e.g. HR interview → Client interview → Offer).",
+    "help": "Define the steps applications for this request will follow (e.g. HR interview → Client interview → Offer). \"Proposed\" is always the automatic first step, no need to add it.",
     "stepPlaceholder": "Step {index}",
     "addStep": "+ Add a step",
     "suggestions": {

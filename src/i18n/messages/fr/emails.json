@@ -15,7 +15,8 @@
   "page": {
     "title": "Gestion des Emails",
     "subtitle": "Envoyez des emails en masse aux candidats, clients, utilisateurs et managers",
-    "newEmail": "Nouvel Email"
+    "newEmail": "Nouvel Email",
+    "manageTemplates": "Gérer les modèles"
   },
   "filters": {
     "searchPlaceholder": "Rechercher par sujet...",
@@ -129,6 +130,7 @@
       "manualEmails": "Adresses CCI",
       "manualEmailsPlaceholder": "cci@email.com, appuyez sur Entrée..."
     },
+    "chooseTemplate": "Choisir un template",
     "subject": "Sujet",
     "subjectPlaceholder": "Entrez le sujet de l'email",
     "subjectRequired": "Le sujet est requis",

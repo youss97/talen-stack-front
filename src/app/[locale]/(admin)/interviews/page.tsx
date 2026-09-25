@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { useGetInterviewsQuery, useCreateInterviewMutation } from "@/lib/services/interviewApi";
 import CreateInterviewSimpleModal from "@/components/interviews/CreateInterviewSimpleModal";
 import InterviewDetailModal from "@/components/interviews/InterviewDetailModal";
@@ -10,6 +11,8 @@ import Button from "@/components/ui/button/Button";
 import type { Interview, CreateInterviewRequest } from "@/types/interview";
 
 export default function InterviewsPage() {
+  const t = useTranslations("interviewModals.list");
+  const locale = useLocale();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
@@ -37,16 +40,16 @@ export default function InterviewsPage() {
       
       console.log('✅ Entretien créé:', result);
       success(
-        "Entretien créé",
-        data.send_email_automatically 
-          ? 'Un email a été envoyé au candidat' 
-          : 'L\'entretien a été créé avec succès'
+        t("toasts.createdTitle"),
+        data.send_email_automatically
+          ? t("toasts.emailSentMessage")
+          : t("toasts.createdSuccessMessage")
       );
       setIsCreateModalOpen(false);
     } catch (err: any) {
       console.error("❌ Error creating interview:", err);
-      const errorMessage = err?.data?.message || err?.message || 'Erreur lors de la création de l\'entretien';
-      showError("Erreur", errorMessage);
+      const errorMessage = err?.data?.message || err?.message || t("toasts.createErrorDefault");
+      showError(t("toasts.errorTitle"), errorMessage);
       throw err;
     }
   };
@@ -65,10 +68,10 @@ export default function InterviewsPage() {
     };
 
     const labels: Record<string, string> = {
-      scheduled: 'Planifié',
-      completed: 'Terminé',
-      cancelled: 'Annulé',
-      rescheduled: 'Reporté',
+      scheduled: t("statusLabels.scheduled"),
+      completed: t("statusLabels.completed"),
+      cancelled: t("statusLabels.cancelled"),
+      rescheduled: t("statusLabels.rescheduled"),
     };
 
     return (
@@ -78,11 +81,13 @@ export default function InterviewsPage() {
     );
   };
 
+  const dateLocale = locale === "ar" ? "ar" : locale === "en" ? "en-US" : "fr-FR";
+
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return '-';
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return '-';
-    return date.toLocaleDateString('fr-FR', {
+    return date.toLocaleDateString(dateLocale, {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
@@ -94,7 +99,7 @@ export default function InterviewsPage() {
     if (!dateString) return '-';
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return '-';
-    return date.toLocaleTimeString('fr-FR', {
+    return date.toLocaleTimeString(dateLocale, {
       hour: '2-digit',
       minute: '2-digit',
     });
@@ -113,7 +118,7 @@ export default function InterviewsPage() {
       <div>
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
           <p className="text-red-600 dark:text-red-400">
-            Erreur lors du chargement des entretiens
+            {t("loadError")}
           </p>
         </div>
       </div>
@@ -129,10 +134,10 @@ export default function InterviewsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-              📅 Gestion des entretiens
+              {t("title")}
             </h1>
             <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
-              {totalInterviews} entretien{totalInterviews > 1 ? "s" : ""} planifié{totalInterviews > 1 ? "s" : ""}
+              {t("subtitle", { count: totalInterviews })}
             </p>
           </div>
 
@@ -141,7 +146,7 @@ export default function InterviewsPage() {
             className="flex items-center gap-2"
           >
             <span>➕</span>
-            <span>Nouvel entretien</span>
+            <span>{t("newInterview")}</span>
           </Button>
         </div>
 
@@ -151,7 +156,7 @@ export default function InterviewsPage() {
             <div>
               <input
                 type="text"
-                placeholder="Rechercher par candidat, titre..."
+                placeholder={t("searchPlaceholder")}
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -169,11 +174,11 @@ export default function InterviewsPage() {
                 }}
                 className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
               >
-                <option value="">Tous les statuts</option>
-                <option value="scheduled">Planifié</option>
-                <option value="completed">Terminé</option>
-                <option value="cancelled">Annulé</option>
-                <option value="rescheduled">Reporté</option>
+                <option value="">{t("allStatuses")}</option>
+                <option value="scheduled">{t("statusLabels.scheduled")}</option>
+                <option value="completed">{t("statusLabels.completed")}</option>
+                <option value="cancelled">{t("statusLabels.cancelled")}</option>
+                <option value="rescheduled">{t("statusLabels.rescheduled")}</option>
               </select>
             </div>
           </div>
@@ -184,7 +189,7 @@ export default function InterviewsPage() {
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Total</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">{t("stats.total")}</div>
                 <div className="text-2xl font-bold text-gray-900 dark:text-white">
                   {interviews.length}
                 </div>
@@ -197,7 +202,7 @@ export default function InterviewsPage() {
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Planifiés</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">{t("stats.scheduled")}</div>
                 <div className="text-2xl font-bold text-blue-600">
                   {interviews.filter(i => i.status === 'scheduled').length}
                 </div>
@@ -210,7 +215,7 @@ export default function InterviewsPage() {
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Terminés</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">{t("stats.completed")}</div>
                 <div className="text-2xl font-bold text-green-600">
                   {interviews.filter(i => i.status === 'completed').length}
                 </div>
@@ -223,7 +228,7 @@ export default function InterviewsPage() {
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Cette semaine</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">{t("stats.thisWeek")}</div>
                 <div className="text-2xl font-bold text-purple-600">
                   {interviews.filter(i => {
                     const interviewDate = new Date(i.scheduled_date);
@@ -250,22 +255,22 @@ export default function InterviewsPage() {
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Candidat
+                      {t("columns.candidate")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Titre / Poste
+                      {t("columns.titlePosition")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Date & Heure
+                      {t("columns.dateTime")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Type
+                      {t("columns.type")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Statut
+                      {t("columns.status")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Actions
+                      {t("columns.actions")}
                     </th>
                   </tr>
                 </thead>
@@ -273,7 +278,7 @@ export default function InterviewsPage() {
                   {interviews.map((interview) => {
                     const candidateName = interview.application?.cv
                       ? `${interview.application.cv.candidate_first_name || ""} ${interview.application.cv.candidate_last_name || ""}`.trim()
-                      : "Candidat";
+                      : t("defaultCandidateName");
                     
                     return (
                       <tr
@@ -295,7 +300,7 @@ export default function InterviewsPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900 dark:text-white">
-                            {interview.title || interview.application?.request?.title || 'Entretien'}
+                            {interview.title || interview.application?.request?.title || t("defaultTitle")}
                           </div>
                           <div className="text-sm text-gray-500 dark:text-gray-400">
                             {interview.application?.request?.reference}
@@ -314,7 +319,7 @@ export default function InterviewsPage() {
                             <span className="mr-2">
                               {interview.type === 'online' ? '🌐' : '📍'}
                             </span>
-                            {interview.type === 'online' ? 'En ligne' : 'Présentiel'}
+                            {interview.type === 'online' ? t("online") : t("presential")}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -328,7 +333,7 @@ export default function InterviewsPage() {
                             }}
                             className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                           >
-                            Voir détails
+                            {t("viewDetails")}
                           </button>
                         </td>
                       </tr>
@@ -342,14 +347,14 @@ export default function InterviewsPage() {
               <div className="flex flex-col items-center gap-4">
                 <span className="text-4xl">📅</span>
                 <div>
-                  <p className="text-lg font-medium">Aucun entretien planifié</p>
-                  <p className="text-sm mt-1">Commencez par créer votre premier entretien</p>
+                  <p className="text-lg font-medium">{t("emptyState.title")}</p>
+                  <p className="text-sm mt-1">{t("emptyState.subtitle")}</p>
                 </div>
                 <Button
                   onClick={() => setIsCreateModalOpen(true)}
                   className="mt-2"
                 >
-                  Créer un entretien
+                  {t("emptyState.createButton")}
                 </Button>
               </div>
             </div>

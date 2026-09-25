@@ -642,14 +642,6 @@ export default function ManagerRequestFormModal({
               />
             </div>
 
-            {/* Priorité */}
-            <div>
-              <Label>{t("priority")}</Label>
-              <select {...register("priority")} className={selectClass}>
-                {PRIORITY_VALUES.map((v) => <option key={v} value={v}>{t(`priorities.${v}`)}</option>)}
-              </select>
-            </div>
-
             {/* Nombre de profils */}
             <div>
               <Label>{t("numberOfProfiles")} <span className="text-error-500">*</span></Label>
@@ -659,6 +651,21 @@ export default function ManagerRequestFormModal({
                 {...register("number_of_profiles", { required: true, valueAsNumber: true, min: 1 })}
                 error={!!errors.number_of_profiles}
               />
+            </div>
+
+            {/* Urgence — visible côté client uniquement (la priorité interne RH reste séparée) */}
+            <div>
+              <Label>{t("priority")}</Label>
+              <select
+                className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                {...register("priority")}
+              >
+                <option value="low">{t("priorities.low")}</option>
+                <option value="normal">{t("priorities.normal")}</option>
+                <option value="high">{t("priorities.high")}</option>
+                <option value="urgent">{t("priorities.urgent")}</option>
+              </select>
+              <p className="mt-1 text-xs text-gray-400">{t("priorityHint")}</p>
             </div>
           </div>
 
@@ -731,7 +738,7 @@ export default function ManagerRequestFormModal({
             </div>
           </div>
 
-          {/* Note pour l'entreprise */}
+          {/* Note client */}
           <div>
             <Label>{t("note")}</Label>
             <TextArea

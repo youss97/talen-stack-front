@@ -325,7 +325,7 @@ export default function IntegrationAgendaModal({
           {integration.notes && (
             <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg">
               <h4 className="font-medium text-gray-900 dark:text-white mb-3">📝 {t('notesSection.title')}</h4>
-              <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+              <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words">
                 {integration.notes}
               </p>
             </div>

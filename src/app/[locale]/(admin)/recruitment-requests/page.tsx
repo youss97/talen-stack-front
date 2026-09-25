@@ -33,7 +33,7 @@ import type { CreateApplicationRequestFormData } from "@/validations/application
 import { getApiErrorMessage } from "@/utils/errorMessages";
 import { useTableSort } from "@/hooks/useTableSort";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
-import { Plus, LayoutDashboard, UserPlus, Copy } from "lucide-react";
+import { Plus, LayoutDashboard, UserPlus, Copy, Download, LayoutGrid } from "lucide-react";
 
 export default function RecruitmentPage() {
   const t = useTranslations("recruitmentRequests");
@@ -46,6 +46,7 @@ export default function RecruitmentPage() {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [isKanbanPickerOpen, setIsKanbanPickerOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [requiredSkillsFilter, setRequiredSkillsFilter] = useState<string>("");
   const [experienceLevelFilter, setExperienceLevelFilter] = useState<string>("");
@@ -428,6 +429,34 @@ export default function RecruitmentPage() {
     }
   };
 
+  const getInternalPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "critical":
+        return "error";
+      case "high":
+        return "warning";
+      case "medium":
+        return "info";
+      default:
+        return "light";
+    }
+  };
+
+  const getInternalPriorityLabel = (priority: string) => {
+    switch (priority) {
+      case "critical":
+        return t("list.internalPriorityLabels.critical");
+      case "high":
+        return t("list.internalPriorityLabels.high");
+      case "medium":
+        return t("list.internalPriorityLabels.medium");
+      case "low":
+        return t("list.internalPriorityLabels.low");
+      default:
+        return t("list.internalPriorityLabels.medium");
+    }
+  };
+
   const handleTogglePublic = async (id: string, newState: boolean) => {
     // Mise à jour optimiste
     setOptimisticPublicStates(prev => ({
@@ -498,6 +527,8 @@ export default function RecruitmentPage() {
         return t("list.statusOptions.filled");
       case "open":
         return t("list.statusOptions.open");
+      case "archived":
+        return t("list.statusOptions.archived");
       default:
         return status;
     }
@@ -515,6 +546,8 @@ export default function RecruitmentPage() {
         return "success";
       case "open":
         return "success";
+      case "archived":
+        return "light";
       default:
         return "light";
     }
@@ -623,6 +656,20 @@ export default function RecruitmentPage() {
       ),
     },
     {
+      key: "internal_priority" as keyof ApplicationRequest,
+      header: t("list.columns.internalPriority"),
+      className: "min-w-[100px]",
+      render: (value: unknown) => (
+        <Badge
+          variant="light"
+          color={getInternalPriorityColor((value as string) || "medium")}
+          size="sm"
+        >
+          {getInternalPriorityLabel((value as string) || "medium")}
+        </Badge>
+      ),
+    },
+    {
       key: "desired_start_date" as keyof ApplicationRequest,
       header: t("list.columns.startDate"),
       className: "min-w-[100px]",
@@ -667,12 +714,46 @@ export default function RecruitmentPage() {
             </p>
           </div>
           <div className="flex gap-3">
+            <div className="relative">
+              <Button
+                variant="outline"
+                onClick={() => setIsKanbanPickerOpen((v) => !v)}
+                startIcon={<LayoutGrid size={16} strokeWidth={1.8} className="icon-glow" />}
+              >
+                {t("actions.kanban")}
+              </Button>
+              {isKanbanPickerOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setIsKanbanPickerOpen(false)} />
+                  <div className="absolute right-0 mt-2 w-72 max-h-80 overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg z-20 py-1">
+                    {requests.length === 0 ? (
+                      <p className="px-4 py-3 text-sm text-gray-400">{tc("status.noResults")}</p>
+                    ) : (
+                      requests.map((r) => (
+                        <button
+                          key={r.id}
+                          type="button"
+                          onClick={() => {
+                            setIsKanbanPickerOpen(false);
+                            router.push(`/recruitment-requests/${r.id}/kanban`);
+                          }}
+                          className="w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 truncate"
+                        >
+                          {r.title}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
             <Button
               onClick={handleExportExcel}
               variant="outline"
               disabled={!data?.data || data.data.length === 0}
+              startIcon={<Download size={16} strokeWidth={1.8} className="icon-glow" />}
             >
-              📊 {t("actions.exportExcel")}
+              {t("actions.exportExcel")}
             </Button>
             {canCreate && (
               <Button onClick={handleAddClick} startIcon={<PlusIcon />}>{t("actions.addRequest")}</Button>
@@ -709,6 +790,7 @@ export default function RecruitmentPage() {
                 <option value="abandoned">{t("list.statusOptions.abandoned")}</option>
                 <option value="filled">{t("list.statusOptions.filled")}</option>
                 <option value="open">{t("list.statusOptions.open")}</option>
+                <option value="archived">{t("list.statusOptions.archived")}</option>
               </select>
             </div>
             <div>

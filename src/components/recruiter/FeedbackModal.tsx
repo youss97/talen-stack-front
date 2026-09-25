@@ -3,11 +3,13 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
+import VoiceInputButton from "@/components/form/VoiceInputButton";
+import VoiceNoteRecorder from "@/components/form/VoiceNoteRecorder";
 
 interface FeedbackModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (title: string, description: string) => Promise<void>;
+  onSubmit: (title: string, description: string, audio?: Blob | null) => Promise<void>;
   isLoading?: boolean;
 }
 
@@ -21,21 +23,23 @@ export default function FeedbackModal({
   const tc = useTranslations("common");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [audio, setAudio] = useState<Blob | null>(null);
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (!title.trim() || !description.trim()) {
+    if (!title.trim() || (!description.trim() && !audio)) {
       setError(t("feedback.errors.fillAllFields"));
       return;
     }
 
     try {
-      await onSubmit(title, description);
+      await onSubmit(title, description, audio);
       setTitle("");
       setDescription("");
+      setAudio(null);
     } catch (err) {
       setError(t("feedback.errors.addFailed"));
     }
@@ -75,14 +79,26 @@ export default function FeedbackModal({
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               {t("feedback.descriptionLabel")}
             </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={4}
-              className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
-              placeholder={t("feedback.descriptionPlaceholder")}
-              required
-            />
+            <div className="flex items-start gap-2">
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={4}
+                style={{ minHeight: '110px' }}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = target.scrollHeight + 'px';
+                }}
+                className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 resize-none"
+                placeholder={t("feedback.descriptionPlaceholder")}
+                required={!audio}
+              />
+              <VoiceInputButton
+                onResult={(text) => setDescription((prev) => (prev ? `${prev} ${text}` : text))}
+              />
+            </div>
+            <VoiceNoteRecorder className="mt-2" value={audio} onChange={setAudio} />
           </div>
         </div>
 

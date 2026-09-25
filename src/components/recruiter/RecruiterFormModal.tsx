@@ -1,6 +1,6 @@
 "use client";
 import { Star, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, Resolver, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslations } from "next-intl";
@@ -53,6 +53,7 @@ export default function RecruiterFormModal({
   const [selectedCV, setSelectedCV] = useState<CV | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<ApplicationRequest | null>(null);
   const [languages, setLanguages] = useState<LanguageSkill[]>([]);
+  const [showSalaryNotes, setShowSalaryNotes] = useState(false);
   const [missingFields, setMissingFields] = useState<string[]>([]);
 
   const [getCVById] = useLazyGetCVByIdQuery();
@@ -78,6 +79,8 @@ export default function RecruiterFormModal({
     reset,
     watch,
     setValue,
+    getValues,
+    setError,
     register,
     control,
     formState: { errors },
@@ -87,7 +90,7 @@ export default function RecruiterFormModal({
       request_id: "",
       cv_id: "",
       workflow_status: "draft", // Toujours créer en brouillon
-      currently_employed: true, // Coché par défaut (2.1)
+      currently_employed: undefined, // Aucun choix par défaut (2.1) — sélection obligatoire à la publication
       current_contract_type: "",
       current_salary: undefined,
       daily_rate: undefined,
@@ -132,6 +135,7 @@ export default function RecruiterFormModal({
   const wantsSalaryExpectation = offerTypes.length === 0 || offerTypes.some((v) => ["CDI", "CDD", "Stage", "Intérim", "Alternance"].includes(v));
   const isAnonymized = watch("is_anonymized");
   const salaryConfidential = watch("salary_confidential");
+  const desiredSalaryDeferred = watch("desired_salary_deferred");
 
   // Préparer les objets initiaux pour les selects
   const initialRequest = recruiter?.request ? [{
@@ -184,7 +188,20 @@ export default function RecruiterFormModal({
     }
   }, [requestId, getRequestById, setValue, recruiter]);
 
+  // Ne réinitialiser le formulaire qu'à l'ouverture de la modale ou au changement de
+  // candidature éditée — jamais sur un simple re-render du parent qui repasserait une
+  // référence `recruiter` différente pendant que l'utilisateur est en train de saisir
+  // (ex: type de contrat "Freelance" silencieusement réinitialisé vers "salaire mensuel").
+  const resetKeyRef = useRef<string | null>(null);
   useEffect(() => {
+    if (!isOpen) {
+      resetKeyRef.current = null;
+      return;
+    }
+    const resetKey = recruiter?.id || "new";
+    if (resetKeyRef.current === resetKey) return;
+    resetKeyRef.current = resetKey;
+
     if (recruiter && isOpen) {
       // Ne PAS filtrer les langues ici : une langue existante en base ne doit jamais
       // disparaître silencieusement à l'ouverture du formulaire (elle serait alors perdue
@@ -216,14 +233,18 @@ export default function RecruiterFormModal({
         availability_negotiable: recruiter.availability_negotiable || false,
         languages: existingLanguages,
         qualification_report: recruiter.qualification_report || "",
+        qualification_score: recruiter.qualification_score,
+        salary_expectation_notes: recruiter.salary_expectation_notes || "",
         recruiter_notes: recruiter.recruiter_notes || "",
         recruiter_interview_date: recruiter.recruiter_interview_date,
         status: recruiter.status || "proposed",
         is_anonymized: recruiter.is_anonymized || false,
         salary_confidential: recruiter.salary_confidential || false,
+        desired_salary_deferred: recruiter.desired_salary_deferred || false,
         adjusted_experience: recruiter.adjusted_experience,
       });
       setLanguages(existingLanguages);
+      setShowSalaryNotes(!!recruiter.salary_expectation_notes);
       if (recruiter.cv) setSelectedCV(recruiter.cv as CV);
       if (recruiter.request) setSelectedRequest(recruiter.request as ApplicationRequest);
     } else if (isOpen) {
@@ -232,7 +253,7 @@ export default function RecruiterFormModal({
         request_id: "",
         cv_id: "",
         workflow_status: "draft",
-        currently_employed: false,
+        currently_employed: undefined,
         current_contract_type: "",
         current_salary: undefined,
         daily_rate: undefined,
@@ -247,14 +268,18 @@ export default function RecruiterFormModal({
         availability_negotiable: false,
         languages: [],
         qualification_report: "",
+        qualification_score: undefined,
+        salary_expectation_notes: "",
         recruiter_notes: "",
         recruiter_interview_date: undefined,
         status: "proposed",
         is_anonymized: false,
         salary_confidential: false,
+        desired_salary_deferred: false,
         adjusted_experience: undefined,
       });
       setLanguages([]);
+      setShowSalaryNotes(false);
       setSelectedCV(null);
       setSelectedRequest(null);
     }
@@ -290,6 +315,7 @@ export default function RecruiterFormModal({
     current_contract_type: t("fieldLabels.current_contract_type"),
     current_salary: t("fieldLabels.current_salary"),
     daily_rate: t("fieldLabels.daily_rate"),
+    package_rate: t("fieldLabels.package_rate"),
     salary_expectation: t("fieldLabels.salary_expectation"),
     daily_rate_expectation: t("fieldLabels.daily_rate_expectation"),
     currency: t("fieldLabels.currency"),
@@ -301,9 +327,77 @@ export default function RecruiterFormModal({
     availability_custom_unit: t("fieldLabels.availability_custom_unit"),
     adjusted_experience: t("fieldLabels.adjusted_experience"),
     qualification_report: t("fieldLabels.qualification_report"),
+    qualification_score: t("fieldLabels.qualification_score"),
     recruiter_interview_date: t("fieldLabels.recruiter_interview_date"),
     status: t("fieldLabels.status"),
     languages: t("fieldLabels.languages"),
+  };
+
+  // Champs requis uniquement à la publication (pas au brouillon) : situation actuelle/salaire,
+  // salaire souhaité, type(s) de contrat souhaité(s) et statut. Vérifiés manuellement (plutôt
+  // qu'en yup) car ils dépendent du contrat actuel/souhaité affiché, et ne doivent jamais
+  // bloquer "Enregistrer brouillon".
+  const validatePublishRequiredFields = (): boolean => {
+    const values = getValues();
+    let hasError = false;
+
+    if (values.currently_employed == null) {
+      setError("currently_employed", { message: t("fieldLabels.currently_employed") + " est requis" });
+      hasError = true;
+    }
+
+    if (!values.salary_confidential) {
+      if (values.current_contract_type === "Freelance") {
+        if (!values.daily_rate) {
+          setError("daily_rate", { message: t("fieldLabels.daily_rate") + " est requis" });
+          hasError = true;
+        }
+      } else if (values.current_contract_type === "Forfait") {
+        if (!values.package_rate) {
+          setError("package_rate", { message: t("fieldLabels.package_rate") + " est requis" });
+          hasError = true;
+        }
+      } else if (!values.current_salary) {
+        setError("current_salary", { message: t("fieldLabels.current_salary") + " est requis" });
+        hasError = true;
+      }
+    }
+
+    if (!values.desired_salary_deferred) {
+      if (wantsSalaryExpectation && !values.salary_expectation) {
+        setError("salary_expectation", { message: t("fieldLabels.salary_expectation") + " est requis" });
+        hasError = true;
+      }
+      if (wantsTjmExpectation && !values.daily_rate_expectation) {
+        setError("daily_rate_expectation", { message: t("fieldLabels.daily_rate_expectation") + " est requis" });
+        hasError = true;
+      }
+    }
+
+    if (!values.offer_contract_types || values.offer_contract_types.length === 0) {
+      setError("offer_contract_types", { message: t("fieldLabels.offer_contract_types") + " est requis" });
+      hasError = true;
+    }
+
+    if (!values.status) {
+      setError("status", { message: t("fieldLabels.status") + " est requis" });
+      hasError = true;
+    }
+
+    return !hasError;
+  };
+
+  // Bouton "Publier" en type="button" (pas "submit") : la validation des champs requis à la
+  // publication est manuelle (voir validatePublishRequiredFields ci-dessus), donc on déclenche
+  // nous-mêmes handleSubmit uniquement si elle passe — sinon rien ne se soumet.
+  const handlePublishClick = () => {
+    setValue("workflow_status", "active");
+    if (validatePublishRequiredFields()) {
+      handleSubmit(handleFormSubmit)();
+    } else {
+      const el = document.querySelector(".custom-scrollbar");
+      if (el) el.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const handleFormSubmit = (data: CreateRecruiterFormData) => {
@@ -364,7 +458,25 @@ export default function RecruiterFormModal({
         })}>
           <div className="max-h-[60vh] overflow-y-auto px-6 sm:px-8 py-6 custom-scrollbar">
             <div className="grid grid-cols-1 gap-6">
-            
+
+            {/* Checkbox Anonymiser — en tête du formulaire pour un choix fait dès le départ */}
+            <div className="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+              <input
+                type="checkbox"
+                id="is_anonymized"
+                {...register("is_anonymized")}
+                className="mt-0.5 w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
+              />
+              <div className="flex-1">
+                <label htmlFor="is_anonymized" className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                  {t("anonymizeCheckbox")}
+                </label>
+                <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                  {t("anonymizeHelp")}
+                </p>
+              </div>
+            </div>
+
             {/* Section 1: Sélection de Base */}
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
@@ -399,16 +511,14 @@ export default function RecruiterFormModal({
                     onChange={(value, selectedItem) => {
                       console.log("CV Selected - Value:", value, "Item:", selectedItem);
                       setValue("cv_id", Array.isArray(value) ? value[0] : value);
-                      // Store the selected CV object
-                      if (selectedItem && !Array.isArray(selectedItem)) {
-                        setSelectedCV(selectedItem);
-                        console.log("CV stored in state:", selectedItem);
-                      } else if (Array.isArray(selectedItem) && selectedItem.length > 0) {
-                        setSelectedCV(selectedItem[0]);
-                        console.log("CV stored in state (from array):", selectedItem[0]);
-                      } else {
-                        setSelectedCV(null);
-                        console.log("CV cleared from state");
+                      const cv = Array.isArray(selectedItem) ? selectedItem[0] || null : selectedItem || null;
+                      setSelectedCV(cv);
+                      // Un CV déjà marqué anonyme dans le vivier doit rester anonyme une fois
+                      // proposé en candidature — sinon le nom réel finit par fuiter dans les
+                      // notifications alors que le recruteur pensait le candidat protégé.
+                      // Pré-coché seulement (le recruteur garde la main pour décocher).
+                      if (cv && String(cv.is_anonymous) === "true" && !isEditing) {
+                        setValue("is_anonymized", true);
                       }
                     }}
                     useInfiniteQuery={useGetCVsForSelectInfiniteQuery}
@@ -474,16 +584,32 @@ export default function RecruiterFormModal({
                 {t("sections.currentSituation")}
               </h3>
 
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="currently_employed"
-                  {...register("currently_employed")}
-                  className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
-                />
-                <label htmlFor="currently_employed" className="text-sm text-gray-700 dark:text-gray-300">
-                  {t("currentlyEmployedCheckbox")}
-                </label>
+              <div>
+                <Label>{t("currentSituationLabel")} <span className="text-error-500">*</span></Label>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setValue("currently_employed", true)}
+                    className={`flex-1 h-11 rounded-lg text-sm font-medium border-2 transition-all ${
+                      currentlyEmployed === true
+                        ? "border-brand-400 bg-brand-50 text-brand-700 dark:border-brand-600 dark:bg-brand-900/20 dark:text-brand-300"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800/40 dark:text-gray-400"
+                    }`}
+                  >
+                    {t("currentlyEmployedCheckbox")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setValue("currently_employed", false)}
+                    className={`flex-1 h-11 rounded-lg text-sm font-medium border-2 transition-all ${
+                      currentlyEmployed === false
+                        ? "border-brand-400 bg-brand-50 text-brand-700 dark:border-brand-600 dark:bg-brand-900/20 dark:text-brand-300"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800/40 dark:text-gray-400"
+                    }`}
+                  >
+                    {t("currentlyWithoutPosition")}
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -522,7 +648,7 @@ export default function RecruiterFormModal({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {currentContractType === "Freelance" ? (
                   <div>
-                    <Label>{t("dailyRateLabel")}</Label>
+                    <Label>{t("dailyRateLabel")} {!salaryConfidential && <span className="text-error-500">*</span>}</Label>
                     <input
                       type="number"
                       {...register("daily_rate")}
@@ -530,10 +656,11 @@ export default function RecruiterFormModal({
                       placeholder={salaryConfidential ? t("confidentialPlaceholder") : "500"}
                       className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:disabled:bg-gray-800"
                     />
+                    {errors.daily_rate && <p className="mt-1 text-sm text-error-500">{errors.daily_rate.message}</p>}
                   </div>
                 ) : currentContractType === "Forfait" ? (
                   <div>
-                    <Label>{t("packageLabel")}</Label>
+                    <Label>{t("packageLabel")} {!salaryConfidential && <span className="text-error-500">*</span>}</Label>
                     <input
                       type="number"
                       {...register("package_rate")}
@@ -541,10 +668,11 @@ export default function RecruiterFormModal({
                       placeholder={salaryConfidential ? t("confidentialPlaceholder") : "50000"}
                       className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:disabled:bg-gray-800"
                     />
+                    {errors.package_rate && <p className="mt-1 text-sm text-error-500">{errors.package_rate.message}</p>}
                   </div>
                 ) : (
                   <div>
-                    <Label>{t("monthlySalaryLabel")}</Label>
+                    <Label>{t("monthlySalaryLabel")} {!salaryConfidential && <span className="text-error-500">*</span>}</Label>
                     <input
                       type="number"
                       {...register("current_salary")}
@@ -552,6 +680,7 @@ export default function RecruiterFormModal({
                       placeholder={salaryConfidential ? t("confidentialPlaceholder") : "45000"}
                       className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:disabled:bg-gray-800"
                     />
+                    {errors.current_salary && <p className="mt-1 text-sm text-error-500">{errors.current_salary.message}</p>}
                   </div>
                 )}
 
@@ -605,7 +734,7 @@ export default function RecruiterFormModal({
             {/* Section 4: Type de Contrat de l'Offre */}
             <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                {t("sections.desiredContractTypes")}
+                {t("sections.desiredContractTypes")} <span className="text-error-500">*</span>
               </h3>
 
               <div>
@@ -624,6 +753,7 @@ export default function RecruiterFormModal({
                     {t("loadingContractTypes")}
                   </p>
                 )}
+                {errors.offer_contract_types && <p className="mt-1 text-sm text-error-500">{errors.offer_contract_types.message as string}</p>}
               </div>
             </div>
 
@@ -636,27 +766,51 @@ export default function RecruiterFormModal({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {wantsSalaryExpectation && (
                   <div>
-                    <Label>{t("desiredMonthlySalaryLabel")}</Label>
+                    <Label>{t("desiredMonthlySalaryLabel")} {!desiredSalaryDeferred && <span className="text-error-500">*</span>}</Label>
                     <input
                       type="number"
                       {...register("salary_expectation")}
-                      placeholder="50000"
-                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                      disabled={desiredSalaryDeferred}
+                      placeholder={desiredSalaryDeferred ? t("deferredPlaceholder") : "50000"}
+                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:disabled:bg-gray-800"
                     />
+                    {errors.salary_expectation && <p className="mt-1 text-sm text-error-500">{errors.salary_expectation.message}</p>}
                   </div>
                 )}
                 {wantsTjmExpectation && (
                   <div>
-                    <Label>{t("desiredDailyRateLabel")}</Label>
+                    <Label>{t("desiredDailyRateLabel")} {!desiredSalaryDeferred && <span className="text-error-500">*</span>}</Label>
                     <input
                       type="number"
                       {...register("daily_rate_expectation")}
-                      placeholder="600"
-                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                      disabled={desiredSalaryDeferred}
+                      placeholder={desiredSalaryDeferred ? t("deferredPlaceholder") : "600"}
+                      className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:disabled:bg-gray-800"
                     />
+                    {errors.daily_rate_expectation && <p className="mt-1 text-sm text-error-500">{errors.daily_rate_expectation.message}</p>}
                   </div>
                 )}
               </div>
+
+              {/* Discuter de la rémunération ultérieurement */}
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={!!desiredSalaryDeferred}
+                  onChange={(e) => {
+                    const v = e.target.checked;
+                    setValue("desired_salary_deferred", v);
+                    if (v) {
+                      setValue("salary_expectation", undefined);
+                      setValue("daily_rate_expectation", undefined);
+                    }
+                  }}
+                  className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  {t("desiredSalaryDeferredCheckbox")}
+                </span>
+              </label>
 
               {/* Package souhaité (texte libre) */}
               <div>
@@ -668,6 +822,32 @@ export default function RecruiterFormModal({
                   className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                 />
               </div>
+
+              {/* Précisions sur les prétentions salariales (texte libre, ex: "négociable à 12000 si full remote") */}
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={showSalaryNotes}
+                  onChange={(e) => {
+                    setShowSalaryNotes(e.target.checked);
+                    if (!e.target.checked) setValue("salary_expectation_notes", "");
+                  }}
+                  className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  {t("salaryExpectationNotesCheckbox")}
+                </span>
+              </label>
+              {showSalaryNotes && (
+                <div>
+                  <input
+                    type="text"
+                    {...register("salary_expectation_notes")}
+                    placeholder={t("salaryExpectationNotesPlaceholder")}
+                    className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                  />
+                </div>
+              )}
             </div>
 
             {/* Section 5: Disponibilité */}
@@ -908,7 +1088,25 @@ export default function RecruiterFormModal({
               </div>
 
               <div>
-                <Label>{t("applicationStatusLabel")}</Label>
+                <Label>{t("qualificationScoreLabel")}</Label>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  {...register("qualification_score")}
+                  placeholder="80"
+                  className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                />
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{t("qualificationScoreHint")}</p>
+                {errors.qualification_score && (
+                  <p className="mt-1 text-sm text-error-500">
+                    {errors.qualification_score.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label>{t("applicationStatusLabel")} <span className="text-error-500">*</span></Label>
                 <select
                   {...register("status")}
                   className={`w-full h-11 rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 ${
@@ -945,24 +1143,6 @@ export default function RecruiterFormModal({
                     target.style.height = target.scrollHeight + 'px';
                   }}
                 />
-              </div>
-              
-              {/* Checkbox Anonymiser */}
-              <div className="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-                <input
-                  type="checkbox"
-                  id="is_anonymized"
-                  {...register("is_anonymized")}
-                  className="mt-0.5 w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
-                />
-                <div className="flex-1">
-                  <label htmlFor="is_anonymized" className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
-                    {t("anonymizeCheckbox")}
-                  </label>
-                  <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
-                    {t("anonymizeHelp")}
-                  </p>
-                </div>
               </div>
             </div>
           </div>
@@ -1009,9 +1189,9 @@ export default function RecruiterFormModal({
             </Button>
             {!isEditing && (
               <Button
-                type="submit"
+                type="button"
                 disabled={isLoading}
-                onClick={() => setValue("workflow_status", "active")}
+                onClick={handlePublishClick}
                 className="bg-green-600 hover:bg-green-700"
               >
                 {isLoading ? t("publishing") : t("publish")}

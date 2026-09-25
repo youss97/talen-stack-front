@@ -3,6 +3,7 @@
 export interface User {
   id: string;
   email: string;
+  login?: string;
   first_name: string;
   last_name: string;
   phone?: string | null;
@@ -34,6 +35,7 @@ export interface User {
 
 export interface CreateUserRequest {
   email: string;
+  login?: string;
   password: string;
   first_name: string;
   last_name: string;
@@ -46,6 +48,7 @@ export interface CreateUserRequest {
 
 export interface UpdateUserRequest {
   email?: string;
+  login?: string;
   password?: string;
   first_name?: string;
   last_name?: string;

@@ -426,7 +426,6 @@ export default function PublicOfferDetailPage() {
         </div>
         <ApplicationsList
           applications={visiblePublicApps}
-          offerTitle={offer.title}
           onConvert={handleCandidatureClick}
           convertingId={convertingId}
           onDelete={handleDeleteClick}

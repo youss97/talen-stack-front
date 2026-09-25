@@ -5,6 +5,8 @@
   "addResponsible": "إضافة مسؤول",
   "searchPlaceholder": "البحث عن مستخدم...",
   "emptyResults": "لم يتم العثور على أي مستخدم",
+  "primaryHint": "انقر على النجمة لتحديد المسؤول الرئيسي.",
+  "setPrimary": "تعيين كمسؤول رئيسي",
   "clearAll": "إزالة جميع التعيينات",
   "assign": "تعيين",
   "assigning": "جارٍ التعيين..."

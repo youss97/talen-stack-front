@@ -15,7 +15,8 @@
   "page": {
     "title": "إدارة البريد الإلكتروني",
     "subtitle": "أرسل رسائل بريد إلكتروني جماعية إلى المرشحين والعملاء والمستخدمين والمديرين",
-    "newEmail": "بريد إلكتروني جديد"
+    "newEmail": "بريد إلكتروني جديد",
+    "manageTemplates": "إدارة النماذج"
   },
   "filters": {
     "searchPlaceholder": "البحث حسب الموضوع...",
@@ -129,6 +130,7 @@
       "manualEmails": "عناوين النسخة الكربونية المخفية",
       "manualEmailsPlaceholder": "bcc@email.com، اضغط Enter..."
     },
+    "chooseTemplate": "اختيار نموذج",
     "subject": "الموضوع",
     "subjectPlaceholder": "أدخل موضوع البريد الإلكتروني",
     "subjectRequired": "الموضوع مطلوب",

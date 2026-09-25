@@ -1,0 +1,285 @@
+{
+  "prospecting": {
+    "sectionTitle": "Prospecting follow-up",
+    "syncHint": "These values belong to the prospect: changing them here also changes them on the prospect record.",
+    "noPole": "No pole",
+    "fields": {
+      "leadStatus": "Lead status",
+      "pipelineStage": "Pipeline stage",
+      "priority": "Priority",
+      "datePlaceholder": "Pick a date",
+      "lastContactDate": "Last contact date",
+      "nextAction": "Next action",
+      "nextActionPlaceholder": "E.g. Follow up by phone",
+      "nextActionDate": "Next action date"
+    },
+    "leadStatus": {
+      "new": "New", "toContact": "To contact", "contacted": "Contacted", "qualified": "Qualified",
+      "meetingScheduled": "Meeting scheduled", "proposalSent": "Proposal sent", "won": "Won", "lost": "Lost"
+    },
+    "pipelineStage": {
+      "prospecting": "Prospecting", "firstContact": "First contact", "qualification": "Qualification",
+      "proposal": "Proposal", "negotiation": "Negotiation", "signed": "Signed", "lost": "Lost"
+    },
+    "source": {
+      "linkedin": "LinkedIn", "website": "Website", "referral": "Referral", "event": "Trade show/Event",
+      "coldCall": "Cold call", "emailing": "Emailing", "other": "Other"
+    },
+    "priority": { "high": "High", "medium": "Medium", "low": "Low" },
+    "matrix": {
+      "title": "Companies by pole and status",
+      "pole": "Pole",
+      "total": "Total",
+      "empty": "No prospected company yet"
+    },
+    "filters": { "allLeadStatuses": "All lead statuses", "allPriorities": "All priorities", "allPoles": "All poles" }
+  },
+  "companies": {
+    "list": {
+      "title": "Prospects",
+      "subtitle": "Manage your prospect companies before signature",
+      "addButton": "Add a prospect",
+      "searchPlaceholder": "Search a prospect...",
+      "allStages": "All statuses",
+      "allIndustries": "All industries",
+      "allResponsibles": "All owners",
+      "columns": {
+        "name": "Company",
+        "industry": "Industry",
+        "stage": "Status",
+        "responsible": "Owner",
+        "createdBy": "Created by",
+        "createdAt": "Created on"
+      },
+      "stage": {
+        "prospect": "Prospect",
+        "client": "Client",
+        "perdu": "Lost"
+      }
+    },
+    "form": {
+      "titles": { "add": "New prospect", "edit": "Edit prospect", "view": "Prospect record" },
+      "subtitles": { "add": "Add a prospect company to your sales pipeline", "edit": "Edit the prospect's information" },
+      "fields": {
+        "name": "Company name",
+        "namePlaceholder": "Acme Corp",
+        "industry": "Industry",
+        "industryPlaceholder": "Select an industry...",
+        "size": "Size",
+        "address": "Address",
+        "city": "City",
+        "country": "Country",
+        "source": "Source",
+        "sourcePlaceholder": "Choose a source",
+        "website": "Website",
+        "pole": "Pole",
+        "polePlaceholder": "E.g. IT pole, Banking pole...",
+        "stage": "Status",
+        "internalNote": "Internal note",
+        "internalNotePlaceholder": "Note visible internally only..."
+      },
+      "buttons": { "cancel": "Cancel", "save": "Save", "add": "Add", "saving": "Saving..." }
+    },
+    "contacts": {
+      "title": "Contacts",
+      "addButton": "Add a contact",
+      "empty": "No contact",
+      "primary": "Primary",
+      "fields": { "firstName": "First name", "lastName": "Last name", "position": "Position", "email": "Email", "phone": "Phone" },
+      "add": "Add"
+    },
+    "deals": {
+      "title": "Related deals",
+      "empty": "No deal"
+    },
+    "toasts": {
+      "createSuccess": "Prospect created successfully",
+      "updateSuccess": "Prospect updated successfully",
+      "deleteSuccess": "Prospect deleted successfully",
+      "createError": "Error while creating",
+      "updateError": "Error while updating",
+      "deleteError": "Error while deleting",
+      "contactAdded": "Contact added",
+      "contactError": "Error on contact"
+    },
+    "deleteConfirm": {
+      "title": "Delete this prospect?",
+      "message": "This action is irreversible. Linked contacts and deals will also be deleted."
+    },
+    "convertToClient": {
+      "button": "Convert to client",
+      "title": "Convert this prospect to a client",
+      "subtitle": "Creates the client account and its portal access directly from this prospect record.",
+      "alreadyConverted": "Already converted to client"
+    },
+    "close": "Close"
+  },
+  "deals": {
+    "list": {
+      "title": "Deals",
+      "subtitle": "Track your sales pipeline",
+      "addButton": "New deal",
+      "settingsButton": "Pipeline stages",
+      "noDeals": "No deal in this stage",
+      "searchPlaceholder": "Search a deal or prospect...",
+      "allResponsibles": "All owners"
+    },
+    "form": {
+      "titles": { "add": "New deal", "edit": "Edit deal" },
+      "fields": {
+        "company": "Prospect company",
+        "companyPlaceholder": "Search a prospect...",
+        "title": "Title",
+        "titlePlaceholder": "E.g. Recruit 3 developers",
+        "description": "Description",
+        "estimatedValue": "Estimated value",
+        "currency": "Currency",
+        "expectedCloseDate": "Expected close date",
+        "stage": "Stage"
+      },
+      "contacts": {
+        "label": "Opportunity contacts",
+        "selectCompanyFirst": "Select a prospect first to choose its contacts.",
+        "none": "This prospect has no contact yet.",
+        "add": "Add a contact",
+        "lastName": "Last name",
+        "firstName": "First name",
+        "email": "Email",
+        "phone": "Phone",
+        "position": "Position",
+        "nameRequired": "The contact's first and last name are required.",
+        "createError": "Unable to add the contact.",
+        "cancel": "Cancel",
+        "save": "Add",
+        "saving": "Adding..."
+      },
+      "buttons": { "cancel": "Cancel", "save": "Save", "add": "Create", "saving": "Saving..." }
+    },
+    "detail": {
+      "contacts": "Contacts",
+      "responsible": "Owner",
+      "createdBy": "Created by",
+      "status": { "open": "Open", "won": "Won", "lost": "Lost" },
+      "markWon": "Mark as won",
+      "markLost": "Mark as lost",
+      "lostReasonLabel": "Reason for loss",
+      "lostReasonPlaceholder": "Why this deal was lost...",
+      "convertButton": "Convert to client",
+      "convertTitle": "Convert to client",
+      "convertSubtitle": "Creates the client account and portal access from this won deal.",
+      "alreadyConverted": "Already converted to client"
+    },
+    "convertForm": {
+      "adminEmail": "Admin email",
+      "adminPassword": "Password",
+      "adminFirstName": "First name",
+      "adminLastName": "Last name",
+      "adminPhone": "Phone",
+      "submit": "Convert",
+      "converting": "Converting..."
+    },
+    "toasts": {
+      "createSuccess": "Deal created successfully",
+      "updateSuccess": "Deal updated successfully",
+      "deleteSuccess": "Deal deleted successfully",
+      "convertSuccess": "Client created successfully",
+      "convertError": "Error while converting",
+      "createError": "Error while creating",
+      "updateError": "Error while updating"
+    },
+    "deleteConfirm": {
+      "title": "Delete this deal?",
+      "message": "This action is irreversible."
+    }
+  },
+  "pipelineSettings": {
+    "title": "Pipeline stages",
+    "subtitle": "Customize your sales pipeline stages",
+    "addStage": "Add a stage",
+    "stageNamePlaceholder": "Stage name",
+    "save": "Save",
+    "saved": "Stages saved",
+    "saveError": "Error while saving"
+  },
+  "activities": {
+    "title": "Activities",
+    "empty": "No activity logged yet",
+    "addButton": "Log an activity",
+    "types": { "call": "Call", "email": "Email", "meeting": "Meeting", "note": "Note" },
+    "fields": {
+      "type": "Type",
+      "summary": "Summary",
+      "summaryPlaceholder": "What was said or done...",
+      "outcome": "Outcome",
+      "outcomePlaceholder": "Outcome of the interaction (optional)",
+      "occurredAt": "Date"
+    },
+    "buttons": { "cancel": "Cancel", "save": "Save" },
+    "toasts": { "createSuccess": "Activity added", "createError": "Error while adding", "deleteSuccess": "Activity deleted", "deleteError": "Error while deleting" },
+    "deleteConfirm": { "title": "Delete this activity?", "message": "This action is irreversible." }
+  },
+  "tasks": {
+    "title": "Tasks",
+    "empty": "No tasks",
+    "addButton": "Add a task",
+    "fields": { "title": "Title", "titlePlaceholder": "E.g. Call back to confirm the proposal", "dueDate": "Due date", "assignedTo": "Assigned to" },
+    "status": { "pending": "Pending", "done": "Done", "cancelled": "Cancelled" },
+    "markDone": "Mark done",
+    "buttons": { "cancel": "Cancel", "save": "Save" },
+    "toasts": { "createSuccess": "Task added", "createError": "Error while adding", "updateSuccess": "Task updated", "updateError": "Error while updating", "deleteSuccess": "Task deleted", "deleteError": "Error while deleting" },
+    "deleteConfirm": { "title": "Delete this task?", "message": "This action is irreversible." },
+    "overdue": "Overdue"
+  },
+  "followupEmail": {
+    "title": "Send a follow-up email",
+    "recipientEmail": "Recipient email",
+    "recipientName": "Recipient name",
+    "subjectPlaceholder": "Email subject",
+    "messagePlaceholder": "Your message...",
+    "send": "Send",
+    "sending": "Sending...",
+    "cancel": "Cancel",
+    "error": "Error while sending the email",
+    "button": "Follow up"
+  },
+  "dashboard": {
+    "title": "CRM Dashboard",
+    "subtitle": "Overview of your sales pipeline",
+    "sections": {
+      "pipeline": "Pipeline",
+      "results": "Results",
+      "activity": "Prospecting & activity",
+      "tasks": "Tasks"
+    },
+    "kpis": {
+      "openValue": "Open pipeline value",
+      "openCount": "Open deals",
+      "avgDealSize": "Average deal size",
+      "conversionRate": "Conversion rate",
+      "totalProspects": "Prospects",
+      "newProspectsThisMonth": "New prospects this month",
+      "wonCount": "Won",
+      "wonValue": "Won value",
+      "lostCount": "Lost",
+      "avgSalesCycleDays": "Average sales cycle",
+      "daysValue": "{count} days",
+      "totalClients": "Converted to clients",
+      "activitiesThisMonth": "Activities this month",
+      "pendingTasks": "Pending tasks",
+      "overdueTasks": "Overdue tasks",
+      "overdueTasksCountLabel": "{count} overdue"
+    },
+    "charts": {
+      "byStage": "Deals by stage",
+      "valueByStage": "Pipeline value by stage",
+      "wonVsLost": "Won vs lost",
+      "topResponsibles": "Top salespeople (won value)",
+      "count": "Count",
+      "series": {
+        "won": "Won",
+        "lost": "Lost",
+        "wonValue": "Won value"
+      }
+    }
+  }
+}

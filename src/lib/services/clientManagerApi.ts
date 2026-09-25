@@ -41,6 +41,8 @@ interface CandidatesParams {
   limit?: number;
   search?: string;
   status?: string;
+  step?: string;
+  source?: string;
 }
 
 export const clientManagerApi = createApi({
@@ -89,6 +91,8 @@ export const clientManagerApi = createApi({
           limit: params.limit || 10,
           ...(params.search && { search: params.search }),
           ...(params.status && { status: params.status }),
+          ...(params.step && { step: params.step }),
+          ...(params.source && { source: params.source }),
         },
       }),
       providesTags: (result, error, { requestId }) =>

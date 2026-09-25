@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useTranslations } from "next-intl";
 import { AlertCircle, AlertTriangle, Info, Loader2 } from "lucide-react";
 import { Modal } from "./index";
 import Button from "../button/Button";
@@ -22,11 +23,14 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onConfirm,
   title,
   message,
-  confirmText = "Confirmer",
-  cancelText = "Annuler",
+  confirmText,
+  cancelText,
   variant = "danger",
   isLoading = false,
 }) => {
+  const t = useTranslations("common");
+  const resolvedConfirmText = confirmText ?? t("actions.confirm");
+  const resolvedCancelText = cancelText ?? t("actions.cancel");
   const variantClasses: Record<"danger" | "warning" | "info", { icon: string; button: string }> = {
     danger: {
       icon: "text-error-500 bg-error-50 dark:bg-error-500/15",
@@ -68,7 +72,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
               onClick={onClose}
               disabled={isLoading}
             >
-              {cancelText}
+              {resolvedCancelText}
             </Button>
             <button
               onClick={onConfirm}
@@ -78,9 +82,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 size={16} strokeWidth={1.8} className="icon-glow animate-spin" />
-                  Chargement...
+                  {t("status.loading")}
                 </span>
-              ) : confirmText}
+              ) : resolvedConfirmText}
             </button>
           </div>
         </div>

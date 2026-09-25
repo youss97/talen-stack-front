@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Button from "@/components/ui/button/Button";
+import VoiceInputButton from "@/components/form/VoiceInputButton";
+import VoiceNoteRecorder from "@/components/form/VoiceNoteRecorder";
 
 interface WorkflowStep {
   name: string;
@@ -14,9 +16,9 @@ interface Props {
   canEdit?: boolean;
   isSaving?: boolean;
   /** Change l'étape courante (+ feedback optionnel) */
-  onChangeStep: (step: string, feedbackDescription?: string) => Promise<void> | void;
+  onChangeStep: (step: string, feedbackDescription?: string, audio?: Blob | null) => Promise<void> | void;
   /** Ajoute un feedback à une étape SANS changer l'étape courante */
-  onAddFeedback?: (step: string, description: string) => Promise<void> | void;
+  onAddFeedback?: (step: string, description: string, audio?: Blob | null) => Promise<void> | void;
   isAddingFeedback?: boolean;
 }
 
@@ -43,30 +45,33 @@ export default function WorkflowStepper({
   const [targetStep, setTargetStep] = useState("");
   const [moveFeedback, setMoveFeedback] = useState("");
   const [moveError, setMoveError] = useState(false);
+  const [moveAudio, setMoveAudio] = useState<Blob | null>(null);
 
   // Clôture (KO / Désistement) — motif inline
   const [closureTarget, setClosureTarget] = useState<string | null>(null);
   const [closureReason, setClosureReason] = useState("");
   const [closureError, setClosureError] = useState(false);
+  const [closureAudio, setClosureAudio] = useState<Blob | null>(null);
 
   // Feedback sans changement d'étape
   const [fbStep, setFbStep] = useState("");
   const [fbText, setFbText] = useState("");
   const [fbError, setFbError] = useState(false);
+  const [fbAudio, setFbAudio] = useState<Blob | null>(null);
 
   const currentIndex = sorted.findIndex((s) => s.name === currentStep);
 
   const submitMove = async () => {
     if (!targetStep) return;
-    if (REQUIRE_REASON.includes(targetStep) && !moveFeedback.trim()) { setMoveError(true); return; }
+    if (REQUIRE_REASON.includes(targetStep) && !moveFeedback.trim() && !moveAudio) { setMoveError(true); return; }
     setMoveError(false);
-    await onChangeStep(targetStep, moveFeedback.trim() || undefined);
-    setMoveFeedback(""); setTargetStep("");
+    await onChangeStep(targetStep, moveFeedback.trim() || undefined, moveAudio);
+    setMoveFeedback(""); setTargetStep(""); setMoveAudio(null);
   };
 
   const clickClosure = async (terminal: string) => {
     if (REQUIRE_REASON.includes(terminal)) {
-      setClosureTarget(terminal); setClosureReason(""); setClosureError(false);
+      setClosureTarget(terminal); setClosureReason(""); setClosureError(false); setClosureAudio(null);
     } else {
       // Accepté : pas de motif
       await onChangeStep(terminal);
@@ -75,18 +80,18 @@ export default function WorkflowStepper({
 
   const confirmClosure = async () => {
     if (!closureTarget) return;
-    if (!closureReason.trim()) { setClosureError(true); return; }
-    await onChangeStep(closureTarget, closureReason.trim());
-    setClosureTarget(null); setClosureReason("");
+    if (!closureReason.trim() && !closureAudio) { setClosureError(true); return; }
+    await onChangeStep(closureTarget, closureReason.trim() || undefined, closureAudio);
+    setClosureTarget(null); setClosureReason(""); setClosureAudio(null);
   };
 
   const submitFeedback = async () => {
     if (!onAddFeedback) return;
     if (!fbStep) { setFbError(true); return; }
-    if (!fbText.trim()) { setFbError(true); return; }
+    if (!fbText.trim() && !fbAudio) { setFbError(true); return; }
     setFbError(false);
-    await onAddFeedback(fbStep, fbText.trim());
-    setFbText(""); setFbStep("");
+    await onAddFeedback(fbStep, fbText.trim(), fbAudio);
+    setFbText(""); setFbStep(""); setFbAudio(null);
   };
 
   return (
@@ -122,7 +127,7 @@ export default function WorkflowStepper({
       {canEdit && (
         <>
           {/* Changer d'étape */}
-          <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-3 space-y-2">
+          <div className="rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 p-3 space-y-2">
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t("workflowStepper.changeStepTitle")}</p>
             <div className="flex flex-col sm:flex-row gap-2">
               <select
@@ -139,18 +144,22 @@ export default function WorkflowStepper({
                 {isSaving ? t("workflowStepper.updating") : t("workflowStepper.updateButton")}
               </Button>
             </div>
-            <textarea
-              value={moveFeedback}
-              onChange={(e) => { setMoveFeedback(e.target.value); if (e.target.value.trim()) setMoveError(false); }}
-              rows={2}
-              placeholder={t("workflowStepper.feedbackPlaceholder")}
-              className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${moveError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
-            />
+            <div className="flex items-start gap-2">
+              <textarea
+                value={moveFeedback}
+                onChange={(e) => { setMoveFeedback(e.target.value); if (e.target.value.trim()) setMoveError(false); }}
+                rows={2}
+                placeholder={t("workflowStepper.feedbackPlaceholder")}
+                className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${moveError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
+              />
+              <VoiceInputButton onResult={(text) => { setMoveFeedback((prev) => (prev ? `${prev} ${text}` : text)); setMoveError(false); }} />
+            </div>
+            <VoiceNoteRecorder value={moveAudio} onChange={(blob) => { setMoveAudio(blob); if (blob) setMoveError(false); }} />
             {moveError && <p className="text-xs text-error-500">{t("workflowStepper.reasonRequired")}</p>}
           </div>
 
           {/* Clôture : Accepté / KO / Désistement */}
-          <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-3 space-y-2">
+          <div className="rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 p-3 space-y-2">
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t("workflowStepper.closeApplicationTitle")}</p>
             <div className="flex flex-wrap gap-2">
               <button type="button" onClick={() => clickClosure("Accepté")} disabled={isSaving || currentStep === "Accepté"}
@@ -162,13 +171,17 @@ export default function WorkflowStepper({
             </div>
             {closureTarget && (
               <div className="space-y-2 pt-1">
-                <textarea
-                  value={closureReason}
-                  onChange={(e) => { setClosureReason(e.target.value); if (e.target.value.trim()) setClosureError(false); }}
-                  rows={2}
-                  placeholder={t("workflowStepper.reasonPlaceholder", { step: closureTarget })}
-                  className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${closureError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
-                />
+                <div className="flex items-start gap-2">
+                  <textarea
+                    value={closureReason}
+                    onChange={(e) => { setClosureReason(e.target.value); if (e.target.value.trim()) setClosureError(false); }}
+                    rows={2}
+                    placeholder={t("workflowStepper.reasonPlaceholder", { step: closureTarget })}
+                    className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${closureError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
+                  />
+                  <VoiceInputButton onResult={(text) => { setClosureReason((prev) => (prev ? `${prev} ${text}` : text)); setClosureError(false); }} />
+                </div>
+                <VoiceNoteRecorder value={closureAudio} onChange={(blob) => { setClosureAudio(blob); if (blob) setClosureError(false); }} />
                 {closureError && <p className="text-xs text-error-500">{t("workflowStepper.reasonRequiredShort")}</p>}
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" onClick={() => { setClosureTarget(null); setClosureReason(""); setClosureError(false); }} disabled={isSaving}>{tc("actions.cancel")}</Button>
@@ -180,7 +193,7 @@ export default function WorkflowStepper({
 
           {/* Ajouter un feedback à une étape (sans changer l'étape) */}
           {onAddFeedback && (
-            <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-3 space-y-2">
+            <div className="rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 p-3 space-y-2">
               <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t("workflowStepper.addFeedbackTitle")}</p>
               <select
                 value={fbStep}
@@ -192,16 +205,20 @@ export default function WorkflowStepper({
                   <option key={name} value={name}>{name}</option>
                 ))}
               </select>
-              <textarea
-                value={fbText}
-                onChange={(e) => { setFbText(e.target.value); if (e.target.value.trim()) setFbError(false); }}
-                rows={2}
-                placeholder={t("workflowStepper.feedbackForStepPlaceholder")}
-                className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${fbError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
-              />
+              <div className="flex items-start gap-2">
+                <textarea
+                  value={fbText}
+                  onChange={(e) => { setFbText(e.target.value); if (e.target.value.trim()) setFbError(false); }}
+                  rows={2}
+                  placeholder={t("workflowStepper.feedbackForStepPlaceholder")}
+                  className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${fbError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
+                />
+                <VoiceInputButton onResult={(text) => { setFbText((prev) => (prev ? `${prev} ${text}` : text)); setFbError(false); }} />
+              </div>
+              <VoiceNoteRecorder value={fbAudio} onChange={(blob) => { setFbAudio(blob); if (blob) setFbError(false); }} />
               {fbError && <p className="text-xs text-error-500">{t("workflowStepper.chooseStepAndFeedback")}</p>}
               <div className="flex justify-end">
-                <Button onClick={submitFeedback} disabled={isAddingFeedback || !fbStep || !fbText.trim()}>
+                <Button onClick={submitFeedback} disabled={isAddingFeedback || !fbStep || (!fbText.trim() && !fbAudio)}>
                   {isAddingFeedback ? t("workflowStepper.adding") : t("workflowStepper.addFeedbackButton")}
                 </Button>
               </div>

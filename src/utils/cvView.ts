@@ -83,28 +83,95 @@ export async function openCvInNewTab(cvId: string): Promise<boolean> {
   }
 }
 
-/** Télécharge le CV avec un nom formaté (via l'endpoint `/download`). */
-export async function downloadCvFile(cvId: string, fallbackName = "CV.pdf"): Promise<boolean> {
+/** Sections (et ordre) par défaut du CV anonymisé de l'entreprise + liste des sections disponibles */
+export async function fetchAnonymizedSections(): Promise<{ available: string[]; sections: string[] } | null> {
   try {
     const token = getToken();
-    const res = await fetch(`${getApiUrl()}/cvs/${cvId}/download`, {
+    const res = await fetch(`${getApiUrl()}/cvs/settings/anonymized-sections`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
-    if (!res.ok) return false;
+    return res.ok ? await res.json() : null;
+  } catch {
+    return null;
+  }
+}
+
+export interface AnonymizedCvPayload {
+  sections: string[];
+  overrides: {
+    profileTitle?: string;
+    summary?: string;
+    skills?: string[];
+    quickFacts?: string;
+    experiences?: Array<{ title?: string; company?: string; location?: string; start_date?: string; end_date?: string; description?: string }>;
+    formations?: Array<{ degree?: string; field?: string; institution?: string; start_date?: string; end_date?: string }>;
+    customBlocks?: Array<{ title?: string; text?: string }>;
+  };
+}
+
+/** Génère le CV anonymisé personnalisé (aperçu) → URL blob à révoquer après usage, ou null en cas d'échec. */
+export async function fetchCustomAnonymizedCvBlobUrl(
+  cvId: string,
+  payload: AnonymizedCvPayload,
+): Promise<{ url: string; filename: string } | null> {
+  try {
+    const token = getToken();
+    const res = await fetch(`${getApiUrl()}/cvs/${cvId}/anonymized`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) return null;
+    // Nom fourni par le serveur : cv-anonymise-<code du CV>.pdf
+    const match = (res.headers.get("Content-Disposition") || "").match(/filename="?([^"]+)"?/);
+    return { url: URL.createObjectURL(await res.blob()), filename: match?.[1] || "cv-anonymise.pdf" };
+  } catch {
+    return null;
+  }
+}
+
+export async function saveAnonymizedSections(sections: string[]): Promise<boolean> {
+  try {
+    const token = getToken();
+    const res = await fetch(`${getApiUrl()}/cvs/settings/anonymized-sections`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: JSON.stringify({ sections }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Ouvre le CV ANONYMISÉ (PDF généré à la volée, sans coordonnées ni nom du candidat) dans un
+ * nouvel onglet — jamais de téléchargement, même logique de fenêtre pré-ouverte que
+ * openCvInNewTab pour ne pas se faire bloquer par le navigateur.
+ */
+export async function openAnonymizedCvInNewTab(cvId: string, sections?: string[]): Promise<boolean> {
+  const preOpenedWindow = typeof window !== "undefined" ? window.open("", "_blank") : null;
+  try {
+    const token = getToken();
+    const query = sections && sections.length ? `?sections=${encodeURIComponent(sections.join(","))}` : "";
+    const res = await fetch(`${getApiUrl()}/cvs/${cvId}/anonymized${query}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) {
+      preOpenedWindow?.close();
+      return false;
+    }
     const blob = await res.blob();
-    const disposition = res.headers.get("Content-Disposition") || "";
-    const match = disposition.match(/filename="?([^"]+)"?/);
-    const filename = match?.[1] || fallbackName;
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    // Voir openCvInNewTab : révocation différée pour ne pas invalider l'URL avant que le
-    // téléchargement soit réellement lancé par le navigateur (échec intermittent sinon).
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    if (preOpenedWindow) {
+      preOpenedWindow.location.href = url;
+    } else {
+      window.open(url, "_blank");
+    }
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
     return true;
   } catch {
+    preOpenedWindow?.close();
     return false;
   }
 }

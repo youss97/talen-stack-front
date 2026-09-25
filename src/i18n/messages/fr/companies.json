@@ -7,7 +7,7 @@
     "allStatuses": "Tous les statuts",
     "columns": {
       "name": "Nom",
-      "siret": "SIRET",
+      "companyIdentifier": "Identifiant de l'entreprise",
       "city": "Ville",
       "email": "Email",
       "phone": "Téléphone",
@@ -64,7 +64,7 @@
       "logo": "Logo de l'entreprise",
       "logoHelper": "Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)",
       "companyName": "Raison sociale",
-      "ice": "ICE",
+      "companyIdentifier": "Identifiant de l'entreprise",
       "address": "Adresse",
       "city": "Ville",
       "postalCode": "Code postal",
@@ -78,6 +78,8 @@
       "firstName": "Prénom",
       "lastName": "Nom",
       "adminEmail": "Email",
+      "adminLogin": "Identifiant de connexion",
+      "adminLoginHint": "Optionnel — laisser vide pour utiliser l'email. Utile si cette personne administre déjà une autre société avec le même email.",
       "password": "Mot de passe",
       "notEditable": "Non modifiable",
       "adminPhone": "Téléphone de l'administrateur",
@@ -93,7 +95,7 @@
     },
     "placeholders": {
       "companyName": "Tech Solutions SARL",
-      "ice": "123456789000000",
+      "companyIdentifier": "123456789000000",
       "address": "12 rue de la Paix",
       "city": "Paris",
       "postalCode": "75001",
@@ -102,6 +104,7 @@
       "firstName": "John",
       "lastName": "Doe",
       "adminEmail": "admin@example.com",
+      "adminLogin": "Laisser vide pour utiliser l'email",
       "password": "StrongPassword123",
       "adminPhone": "+212612345678",
       "position": "Directeur RH"

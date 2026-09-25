@@ -342,7 +342,7 @@ export default function InterviewDetailModal({
               {t("notesSection")}
             </h3>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 sm:p-4">
-              <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+              <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words">
                 {interview.notes}
               </p>
             </div>

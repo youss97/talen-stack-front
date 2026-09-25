@@ -1,10 +1,12 @@
 import * as yup from 'yup';
 
 export const loginSchema = yup.object().shape({
+  // Login/identifiant de connexion — plus nécessairement une adresse email valide (séparation
+  // login/email : un login peut être "youssefmehri+hutchinson" par ex.), donc pas de .email().
   email: yup
     .string()
-    .email('Please enter a valid email address')
-    .required('Email is required'),
+    .trim()
+    .required('Login is required'),
   password: yup
     .string()
     .min(6, 'Password must be at least 6 characters')

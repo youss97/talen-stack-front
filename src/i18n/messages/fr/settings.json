@@ -72,6 +72,10 @@
       "PUBLIC_APPLICATION_DELETED": {
         "label": "Candidature d'offre publique supprimée",
         "description": "Envoyé au CANDIDAT lorsque sa candidature à une offre publique est supprimée par le recruteur."
+      },
+      "CRM_FOLLOWUP": {
+        "label": "Email de relance CRM",
+        "description": "Email manuel envoyé par un commercial à un contact d'une société prospect, depuis la fiche prospect ou une opportunité."
       }
     },
     "editorModal": {
@@ -137,6 +141,10 @@
       "businessCards": {
         "title": "Cartes de visite",
         "description": "Créer et gérer les cartes de visite QR (RH, Client, Employé)"
+      },
+      "crmIndustries": {
+        "title": "Secteurs d'activité CRM",
+        "description": "Gérer la liste des secteurs d'activité proposés dans les fiches prospects du CRM"
       }
     }
   },
@@ -231,6 +239,37 @@
       "updated": "Source de CV modifiée avec succès",
       "created": "Source de CV créée avec succès",
       "deleted": "Source de CV supprimée avec succès",
+      "genericError": "Une erreur est survenue",
+      "deleteError": "Erreur lors de la suppression"
+    }
+  },
+  "crmIndustries": {
+    "title": "Secteurs d'activité CRM",
+    "subtitle": "Gérez la liste des secteurs d'activité proposés dans les fiches prospects",
+    "searchPlaceholder": "Rechercher...",
+    "createButton": "Créer un secteur",
+    "columns": { "name": "Nom", "status": "Statut" },
+    "active": "Actif",
+    "inactive": "Inactif",
+    "modal": {
+      "editTitle": "Modifier le secteur d'activité",
+      "createTitle": "Créer un secteur d'activité",
+      "nameLabel": "Nom",
+      "namePlaceholder": "Ex: Technologie / IT, Finance / Banque",
+      "activeLabel": "Actif",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement..."
+    },
+    "deleteModal": {
+      "title": "Supprimer le secteur d'activité",
+      "message": "Êtes-vous sûr de vouloir supprimer le secteur \"{name}\" ?",
+      "confirmText": "Supprimer"
+    },
+    "toasts": {
+      "updated": "Secteur modifié avec succès",
+      "created": "Secteur créé avec succès",
+      "deleted": "Secteur supprimé avec succès",
       "genericError": "Une erreur est survenue",
       "deleteError": "Erreur lors de la suppression"
     }

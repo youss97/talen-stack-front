@@ -1,4 +1,49 @@
 {
+  "list": {
+    "title": "📅 Interview management",
+    "subtitle": "{count, plural, one {# interview scheduled} other {# interviews scheduled}}",
+    "newInterview": "New interview",
+    "searchPlaceholder": "Search by candidate, title...",
+    "allStatuses": "All statuses",
+    "statusLabels": {
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "rescheduled": "Rescheduled"
+    },
+    "loadError": "Error loading interviews",
+    "stats": {
+      "total": "Total",
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "thisWeek": "This week"
+    },
+    "columns": {
+      "candidate": "Candidate",
+      "titlePosition": "Title / Position",
+      "dateTime": "Date & Time",
+      "type": "Type",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "defaultCandidateName": "Candidate",
+    "defaultTitle": "Interview",
+    "online": "Online",
+    "presential": "In person",
+    "viewDetails": "View details",
+    "emptyState": {
+      "title": "No interview scheduled",
+      "subtitle": "Start by creating your first interview",
+      "createButton": "Create an interview"
+    },
+    "toasts": {
+      "createdTitle": "Interview created",
+      "emailSentMessage": "An email was sent to the candidate",
+      "createdSuccessMessage": "The interview was created successfully",
+      "errorTitle": "Error",
+      "createErrorDefault": "Error while creating the interview"
+    }
+  },
   "detail": {
     "title": "Interview details",
     "statusLabels": {

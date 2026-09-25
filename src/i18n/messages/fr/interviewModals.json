@@ -1,4 +1,49 @@
 {
+  "list": {
+    "title": "📅 Gestion des entretiens",
+    "subtitle": "{count, plural, one {# entretien planifié} other {# entretiens planifiés}}",
+    "newInterview": "Nouvel entretien",
+    "searchPlaceholder": "Rechercher par candidat, titre...",
+    "allStatuses": "Tous les statuts",
+    "statusLabels": {
+      "scheduled": "Planifié",
+      "completed": "Terminé",
+      "cancelled": "Annulé",
+      "rescheduled": "Reporté"
+    },
+    "loadError": "Erreur lors du chargement des entretiens",
+    "stats": {
+      "total": "Total",
+      "scheduled": "Planifiés",
+      "completed": "Terminés",
+      "thisWeek": "Cette semaine"
+    },
+    "columns": {
+      "candidate": "Candidat",
+      "titlePosition": "Titre / Poste",
+      "dateTime": "Date & Heure",
+      "type": "Type",
+      "status": "Statut",
+      "actions": "Actions"
+    },
+    "defaultCandidateName": "Candidat",
+    "defaultTitle": "Entretien",
+    "online": "En ligne",
+    "presential": "Présentiel",
+    "viewDetails": "Voir détails",
+    "emptyState": {
+      "title": "Aucun entretien planifié",
+      "subtitle": "Commencez par créer votre premier entretien",
+      "createButton": "Créer un entretien"
+    },
+    "toasts": {
+      "createdTitle": "Entretien créé",
+      "emailSentMessage": "Un email a été envoyé au candidat",
+      "createdSuccessMessage": "L'entretien a été créé avec succès",
+      "errorTitle": "Erreur",
+      "createErrorDefault": "Erreur lors de la création de l'entretien"
+    }
+  },
   "detail": {
     "title": "Détails de l'entretien",
     "statusLabels": {

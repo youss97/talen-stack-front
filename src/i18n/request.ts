@@ -13,6 +13,7 @@ const NAMESPACES = [
   "businessCards",
   "clients",
   "companies",
+  "crm",
   "cvs",
   "dashboard",
   "emails",
@@ -32,6 +33,7 @@ const NAMESPACES = [
   "settings",
   "statistics",
   "subscriptions",
+  "tests",
   "users",
 ] as const;
 

@@ -18,11 +18,23 @@ import { X, AlertCircle, CheckCircle2, UploadCloud, Send, SearchX, Plus, Check, 
 
 const ThreeParticles = dynamic(() => import("@/components/common/ThreeParticles"), { ssr: false });
 
-// Thème par défaut (surchargé par les couleurs de l'offre publique)
-let BRAND    = "#8AB925";
-let BRAND_DK = "#1c2906";
-let BRAND_LT = "#f5fae8";
-let BRAND_TX = "#5c7d17";
+// Thème par défaut (surchargé par les couleurs de l'offre publique). Ce composant est rendu
+// côté serveur (SSR) : ces couleurs DOIVENT rester des constantes locales calculées à chaque
+// rendu, jamais des variables mutables au niveau module — sinon une requête concurrente pour
+// une autre société écraserait ces valeurs pendant le rendu d'une autre (page qui "suit" la
+// mauvaise société/session).
+const DEFAULT_BRAND    = "#8AB925";
+const DEFAULT_BRAND_DK = "#1c2906";
+const DEFAULT_BRAND_LT = "#f5fae8";
+const DEFAULT_BRAND_TX = "#5c7d17";
+
+type BrandTheme = { BRAND: string; BRAND_DK: string; BRAND_LT: string; BRAND_TX: string };
+const DEFAULT_BRAND_THEME: BrandTheme = {
+  BRAND: DEFAULT_BRAND,
+  BRAND_DK: DEFAULT_BRAND_DK,
+  BRAND_LT: DEFAULT_BRAND_LT,
+  BRAND_TX: DEFAULT_BRAND_TX,
+};
 
 function shadeHex(hex: string, percent: number): string {
   const h = (hex || "").replace("#", "");
@@ -51,18 +63,23 @@ function ApplicationQuestionsModal({
   questions,
   onCancel,
   onNext,
+  brand = DEFAULT_BRAND_THEME,
 }: {
   questions: PublicOfferQuestion[];
   onCancel: () => void;
   onNext: (answers: Record<string, string>) => void;
+  brand?: BrandTheme;
 }) {
+  const { BRAND, BRAND_TX } = brand;
   const t = useTranslations("public.apply.questionsModal");
   const sorted = [...questions].sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0));
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitted(true);
     for (const q of sorted) {
       if (q.is_required && !String(answers[q.id] ?? "").trim()) {
         setError(t("errors.required"));
@@ -129,7 +146,11 @@ function ApplicationQuestionsModal({
                     type="number"
                     value={answers[q.id] ?? ""}
                     onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
-                    className={inputCls}
+                    className={
+                      submitted && q.is_required && !String(answers[q.id] ?? "").trim()
+                        ? `${inputCls} border-red-400 focus:ring-red-300 focus:border-red-400`
+                        : inputCls
+                    }
                     placeholder={t("numberPlaceholder")}
                   />
                 )}
@@ -163,18 +184,27 @@ function ApplyModal({
   onSuccess,
   refUserId,
   answers,
+  brand = DEFAULT_BRAND_THEME,
 }: {
   offer: any;
   onClose: () => void;
   onSuccess: () => void;
   refUserId?: string | null;
   answers?: Record<string, string>;
+  brand?: BrandTheme;
 }) {
+  const { BRAND, BRAND_LT, BRAND_TX } = brand;
   const t = useTranslations("public.apply.modal");
   const [submitApplication, { isLoading: isSubmitting }] = useSubmitPublicApplicationMutation();
   const [formData, setFormData] = useState({ first_name: "", last_name: "", email: "", phone: "", city: "", linkedin_url: "", message: "" });
   const [cvFile, setCvFile]   = useState<File | null>(null);
   const [error,  setError]    = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const fieldCls = (value: string) =>
+    submitted && !value.trim()
+      ? `${inputCls} border-red-400 focus:ring-red-300 focus:border-red-400`
+      : inputCls;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -203,6 +233,7 @@ function ApplyModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSubmitted(true);
     if (!formData.first_name || !formData.last_name || !formData.email || !formData.phone) {
       setError(t("errors.requiredFields")); return;
     }
@@ -267,14 +298,14 @@ function ApplyModal({
                   {t("firstName")} <span className="text-red-500">*</span>
                 </label>
                 <input type="text" name="first_name" value={formData.first_name}
-                  onChange={handleChange} placeholder={t("firstNamePlaceholder")} required className={inputCls} />
+                  onChange={handleChange} placeholder={t("firstNamePlaceholder")} required className={fieldCls(formData.first_name)} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   {t("lastName")} <span className="text-red-500">*</span>
                 </label>
                 <input type="text" name="last_name" value={formData.last_name}
-                  onChange={handleChange} placeholder={t("lastNamePlaceholder")} required className={inputCls} />
+                  onChange={handleChange} placeholder={t("lastNamePlaceholder")} required className={fieldCls(formData.last_name)} />
               </div>
             </div>
 
@@ -284,14 +315,14 @@ function ApplyModal({
                   {t("email")} <span className="text-red-500">*</span>
                 </label>
                 <input type="email" name="email" value={formData.email}
-                  onChange={handleChange} placeholder={t("emailPlaceholder")} required className={inputCls} />
+                  onChange={handleChange} placeholder={t("emailPlaceholder")} required className={fieldCls(formData.email)} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   {t("phone")} <span className="text-red-500">*</span>
                 </label>
                 <input type="tel" name="phone" value={formData.phone}
-                  onChange={handleChange} placeholder={t("phonePlaceholder")} required className={inputCls} />
+                  onChange={handleChange} placeholder={t("phonePlaceholder")} required className={fieldCls(formData.phone)} />
               </div>
             </div>
 
@@ -321,7 +352,7 @@ function ApplyModal({
                 {...getRootProps()}
                 className="relative flex flex-col items-center justify-center w-full h-28 rounded-xl border-2 border-dashed cursor-pointer transition-colors"
                 style={{
-                  borderColor: isDragActive || cvFile ? BRAND : "#e5e7eb",
+                  borderColor: isDragActive || cvFile ? BRAND : (submitted ? "#f87171" : "#e5e7eb"),
                   background: isDragActive || cvFile ? BRAND_LT : "#fafafa",
                 }}
               >
@@ -349,6 +380,12 @@ function ApplyModal({
                 {t("message")} <span className="text-xs text-gray-400">{t("optional")}</span>
               </label>
               <textarea name="message" value={formData.message} onChange={handleChange} rows={4}
+                style={{ minHeight: '110px' }}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = target.scrollHeight + 'px';
+                }}
                 placeholder={t("messagePlaceholder")}
                 className={`${inputCls} h-auto resize-none`} />
             </div>
@@ -436,13 +473,14 @@ export default function PublicOfferApplyView({
 
   // Couleur du site carrière définie par la société RH → s'applique à TOUTES ses offres publiques.
   // Toutes les variantes (clair/foncé/texte/fond hero) sont dérivées de cette unique couleur.
+  // Constantes locales à CE rendu (jamais de variables mutables au niveau module, ce composant
+  // étant rendu côté serveur pour différentes sociétés en parallèle).
   const brandColor = rhCompany?.public_brand_color;
-  if (brandColor) {
-    BRAND    = brandColor;
-    BRAND_LT = shadeHex(brandColor, 0.8);
-    BRAND_TX = shadeHex(brandColor, -0.3);
-    BRAND_DK = shadeHex(brandColor, -0.85);
-  }
+  const BRAND    = brandColor ? brandColor                    : DEFAULT_BRAND;
+  const BRAND_LT = brandColor ? shadeHex(brandColor, 0.8)     : DEFAULT_BRAND_LT;
+  const BRAND_TX = brandColor ? shadeHex(brandColor, -0.3)    : DEFAULT_BRAND_TX;
+  const BRAND_DK = brandColor ? shadeHex(brandColor, -0.85)   : DEFAULT_BRAND_DK;
+  const brand: BrandTheme = { BRAND, BRAND_LT, BRAND_TX, BRAND_DK };
 
   const rhName = rhCompany?.name ?? offer?.company?.name ?? offer?.company_name ?? "";
 
@@ -520,6 +558,7 @@ export default function PublicOfferApplyView({
             setQuestionsModalOpen(false);
             setModalOpen(true);
           }}
+          brand={brand}
         />
       )}
 
@@ -531,6 +570,7 @@ export default function PublicOfferApplyView({
           onSuccess={() => { setModalOpen(false); setSubmitted(true); }}
           refUserId={refUserId}
           answers={collectedAnswers}
+          brand={brand}
         />
       )}
 

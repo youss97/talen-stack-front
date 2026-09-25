@@ -2,7 +2,8 @@
 
 import React, { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Pencil, Send, Ban } from "lucide-react";
+import { useRouter } from "@/i18n/navigation";
+import { Plus, Pencil, Send, Ban, Calendar, LayoutTemplate } from "lucide-react";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
@@ -21,6 +22,7 @@ import { getApiErrorMessage } from "@/utils/errorMessages";
 
 const EmailsPage = () => {
   const t = useTranslations("emails");
+  const router = useRouter();
   const { canCreate, canDelete } = useActions("/emails");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useLimitPreference("emails", 20);
@@ -174,8 +176,9 @@ const EmailsPage = () => {
       render: (_, email) => {
         if (email.status === "scheduled" && email.scheduled_at) {
           return (
-            <span className="text-sm text-yellow-600 dark:text-yellow-400">
-              📅 {t("table.scheduledFor", { date: formatDateTime(email.scheduled_at) })}
+            <span className="inline-flex items-center gap-1 text-sm text-yellow-600 dark:text-yellow-400">
+              <Calendar size={14} strokeWidth={1.8} className="icon-glow" />
+              {t("table.scheduledFor", { date: formatDateTime(email.scheduled_at) })}
             </span>
           );
         }
@@ -210,9 +213,18 @@ const EmailsPage = () => {
               {t("page.subtitle")}
             </p>
           </div>
-          {canCreate && (
-            <Button onClick={() => { setEditEmail(null); openForm(); }} startIcon={<PlusIcon />}>{t("page.newEmail")}</Button>
-          )}
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => router.push("/settings/email-templates")}
+              startIcon={<LayoutTemplate size={16} strokeWidth={1.8} className="icon-glow" />}
+            >
+              {t("page.manageTemplates")}
+            </Button>
+            {canCreate && (
+              <Button onClick={() => { setEditEmail(null); openForm(); }} startIcon={<PlusIcon />}>{t("page.newEmail")}</Button>
+            )}
+          </div>
         </div>
 
         <div className="mb-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">

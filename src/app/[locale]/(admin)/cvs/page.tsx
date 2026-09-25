@@ -24,7 +24,9 @@ import { useActions } from "@/hooks/useActions";
 import { useRouter } from "@/i18n/navigation";
 import type { CV } from "@/types/cv";
 import { getApiErrorMessage } from "@/utils/errorMessages";
-import { Plus, UserPlus } from "lucide-react";
+import { Plus, UserPlus, ClipboardList } from "lucide-react";
+import PrepareTestModal from "@/components/testQuestions/PrepareTestModal";
+import { useTranslations, useLocale } from "next-intl";
 
 const SPONTANEOUS_SOURCE_LABEL = "Candidature spontanée";
 
@@ -40,6 +42,10 @@ function getSourceBadgeColor(source?: string) {
 
 export default function CVsPage() {
   const router = useRouter();
+  const t = useTranslations("tests.prepareModal");
+  const tl = useTranslations("cvs.list");
+  const locale = useLocale();
+  const [testModalCv, setTestModalCv] = useState<CV | null>(null);
   const { canCreate, canUpdate, canDelete } = useActions("/cvs");
   const canAssign = canUpdate;
   const [page, setPage] = useState(1);
@@ -115,13 +121,13 @@ export default function CVsPage() {
     setConvertingSpontaneousId(id);
     try {
       await convertSpontaneous(id).unwrap();
-      addToast("success", "Ajouté au vivier", "La candidature spontanée a été ajoutée au vivier de talents");
+      addToast("success", tl("toasts.addedToPoolTitle"), tl("toasts.addedToPoolMessage"));
       // convertSpontaneous n'invalide que le cache de publicJobOfferApi (la liste des
       // candidatures spontanées) — cvApi est un slice RTK Query séparé, donc le tableau du
       // vivier ne se rafraîchit jamais tout seul : il faut le forcer explicitement.
       refetchCVs();
     } catch (error) {
-      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de l'ajout au vivier"));
+      addToast("error", tl("toasts.errorTitle"), getErrorMessage(error, tl("toasts.addToPoolError")));
     } finally {
       setConvertingSpontaneousId(null);
     }
@@ -130,9 +136,9 @@ export default function CVsPage() {
   const handleDeleteSpontaneous = async (id: string) => {
     try {
       await deleteSpontaneous(id).unwrap();
-      addToast("success", "Supprimée", "La candidature spontanée a été supprimée");
+      addToast("success", tl("toasts.deletedTitle"), tl("toasts.deletedMessage"));
     } catch (error) {
-      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la suppression"));
+      addToast("error", tl("toasts.errorTitle"), getErrorMessage(error, tl("toasts.deleteSpontaneousError")));
     }
   };
 
@@ -142,7 +148,7 @@ export default function CVsPage() {
   const columns: Column<CV>[] = [
     {
       key: "candidate_first_name",
-      header: "Candidat",
+      header: tl("columns.candidate"),
       render: (_, row) => {
         const fullName = [row.candidate_first_name, row.candidate_last_name]
           .filter(Boolean)
@@ -152,17 +158,17 @@ export default function CVsPage() {
     },
     {
       key: "candidate_email",
-      header: "Email",
+      header: tl("columns.email"),
       render: (value) => <span>{(value as string) || "-"}</span>,
     },
     {
       key: "last_position",
-      header: "Poste",
-      render: (value) => <span>{(value as string) || "-"}</span>,
+      header: tl("columns.position"),
+      render: (value, row) => <span>{row.profile_title || (value as string) || "-"}</span>,
     },
     {
       key: "specialty",
-      header: "Spécialité pertinente",
+      header: tl("columns.specialty"),
       render: (value) =>
         value ? (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400">
@@ -174,14 +180,14 @@ export default function CVsPage() {
     },
     {
       key: "total_experience",
-      header: "Expérience",
+      header: tl("columns.experience"),
       render: (value) => (
-        <span>{value ? `${value} ans` : "-"}</span>
+        <span>{value ? tl("experienceYears", { count: value as number }) : "-"}</span>
       ),
     },
     {
       key: "source",
-      header: "Source",
+      header: tl("columns.source"),
       render: (value) =>
         value ? (
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getSourceBadgeColor(value as string)}`}>
@@ -193,7 +199,7 @@ export default function CVsPage() {
     },
     {
       key: "created_by_name",
-      header: "Créé par",
+      header: tl("columns.createdBy"),
       render: (value) => (
         <span className="text-sm text-gray-700 dark:text-gray-300">
           {(value as string) || "-"}
@@ -201,16 +207,13 @@ export default function CVsPage() {
       ),
     },
     {
-      key: "responsible",
-      header: "Responsable",
-      render: (value) => {
-        const r = value as { first_name?: string; last_name?: string } | null;
-        return (
-          <span className="text-sm text-gray-700 dark:text-gray-300">
-            {r ? `${r.first_name || ''} ${r.last_name || ''}`.trim() || "-" : "-"}
-          </span>
-        );
-      },
+      key: "created_at",
+      header: tl("columns.addedOn"),
+      render: (value) => (
+        <span className="text-sm text-gray-700 dark:text-gray-300">
+          {value ? new Date(value as string).toLocaleDateString(locale === "ar" ? "ar" : locale === "en" ? "en-US" : "fr-FR") : "-"}
+        </span>
+      ),
     },
   ];
 
@@ -246,9 +249,9 @@ export default function CVsPage() {
     setIsAssigning(true);
     try {
       await assignCV({ id: assignModal.cv.id, responsible_ids: responsibleIds }).unwrap();
-      addToast("success", "Succès", responsibleIds.length > 0 ? "Responsable(s) affecté(s) avec succès" : "Affectation(s) retirée(s) avec succès");
+      addToast("success", tl("toasts.assignSuccessTitle"), responsibleIds.length > 0 ? tl("toasts.assignedMessage") : tl("toasts.unassignedMessage"));
     } catch (error) {
-      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de l'affectation"));
+      addToast("error", tl("toasts.errorTitle"), getErrorMessage(error, tl("toasts.assignError")));
     } finally {
       setIsAssigning(false);
     }
@@ -262,9 +265,9 @@ export default function CVsPage() {
     try {
       await deleteCV(confirmModal.cv.id).unwrap();
       deleted = true;
-      addToast("success", "Succès", "CV supprimé avec succès");
+      addToast("success", tl("toasts.assignSuccessTitle"), tl("toasts.deleteCvSuccess"));
     } catch (error) {
-      addToast("error", "Erreur", getErrorMessage(error, "Erreur lors de la suppression du CV"));
+      addToast("error", tl("toasts.errorTitle"), getErrorMessage(error, tl("toasts.deleteCvError")));
     } finally {
       setIsDeleting(false);
       // Always close the modal — if deletion actually succeeded the CV is gone anyway
@@ -280,15 +283,15 @@ export default function CVsPage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Vivier de talents
+              {tl("title")}
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              Gérez les talents et candidats
+              {tl("subtitle")}
             </p>
           </div>
           {canCreate && (
             <Button onClick={handleAddClick} startIcon={<PlusIcon />}>
-              Ajouter un talent
+              {tl("addButton")}
             </Button>
           )}
         </div>
@@ -298,7 +301,7 @@ export default function CVsPage() {
             <div>
               <input
                 type="text"
-                placeholder="Rechercher par nom, poste, email ou code CV (CV-00001)..."
+                placeholder={tl("filters.searchPlaceholder")}
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -310,7 +313,7 @@ export default function CVsPage() {
             <div>
               <input
                 type="text"
-                placeholder="Filtrer par compétences..."
+                placeholder={tl("filters.skillsPlaceholder")}
                 value={skillsFilter}
                 onChange={(e) => {
                   setSkillsFilter(e.target.value);
@@ -322,7 +325,7 @@ export default function CVsPage() {
             <div>
               <input
                 type="number"
-                placeholder="Expérience minimum (années)"
+                placeholder={tl("filters.minExperiencePlaceholder")}
                 value={minExperience}
                 onChange={(e) => {
                   setMinExperience(e.target.value);
@@ -334,7 +337,7 @@ export default function CVsPage() {
             <div>
               <input
                 type="number"
-                placeholder="Expérience maximum (années)"
+                placeholder={tl("filters.maxExperiencePlaceholder")}
                 value={maxExperience}
                 onChange={(e) => {
                   setMaxExperience(e.target.value);
@@ -346,7 +349,7 @@ export default function CVsPage() {
             <div>
               <input
                 type="text"
-                placeholder="Filtrer par secteur d'activité..."
+                placeholder={tl("filters.industryPlaceholder")}
                 value={industryFilter}
                 onChange={(e) => {
                   setIndustryFilter(e.target.value);
@@ -358,7 +361,7 @@ export default function CVsPage() {
             <div>
               <input
                 type="text"
-                placeholder="Filtrer par spécialité pertinente..."
+                placeholder={tl("filters.specialtyPlaceholder")}
                 value={specialtyFilter}
                 onChange={(e) => {
                   setSpecialtyFilter(e.target.value);
@@ -373,9 +376,9 @@ export default function CVsPage() {
                 onChange={(e) => { setAnonymousFilter(e.target.value); setPage(1); }}
                 className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
               >
-                <option value="">CV anonymisé : Tous</option>
-                <option value="true">Anonymisé : Oui</option>
-                <option value="false">Anonymisé : Non</option>
+                <option value="">{tl("filters.anonymousAll")}</option>
+                <option value="true">{tl("filters.anonymousYes")}</option>
+                <option value="false">{tl("filters.anonymousNo")}</option>
               </select>
             </div>
             <div>
@@ -384,7 +387,7 @@ export default function CVsPage() {
                 onChange={(e) => { setSourceFilter(e.target.value); setPage(1); }}
                 className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
               >
-                <option value="">Source : Toutes</option>
+                <option value="">{tl("filters.sourceAll")}</option>
                 {sourceOptions.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
@@ -396,7 +399,7 @@ export default function CVsPage() {
         {spontaneousApplications.length > 0 && (
           <div className="mb-5 rounded-2xl border border-purple-200 bg-purple-50/50 p-5 dark:border-purple-800 dark:bg-purple-900/10">
             <h2 className="text-sm font-semibold text-purple-800 dark:text-purple-300 mb-3">
-              Candidatures spontanées en attente ({spontaneousApplications.length})
+              {tl("spontaneous.pendingTitle", { count: spontaneousApplications.length })}
             </h2>
             <div className="space-y-2">
               {spontaneousApplications.map((app) => (
@@ -406,7 +409,7 @@ export default function CVsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400">
-                      Candidature spontanée
+                      {tl("spontaneous.badge")}
                     </span>
                     <div>
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -422,10 +425,10 @@ export default function CVsPage() {
                       disabled={isConvertingSpontaneous && convertingSpontaneousId === app.id}
                       onClick={() => handleConvertSpontaneous(app.id)}
                     >
-                      {isConvertingSpontaneous && convertingSpontaneousId === app.id ? "Ajout..." : "Ajouter au vivier"}
+                      {isConvertingSpontaneous && convertingSpontaneousId === app.id ? tl("spontaneous.adding") : tl("spontaneous.addToPoolButton")}
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => handleDeleteSpontaneous(app.id)}>
-                      Supprimer
+                      {tl("spontaneous.deleteButton")}
                     </Button>
                   </div>
                 </div>
@@ -441,8 +444,11 @@ export default function CVsPage() {
           onView={handleRowClick}
           onEdit={canUpdate ? handleEditClick : undefined}
           onDelete={canDelete ? handleDeleteClick : undefined}
-          customActions={canAssign ? [{ label: "Affecter", icon: <AssignIcon />, onClick: handleAssignClick }] : undefined}
-          emptyMessage="Aucun CV trouvé"
+          customActions={[
+            ...(canAssign ? [{ label: tl("assignAction"), icon: <AssignIcon />, onClick: handleAssignClick }] : []),
+            { label: t("button"), icon: <ClipboardList size={16} strokeWidth={1.8} />, onClick: (row: CV) => setTestModalCv(row) },
+          ]}
+          emptyMessage={tl("emptyState")}
         />
 
         {data && data.pagination && (
@@ -469,14 +475,21 @@ export default function CVsPage() {
         isLoading={isLoadingDetail}
       />
 
+      <PrepareTestModal
+        isOpen={!!testModalCv}
+        onClose={() => setTestModalCv(null)}
+        cvId={testModalCv?.id}
+        cvName={testModalCv ? `${testModalCv.candidate_first_name} ${testModalCv.candidate_last_name}` : undefined}
+      />
+
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false, cv: null })}
         onConfirm={handleConfirmDelete}
-        title="Supprimer le CV"
-        message={`Êtes-vous sûr de vouloir supprimer ce CV ? Cette action est irréversible.`}
-        confirmText="Supprimer"
-        cancelText="Annuler"
+        title={tl("deleteConfirm.title")}
+        message={tl("deleteConfirm.message")}
+        confirmText={tl("deleteConfirm.confirmText")}
+        cancelText={tl("deleteConfirm.cancelText")}
         variant="danger"
         isLoading={isDeleting}
       />
@@ -486,7 +499,7 @@ export default function CVsPage() {
         onClose={() => setAssignModal({ isOpen: false, cv: null })}
         onAssign={handleAssignCV}
         currentResponsibles={(assignModal.cv as any)?.responsibles ?? (assignModal.cv?.responsible ? [assignModal.cv.responsible] : [])}
-        entityLabel="ce talent"
+        entityLabel={tl("assignEntityLabel")}
         isLoading={isAssigning}
       />
     </div>

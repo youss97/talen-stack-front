@@ -11,6 +11,7 @@ import {
   EnvelopeIcon,
   CalenderIcon,
 } from "../icons/index";
+import { Handshake, Building2, LayoutDashboard, ClipboardList, ClipboardCheck, Code2 } from "lucide-react";
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +25,7 @@ export type NavItem = {
 // Ordre d'affichage des groupes dans la sidebar
 export const GROUP_ORDER = [
   "Pilotage",
+  "Commercial",
   "Recrutement",
   "Talents",
   "Suivi",
@@ -93,7 +95,7 @@ export const NAV_CONFIG: Record<string, { title: string; icon: React.ReactNode; 
     group: "Talents",
   },
   "/my-requests": {
-    title: "Mes Offres",
+    title: "Mes recrutements",
     icon: <FileIcon />,
     group: "Recrutement",
   },
@@ -131,6 +133,36 @@ export const NAV_CONFIG: Record<string, { title: string; icon: React.ReactNode; 
     title: "Cartes de visite",
     icon: <UserCircleIcon />,
     group: "Administration",
+  },
+  "/crm-companies": {
+    title: "Prospects",
+    icon: <Building2 size={18} strokeWidth={1.8} />,
+    group: "Commercial",
+  },
+  "/crm-deals": {
+    title: "Opportunités",
+    icon: <Handshake size={18} strokeWidth={1.8} />,
+    group: "Commercial",
+  },
+  "/crm-dashboard": {
+    title: "Tableau de bord CRM",
+    icon: <LayoutDashboard size={18} strokeWidth={1.8} />,
+    group: "Commercial",
+  },
+  "/test-questions": {
+    title: "Tests techniques & psychotechniques",
+    icon: <ClipboardList size={18} strokeWidth={1.8} />,
+    group: "Talents",
+  },
+  "/test-sessions": {
+    title: "Tests envoyés",
+    icon: <ClipboardCheck size={18} strokeWidth={1.8} />,
+    group: "Talents",
+  },
+  "/coding-challenges": {
+    title: "Exercices de code",
+    icon: <Code2 size={18} strokeWidth={1.8} />,
+    group: "Talents",
   },
 };
 

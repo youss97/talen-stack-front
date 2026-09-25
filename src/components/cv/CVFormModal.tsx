@@ -8,6 +8,7 @@ import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
+import VoiceInputButton from "@/components/form/VoiceInputButton";
 import {
   createCVSchema,
   updateCVSchema,
@@ -53,6 +54,7 @@ export default function CVFormModal({
       candidate_first_name: "",
       candidate_last_name: "",
       linkedin_url: "",
+      portfolio_url: "",
       total_experience: undefined,
       last_education: "",
       last_position: "",
@@ -72,6 +74,7 @@ export default function CVFormModal({
         candidate_first_name: cv.candidate_first_name || "",
         candidate_last_name: cv.candidate_last_name || "",
         linkedin_url: cv.linkedin_url || "",
+        portfolio_url: cv.portfolio_url || "",
         total_experience: cv.total_experience,
         last_education: cv.last_education || "",
         last_position: cv.last_position || "",
@@ -91,6 +94,7 @@ export default function CVFormModal({
         candidate_first_name: "",
         candidate_last_name: "",
         linkedin_url: "",
+        portfolio_url: "",
         total_experience: undefined,
         last_education: "",
         last_position: "",
@@ -127,6 +131,7 @@ export default function CVFormModal({
     if (data.candidate_first_name) formData.append("candidate_first_name", data.candidate_first_name);
     if (data.candidate_last_name) formData.append("candidate_last_name", data.candidate_last_name);
     if (data.linkedin_url) formData.append("linkedin_url", data.linkedin_url);
+    if (data.portfolio_url) formData.append("portfolio_url", data.portfolio_url);
     if (data.total_experience !== undefined) formData.append("total_experience", String(data.total_experience));
     if (data.last_education) formData.append("last_education", data.last_education);
     if (data.last_position) formData.append("last_position", data.last_position);
@@ -265,6 +270,13 @@ export default function CVFormModal({
                 error={!!errors.linkedin_url}
                 hint={errors.linkedin_url?.message}
               />
+              <Input
+                label={t("formModal.fields.portfolio")}
+                placeholder={t("formModal.fields.portfolioPlaceholder")}
+                {...register("portfolio_url")}
+                error={!!errors.portfolio_url}
+                hint={errors.portfolio_url?.message}
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -369,6 +381,15 @@ export default function CVFormModal({
               </select>
             </div>
 
+            {isEditing && cv?.source && (
+              <div>
+                <Label>{t("formModal.fields.source")}</Label>
+                <p className="h-11 flex items-center px-4 text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                  {cv.source}
+                </p>
+              </div>
+            )}
+
             <div>
               <Label>
                 <span className="inline-flex items-center gap-1.5">
@@ -376,12 +397,20 @@ export default function CVFormModal({
                   {t("formModal.fields.internalNote")}
                 </span>
               </Label>
-              <textarea
-                {...register("internal_note")}
-                rows={3}
-                placeholder={t("formModal.fields.internalNotePlaceholder")}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
-              />
+              <div className="flex items-start gap-2">
+                <textarea
+                  {...register("internal_note")}
+                  rows={3}
+                  placeholder={t("formModal.fields.internalNotePlaceholder")}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+                />
+                <VoiceInputButton
+                  onResult={(text) => {
+                    const prev = watch("internal_note") || "";
+                    setValue("internal_note", prev ? `${prev} ${text}` : text, { shouldDirty: true });
+                  }}
+                />
+              </div>
               <p className="mt-1 text-xs text-gray-400">{t("formModal.fields.internalNoteHint")}</p>
             </div>
 

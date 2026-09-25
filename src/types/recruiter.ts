@@ -35,8 +35,9 @@ export interface Recruiter {
   daily_rate_expectation?: number;
   package_current?: string;
   package_desired?: string;
+  salary_expectation_notes?: string;
   currency?: Currency;
-  
+
   // Type de contrat de l'offre
   offer_contract_types?: string[];
   
@@ -53,12 +54,13 @@ export interface Recruiter {
   
   // Qualification
   qualification_report?: string;
+  qualification_score?: number;
   recruiter_notes?: string;
   manager_notes?: string;
   client_feedback?: string;
   feedback_date?: string;
   recruiter_interview_date?: string;
-  
+
   // Anonymisation et ajustements
   is_anonymized?: boolean;
   adjusted_experience?: number;
@@ -66,6 +68,7 @@ export interface Recruiter {
   // Visibilité
   hide_current_salary_for_recruiters?: boolean;
   salary_confidential?: boolean;
+  desired_salary_deferred?: boolean;
   
   // Workflow (3.2)
   current_step?: string | null;
@@ -96,6 +99,7 @@ export interface Recruiter {
     source?: string;
     status?: string;
     skills?: string[];
+    languages?: string[];
     file_path?: string;
   };
   request?: {
@@ -165,9 +169,10 @@ export interface CreateRecruiterRequest {
   
   // Qualification
   qualification_report?: string;
+  qualification_score?: number | null;
   recruiter_notes?: string | null;
   recruiter_interview_date?: string | null;
-  
+
   // Anonymisation et ajustements
   is_anonymized?: boolean;
   adjusted_experience?: number | null;
@@ -207,9 +212,10 @@ export interface UpdateRecruiterRequest {
   
   // Qualification
   qualification_report?: string;
+  qualification_score?: number | null;
   recruiter_notes?: string | null;
   recruiter_interview_date?: string | null;
-  
+
   // Anonymisation et ajustements
   is_anonymized?: boolean;
   adjusted_experience?: number | null;
@@ -256,6 +262,7 @@ export interface ApplicationFeedback {
   title: string;
   description: string;
   step?: string | null;
+  audio_url?: string | null;
   created_at: string;
   created_by: {
     id: string;

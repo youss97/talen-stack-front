@@ -10,7 +10,8 @@ export type EmailTemplateType =
   | "INTERVIEW_MODIFICATION_INVITEE"
   | "INTERVIEW_CANCELLATION_CANDIDATE"
   | "INTERVIEW_CANCELLATION_INVITEE"
-  | "PUBLIC_APPLICATION_DELETED";
+  | "PUBLIC_APPLICATION_DELETED"
+  | "CRM_FOLLOWUP";
 
 export interface EmailTemplate {
   [key: string]: unknown;

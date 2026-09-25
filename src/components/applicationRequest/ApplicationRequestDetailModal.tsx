@@ -440,19 +440,19 @@ export default function ApplicationRequestDetailModal({
                   {applicationRequest.benefits && (
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.benefits")}</p>
-                      <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{applicationRequest.benefits}</p>
+                      <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap break-words">{applicationRequest.benefits}</p>
                     </div>
                   )}
                   {applicationRequest.bonuses && (
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.bonuses")}</p>
-                      <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{applicationRequest.bonuses}</p>
+                      <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap break-words">{applicationRequest.bonuses}</p>
                     </div>
                   )}
                   {applicationRequest.variables && (
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("detailModal.variables")}</p>
-                      <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{applicationRequest.variables}</p>
+                      <p className="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-wrap break-words">{applicationRequest.variables}</p>
                     </div>
                   )}
                 </div>

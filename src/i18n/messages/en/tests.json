@@ -1,0 +1,198 @@
+{
+  "page": {
+    "title": "Technical & psychometric tests",
+    "subtitle": "Question bank for evaluating candidates",
+    "addButton": "Add a question",
+    "searchPlaceholder": "Search a question...",
+    "allTypes": "All types",
+    "allCategories": "All categories",
+    "emptyState": "No question found"
+  },
+  "types": {
+    "technique": "Technical",
+    "psychotechnique": "Psychometric"
+  },
+  "difficulties": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "domains": {
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "fullstack": "Fullstack",
+    "devops": "DevOps"
+  },
+  "columns": {
+    "type": "Type",
+    "category": "Category",
+    "question": "Question",
+    "difficulty": "Difficulty",
+    "status": "Status"
+  },
+  "form": {
+    "titles": { "add": "New question", "edit": "Edit question" },
+    "fields": {
+      "type": "Type",
+      "domain": "IT domain",
+      "domainNone": "No specific domain",
+      "category": "Category",
+      "categoryPlaceholder": "E.g. JavaScript, Logic...",
+      "question": "Question text",
+      "options": "Answer options",
+      "optionPlaceholder": "Answer {n}",
+      "optionsHint": "Check the box next to the correct answer",
+      "markCorrect": "Mark as correct answer",
+      "difficulty": "Difficulty",
+      "active": "Active"
+    },
+    "buttons": { "cancel": "Cancel", "save": "Save", "add": "Create", "saving": "Saving..." }
+  },
+  "deleteConfirm": {
+    "title": "Delete this question?",
+    "message": "This action is irreversible."
+  },
+  "toasts": {
+    "createSuccess": "Question created successfully",
+    "updateSuccess": "Question updated successfully",
+    "deleteSuccess": "Question deleted successfully",
+    "saveError": "Error while saving",
+    "deleteError": "Error while deleting"
+  },
+  "prepareModal": {
+    "button": "Prepare a test",
+    "title": "Prepare a test",
+    "modeVivier": "From talent pool",
+    "modeManual": "External candidate",
+    "candidate": "Candidate",
+    "candidatePlaceholder": "Search a candidate...",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone",
+    "type": "Test type",
+    "types": { "both": "Technical + Psychometric", "technique": "Technical only", "psychotechnique": "Psychometric only", "personality": "Personality (Big Five + workplace behavior)" },
+    "personalityHint": "The candidate answers a series of statements on an agreement scale (no right or wrong answer). Result: a profile per dimension (Big Five + professional behavioral scales).",
+    "questionCount": "Number of questions",
+    "timePerQuestion": "Time per question (seconds)",
+    "timePerQuestionHint": "The candidate automatically moves to the next question once this time has elapsed.",
+    "difficulty": "Difficulty",
+    "difficultyAny": "Any difficulty",
+    "difficulties": { "easy": "Easy", "medium": "Medium", "hard": "Hard" },
+    "domain": "IT domain",
+    "domainAny": "Any domain",
+    "domains": { "frontend": "Frontend", "backend": "Backend", "fullstack": "Fullstack", "devops": "DevOps" },
+    "includeCoding": "Include real coding exercises (sandboxed execution)",
+    "codingChallengeCount": "Number of coding exercises",
+    "codingHint": "The candidate will write code that is actually executed and automatically checked against test cases.",
+    "randomHint": "Questions are randomly selected on every generation, so the candidate never takes the same test twice.",
+    "cancel": "Cancel",
+    "generate": "Generate link",
+    "generating": "Generating...",
+    "linkGenerated": "The test has been prepared. Share this link with the candidate:",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "close": "Close",
+    "error": "Error while preparing the test"
+  },
+  "sessions": {
+    "title": "Sent tests",
+    "subtitle": "Track prepared tests and their results",
+    "addButton": "New test",
+    "emptyState": "No test sent",
+    "cheatingDetected": "Cheating detected (tab switch)",
+    "searchPlaceholder": "Search a candidate...",
+    "allStatuses": "All statuses",
+    "allTypes": "All types",
+    "columns": {
+      "candidate": "Candidate",
+      "type": "Type",
+      "status": "Status",
+      "score": "Score",
+      "link": "Link"
+    },
+    "types": { "both": "Technical + Psycho", "technique": "Technical", "psychotechnique": "Psychometric", "personality": "Personality" },
+    "statuses": { "pending": "Pending", "in_progress": "In progress", "completed": "Completed", "expired": "Expired" },
+    "dimensions": {
+      "openness": "Openness to experience",
+      "conscientiousness": "Conscientiousness",
+      "extraversion": "Extraversion",
+      "agreeableness": "Agreeableness",
+      "neuroticism": "Emotional stability",
+      "pace": "Pace of action",
+      "leadership": "Leadership / decision-making",
+      "detail_orientation": "Attention to detail",
+      "authority_relation": "Relationship to authority",
+      "results_orientation": "Results orientation"
+    },
+    "personalityResultsSection": "Personality test results",
+    "personalityResultsHint": "Average score per dimension on a 1-to-5 scale (no right or wrong answer).",
+    "copyLink": "Copy link",
+    "copied": "Copied!",
+    "deleteConfirm": { "title": "Delete this test?", "message": "This action is irreversible." },
+    "toasts": { "deleteSuccess": "Test deleted", "deleteError": "Error while deleting" },
+    "detail": {
+      "notCompletedYet": "This test has not been submitted by the candidate yet.",
+      "cheatingDetected": "Cheating detected",
+      "cheatingCount": "{count} tab switch(es) detected during the test",
+      "overallScore": "Overall score",
+      "mcqScore": "MCQ score",
+      "codingScore": "Coding score",
+      "questionsTitle": "Questions & answers",
+      "correct": "Correct",
+      "incorrect": "Incorrect",
+      "candidateChoice": "Candidate's answer",
+      "codingTitle": "Coding exercises",
+      "testCasesPassed": "{passed}/{total} test cases passed",
+      "noCodeSubmitted": "No code submitted",
+      "close": "Close"
+    }
+  },
+  "coding": {
+    "page": {
+      "title": "Coding exercises",
+      "subtitle": "Manage real, automatically-evaluated coding exercises",
+      "addButton": "Add an exercise",
+      "emptyState": "No exercise found",
+      "searchPlaceholder": "Search an exercise...",
+      "allDomains": "All domains",
+      "allDifficulties": "All difficulties"
+    },
+    "columns": {
+      "domain": "Domain",
+      "title": "Title",
+      "difficulty": "Difficulty",
+      "testCases": "Test cases",
+      "status": "Status"
+    },
+    "deleteConfirm": { "title": "Delete this exercise?", "message": "This action is irreversible." },
+    "toasts": {
+      "createSuccess": "Exercise created successfully",
+      "updateSuccess": "Exercise updated successfully",
+      "deleteSuccess": "Exercise deleted successfully",
+      "saveError": "Error while saving",
+      "deleteError": "Error while deleting"
+    }
+  },
+  "codingForm": {
+    "titles": { "add": "New coding exercise", "edit": "Edit exercise" },
+    "fields": {
+      "domain": "Domain",
+      "difficulty": "Difficulty",
+      "title": "Title",
+      "description": "Prompt",
+      "starterCode": "Starter code",
+      "testCases": "Test cases (input → expected output)",
+      "addTestCase": "Add a test case",
+      "testInputPlaceholder": "Input",
+      "testOutputPlaceholder": "Expected output",
+      "testCasesHint": "These test cases are hidden from the candidate and used to automatically verify their solution.",
+      "active": "Active"
+    },
+    "buttons": { "cancel": "Cancel", "save": "Save", "add": "Create", "saving": "Saving..." }
+  }
+}

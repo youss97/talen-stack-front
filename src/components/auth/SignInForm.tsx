@@ -90,8 +90,9 @@ export default function SignInForm() {
                     {t("email")} <span className="text-error-500">*</span>{" "}
                   </Label>
                   <Input
-                    placeholder="info@gmail.com"
-                    type="email"
+                    placeholder={t("emailPlaceholder")}
+                    type="text"
+                    autoComplete="username"
                     {...register("email")}
                   />
                   {errors.email && (

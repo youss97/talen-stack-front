@@ -42,6 +42,7 @@ export const createRecruiterSchema = yup.object({
     .nullable(),
   package_current: yup.string().nullable(),
   package_desired: yup.string().nullable(),
+  salary_expectation_notes: yup.string().nullable(),
   currency: yup.string().oneOf(VALID_CURRENCY_CODES, 'Devise non valide'),
 
   // Type de contrat de l'offre
@@ -102,6 +103,13 @@ export const createRecruiterSchema = yup.object({
 
   // Qualification
   qualification_report: yup.string().required('Le compte rendu de qualification est requis'),
+  qualification_score: yup
+    .number()
+    .transform((value, originalValue) => (String(originalValue).trim() === '' ? undefined : value))
+    .min(0, 'Le score doit être compris entre 0 et 100')
+    .max(100, 'Le score doit être compris entre 0 et 100')
+    .nullable()
+    .notRequired(),
   recruiter_notes: yup.string().nullable(),
   recruiter_interview_date: yup.string().nullable(),
   // Statut non requis : une candidature enregistrée en brouillon prend "brouillon" par défaut côté backend
@@ -110,6 +118,7 @@ export const createRecruiterSchema = yup.object({
   // Anonymisation et ajustements
   is_anonymized: yup.boolean(),
   salary_confidential: yup.boolean(),
+  desired_salary_deferred: yup.boolean(),
   adjusted_experience: yup
     .number()
     .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))

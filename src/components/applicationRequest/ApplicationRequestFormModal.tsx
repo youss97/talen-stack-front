@@ -27,7 +27,7 @@ import { getCurrencyByCode, DEFAULT_CURRENCY } from "@/lib/currencies";
 import StarRating from "@/components/form/StarRating";
 import WorkflowStepsEditor, { type WorkflowStep } from "@/components/applicationRequest/WorkflowStepsEditor";
 import type { SkillWithLevel, SkillItem, RecruitmentRequestQuestion } from "@/types/applicationRequest";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Lock } from "lucide-react";
 import { getSkillName } from "@/types/applicationRequest";
 
 interface ApplicationRequestFormModalProps {
@@ -90,7 +90,7 @@ export default function ApplicationRequestFormModal({
   const [workflowSteps, setWorkflowSteps] = useState<WorkflowStep[]>([]);
   // Questions personnalisées du formulaire de candidature publique (style LinkedIn)
   const [questionsState, setQuestionsState] = useState<RecruitmentRequestQuestion[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState("France");
+  const [selectedCountry, setSelectedCountry] = useState("");
 
   const {
     register,
@@ -119,7 +119,7 @@ export default function ApplicationRequestFormModal({
       daily_rate_min: undefined,
       daily_rate_max: undefined,
       location: "",
-      country: "France",
+      country: "",
       work_type: "on_site",
       remote_days_per_week: undefined,
       remote_possible: false,
@@ -129,6 +129,7 @@ export default function ApplicationRequestFormModal({
       bonuses: "",
       variables: "",
       priority: "normal",
+      internal_priority: "medium",
       status: "in_progress",
       desired_start_date: undefined,
       number_of_profiles: 1,
@@ -247,6 +248,7 @@ export default function ApplicationRequestFormModal({
         bonuses: applicationRequest.bonuses || "",
         variables: applicationRequest.variables || "",
         priority: applicationRequest.priority || "normal",
+        internal_priority: applicationRequest.internal_priority || "medium",
         status: (applicationRequest.status as any) || "in_progress",
         desired_start_date: applicationRequest.desired_start_date?.split("T")[0],
         number_of_profiles: applicationRequest.number_of_profiles || 1,
@@ -281,7 +283,7 @@ export default function ApplicationRequestFormModal({
         daily_rate_min: undefined,
         daily_rate_max: undefined,
         location: "",
-        country: "France",
+        country: "",
         work_type: "on_site",
         remote_days_per_week: undefined,
         remote_possible: false,
@@ -291,10 +293,12 @@ export default function ApplicationRequestFormModal({
         bonuses: "",
         variables: "",
         priority: "normal",
+        internal_priority: "medium",
         status: "in_progress",
         desired_start_date: undefined,
         number_of_profiles: 1,
       });
+      setSelectedCountry("");
     }
   }, [applicationRequest, isOpen, reset]);
 
@@ -659,7 +663,7 @@ export default function ApplicationRequestFormModal({
                 {isFreelance && (
                   <>
                     <div>
-                      <Label>{t("form.fields.missionDuration")} <span className="text-error-500">*</span></Label>
+                      <Label>{t("form.fields.missionDuration")}</Label>
                       <Input
                         type="number"
                         placeholder="6"
@@ -1057,7 +1061,7 @@ export default function ApplicationRequestFormModal({
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
                 {t("form.sections.priorityStatus")}
               </h3>
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                 <div>
                   <Label>{t("form.fields.priority")} <span className="text-error-500">*</span></Label>
                   <select
@@ -1073,9 +1077,29 @@ export default function ApplicationRequestFormModal({
                     <option value="high">{t("form.priorityOptions.high")}</option>
                     <option value="urgent">{t("form.priorityOptions.urgent")}</option>
                   </select>
+                  <p className="mt-1 text-xs text-gray-400">{t("form.fields.priorityHelp")}</p>
                   {errors.priority && (
                     <p className="mt-1 text-sm text-error-500">{errors.priority.message}</p>
                   )}
+                </div>
+
+                <div>
+                  <Label>
+                    <span className="inline-flex items-center gap-1.5">
+                      <Lock size={14} strokeWidth={1.8} />
+                      {t("form.fields.internalPriority")}
+                    </span>
+                  </Label>
+                  <select
+                    {...register("internal_priority")}
+                    className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                  >
+                    <option value="critical">{t("form.internalPriorityOptions.critical")}</option>
+                    <option value="high">{t("form.internalPriorityOptions.high")}</option>
+                    <option value="medium">{t("form.internalPriorityOptions.medium")}</option>
+                    <option value="low">{t("form.internalPriorityOptions.low")}</option>
+                  </select>
+                  <p className="mt-1 text-xs text-gray-400">{t("form.fields.internalPriorityHelp")}</p>
                 </div>
 
                 <div>
@@ -1088,6 +1112,7 @@ export default function ApplicationRequestFormModal({
                     <option value="standby">{t("form.statusOptions.standby")}</option>
                     <option value="abandoned">{t("form.statusOptions.abandoned")}</option>
                     <option value="filled">{t("form.statusOptions.filled")}</option>
+                    <option value="archived">{t("form.statusOptions.archived")}</option>
                   </select>
                 </div>
               </div>

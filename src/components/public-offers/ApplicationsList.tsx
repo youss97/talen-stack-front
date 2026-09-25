@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
-import { Download, Trash2, Eye } from "lucide-react";
+import { Trash2, Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Button from "@/components/ui/button/Button";
 import Pagination from "@/components/tables/Pagination";
@@ -10,9 +10,6 @@ import { formatDateTime } from "@/utils/dateFormat";
 
 interface ApplicationsListProps {
   applications: PublicApplication[];
-  /** Intitulé de l'offre (toutes les candidatures de cette liste postulent à la même offre) —
-   * utilisé pour la nomenclature du nom de fichier CV téléchargé, alignée sur celle du vivier. */
-  offerTitle?: string;
   /** Transformer une candidature publique en vraie candidature */
   onConvert?: (id: string) => void;
   convertingId?: string | null;
@@ -21,11 +18,7 @@ interface ApplicationsListProps {
   deletingId?: string | null;
 }
 
-// Retire les accents/diacritiques pour un nom de fichier ASCII sûr — même logique que
-// talent-backend/src/cvs/cvs.service.ts:downloadCv, pour garder la même nomenclature.
-const deburr = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "");
-
-export default function ApplicationsList({ applications, offerTitle, onConvert, convertingId, onDelete, deletingId }: ApplicationsListProps) {
+export default function ApplicationsList({ applications, onConvert, convertingId, onDelete, deletingId }: ApplicationsListProps) {
   const t = useTranslations("publicOffers.applications");
   const filteredApplications = applications;
 
@@ -46,34 +39,11 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
     [filteredApplications, page, pageSize]
   );
 
-  const downloadCV = async (cvPath: string, firstName: string, lastName: string) => {
+  // Ouvre le CV dans un nouvel onglet plutôt que de forcer un téléchargement, pour éviter
+  // que le fichier ne s'accumule inutilement dans le stockage local du recruteur.
+  const viewCV = (cvPath: string) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-    const year = new Date().getFullYear();
-    const f = deburr(firstName || "Prenom").replace(/\s+/g, "");
-    const l = deburr(lastName || "Nom").replace(/\s+/g, "").toUpperCase();
-    const position = deburr(offerTitle || "Poste")
-      .replace(/[^a-zA-Z0-9]+/g, "_")
-      .replace(/^_|_$/g, "")
-      .substring(0, 40);
-    const ext = cvPath.split(".").pop()?.split("?")[0]?.toLowerCase() || "pdf";
-    const filename = `CV_${f}_${l}_${position}_${year}.${ext}`;
-    const fileUrl = `${apiUrl}/${cvPath}`;
-    try {
-      // Fetch + blob : un simple <a href download> sur une URL cross-origin (localhost:4000
-      // vs le front) est ignoré par le navigateur, qui garde le nom de fichier du serveur.
-      const res = await fetch(fileUrl);
-      if (!res.ok) throw new Error("download failed");
-      const blob = await res.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = filename;
-      link.click();
-      URL.revokeObjectURL(blobUrl);
-    } catch {
-      // Fallback : ouvrir le fichier tel quel si le fetch échoue (CORS, etc.)
-      window.open(fileUrl, "_blank");
-    }
+    window.open(`${apiUrl}/${cvPath}`, "_blank");
   };
 
   return (
@@ -137,8 +107,8 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
                         </Button>
                         {application.cv_path && (
                           <Button variant="outline" size="sm"
-                            onClick={() => downloadCV(application.cv_path!, application.first_name, application.last_name)}
-                            startIcon={<DownloadIcon />}>
+                            onClick={() => viewCV(application.cv_path!)}
+                            startIcon={<Eye className="icon-glow" size={16} strokeWidth={1.8} />}>
                             {t("cv")}
                           </Button>
                         )}
@@ -194,14 +164,10 @@ export default function ApplicationsList({ applications, offerTitle, onConvert, 
         isOpen={!!detailApplication}
         onClose={() => setDetailApplication(null)}
         application={detailApplication}
-        onDownloadCv={(app) => app.cv_path && downloadCV(app.cv_path, app.first_name, app.last_name)}
+        onViewCv={(app) => app.cv_path && viewCV(app.cv_path)}
       />
     </div>
   );
-}
-
-function DownloadIcon() {
-  return <Download className="icon-glow" size={16} strokeWidth={1.8} />;
 }
 
 function TrashIcon() {

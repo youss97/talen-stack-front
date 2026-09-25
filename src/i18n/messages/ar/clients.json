@@ -1,4 +1,18 @@
 {
+  "statsModal": {
+    "action": "الإحصائيات",
+    "title": "إحصائيات العميل",
+    "kpis": {
+      "requests": "طلبات التوظيف",
+      "applications": "الترشيحات",
+      "integrations": "التكاملات"
+    },
+    "charts": {
+      "applicationsPerMonth": "الترشيحات شهريًا",
+      "requestsByStatus": "الطلبات حسب الحالة",
+      "applicationsByStatus": "الترشيحات حسب الحالة"
+    }
+  },
   "list": {
     "title": "قائمة العملاء",
     "subtitle": "إدارة عملائك ومسؤوليهم",
@@ -66,17 +80,20 @@
       "contact": "جهة الاتصال",
       "admin": "مسؤول العميل",
       "extra": "معلومات إضافية",
-      "internalNote": "ملاحظة داخلية"
+      "internalNote": "ملاحظة داخلية",
+      "source": "مصدر الاكتساب"
     },
     "fields": {
       "internalNotePlaceholder": "ملاحظة مرئية داخليًا فقط...",
       "internalNoteEmpty": "لا توجد ملاحظة داخلية",
+      "sourcePlaceholder": "مثال: توصية، LinkedIn، معرض مهني...",
+      "sourceEmpty": "غير محدد",
       "logo": "شعار العميل",
       "logoHelper": "الصيغ المقبولة: JPEG، PNG، GIF، WebP (بحد أقصى 5 ميجابايت)",
       "name": "الاسم التجاري",
       "namePlaceholder": "Tech Solutions SARL",
-      "ice": "ICE / SIRET",
-      "icePlaceholder": "123456789012345",
+      "ice": "معرّف الشركة",
+      "icePlaceholder": "ICE, SIRET, RC...",
       "country": "البلد",
       "address": "العنوان",
       "addressPlaceholder": "12 rue de la Paix",
@@ -94,6 +111,9 @@
       "firstName": "الاسم الشخصي",
       "lastName": "اسم العائلة",
       "adminEmailPlaceholder": "admin@example.com",
+      "adminLogin": "معرّف الدخول",
+      "adminLoginPlaceholder": "اتركه فارغًا لاستخدام البريد الإلكتروني",
+      "adminLoginHint": "اختياري — مفيد إذا كان لهذا الشخص حساب آخر بنفس البريد الإلكتروني.",
       "adminFirstNamePlaceholder": "John",
       "adminLastNamePlaceholder": "Doe",
       "password": "كلمة المرور",

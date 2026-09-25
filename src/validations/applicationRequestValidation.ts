@@ -52,10 +52,7 @@ export const createApplicationRequestSchema = yup.object({
     .transform((v) => (isNaN(v) ? null : v))
     .min(1, "La durée doit être d'au moins 1 mois")
     .nullable()
-    .when('contract_types', {
-      is: (val: string[]) => val?.some(v => v?.toLowerCase() === 'freelance'),
-      then: (schema) => schema.required("La durée de mission est requise pour un freelance"),
-    }),
+    .notRequired(),
   mission_renewable: yup
     .boolean()
     .nullable(),
@@ -148,11 +145,17 @@ export const createApplicationRequestSchema = yup.object({
     .string()
     .nullable(),
 
-  // Priorité
+  // Urgence (visible par le client)
   priority: yup
     .string()
-    .oneOf(["low", "normal", "high", "urgent"], "Priorité invalide")
-    .required("La priorité est requise"),
+    .oneOf(["low", "normal", "high", "urgent"], "Urgence invalide")
+    .required("L'urgence est requise"),
+
+  // Priorité interne (cabinet RH uniquement)
+  internal_priority: yup
+    .string()
+    .oneOf(["critical", "high", "medium", "low"], "Priorité invalide")
+    .notRequired(),
 
   // Statut
   status: yup
@@ -248,7 +251,10 @@ export const updateApplicationRequestSchema = yup.object({
   variables: yup.string().nullable(),
   priority: yup
     .string()
-    .oneOf(["low", "normal", "high", "urgent"], "Priorité invalide"),
+    .oneOf(["low", "normal", "high", "urgent"], "Urgence invalide"),
+  internal_priority: yup
+    .string()
+    .oneOf(["critical", "high", "medium", "low"], "Priorité invalide"),
   status: yup
     .string()
     .oneOf(["in_progress", "standby", "abandoned", "filled"], "Statut invalide"),

@@ -72,6 +72,10 @@
       "PUBLIC_APPLICATION_DELETED": {
         "label": "Public offer application deleted",
         "description": "Sent to the CANDIDATE when their application to a public offer is deleted by the recruiter."
+      },
+      "CRM_FOLLOWUP": {
+        "label": "CRM follow-up email",
+        "description": "Manual email sent by a salesperson to a prospect's contact, from the prospect record or a deal."
       }
     },
     "editorModal": {
@@ -137,6 +141,10 @@
       "businessCards": {
         "title": "Business cards",
         "description": "Create and manage QR business cards (HR, Client, Employee)"
+      },
+      "crmIndustries": {
+        "title": "CRM Industries",
+        "description": "Manage the list of industries offered in CRM prospect records"
       }
     }
   },
@@ -231,6 +239,37 @@
       "updated": "CV source updated successfully",
       "created": "CV source created successfully",
       "deleted": "CV source deleted successfully",
+      "genericError": "An error occurred",
+      "deleteError": "Error while deleting"
+    }
+  },
+  "crmIndustries": {
+    "title": "CRM Industries",
+    "subtitle": "Manage the list of industries offered in prospect records",
+    "searchPlaceholder": "Search...",
+    "createButton": "Create an industry",
+    "columns": { "name": "Name", "status": "Status" },
+    "active": "Active",
+    "inactive": "Inactive",
+    "modal": {
+      "editTitle": "Edit industry",
+      "createTitle": "Create an industry",
+      "nameLabel": "Name",
+      "namePlaceholder": "E.g. Technology / IT, Finance / Banking",
+      "activeLabel": "Active",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "deleteModal": {
+      "title": "Delete industry",
+      "message": "Are you sure you want to delete the industry \"{name}\"?",
+      "confirmText": "Delete"
+    },
+    "toasts": {
+      "updated": "Industry updated successfully",
+      "created": "Industry created successfully",
+      "deleted": "Industry deleted successfully",
       "genericError": "An error occurred",
       "deleteError": "Error while deleting"
     }

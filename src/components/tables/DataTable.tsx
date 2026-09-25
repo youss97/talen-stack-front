@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Eye, Pencil, Trash2, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import {
   Table,
@@ -65,7 +66,7 @@ function DataTable<T extends { id: string }>({
   customActions,
   actions,
   isLoading = false,
-  emptyMessage = "Aucune donnée disponible",
+  emptyMessage,
   useActionsMenu = true,
   enableViewToggle = true,
   defaultView = "table",
@@ -73,6 +74,8 @@ function DataTable<T extends { id: string }>({
   sortOrder,
   onSort,
 }: DataTableProps<T>) {
+  const t = useTranslations("common");
+  const resolvedEmptyMessage = emptyMessage ?? t("status.noDataAvailable");
   const hasActionHandlers = onView || onEdit || onDelete || customActions;
   const [view, setView] = useState<"table" | "cards">(defaultView);
 
@@ -82,7 +85,7 @@ function DataTable<T extends { id: string }>({
 
     if (onView) {
       menuActions.push({
-        label: "Voir les détails",
+        label: t("actions.viewDetails"),
         icon: <ViewIcon />,
         onClick: () => onView(row),
         color: 'default' as const,
@@ -91,7 +94,7 @@ function DataTable<T extends { id: string }>({
 
     if (onEdit) {
       menuActions.push({
-        label: "Modifier",
+        label: t("actions.edit"),
         icon: <EditIcon />,
         onClick: () => onEdit(row),
         color: 'default' as const,
@@ -111,7 +114,7 @@ function DataTable<T extends { id: string }>({
 
     if (onDelete && (!canDeleteRow || canDeleteRow(row))) {
       menuActions.push({
-        label: "Supprimer",
+        label: t("actions.delete"),
         icon: <TrashIcon />,
         onClick: () => onDelete(row),
         color: 'error' as const,
@@ -119,7 +122,7 @@ function DataTable<T extends { id: string }>({
     }
 
     return menuActions;
-  }, [onView, onEdit, onDelete, canDeleteRow, customActions]);
+  }, [onView, onEdit, onDelete, canDeleteRow, customActions, t]);
 
   // Infobulle native sur les cellules texte tronquées : affiche la valeur brute complète au survol.
   const cellTitle = (value: unknown): string | undefined => {
@@ -151,13 +154,13 @@ function DataTable<T extends { id: string }>({
       ) : (
         <div className="flex items-center gap-1">
           {onView && (
-            <button onClick={() => onView(row)} className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title="Voir les détails"><ViewIcon /></button>
+            <button onClick={() => onView(row)} className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title={t("actions.viewDetails")}><ViewIcon /></button>
           )}
           {onEdit && (
-            <button onClick={() => onEdit(row)} className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title="Modifier"><EditIcon /></button>
+            <button onClick={() => onEdit(row)} className="p-2 text-gray-500 hover:text-brand-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title={t("actions.edit")}><EditIcon /></button>
           )}
           {onDelete && (
-            <button onClick={() => onDelete(row)} className="p-2 text-gray-500 hover:text-error-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title="Supprimer"><TrashIcon /></button>
+            <button onClick={() => onDelete(row)} className="p-2 text-gray-500 hover:text-error-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors" title={t("actions.delete")}><TrashIcon /></button>
           )}
         </div>
       )}
@@ -171,13 +174,13 @@ function DataTable<T extends { id: string }>({
           onClick={() => setView("table")}
           className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "table" ? "bg-[var(--surface)] text-[var(--brand-deep)] shadow-sm" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
         >
-          Tableau
+          {t("views.table")}
         </button>
         <button
           onClick={() => setView("cards")}
           className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${view === "cards" ? "bg-[var(--surface)] text-[var(--brand-deep)] shadow-sm" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
         >
-          Cartes
+          {t("views.cards")}
         </button>
       </div>
     </div>
@@ -198,7 +201,7 @@ function DataTable<T extends { id: string }>({
     {view === "cards" ? (
       data.length === 0 ? (
         <div className="gw-card">
-          <EmptyState title={emptyMessage} />
+          <EmptyState title={resolvedEmptyMessage} />
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -291,7 +294,7 @@ function DataTable<T extends { id: string }>({
                 className="px-5 py-4"
                 colSpan={columns.length + (actions || hasActionHandlers ? 1 : 0)}
               >
-                <EmptyState title={emptyMessage} />
+                <EmptyState title={resolvedEmptyMessage} />
               </TableCell>
             </TableRow>
           ) : (

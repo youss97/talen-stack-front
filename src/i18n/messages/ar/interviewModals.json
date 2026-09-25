@@ -1,4 +1,49 @@
 {
+  "list": {
+    "title": "📅 إدارة المقابلات",
+    "subtitle": "{count} مقابلة مجدولة",
+    "newInterview": "مقابلة جديدة",
+    "searchPlaceholder": "البحث حسب المرشح أو العنوان...",
+    "allStatuses": "جميع الحالات",
+    "statusLabels": {
+      "scheduled": "مجدولة",
+      "completed": "منتهية",
+      "cancelled": "ملغاة",
+      "rescheduled": "مؤجلة"
+    },
+    "loadError": "خطأ أثناء تحميل المقابلات",
+    "stats": {
+      "total": "الإجمالي",
+      "scheduled": "مجدولة",
+      "completed": "منتهية",
+      "thisWeek": "هذا الأسبوع"
+    },
+    "columns": {
+      "candidate": "المرشح",
+      "titlePosition": "العنوان / المنصب",
+      "dateTime": "التاريخ والوقت",
+      "type": "النوع",
+      "status": "الحالة",
+      "actions": "إجراءات"
+    },
+    "defaultCandidateName": "مرشح",
+    "defaultTitle": "مقابلة",
+    "online": "عن بُعد",
+    "presential": "حضوري",
+    "viewDetails": "عرض التفاصيل",
+    "emptyState": {
+      "title": "لا توجد مقابلة مجدولة",
+      "subtitle": "ابدأ بإنشاء مقابلتك الأولى",
+      "createButton": "إنشاء مقابلة"
+    },
+    "toasts": {
+      "createdTitle": "تم إنشاء المقابلة",
+      "emailSentMessage": "تم إرسال بريد إلكتروني إلى المرشح",
+      "createdSuccessMessage": "تم إنشاء المقابلة بنجاح",
+      "errorTitle": "خطأ",
+      "createErrorDefault": "خطأ أثناء إنشاء المقابلة"
+    }
+  },
   "detail": {
     "title": "تفاصيل المقابلة",
     "statusLabels": {

@@ -2,6 +2,7 @@
   "nav": {
     "groups": {
       "Pilotage": "لوحة القيادة",
+      "Commercial": "المبيعات",
       "Recrutement": "التوظيف",
       "Talents": "الكفاءات",
       "Suivi": "المتابعة",
@@ -28,7 +29,13 @@
       "/roles": "الأدوار",
       "/subscriptions": "الاشتراكات",
       "/assignments": "التعيينات",
-      "/business-cards": "بطاقات العمل"
+      "/business-cards": "بطاقات العمل",
+      "/crm-companies": "العملاء المحتملون",
+      "/crm-deals": "الفرص التجارية",
+      "/crm-dashboard": "لوحة تحكم CRM",
+      "/test-questions": "اختبارات تقنية ونفسية تقنية",
+      "/test-sessions": "الاختبارات المرسلة",
+      "/coding-challenges": "تمارين البرمجة"
     }
   },
   "sidebar": {

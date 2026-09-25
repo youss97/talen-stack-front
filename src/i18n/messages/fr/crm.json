@@ -1,0 +1,285 @@
+{
+  "prospecting": {
+    "sectionTitle": "Suivi de prospection",
+    "syncHint": "Ces valeurs sont celles du prospect : les modifier ici les modifie aussi sur la fiche du prospect.",
+    "noPole": "Sans pôle",
+    "fields": {
+      "leadStatus": "Statut du lead",
+      "pipelineStage": "Étape pipeline",
+      "priority": "Priorité",
+      "datePlaceholder": "Choisir une date",
+      "lastContactDate": "Date dernier contact",
+      "nextAction": "Prochaine action",
+      "nextActionPlaceholder": "Ex. Relancer par téléphone",
+      "nextActionDate": "Date prochaine action"
+    },
+    "leadStatus": {
+      "new": "Nouveau", "toContact": "À contacter", "contacted": "Contacté", "qualified": "Qualifié",
+      "meetingScheduled": "RDV planifié", "proposalSent": "Proposition envoyée", "won": "Gagné", "lost": "Perdu"
+    },
+    "pipelineStage": {
+      "prospecting": "Prospection", "firstContact": "Prise de contact", "qualification": "Qualification",
+      "proposal": "Proposition", "negotiation": "Négociation", "signed": "Signé", "lost": "Perdu"
+    },
+    "source": {
+      "linkedin": "LinkedIn", "website": "Site web", "referral": "Recommandation", "event": "Salon/Événement",
+      "coldCall": "Appel à froid", "emailing": "Emailing", "other": "Autre"
+    },
+    "priority": { "high": "Haute", "medium": "Moyenne", "low": "Basse" },
+    "matrix": {
+      "title": "Entreprises par pôle et par statut",
+      "pole": "Pôle",
+      "total": "Total",
+      "empty": "Aucune entreprise prospectée pour le moment"
+    },
+    "filters": { "allLeadStatuses": "Tous les statuts du lead", "allPriorities": "Toutes les priorités", "allPoles": "Tous les pôles" }
+  },
+  "companies": {
+    "list": {
+      "title": "Prospects",
+      "subtitle": "Gérez vos sociétés prospects avant signature",
+      "addButton": "Ajouter un prospect",
+      "searchPlaceholder": "Rechercher un prospect...",
+      "allStages": "Tous les statuts",
+      "allIndustries": "Tous les secteurs",
+      "allResponsibles": "Tous les responsables",
+      "columns": {
+        "name": "Société",
+        "industry": "Secteur",
+        "stage": "Statut",
+        "responsible": "Responsable",
+        "createdBy": "Créé par",
+        "createdAt": "Créée le"
+      },
+      "stage": {
+        "prospect": "Prospect",
+        "client": "Client",
+        "perdu": "Perdu"
+      }
+    },
+    "form": {
+      "titles": { "add": "Nouveau prospect", "edit": "Modifier le prospect", "view": "Fiche prospect" },
+      "subtitles": { "add": "Ajoutez une société prospect à votre pipeline commercial", "edit": "Modifiez les informations du prospect" },
+      "fields": {
+        "name": "Nom de la société",
+        "namePlaceholder": "Acme Corp",
+        "industry": "Secteur d'activité",
+        "industryPlaceholder": "Sélectionner un secteur...",
+        "size": "Taille",
+        "address": "Adresse",
+        "city": "Ville",
+        "country": "Pays",
+        "source": "Source",
+        "sourcePlaceholder": "Choisir une source",
+        "website": "Site web",
+        "pole": "Pôle",
+        "polePlaceholder": "Ex. Pôle IT, Pôle Banque...",
+        "stage": "Statut",
+        "internalNote": "Note interne",
+        "internalNotePlaceholder": "Note visible uniquement en interne..."
+      },
+      "buttons": { "cancel": "Annuler", "save": "Enregistrer", "add": "Ajouter", "saving": "Enregistrement..." }
+    },
+    "contacts": {
+      "title": "Contacts",
+      "addButton": "Ajouter un contact",
+      "empty": "Aucun contact",
+      "primary": "Principal",
+      "fields": { "firstName": "Prénom", "lastName": "Nom", "position": "Fonction", "email": "Email", "phone": "Téléphone" },
+      "add": "Ajouter"
+    },
+    "deals": {
+      "title": "Opportunités liées",
+      "empty": "Aucune opportunité"
+    },
+    "toasts": {
+      "createSuccess": "Prospect créé avec succès",
+      "updateSuccess": "Prospect modifié avec succès",
+      "deleteSuccess": "Prospect supprimé avec succès",
+      "createError": "Erreur lors de la création",
+      "updateError": "Erreur lors de la modification",
+      "deleteError": "Erreur lors de la suppression",
+      "contactAdded": "Contact ajouté",
+      "contactError": "Erreur sur le contact"
+    },
+    "deleteConfirm": {
+      "title": "Supprimer ce prospect ?",
+      "message": "Cette action est irréversible. Les contacts et opportunités liés seront également supprimés."
+    },
+    "convertToClient": {
+      "button": "Convertir en client",
+      "title": "Convertir ce prospect en client",
+      "subtitle": "Crée le compte client et son accès portail directement à partir de cette fiche prospect.",
+      "alreadyConverted": "Déjà converti en client"
+    },
+    "close": "Fermer"
+  },
+  "deals": {
+    "list": {
+      "title": "Opportunités",
+      "subtitle": "Suivez votre pipeline commercial",
+      "addButton": "Nouvelle opportunité",
+      "settingsButton": "Étapes du pipeline",
+      "noDeals": "Aucune opportunité dans cette étape",
+      "searchPlaceholder": "Rechercher une opportunité ou un prospect...",
+      "allResponsibles": "Tous les responsables"
+    },
+    "form": {
+      "titles": { "add": "Nouvelle opportunité", "edit": "Modifier l'opportunité" },
+      "fields": {
+        "company": "Société prospect",
+        "companyPlaceholder": "Rechercher un prospect...",
+        "title": "Titre",
+        "titlePlaceholder": "Ex: Recrutement 3 développeurs",
+        "description": "Description",
+        "estimatedValue": "Valeur estimée",
+        "currency": "Devise",
+        "expectedCloseDate": "Date de clôture prévue",
+        "stage": "Étape"
+      },
+      "contacts": {
+        "label": "Contacts de l'opportunité",
+        "selectCompanyFirst": "Sélectionnez d'abord un prospect pour choisir ses contacts.",
+        "none": "Ce prospect n'a pas encore de contact.",
+        "add": "Ajouter un contact",
+        "lastName": "Nom",
+        "firstName": "Prénom",
+        "email": "Email",
+        "phone": "Téléphone",
+        "position": "Poste",
+        "nameRequired": "Le nom et le prénom du contact sont obligatoires.",
+        "createError": "Impossible d'ajouter le contact.",
+        "cancel": "Annuler",
+        "save": "Ajouter",
+        "saving": "Ajout..."
+      },
+      "buttons": { "cancel": "Annuler", "save": "Enregistrer", "add": "Créer", "saving": "Enregistrement..." }
+    },
+    "detail": {
+      "contacts": "Contacts",
+      "responsible": "Responsable",
+      "createdBy": "Créé par",
+      "status": { "open": "En cours", "won": "Gagné", "lost": "Perdu" },
+      "markWon": "Marquer gagné",
+      "markLost": "Marquer perdu",
+      "lostReasonLabel": "Raison de la perte",
+      "lostReasonPlaceholder": "Pourquoi cette opportunité a été perdue...",
+      "convertButton": "Convertir en client",
+      "convertTitle": "Convertir en client",
+      "convertSubtitle": "Crée le compte client et son accès portail à partir de cette opportunité gagnée.",
+      "alreadyConverted": "Déjà converti en client"
+    },
+    "convertForm": {
+      "adminEmail": "Email de l'administrateur",
+      "adminPassword": "Mot de passe",
+      "adminFirstName": "Prénom",
+      "adminLastName": "Nom",
+      "adminPhone": "Téléphone",
+      "submit": "Convertir",
+      "converting": "Conversion..."
+    },
+    "toasts": {
+      "createSuccess": "Opportunité créée avec succès",
+      "updateSuccess": "Opportunité modifiée avec succès",
+      "deleteSuccess": "Opportunité supprimée avec succès",
+      "convertSuccess": "Client créé avec succès",
+      "convertError": "Erreur lors de la conversion",
+      "createError": "Erreur lors de la création",
+      "updateError": "Erreur lors de la modification"
+    },
+    "deleteConfirm": {
+      "title": "Supprimer cette opportunité ?",
+      "message": "Cette action est irréversible."
+    }
+  },
+  "pipelineSettings": {
+    "title": "Étapes du pipeline",
+    "subtitle": "Personnalisez les étapes de votre pipeline commercial",
+    "addStage": "Ajouter une étape",
+    "stageNamePlaceholder": "Nom de l'étape",
+    "save": "Enregistrer",
+    "saved": "Étapes enregistrées",
+    "saveError": "Erreur lors de l'enregistrement"
+  },
+  "activities": {
+    "title": "Activités",
+    "empty": "Aucune activité enregistrée",
+    "addButton": "Ajouter une activité",
+    "types": { "call": "Appel", "email": "Email", "meeting": "Réunion", "note": "Note" },
+    "fields": {
+      "type": "Type",
+      "summary": "Résumé",
+      "summaryPlaceholder": "Ce qui a été dit ou fait...",
+      "outcome": "Résultat",
+      "outcomePlaceholder": "Résultat de l'échange (optionnel)",
+      "occurredAt": "Date"
+    },
+    "buttons": { "cancel": "Annuler", "save": "Enregistrer" },
+    "toasts": { "createSuccess": "Activité ajoutée", "createError": "Erreur lors de l'ajout", "deleteSuccess": "Activité supprimée", "deleteError": "Erreur lors de la suppression" },
+    "deleteConfirm": { "title": "Supprimer cette activité ?", "message": "Cette action est irréversible." }
+  },
+  "tasks": {
+    "title": "Tâches",
+    "empty": "Aucune tâche",
+    "addButton": "Ajouter une tâche",
+    "fields": { "title": "Titre", "titlePlaceholder": "Ex: Rappeler pour valider la proposition", "dueDate": "Échéance", "assignedTo": "Assignée à" },
+    "status": { "pending": "À faire", "done": "Terminée", "cancelled": "Annulée" },
+    "markDone": "Marquer terminée",
+    "buttons": { "cancel": "Annuler", "save": "Enregistrer" },
+    "toasts": { "createSuccess": "Tâche ajoutée", "createError": "Erreur lors de l'ajout", "updateSuccess": "Tâche mise à jour", "updateError": "Erreur lors de la mise à jour", "deleteSuccess": "Tâche supprimée", "deleteError": "Erreur lors de la suppression" },
+    "deleteConfirm": { "title": "Supprimer cette tâche ?", "message": "Cette action est irréversible." },
+    "overdue": "En retard"
+  },
+  "followupEmail": {
+    "title": "Envoyer un email de relance",
+    "recipientEmail": "Email du destinataire",
+    "recipientName": "Nom du destinataire",
+    "subjectPlaceholder": "Objet de l'email",
+    "messagePlaceholder": "Votre message...",
+    "send": "Envoyer",
+    "sending": "Envoi...",
+    "cancel": "Annuler",
+    "error": "Erreur lors de l'envoi de l'email",
+    "button": "Relancer"
+  },
+  "dashboard": {
+    "title": "Tableau de bord CRM",
+    "subtitle": "Vue d'ensemble de votre pipeline commercial",
+    "sections": {
+      "pipeline": "Pipeline",
+      "results": "Résultats",
+      "activity": "Prospection & activité",
+      "tasks": "Tâches"
+    },
+    "kpis": {
+      "openValue": "Valeur du pipeline ouvert",
+      "openCount": "Opportunités ouvertes",
+      "avgDealSize": "Taille moyenne d'une opportunité",
+      "conversionRate": "Taux de conversion",
+      "totalProspects": "Prospects",
+      "newProspectsThisMonth": "Nouveaux prospects ce mois-ci",
+      "wonCount": "Gagnées",
+      "wonValue": "Valeur gagnée",
+      "lostCount": "Perdues",
+      "avgSalesCycleDays": "Cycle de vente moyen",
+      "daysValue": "{count} jours",
+      "totalClients": "Convertis en clients",
+      "activitiesThisMonth": "Activités ce mois-ci",
+      "pendingTasks": "Tâches en cours",
+      "overdueTasks": "Tâches en retard",
+      "overdueTasksCountLabel": "{count} en retard"
+    },
+    "charts": {
+      "byStage": "Opportunités par étape",
+      "valueByStage": "Valeur du pipeline par étape",
+      "wonVsLost": "Gagnées vs perdues",
+      "topResponsibles": "Top commerciaux (valeur gagnée)",
+      "count": "Nombre",
+      "series": {
+        "won": "Gagnées",
+        "lost": "Perdues",
+        "wonValue": "Valeur gagnée"
+      }
+    }
+  }
+}

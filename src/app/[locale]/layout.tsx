@@ -17,13 +17,13 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: 'Talent Stack',
+  title: 'Hire Stack',
   description: 'Application de gestion des talents et recrutement',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Talent Stack',
+    title: 'Hire Stack',
   },
 };
 

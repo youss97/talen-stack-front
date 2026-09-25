@@ -5,6 +5,7 @@ export interface ReportErrorRequest {
   page: string;
   action?: string;
   message: string;
+  description?: string;
 }
 
 export const supportApi = createApi({

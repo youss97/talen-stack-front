@@ -1,8 +1,8 @@
 {
   "list": {
-    "title": "Mes Offres de Recrutement",
-    "subtitle": "Gérez vos offres et consultez les candidats proposés",
-    "newOffer": "+ Nouvelle offre",
+    "title": "Mes Recrutements",
+    "subtitle": "Gérez vos recrutements et consultez les candidats proposés",
+    "newOffer": "+ Ajouter une demande",
     "searchPlaceholder": "Rechercher par titre, référence...",
     "allStatuses": "Tous les statuts",
     "allContracts": "Tous les contrats",
@@ -21,9 +21,9 @@
       "low": "Basse"
     },
     "empty": {
-      "title": "Aucune offre trouvée",
+      "title": "Aucun recrutement trouvé",
       "filtered": "Essayez de modifier vos filtres",
-      "noOffers": "Aucune offre de recrutement pour le moment"
+      "noOffers": "Aucun recrutement pour le moment"
     },
     "reference": "Référence: {ref}",
     "years": "ans",
@@ -36,27 +36,55 @@
     "toast": {
       "success": "Succès",
       "error": "Erreur",
-      "createSuccess": "Offre créée avec succès",
-      "createError": "Erreur lors de la création de l'offre",
-      "editSuccess": "Offre modifiée avec succès",
+      "createSuccess": "Recrutement créé avec succès",
+      "createError": "Erreur lors de la création du recrutement",
+      "editSuccess": "Recrutement modifié avec succès",
       "editError": "Erreur lors de la modification",
       "statusUpdateSuccess": "Statut mis à jour",
       "statusUpdateError": "Erreur lors de la mise à jour du statut"
     }
   },
   "candidates": {
-    "backToOffers": "Retour aux offres",
+    "backToOffers": "Retour aux recrutements",
     "title": "Candidats Proposés",
     "subtitle": "Consultez les candidats et ajoutez vos commentaires",
-    "offerDetails": "Détails de l'offre",
-    "editOffer": "Modifier l'offre",
+    "subtitleForOffer": "Recrutement : {title}",
+    "qualificationScoreBadge": "Score : {score}/100",
+    "qualificationScoreHint": "Score de qualification du candidat, sur 100, évalué par le recruteur par rapport aux critères recherchés pour ce poste.",
+    "allSources": "Toutes les sources",
+    "experienceYears": "{years} ans d'expérience",
+    "desiredSalaryValue": "Prétentions : {amount} {currency}",
+    "desiredDailyRateValue": "TJM souhaité : {amount} {currency}/j",
+    "availabilityOptions": {
+      "immediate": "Immédiate",
+      "less_than_one_month": "< 1 mois",
+      "one_month": "1 mois",
+      "two_months": "2 mois",
+      "three_months": "3 mois",
+      "other": "Autres"
+    },
+    "terminalSteps": {
+      "accepted": "Acceptée",
+      "ko": "KO",
+      "withdrawn": "Désistement"
+    },
+    "identityReveal": {
+      "button": "Demander les coordonnées",
+      "requested": "Demande envoyée",
+      "feedbackTitle": "Demande de coordonnées",
+      "feedbackDescription": "Le client souhaite obtenir les coordonnées de ce candidat anonyme.",
+      "error": "Erreur lors de l'envoi de la demande"
+    },
+    "offerDetails": "Détails du recrutement",
+    "kanbanView": "Vue Kanban",
+    "editOffer": "Modifier le recrutement",
     "refresh": "Actualiser",
     "searchPlaceholder": "Rechercher par nom, email...",
     "allStatuses": "Tous les statuts",
     "empty": {
       "title": "Aucun candidat trouvé",
       "filtered": "Essayez de modifier vos filtres",
-      "noCandidates": "Aucun candidat n'a encore été proposé pour cette offre"
+      "noCandidates": "Aucun candidat n'a encore été proposé pour ce recrutement"
     },
     "years": "ans",
     "skillsLabel": "Compétences:",
@@ -76,10 +104,10 @@
     }
   },
   "form": {
-    "createTitle": "Nouvelle offre de recrutement",
-    "editTitle": "Modifier l'offre de recrutement",
+    "createTitle": "Ajouter une demande",
+    "editTitle": "Modifier le recrutement",
     "createSubtitle": "Décrivez le profil que vous recherchez",
-    "editSubtitle": "Modifiez les informations de votre offre",
+    "editSubtitle": "Modifiez les informations de votre recrutement",
     "statusLabel": "Statut",
     "statusHint": "Vous pouvez mettre cette demande en stand by, la marquer comme comblée, ou l'abandonner si elle n'est plus d'actualité.",
     "statusValues": {
@@ -134,7 +162,8 @@
     "cityRequired": "La ville est requise",
     "minExperience": "Expérience min (années)",
     "maxExperience": "Expérience max (années)",
-    "priority": "Priorité",
+    "priority": "Urgence",
+    "priorityHint": "À quel point ce besoin est-il urgent pour vous ?",
     "priorities": {
       "low": "Basse",
       "normal": "Normale",
@@ -148,13 +177,13 @@
     "benefitsPlaceholder": "Mutuelle, tickets restaurant, véhicule de fonction...",
     "bonuses": "Primes",
     "bonusesPlaceholder": "Prime de performance, 13ème mois...",
-    "note": "Note",
+    "note": "Note client",
     "notePlaceholder": "Informations complémentaires pour l'équipe RH...",
     "noteHint": "Visible par vous et l'équipe RH",
     "cancel": "Annuler",
     "saving": "Enregistrement...",
-    "createSubmit": "Créer l'offre",
-    "editSubmit": "Modifier l'offre",
+    "createSubmit": "Créer le recrutement",
+    "editSubmit": "Modifier le recrutement",
     "defaultWorkflowSteps": {
       "proposed": "Proposé",
       "hrInterview": "Entretien RH",

@@ -1,9 +1,9 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -33,6 +33,24 @@ export default function RequestKanbanPage() {
   const [dragId, setDragId] = useState<string | null>(null);
   const [dragOverCol, setDragOverCol] = useState<string | null>(null);
   const [colPage, setColPage] = useState<Record<string, number>>({});
+
+  // Indicateur visuel qu'il y a d'autres colonnes à droite (le scrollbar seul n'est pas
+  // toujours assez visible, notamment sous Windows avec les scrollbars superposées).
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const updateScrollState = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollRight(el.scrollWidth - el.scrollLeft - el.clientWidth > 8);
+  };
+  const scrollRefCallback = (el: HTMLDivElement | null) => {
+    scrollRef.current = el;
+    if (el) requestAnimationFrame(() => updateScrollState());
+  };
+  useEffect(() => {
+    window.addEventListener("resize", updateScrollState);
+    return () => window.removeEventListener("resize", updateScrollState);
+  }, []);
   // Modal de clôture (KO / Désistement) — motif obligatoire
   const [closeModal, setCloseModal] = useState<{ id: string; column: string } | null>(null);
   const [closeReason, setCloseReason] = useState("");
@@ -182,7 +200,8 @@ export default function RequestKanbanPage() {
           <div className="w-8 h-8 border-4 border-gray-200 border-t-brand-500 rounded-full animate-spin" />
         </div>
       ) : (
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="relative">
+          <div ref={scrollRefCallback} onScroll={updateScrollState} className="flex gap-4 overflow-x-auto pb-4">
           {stepColumns.map((col) => {
             const items = grouped[col] || [];
             const pageIdx = colPage[col] || 0;
@@ -290,6 +309,12 @@ export default function RequestKanbanPage() {
               </div>
             );
           })}
+          </div>
+          {canScrollRight && (
+            <div className="pointer-events-none absolute top-0 right-0 bottom-4 w-16 bg-gradient-to-l from-white dark:from-gray-900 to-transparent flex items-center justify-end pr-1">
+              <ChevronRight size={18} strokeWidth={2} className="text-gray-400 icon-glow animate-pulse rtl:rotate-180" />
+            </div>
+          )}
         </div>
       )}
 

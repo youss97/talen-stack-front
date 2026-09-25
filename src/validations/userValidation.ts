@@ -5,6 +5,9 @@ export const createUserSchema = yup.object({
     .string()
     .required("L'email est requis")
     .email("Email invalide"),
+  // Identifiant de connexion — optionnel (reprend l'email par défaut côté backend), et pas
+  // nécessairement une adresse email valide (ex. "youssefmehri+hutchinson").
+  login: yup.string().optional(),
   password: yup
     .string()
     .required("Le mot de passe est requis")
@@ -28,6 +31,7 @@ export const createUserSchema = yup.object({
 
 export const updateUserSchema = yup.object({
   email: yup.string().email("Email invalide"),
+  login: yup.string().optional(),
   password: yup
     .string()
     .optional()

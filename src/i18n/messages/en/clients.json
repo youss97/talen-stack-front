@@ -1,4 +1,18 @@
 {
+  "statsModal": {
+    "action": "Statistics",
+    "title": "Client statistics",
+    "kpis": {
+      "requests": "Recruitment requests",
+      "applications": "Applications",
+      "integrations": "Integrations"
+    },
+    "charts": {
+      "applicationsPerMonth": "Applications per month",
+      "requestsByStatus": "Requests by status",
+      "applicationsByStatus": "Applications by status"
+    }
+  },
   "list": {
     "title": "Client list",
     "subtitle": "Manage your clients and their administrators",
@@ -66,17 +80,20 @@
       "contact": "Contact",
       "admin": "Client administrator",
       "extra": "Additional information",
-      "internalNote": "Internal note"
+      "internalNote": "Internal note",
+      "source": "Acquisition source"
     },
     "fields": {
       "internalNotePlaceholder": "Note visible internally only...",
       "internalNoteEmpty": "No internal note",
+      "sourcePlaceholder": "E.g.: Referral, LinkedIn, Trade show...",
+      "sourceEmpty": "Not specified",
       "logo": "Client logo",
       "logoHelper": "Accepted formats: JPEG, PNG, GIF, WebP (max 5MB)",
       "name": "Company name",
       "namePlaceholder": "Tech Solutions SARL",
-      "ice": "ICE / SIRET",
-      "icePlaceholder": "123456789012345",
+      "ice": "Business Identifier",
+      "icePlaceholder": "ICE, SIRET, RC...",
       "country": "Country",
       "address": "Address",
       "addressPlaceholder": "12 rue de la Paix",
@@ -94,6 +111,9 @@
       "firstName": "First name",
       "lastName": "Last name",
       "adminEmailPlaceholder": "admin@example.com",
+      "adminLogin": "Login",
+      "adminLoginPlaceholder": "Leave empty to use the email",
+      "adminLoginHint": "Optional — useful if this person already has an account elsewhere with the same email.",
       "adminFirstNamePlaceholder": "John",
       "adminLastNamePlaceholder": "Doe",
       "password": "Password",

@@ -69,6 +69,10 @@ export default function CompaniesPage() {
     limit,
     search: search || undefined,
     status: statusFilter || undefined,
+    // Ce tableau est réservé à la gestion des sociétés RH abonnées — les sociétés "client lié"
+    // (portails créés automatiquement pour un Client) n'y ont pas leur place.
+    excludeClientCompanies: true,
+    onlySubscribed: true,
   });
 
   const [getCompanyById, { isLoading: isLoadingDetail }] = useLazyGetCompanyByIdQuery();
@@ -118,7 +122,7 @@ export default function CompaniesPage() {
 
   const columns: Column<Company>[] = [
     { key: "name", header: t("list.columns.name"), className: "font-medium" },
-    { key: "siret", header: t("list.columns.siret") },
+    { key: "company_identifier", header: t("list.columns.companyIdentifier") },
     { key: "city", header: t("list.columns.city") },
     { key: "email", header: t("list.columns.email") },
     { key: "phone", header: t("list.columns.phone") },
@@ -196,9 +200,9 @@ export default function CompaniesPage() {
     try {
       if (selectedCompany) {
         // Mise à jour
-        const { adminEmail, adminPassword, adminFirstName, adminLastName, adminPhoto, ...companyData } =
+        const { adminEmail, adminLogin, adminPassword, adminFirstName, adminLastName, adminPhoto, ...companyData } =
           companyFormData as typeof companyFormData & {
-            adminEmail?: string; adminPassword?: string;
+            adminEmail?: string; adminLogin?: string; adminPassword?: string;
             adminFirstName?: string; adminLastName?: string; adminPhoto?: unknown;
           };
 

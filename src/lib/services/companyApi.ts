@@ -32,6 +32,8 @@ export const companyApi = createApi({
           limit: params.limit || 10,
           ...(params.search && { search: params.search }),
           ...(params.status && { status: params.status }),
+          ...(params.excludeClientCompanies && { excludeClientCompanies: true }),
+          ...(params.onlySubscribed && { onlySubscribed: true }),
         },
       }),
       providesTags: (result) =>

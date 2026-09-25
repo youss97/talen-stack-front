@@ -1,4 +1,17 @@
 {
+  "voiceNote": {
+    "record": "تسجيل رسالة صوتية",
+    "stopRecording": "إيقاف ({time})",
+    "remove": "حذف الرسالة الصوتية",
+    "permissionError": "الميكروفون غير متاح: اسمح بالوصول إلى الميكروفون في المتصفح.",
+    "listen": "رسالة صوتية"
+  },
+  "voiceInput": {
+    "start": "إملاء بالصوت",
+    "stop": "إيقاف الإملاء",
+    "listening": "جارٍ الاستماع...",
+    "notSupported": "الإملاء الصوتي غير متوفر على هذا المتصفح"
+  },
   "actions": {
     "save": "حفظ",
     "cancel": "إلغاء",
@@ -19,18 +32,25 @@
     "create": "إنشاء",
     "update": "تحديث",
     "submit": "إرسال",
-    "loadMore": "تحميل المزيد"
+    "loadMore": "تحميل المزيد",
+    "viewDetails": "عرض التفاصيل"
   },
   "status": {
     "loading": "جارٍ التحميل...",
     "noData": "لا توجد بيانات",
     "noResults": "لا توجد نتائج",
+    "noDataAvailable": "لا توجد بيانات متاحة",
     "success": "تم بنجاح",
     "error": "خطأ",
     "warning": "تنبيه",
     "info": "معلومة"
   },
+  "views": {
+    "table": "جدول",
+    "cards": "بطاقات"
+  },
   "labels": {
+    "home": "الرئيسية",
     "actions": "إجراءات",
     "status": "الحالة",
     "date": "التاريخ",
@@ -52,10 +72,23 @@
     "deleteTitle": "تأكيد الحذف",
     "deleteMessage": "هذا الإجراء لا يمكن التراجع عنه. هل تريد المتابعة؟"
   },
+  "bulkActions": {
+    "selectedCount": "{count} مرشح مُحدد",
+    "clearSelection": "إلغاء تحديد الكل",
+    "sendEmail": "إرسال بريد إلكتروني",
+    "assign": "إسناد",
+    "delete": "حذف",
+    "deleteTitle": "حذف الترشيحات",
+    "deleteMessage": "هل أنت متأكد أنك تريد حذف {count} ترشيح؟ هذا الإجراء نهائي."
+  },
   "support": {
     "contactButton": "التواصل مع الدعم",
     "sending": "جارٍ الإرسال...",
     "sent": "تم الإبلاغ للدعم ✓",
-    "error": "فشل الإرسال"
+    "error": "فشل الإرسال",
+    "modalTitle": "صف المشكلة",
+    "modalSubtitle": "بضع كلمات حول ما حدث ستساعدنا في حل المشكلة بشكل أسرع.",
+    "modalPlaceholder": "مثال: ضغطت على حفظ ولم يحدث شيء...",
+    "modalSubmit": "إرسال إلى الدعم"
   }
 }
