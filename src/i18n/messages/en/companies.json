@@ -11,7 +11,12 @@
       "city": "City",
       "email": "Email",
       "phone": "Phone",
-      "status": "Status"
+      "status": "Status",
+      "paymentStatus": "Subscription"
+    },
+    "paymentStatus": {
+      "paid": "Paid",
+      "unpaid": "Unpaid"
     },
     "status": {
       "active": "Active",
@@ -20,7 +25,8 @@
     },
     "rowActions": {
       "activate": "Activate",
-      "deactivate": "Deactivate"
+      "deactivate": "Deactivate",
+      "remind": "Remind for subscription"
     },
     "emptyState": "No companies found",
     "deactivateModal": {
@@ -35,6 +41,8 @@
     "companyActivatedMessage": "\"{name}\" and its accounts have been reactivated",
     "companyDeactivatedMessage": "\"{name}\" and its accounts have been deactivated",
     "statusUpdateError": "Error while updating the status",
+    "remindSuccessMessage": "Reminder sent to \"{name}\"",
+    "remindError": "Error while sending the reminder",
     "reactivatedTitle": "Company reactivated",
     "reactivatedMessage": "\"{name}\" and its accounts have been reactivated",
     "reactivateError": "Error while reactivating",

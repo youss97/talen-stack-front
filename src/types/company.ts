@@ -35,6 +35,7 @@ export interface Company {
   logo_path?: string;
   status: "active" | "inactive";
   parent_company_id?: string | null;
+  subscription_plan_id?: string | null;
   users?: CompanyUser[];
   created_at?: string;
   updated_at?: string;

@@ -11,7 +11,12 @@
       "city": "Ville",
       "email": "Email",
       "phone": "Téléphone",
-      "status": "Statut"
+      "status": "Statut",
+      "paymentStatus": "Abonnement"
+    },
+    "paymentStatus": {
+      "paid": "Payé",
+      "unpaid": "Non payé"
     },
     "status": {
       "active": "Actif",
@@ -20,7 +25,8 @@
     },
     "rowActions": {
       "activate": "Activer",
-      "deactivate": "Désactiver"
+      "deactivate": "Désactiver",
+      "remind": "Relancer pour abonnement"
     },
     "emptyState": "Aucune entreprise trouvée",
     "deactivateModal": {
@@ -35,6 +41,8 @@
     "companyActivatedMessage": "\"{name}\" et ses comptes ont été réactivés",
     "companyDeactivatedMessage": "\"{name}\" et ses comptes ont été désactivés",
     "statusUpdateError": "Erreur lors de la modification du statut",
+    "remindSuccessMessage": "Relance envoyée à \"{name}\"",
+    "remindError": "Erreur lors de l'envoi de la relance",
     "reactivatedTitle": "Entreprise réactivée",
     "reactivatedMessage": "\"{name}\" et ses comptes ont été réactivés",
     "reactivateError": "Erreur lors de la réactivation",

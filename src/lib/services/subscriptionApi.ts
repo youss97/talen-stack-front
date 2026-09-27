@@ -64,6 +64,15 @@ export const subscriptionApi = createApi({
       query: (companyId) => ({ url: `/subscriptions/companies/${companyId}/plan`, method: "GET" }),
       providesTags: (_r, _e, companyId) => [{ type: "CompanyPlan", id: companyId }],
     }),
+
+    // POST /subscriptions/companies/:companyId/remind — relance (email + notif in-app)
+    remindCompany: builder.mutation<{ notified: number }, { companyId: string; message?: string }>({
+      query: ({ companyId, message }) => ({
+        url: `/subscriptions/companies/${companyId}/remind`,
+        method: "POST",
+        body: { message },
+      }),
+    }),
   }),
 });
 
@@ -76,4 +85,5 @@ export const {
   useAssignPlanToCompanyMutation,
   useRemoveCompanyPlanMutation,
   useGetCompanyPlanQuery,
+  useRemindCompanyMutation,
 } = subscriptionApi;

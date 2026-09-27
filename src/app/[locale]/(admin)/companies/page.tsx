@@ -1,7 +1,7 @@
 "use client";
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { RefreshCw, Plus, Lock, Unlock } from "lucide-react";
+import { RefreshCw, Plus, Lock, Unlock, BellRing } from "lucide-react";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
@@ -21,7 +21,7 @@ import {
 import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store";
 import { useSetCompanyFeaturesMutation } from "@/lib/services/roleApi";
-import { useAssignPlanToCompanyMutation, useRemoveCompanyPlanMutation } from "@/lib/services/subscriptionApi";
+import { useAssignPlanToCompanyMutation, useRemoveCompanyPlanMutation, useRemindCompanyMutation } from "@/lib/services/subscriptionApi";
 import { useActions } from "@/hooks/useActions";
 import type { Company } from "@/types/company";
 import type { CreateCompanyFormData } from "@/validations/companyValidation";
@@ -29,6 +29,10 @@ import { getApiErrorMessage } from "@/utils/errorMessages";
 
 function RefreshIcon() {
   return <RefreshCw size={16} strokeWidth={1.8} className="icon-glow" />;
+}
+
+function RemindIcon() {
+  return <BellRing size={16} strokeWidth={1.8} className="icon-glow" />;
 }
 
 export default function CompaniesPage() {
@@ -69,10 +73,10 @@ export default function CompaniesPage() {
     limit,
     search: search || undefined,
     status: statusFilter || undefined,
-    // Ce tableau est réservé à la gestion des sociétés RH abonnées — les sociétés "client lié"
-    // (portails créés automatiquement pour un Client) n'y ont pas leur place.
+    // Ce tableau liste toutes les sociétés RH — les sociétés "client lié" (portails créés
+    // automatiquement pour un Client) n'y ont pas leur place. Le statut de paiement (colonne
+    // "Abonnement") s'affiche pour toutes, qu'elles aient ou non un plan assigné.
     excludeClientCompanies: true,
-    onlySubscribed: true,
   });
 
   const [getCompanyById, { isLoading: isLoadingDetail }] = useLazyGetCompanyByIdQuery();
@@ -84,6 +88,7 @@ export default function CompaniesPage() {
   const [setCompanyFeatures] = useSetCompanyFeaturesMutation();
   const [assignPlanToCompany] = useAssignPlanToCompanyMutation();
   const [removeCompanyPlan] = useRemoveCompanyPlanMutation();
+  const [remindCompany] = useRemindCompanyMutation();
 
   const getErrorMessage = (error: unknown, defaultMessage: string): string =>
     getApiErrorMessage(error, defaultMessage);
@@ -103,6 +108,19 @@ export default function CompaniesPage() {
       addToast("error", tc("status.error"), getErrorMessage(error, t("toasts.statusUpdateError")));
     } finally {
       setQuickTogglingId(null);
+    }
+  };
+
+  const [remindingId, setRemindingId] = useState<string | null>(null);
+  const handleRemind = async (company: Company) => {
+    setRemindingId(company.id);
+    try {
+      await remindCompany({ companyId: company.id }).unwrap();
+      addToast("success", tc("status.success"), t("toasts.remindSuccessMessage", { name: company.name }));
+    } catch (error) {
+      addToast("error", tc("status.error"), getErrorMessage(error, t("toasts.remindError")));
+    } finally {
+      setRemindingId(null);
     }
   };
 
@@ -138,6 +156,16 @@ export default function CompaniesPage() {
         const { label, color } = statusMap[value as string] ?? { label: String(value), color: "error" };
         return <Badge color={color} variant="light" size="sm">{label}</Badge>;
       },
+    },
+    {
+      key: "subscription_plan_id",
+      header: t("list.columns.paymentStatus"),
+      render: (value) =>
+        value ? (
+          <Badge color="success" variant="light" size="sm">{t("list.paymentStatus.paid")}</Badge>
+        ) : (
+          <Badge color="warning" variant="light" size="sm">{t("list.paymentStatus.unpaid")}</Badge>
+        ),
     },
   ];
 
@@ -351,6 +379,13 @@ export default function CompaniesPage() {
               color: "success",
               onClick: (row) => toggleCompanyStatus(row),
               hidden: (row) => row.status === "active",
+            },
+            {
+              label: t("list.rowActions.remind"),
+              icon: <RemindIcon />,
+              color: "default",
+              onClick: (row) => handleRemind(row),
+              hidden: (row) => !!row.subscription_plan_id,
             },
           ]}
           emptyMessage={t("list.emptyState")}

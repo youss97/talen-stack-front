@@ -11,7 +11,12 @@
       "city": "المدينة",
       "email": "البريد الإلكتروني",
       "phone": "الهاتف",
-      "status": "الحالة"
+      "status": "الحالة",
+      "paymentStatus": "الاشتراك"
+    },
+    "paymentStatus": {
+      "paid": "مدفوع",
+      "unpaid": "غير مدفوع"
     },
     "status": {
       "active": "نشطة",
@@ -20,7 +25,8 @@
     },
     "rowActions": {
       "activate": "تفعيل",
-      "deactivate": "تعطيل"
+      "deactivate": "تعطيل",
+      "remind": "تذكير بالاشتراك"
     },
     "emptyState": "لم يتم العثور على أي شركة",
     "deactivateModal": {
@@ -35,6 +41,8 @@
     "companyActivatedMessage": "تمت إعادة تفعيل \"{name}\" وحساباتها",
     "companyDeactivatedMessage": "تم تعطيل \"{name}\" وحساباتها",
     "statusUpdateError": "خطأ أثناء تعديل الحالة",
+    "remindSuccessMessage": "تم إرسال التذكير إلى \"{name}\"",
+    "remindError": "خطأ أثناء إرسال التذكير",
     "reactivatedTitle": "تمت إعادة تفعيل الشركة",
     "reactivatedMessage": "تمت إعادة تفعيل \"{name}\" وحساباتها",
     "reactivateError": "خطأ أثناء إعادة التفعيل",
