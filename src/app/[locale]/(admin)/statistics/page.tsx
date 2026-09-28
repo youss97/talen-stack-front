@@ -86,6 +86,45 @@ function DonutChart({ title, rows, getLabel }: { title: string; rows?: { status:
   );
 }
 
+function CompaniesListCard({ title, companies }: { title: string; companies?: { id?: string; name: string; status: string; hasPlan: boolean }[] }) {
+  const t = useTranslations("statistics");
+  const tc = useTranslations("companies.list");
+  if (!companies || companies.length === 0) return null;
+  return (
+    <ChartCard title={title}>
+      <div className="max-h-[280px] overflow-y-auto -mx-1 px-1">
+        <ul className="divide-y divide-gray-100 dark:divide-gray-800">
+          {companies.map((c, i) => (
+            <li key={c.id || `${c.name}-${i}`} className="flex items-center justify-between gap-3 py-2.5">
+              <span className="truncate text-sm font-medium text-gray-800 dark:text-white">{c.name}</span>
+              <div className="flex shrink-0 items-center gap-1.5">
+                <span
+                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                    c.status === "active"
+                      ? "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400"
+                      : "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400"
+                  }`}
+                >
+                  {c.status === "active" ? t("companiesList.active") : t("companiesList.inactive")}
+                </span>
+                <span
+                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                    c.hasPlan
+                      ? "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400"
+                      : "bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400"
+                  }`}
+                >
+                  {c.hasPlan ? tc("paymentStatus.paid") : tc("paymentStatus.unpaid")}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </ChartCard>
+  );
+}
+
 function BarChart({ title, items, seriesName }: { title: string; items?: { name: string; value: number }[]; seriesName: string }) {
   if (!items || items.length === 0) return null;
   return (
@@ -244,7 +283,6 @@ export default function StatisticsPage() {
   const isSuperAdmin = !!data?.monthlyCompanies;
 
   const topClientsItems = (data?.topClients || []).map((c) => ({ name: c.name, value: c.requestsCount || 0 }));
-  const topCompaniesItems = (data?.topCompanies || []).map((c) => ({ name: c.name, value: c.clientsCount || 0 }));
 
   return (
     <div className="w-full">
@@ -270,7 +308,7 @@ export default function StatisticsPage() {
             <AreaChart title={t("charts.requestsPerMonth")} name={t("charts.series.requests")} points={data?.monthlyRequests} />
             <DonutChart title={t("charts.companiesByStatus")} rows={data?.companiesByStatus} />
             <BarChart title={t("charts.trafficByCompany")} items={data?.topCompaniesTraffic} seriesName={t("charts.series.total")} />
-            <BarChart title={t("charts.topCompaniesByClients")} items={topCompaniesItems} seriesName={t("charts.series.total")} />
+            <CompaniesListCard title={t("charts.companiesList")} companies={data?.companiesList} />
           </>
         ) : (
           <>

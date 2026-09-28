@@ -1,6 +1,6 @@
 'use client';
 
-import { QrCode } from "lucide-react";
+import { QrCode, Eye } from "lucide-react";
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { useTogglePublicJobOfferActiveMutation } from '@/lib/services/publicJobOfferApi';
@@ -63,7 +63,7 @@ export default function PublicOfferToggleSimple({
         <div className="flex items-center gap-2">
           {/* Badge avec vues */}
           <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-            👁️ {t('publicOffer.viewsCount', { count: viewsCount })}
+            <Eye size={12} strokeWidth={1.8} className="icon-glow" /> {t('publicOffer.viewsCount', { count: viewsCount })}
           </span>
 
           {/* Bouton QR Code */}

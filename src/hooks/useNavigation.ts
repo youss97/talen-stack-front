@@ -79,6 +79,12 @@ export function useNavigation() {
       if (lc) items.push({ title: t(`items./settings/landing`), path: "/settings/landing", icon: lc.icon, group: lc.group });
     }
 
+    // Clients (toutes sociétés) — vue plateforme, super admin uniquement
+    if (isSuperAdmin && !items.find((i) => i.path === "/platform-clients")) {
+      const pc = NAV_CONFIG["/platform-clients"];
+      if (pc) items.push({ title: t(`items./platform-clients`), path: "/platform-clients", icon: pc.icon, group: pc.group });
+    }
+
     return items;
   }, [features, canAccessPath, isSuperAdmin, isClientSpace, t]);
 

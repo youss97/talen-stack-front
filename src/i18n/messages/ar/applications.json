@@ -206,7 +206,7 @@
     "statusSection": "حالة الترشيح",
     "changeStatus": "تغيير الحالة",
     "viewHistory": "عرض السجل",
-    "sendEmailButton": "📧 إرسال بريد إلكتروني",
+    "sendEmailButton": "إرسال بريد إلكتروني",
     "proposedDateSection": "تاريخ العرض",
     "close": "إغلاق",
     "feedbackTitleForStep": "تقييم — {step}",

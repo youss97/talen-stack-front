@@ -4,6 +4,10 @@
     "description": "Vue d'ensemble de l'activité de recrutement",
     "loadingDescription": "Vue d'ensemble de l'activité"
   },
+  "companiesList": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
   "kpis": {
     "companies": "Entreprises",
     "clients": "Clients",
@@ -40,6 +44,7 @@
     "topClients": "Top clients (demandes)",
     "requestsPerMonth": "Demandes de recrutement par mois",
     "topCompaniesByClients": "Top entreprises (clients)",
+    "companiesList": "Sociétés RH",
     "series": {
       "companies": "Entreprises",
       "applications": "Candidatures",

@@ -1,4 +1,28 @@
 {
+  "platformList": {
+    "title": "العملاء (جميع الشركات)",
+    "subtitle": "جميع عملاء المنصة، بغض النظر عن شركة التوظيف التي تديرهم.",
+    "searchPlaceholder": "البحث بالاسم، القطاع، جهة الاتصال، البريد الإلكتروني أو شركة التوظيف...",
+    "filters": {
+      "allCompanies": "جميع شركات التوظيف",
+      "noCompanyFound": "لم يتم العثور على أي شركة توظيف"
+    },
+    "columns": {
+      "name": "اسم الشركة",
+      "ownerCompany": "شركة التوظيف",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "ice": "المعرف الضريبي",
+      "address": "العنوان",
+      "city": "المدينة",
+      "country": "البلد",
+      "industry": "قطاع النشاط",
+      "source": "المصدر",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء"
+    },
+    "emptyState": "لم يتم العثور على أي عميل"
+  },
   "statsModal": {
     "action": "الإحصائيات",
     "title": "إحصائيات العميل",
@@ -122,7 +146,8 @@
       "position": "المنصب",
       "positionPlaceholder": "مدير عام",
       "notProvided": "غير محدد",
-      "industry": "القطاع",
+      "industry": "قطاع النشاط",
+      "industryPlaceholder": "مثال: التكنولوجيا / تقنية المعلومات",
       "companySize": "الحجم",
       "vatRate": "نسبة الضريبة على القيمة المضافة",
       "paymentTerms": "شروط الدفع"

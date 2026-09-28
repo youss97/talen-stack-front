@@ -41,6 +41,9 @@ export interface Client {
   company_logo_path?: string;
   company_created_at?: string;
   company_updated_at?: string;
+  // Société RH propriétaire de ce client sur la plateforme (vue super admin uniquement)
+  owner_company_id?: string | null;
+  owner_company_name?: string | null;
   // Managers
   managers?: Array<{
     id: string;

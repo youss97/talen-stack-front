@@ -18,11 +18,15 @@ export const PUBLIC_OFFER_FIELDS: { key: string }[] = [
   { key: "min_experience" },
   { key: "salary" },
   { key: "remote_possible" },
-  { key: "deadline" },
+  { key: "number_of_profiles" },
   { key: "desired_start_date" },
   { key: "reference" },
   { key: "industry" },
 ];
+
+// Champs décochés par défaut lorsqu'aucune configuration n'a encore été enregistrée
+// (nom du client, salaire, date de début souhaitée, secteur d'activité)
+const DEFAULT_UNCHECKED_FIELDS = ["client", "salary", "desired_start_date", "industry"];
 
 interface Props {
   isOpen: boolean;
@@ -39,11 +43,13 @@ export default function PublicOfferConfigModal({ isOpen, onClose, offerId, initi
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Vide = tout afficher (rétro-compat)
-    const all = !initialVisibleFields || initialVisibleFields.length === 0;
+    // Vide = configuration par défaut : tout coché sauf les champs sensibles
+    const noConfigYet = !initialVisibleFields || initialVisibleFields.length === 0;
     const state: Record<string, boolean> = {};
     PUBLIC_OFFER_FIELDS.forEach((f) => {
-      state[f.key] = all ? true : initialVisibleFields!.includes(f.key);
+      state[f.key] = noConfigYet
+        ? !DEFAULT_UNCHECKED_FIELDS.includes(f.key)
+        : initialVisibleFields!.includes(f.key);
     });
     setVisible(state);
     setError(null);

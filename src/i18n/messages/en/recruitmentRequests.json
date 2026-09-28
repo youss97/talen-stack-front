@@ -199,6 +199,8 @@
       "countryPlaceholder": "Type to search for a country...",
       "city": "City",
       "cityPlaceholder": "Type to search for a city...",
+      "sector": "Industry sector",
+      "sectorPlaceholder": "E.g.: Technology / IT",
       "workMode": "Work mode",
       "workModeOnSite": "On-site",
       "workModeRemote": "Remote",

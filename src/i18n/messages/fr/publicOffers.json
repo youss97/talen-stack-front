@@ -54,7 +54,7 @@
     "experience": "Expérience requise",
     "experienceMin": "{years} ans minimum",
     "skills": "Compétences requises",
-    "deadline": "Date limite",
+    "numberOfProfiles": "Nombre de profils souhaités",
     "stats": "Statistiques",
     "views": "Vues",
     "publishedDate": "Date de publication",
@@ -117,7 +117,7 @@
       "min_experience": "Expérience requise",
       "salary": "Salaire",
       "remote_possible": "Télétravail",
-      "deadline": "Date limite",
+      "number_of_profiles": "Nombre de profils souhaités",
       "desired_start_date": "Début souhaité",
       "reference": "Référence",
       "industry": "Secteur d'activité"

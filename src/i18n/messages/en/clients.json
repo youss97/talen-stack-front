@@ -1,4 +1,28 @@
 {
+  "platformList": {
+    "title": "Clients (all companies)",
+    "subtitle": "All clients on the platform, regardless of which RH company manages them.",
+    "searchPlaceholder": "Search by name, industry, contact, email or RH company...",
+    "filters": {
+      "allCompanies": "All RH companies",
+      "noCompanyFound": "No RH company found"
+    },
+    "columns": {
+      "name": "Company name",
+      "ownerCompany": "RH company",
+      "email": "Email",
+      "phone": "Phone",
+      "ice": "Tax ID",
+      "address": "Address",
+      "city": "City",
+      "country": "Country",
+      "industry": "Industry",
+      "source": "Source",
+      "status": "Status",
+      "createdAt": "Created on"
+    },
+    "emptyState": "No clients found"
+  },
   "statsModal": {
     "action": "Statistics",
     "title": "Client statistics",
@@ -123,6 +147,7 @@
       "positionPlaceholder": "General Manager",
       "notProvided": "Not provided",
       "industry": "Industry",
+      "industryPlaceholder": "E.g.: Technology / IT",
       "companySize": "Size",
       "vatRate": "VAT rate",
       "paymentTerms": "Payment terms"

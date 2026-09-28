@@ -54,7 +54,7 @@
     "experience": "الخبرة المطلوبة",
     "experienceMin": "{years} سنوات كحد أدنى",
     "skills": "المهارات المطلوبة",
-    "deadline": "الموعد النهائي",
+    "numberOfProfiles": "عدد المناصب المطلوبة",
     "stats": "الإحصائيات",
     "views": "المشاهدات",
     "publishedDate": "تاريخ النشر",
@@ -117,7 +117,7 @@
       "min_experience": "الخبرة المطلوبة",
       "salary": "الراتب",
       "remote_possible": "العمل عن بُعد",
-      "deadline": "الموعد النهائي",
+      "number_of_profiles": "عدد المناصب المطلوبة",
       "desired_start_date": "تاريخ البدء المرغوب",
       "reference": "المرجع",
       "industry": "قطاع النشاط"

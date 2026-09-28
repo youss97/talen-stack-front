@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Eye, ShieldCheck, CalendarClock } from "lucide-react";
+import { Eye, ShieldCheck, CalendarClock, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import { openCvInNewTab } from "@/utils/cvView";
@@ -57,6 +57,7 @@ export default function RecruiterDetailModal({
 }: RecruiterDetailModalProps) {
   const t = useTranslations("applications.detail");
   const tc = useTranslations("common");
+  const tReq = useTranslations("recruitmentRequests");
   // Utiliser la query pour récupérer les données en temps réel
   const { data: recruiter, isLoading: isLoadingRecruiter } = useGetRecruiterByIdQuery(
     recruiterId || '', 
@@ -470,7 +471,16 @@ export default function RecruiterDetailModal({
                     <DetailItem label={t("reference")} value={recruiter.request.reference || "-"} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <DetailItem label={t("status")} value={recruiter.request.status || "-"} />
+                    <DetailItem
+                      label={t("status")}
+                      value={
+                        recruiter.request.status
+                          ? (tReq.has(`list.statusOptions.${recruiter.request.status}`)
+                              ? tReq(`list.statusOptions.${recruiter.request.status}`)
+                              : recruiter.request.status)
+                          : "-"
+                      }
+                    />
                     {recruiter.request.client && (
                       <DetailItem label={t("client")} value={recruiter.request.client.name || "-"} />
                     )}
@@ -940,6 +950,7 @@ export default function RecruiterDetailModal({
                   variant="outline"
                   size="sm"
                   onClick={() => setIsSendEmailModalOpen(true)}
+                  startIcon={<Mail size={14} strokeWidth={1.8} className="icon-glow" />}
                 >
                   {t("sendEmailButton")}
                 </Button>

@@ -100,6 +100,9 @@ export const createApplicationRequestSchema = yup.object({
   country: yup
     .string()
     .required("Le pays est requis"),
+  sector: yup
+    .string()
+    .optional(),
 
   // Type de travail
   work_type: yup
@@ -232,6 +235,7 @@ export const updateApplicationRequestSchema = yup.object({
     .nullable(),
   location: yup.string(),
   country: yup.string(),
+  sector: yup.string(),
   work_type: yup
     .string()
     .oneOf(["on_site", "remote", "hybrid"], "Type de travail invalide"),

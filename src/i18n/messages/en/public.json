@@ -46,7 +46,7 @@
       "remoteYes": "Possible",
       "remoteNo": "No",
       "remoteHybrid": "Hybrid ({count} day(s) remote/week)",
-      "deadline": "Application deadline",
+      "numberOfProfiles": "Positions to fill",
       "startDate": "Desired start date",
       "industry": "Industry"
     },
@@ -170,7 +170,7 @@
       "location": "Location",
       "salary": "Salary",
       "experience": "Experience",
-      "deadline": "Application deadline"
+      "numberOfProfiles": "Positions to fill"
     },
     "details": "Job details",
     "form": {

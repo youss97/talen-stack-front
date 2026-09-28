@@ -52,7 +52,8 @@ export interface ApplicationRequest {
   // Localisation
   location?: string;
   country?: string;
-  
+  sector?: string;
+
   // Type de travail
   work_type: "on_site" | "remote" | "hybrid";
   remote_days_per_week?: number;
@@ -230,6 +231,7 @@ export interface CreateApplicationRequestRequest {
   // Localisation
   location: string;
   country: string;
+  sector?: string;
 
   // Type de travail
   work_type: "on_site" | "remote" | "hybrid";
@@ -295,6 +297,7 @@ export interface UpdateApplicationRequestRequest {
   daily_rate_max?: number;
   location?: string;
   country?: string;
+  sector?: string;
   work_type?: "on_site" | "remote" | "hybrid";
   remote_days_per_week?: number;
   remote_possible?: boolean;

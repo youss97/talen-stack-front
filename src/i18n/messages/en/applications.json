@@ -206,7 +206,7 @@
     "statusSection": "Application status",
     "changeStatus": "Change status",
     "viewHistory": "View history",
-    "sendEmailButton": "📧 Send an email",
+    "sendEmailButton": "Send an email",
     "proposedDateSection": "Proposal date",
     "close": "Close",
     "feedbackTitleForStep": "Feedback — {step}",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Info } from "lucide-react";
+import { Info, Lock, Mail } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
@@ -148,7 +148,11 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
             </h3>
             <div className="space-y-2">
               {(candidate as { salary_confidential?: boolean }).salary_confidential ? (
-                <Row label={t("candidateDetail.salary")} value={t("candidateDetail.confidential")} />
+                <Row label={t("candidateDetail.salary")} value={
+                  <span className="inline-flex items-center gap-1">
+                    <Lock size={13} strokeWidth={1.8} className="icon-glow" /> {t("candidateDetail.confidential")}
+                  </span>
+                } />
               ) : (
                 <>
                   {candidate.current_salary != null && (
@@ -170,7 +174,11 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
                 </>
               )}
               {(candidate as { desired_salary_deferred?: boolean }).desired_salary_deferred ? (
-                <Row label={t("candidateDetail.desiredSalary")} value={t("candidateDetail.deferredDiscussion")} />
+                <Row label={t("candidateDetail.desiredSalary")} value={
+                  <span className="inline-flex items-center gap-1">
+                    <Lock size={13} strokeWidth={1.8} className="icon-glow" /> {t("candidateDetail.deferredDiscussion")}
+                  </span>
+                } />
               ) : (
                 <>
                   {candidate.salary_expectation != null && wantsSalaryExpectation && (

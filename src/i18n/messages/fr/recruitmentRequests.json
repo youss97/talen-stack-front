@@ -199,6 +199,8 @@
       "countryPlaceholder": "Tapez pour rechercher un pays...",
       "city": "Ville",
       "cityPlaceholder": "Tapez pour rechercher une ville...",
+      "sector": "Secteur d'activité",
+      "sectorPlaceholder": "Ex: Technologie / IT",
       "workMode": "Mode de travail",
       "workModeOnSite": "Présentiel",
       "workModeRemote": "Télétravail",

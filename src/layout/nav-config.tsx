@@ -11,7 +11,7 @@ import {
   EnvelopeIcon,
   CalenderIcon,
 } from "../icons/index";
-import { Handshake, Building2, LayoutDashboard, ClipboardList, ClipboardCheck, Code2 } from "lucide-react";
+import { Handshake, Building2, LayoutDashboard, ClipboardList, ClipboardCheck, Code2, Users } from "lucide-react";
 
 // ----------------------------------------------------------------------
 
@@ -52,6 +52,11 @@ export const NAV_CONFIG: Record<string, { title: string; icon: React.ReactNode; 
   "/clients": {
     title: "Clients",
     icon: <UserCircleIcon />,
+    group: "Administration",
+  },
+  "/platform-clients": {
+    title: "Clients (plateforme)",
+    icon: <Users size={18} strokeWidth={1.8} />,
     group: "Administration",
   },
   "/managers": {

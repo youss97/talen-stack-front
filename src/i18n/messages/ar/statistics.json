@@ -1,4 +1,8 @@
 {
+  "companiesList": {
+    "active": "نشطة",
+    "inactive": "غير نشطة"
+  },
   "page": {
     "title": "الإحصائيات",
     "description": "نظرة عامة على نشاط التوظيف",
@@ -40,6 +44,7 @@
     "topClients": "أفضل العملاء (الطلبات)",
     "requestsPerMonth": "طلبات التوظيف شهريًا",
     "topCompaniesByClients": "أفضل الشركات (العملاء)",
+    "companiesList": "شركات الموارد البشرية",
     "series": {
       "companies": "الشركات",
       "applications": "الترشيحات",

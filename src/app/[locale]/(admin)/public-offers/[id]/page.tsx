@@ -326,19 +326,13 @@ export default function PublicOfferDetailPage() {
                 </div>
               )}
 
-              {offer.deadline && (
+              {offer.number_of_profiles && (
                 <div>
                   <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {t("deadline")}
+                    {t("numberOfProfiles")}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {offer.deadline && !isNaN(new Date(offer.deadline).getTime())
-                      ? new Date(offer.deadline).toLocaleDateString("fr-FR", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })
-                      : "-"}
+                    {offer.number_of_profiles}
                   </p>
                 </div>
               )}

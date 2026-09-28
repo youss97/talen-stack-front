@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Building2, Users, Target, Wrench, ClipboardList } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -169,11 +169,21 @@ export default function RequestKanbanPage() {
               {request?.title || t("kanban.defaultTitle")}
             </h1>
             {request?.reference && <span className="gw-badge gw-badge-neutral">{t("kanban.referenceBadge", { ref: request.reference })}</span>}
-            {request?.status && <span className="gw-badge gw-badge-blue">{request.status}</span>}
+            {request?.status && (
+              <span className="gw-badge gw-badge-blue">
+                {t.has(`list.statusOptions.${request.status}`) ? t(`list.statusOptions.${request.status}`) : request.status}
+              </span>
+            )}
           </div>
           <p className="mt-1 text-sm flex flex-wrap items-center gap-x-3 gap-y-1" style={{ color: "var(--text-2)" }}>
-            {request?.client?.name && <span>🏢 {request.client.name}</span>}
-            <span>👥 {t("kanban.candidateCount", { count: candidates.length })}</span>
+            {request?.client?.name && (
+              <span className="inline-flex items-center gap-1">
+                <Building2 size={13} strokeWidth={1.8} className="icon-glow" /> {request.client.name}
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1">
+              <Users size={13} strokeWidth={1.8} className="icon-glow" /> {t("kanban.candidateCount", { count: candidates.length })}
+            </span>
             <span className="hidden sm:inline" style={{ color: "var(--text-3)" }}>· {t("kanban.dragHint")}</span>
           </p>
         </div>
@@ -255,13 +265,13 @@ export default function RequestKanbanPage() {
                       {/* Badges infos */}
                       <div className="mt-2.5 flex flex-wrap gap-1.5">
                         {typeof c.cv?.total_experience === "number" && c.cv.total_experience > 0 && (
-                          <span className="gw-chip !h-6 !text-[11px]">
-                            🎯 {t("kanban.experienceYears", { count: c.cv.total_experience })}
+                          <span className="gw-chip !h-6 !text-[11px] inline-flex items-center gap-1">
+                            <Target size={12} strokeWidth={1.8} className="icon-glow" /> {t("kanban.experienceYears", { count: c.cv.total_experience })}
                           </span>
                         )}
                         {Array.isArray(c.cv?.skills) && c.cv.skills.length > 0 && (
-                          <span className="gw-chip !h-6 !text-[11px]">
-                            🛠 {t("kanban.skillsCount", { count: c.cv.skills.length })}
+                          <span className="gw-chip !h-6 !text-[11px] inline-flex items-center gap-1">
+                            <Wrench size={12} strokeWidth={1.8} className="icon-glow" /> {t("kanban.skillsCount", { count: c.cv.skills.length })}
                           </span>
                         )}
                         {c.status && (
@@ -284,7 +294,7 @@ export default function RequestKanbanPage() {
                   ))}
                   {items.length === 0 && (
                     <div className="flex flex-col items-center justify-center h-[45vh] rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 text-center px-3">
-                      <span className="text-3xl mb-2 opacity-40">📋</span>
+                      <ClipboardList size={30} strokeWidth={1.5} className="mb-2 opacity-40" />
                       <p className="text-xs text-gray-400">{t("kanban.emptyColumn.title")}</p>
                       <p className="text-[11px] text-gray-300 dark:text-gray-600 mt-0.5">{t("kanban.emptyColumn.subtitle")}</p>
                     </div>

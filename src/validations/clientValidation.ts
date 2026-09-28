@@ -37,6 +37,7 @@ export const createClientSchema = yup.object({
     .email("Email invalide"),
   adminLogin: yup.string().optional(),
   source: yup.string().optional(),
+  industry: yup.string().optional(),
   adminPassword: yup
     .string()
     .required("Le mot de passe est requis")
@@ -75,6 +76,8 @@ export const updateClientSchema = yup.object({
   email: yup.string().email("Email invalide"),
   status: yup.string().oneOf(["active", "inactive"], "Statut invalide"),
   internal_note: yup.string().optional(),
+  source: yup.string().optional(),
+  industry: yup.string().optional(),
 });
 
 export type CreateClientFormData = yup.InferType<typeof createClientSchema> & {

@@ -64,6 +64,25 @@ export const clientApi = createApi({
           : [{ type: "Client", id: "LIST" }],
     }),
 
+    // GET /clients/platform - Tous les clients, toutes sociétés RH confondues (Super Admin)
+    getAllPlatformClients: builder.query<
+      ClientPaginatedResponse,
+      { page?: number; limit?: number; search?: string; status?: string; ownerCompanyId?: string }
+    >({
+      query: (params) => ({
+        url: "/clients/platform",
+        method: "GET",
+        params: {
+          page: params.page || 1,
+          limit: params.limit || 20,
+          ...(params.search && { search: params.search }),
+          ...(params.status && { status: params.status }),
+          ...(params.ownerCompanyId && { ownerCompanyId: params.ownerCompanyId }),
+        },
+      }),
+      providesTags: [{ type: "Client", id: "PLATFORM_LIST" }],
+    }),
+
     // Infinite query for clients (for select dropdowns)
     getClientsForSelect: builder.infiniteQuery<
       ClientPaginatedResponse,
@@ -352,6 +371,7 @@ export const clientApi = createApi({
 
 export const {
   useGetClientsQuery,
+  useGetAllPlatformClientsQuery,
   useGetClientsForSelectInfiniteQuery,
   useGetClientByIdQuery,
   useLazyGetClientByIdQuery,

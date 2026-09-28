@@ -19,6 +19,7 @@ export interface PublicJobOffer {
   status?: string;
   deadline?: string;
   desired_start_date?: string;
+  number_of_profiles?: number;
   
   // Champs publics
   is_public: boolean;

@@ -199,6 +199,8 @@
       "countryPlaceholder": "اكتب للبحث عن دولة...",
       "city": "المدينة",
       "cityPlaceholder": "اكتب للبحث عن مدينة...",
+      "sector": "قطاع النشاط",
+      "sectorPlaceholder": "مثال: التكنولوجيا / تقنية المعلومات",
       "workMode": "نمط العمل",
       "workModeOnSite": "حضوري",
       "workModeRemote": "عن بُعد",

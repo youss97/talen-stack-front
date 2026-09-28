@@ -537,8 +537,8 @@ export default function PublicOfferApplyView({
         ? t("sidebar.remoteNo")
         : offer.remote_possible ? t("sidebar.remoteYes") : t("sidebar.remoteNo"),
     },
-    vis("deadline") && offer.deadline && { icon:"⏳", label:t("sidebar.deadline"),
-      value: formatDate(offer.deadline, { day:"numeric", month:"long", year:"numeric" }) },
+    vis("number_of_profiles") && offer.number_of_profiles && { icon:"👥", label:t("sidebar.numberOfProfiles"),
+      value: String(offer.number_of_profiles) },
     vis("desired_start_date") && offer.desired_start_date && { icon:"🚀", label:t("sidebar.startDate"),
       value: formatDate(offer.desired_start_date, { day:"numeric", month:"long", year:"numeric" }) },
     vis("industry") && offer.client?.industry  && { icon:"🏭", label:t("sidebar.industry"),         value: offer.client.industry },

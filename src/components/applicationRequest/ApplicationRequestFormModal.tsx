@@ -120,6 +120,7 @@ export default function ApplicationRequestFormModal({
       daily_rate_max: undefined,
       location: "",
       country: "",
+      sector: "",
       work_type: "on_site",
       remote_days_per_week: undefined,
       remote_possible: false,
@@ -235,6 +236,7 @@ export default function ApplicationRequestFormModal({
         daily_rate_max: applicationRequest.daily_rate_max,
         location: applicationRequest.location || "",
         country: applicationRequest.country || "France",
+        sector: applicationRequest.sector || "",
         work_type: applicationRequest.work_type || "on_site",
         remote_days_per_week: applicationRequest.remote_days_per_week,
         remote_possible: applicationRequest.remote_possible || false,
@@ -284,6 +286,7 @@ export default function ApplicationRequestFormModal({
         daily_rate_max: undefined,
         location: "",
         country: "",
+        sector: "",
         work_type: "on_site",
         remote_days_per_week: undefined,
         remote_possible: false,
@@ -848,6 +851,29 @@ export default function ApplicationRequestFormModal({
                     {(CITIES_BY_COUNTRY[selectedCountry] || []).map(c => <option key={c} value={c} />)}
                   </datalist>
                   {errors.location && <p className="mt-1 text-sm text-error-500">{errors.location.message}</p>}
+                </div>
+
+                <div>
+                  <Label>{t("form.fields.sector")}</Label>
+                  <input
+                    list="sector-datalist"
+                    placeholder={t("form.fields.sectorPlaceholder")}
+                    autoComplete="off"
+                    {...register("sector")}
+                    className={`h-11 w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-none focus:ring-3 bg-white dark:bg-gray-900 dark:text-white/90 ${errors.sector ? "border-error-500 focus:ring-error-500/10" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
+                  />
+                  <datalist id="sector-datalist">
+                    <option value="Technologie / IT" />
+                    <option value="Industrie" />
+                    <option value="Banque / Assurance" />
+                    <option value="Commerce / Distribution" />
+                    <option value="Santé" />
+                    <option value="BTP / Construction" />
+                    <option value="Tourisme / Hôtellerie" />
+                    <option value="Agroalimentaire" />
+                    <option value="Éducation" />
+                  </datalist>
+                  {errors.sector && <p className="mt-1 text-sm text-error-500">{errors.sector.message}</p>}
                 </div>
               </div>
             </div>

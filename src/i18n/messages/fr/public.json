@@ -46,7 +46,7 @@
       "remoteYes": "Possible",
       "remoteNo": "Non",
       "remoteHybrid": "Hybride ({count} j télétravail/semaine)",
-      "deadline": "Date limite",
+      "numberOfProfiles": "Profils recherchés",
       "startDate": "Début souhaité",
       "industry": "Secteur"
     },
@@ -170,7 +170,7 @@
       "location": "Lieu",
       "salary": "Salaire",
       "experience": "Expérience",
-      "deadline": "Date limite"
+      "numberOfProfiles": "Profils recherchés"
     },
     "details": "Détails du poste",
     "form": {

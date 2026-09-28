@@ -1,4 +1,28 @@
 {
+  "platformList": {
+    "title": "Clients (toutes sociétés)",
+    "subtitle": "Tous les clients de la plateforme, quelle que soit la société RH qui les gère.",
+    "searchPlaceholder": "Rechercher par nom, industrie, contact, email ou société RH...",
+    "filters": {
+      "allCompanies": "Toutes les sociétés RH",
+      "noCompanyFound": "Aucune société RH trouvée"
+    },
+    "columns": {
+      "name": "Raison sociale",
+      "ownerCompany": "Société RH",
+      "email": "Email",
+      "phone": "Téléphone",
+      "ice": "ICE",
+      "address": "Adresse",
+      "city": "Ville",
+      "country": "Pays",
+      "industry": "Secteur d'activité",
+      "source": "Source",
+      "status": "Statut",
+      "createdAt": "Créé le"
+    },
+    "emptyState": "Aucun client trouvé"
+  },
   "statsModal": {
     "action": "Statistiques",
     "title": "Statistiques du client",
@@ -122,7 +146,8 @@
       "position": "Position",
       "positionPlaceholder": "Directeur Général",
       "notProvided": "Non renseigné",
-      "industry": "Secteur",
+      "industry": "Secteur d'activité",
+      "industryPlaceholder": "Ex: Technologie / IT",
       "companySize": "Taille",
       "vatRate": "Taux TVA",
       "paymentTerms": "Conditions de paiement"

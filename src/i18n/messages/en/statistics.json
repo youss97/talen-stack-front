@@ -1,4 +1,8 @@
 {
+  "companiesList": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
   "page": {
     "title": "Statistics",
     "description": "Overview of recruitment activity",
@@ -40,6 +44,7 @@
     "topClients": "Top clients (requests)",
     "requestsPerMonth": "Recruitment requests per month",
     "topCompaniesByClients": "Top companies (clients)",
+    "companiesList": "RH companies",
     "series": {
       "companies": "Companies",
       "applications": "Applications",

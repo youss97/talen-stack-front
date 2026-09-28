@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useAppSelector } from "@/lib/hooks";
 import { useVerifyUserQuery } from "@/lib/services/authApi";
@@ -12,9 +12,16 @@ interface GuestGuardProps {
 
 export default function GuestGuard({ children }: GuestGuardProps) {
   const router = useRouter();
+  // localStorage n'existe pas côté serveur : lire le token dès le premier rendu (via
+  // `typeof window !== "undefined"`) faisait diverger le HTML SSR (toujours "pas de token")
+  // du premier rendu client (token déjà présent) → erreur d'hydratation. On garde `false`
+  // au premier rendu (identique au serveur) et on ne lit le token qu'après montage.
+  const [hasToken, setHasToken] = useState(false);
+  useEffect(() => {
+    setHasToken(!!localStorage.getItem("token"));
+  }, []);
   // Sans token en local, on sait déjà que l'utilisateur n'est pas connecté — inutile
   // d'appeler /auth/me (401 garanti) juste pour afficher la page de connexion.
-  const hasToken = typeof window !== "undefined" && !!localStorage.getItem("token");
   const { isLoading } = useVerifyUserQuery(undefined, { skip: !hasToken });
   const { isAuth } = useAppSelector((state) => state.auth);
 

@@ -48,7 +48,7 @@ import { getApiErrorMessage } from "@/utils/errorMessages";
 import { formatDate } from "@/utils/dateFormat";
 import { useTableSort } from "@/hooks/useTableSort";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
-import { Plus, UserPlus, Eye, Pencil, Trash2, Copy } from "lucide-react";
+import { Plus, UserPlus, Eye, Pencil, Trash2, Copy, Download } from "lucide-react";
 
 export default function ApplicationsPage() {
   const t = useTranslations("applications");
@@ -722,6 +722,7 @@ export default function ApplicationsPage() {
               onClick={handleExportExcel}
               variant="outline"
               disabled={!data?.data || data.data.length === 0}
+              startIcon={<Download size={16} strokeWidth={1.8} className="icon-glow" />}
             >
               {t("list.exportButton")}
             </Button>

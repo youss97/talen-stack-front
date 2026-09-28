@@ -84,6 +84,7 @@ export default function ClientFormModal({
       adminPosition: "",
       internal_note: "",
       source: "",
+      industry: "",
     },
   });
 
@@ -118,6 +119,7 @@ export default function ClientFormModal({
           adminPosition: "",
           internal_note: client.internal_note || "",
           source: (client as { source?: string }).source || "",
+          industry: client.industry || "",
         });
         setLogoPreview(getImageUrl(client.company_logo_path || client.logo) || null);
         setLogoFile(null);
@@ -145,6 +147,7 @@ export default function ClientFormModal({
           adminPosition: "",
           internal_note: "",
           source: "",
+          industry: "",
         });
         setLogoPreview(null);
         setLogoFile(null);
@@ -274,6 +277,37 @@ export default function ClientFormModal({
                   disabled={readOnly}
                 />
                 {errors.ice && <p className="mt-1 text-sm text-error-500">{errors.ice.message}</p>}
+              </div>
+              )}
+
+              {/* Secteur d'activité */}
+              {!isHidden("industry") && (
+              <div>
+                <Label>{t("fields.industry")}</Label>
+                {readOnly ? (
+                  <Input value={client?.industry || ""} disabled />
+                ) : (
+                  <>
+                    <input
+                      {...register("industry")}
+                      list="client-industry-suggestions"
+                      placeholder={t("fields.industryPlaceholder")}
+                      className="w-full h-11 rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+                    />
+                    <datalist id="client-industry-suggestions">
+                      <option value="Technologie / IT" />
+                      <option value="Industrie" />
+                      <option value="Banque / Assurance" />
+                      <option value="Commerce / Distribution" />
+                      <option value="Santé" />
+                      <option value="BTP / Construction" />
+                      <option value="Tourisme / Hôtellerie" />
+                      <option value="Agroalimentaire" />
+                      <option value="Éducation" />
+                    </datalist>
+                  </>
+                )}
+                {errors.industry && <p className="mt-1 text-sm text-error-500">{errors.industry.message}</p>}
               </div>
               )}
 
@@ -496,18 +530,12 @@ export default function ClientFormModal({
           )}
 
           {/* ── Extra info (read-only) ── */}
-          {readOnly && client && (client.industry || client.company_size || client.vat_rate || client.payment_terms) && (
+          {readOnly && client && (client.company_size || client.vat_rate || client.payment_terms) && (
             <section>
               <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
                 {t("sections.extra")}
               </h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {client.industry && (
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t("fields.industry")}</p>
-                    <p className="text-sm text-gray-900 dark:text-white">{client.industry}</p>
-                  </div>
-                )}
                 {client.company_size && (
                   <div>
                     <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t("fields.companySize")}</p>

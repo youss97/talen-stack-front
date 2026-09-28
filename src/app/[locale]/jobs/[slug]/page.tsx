@@ -131,10 +131,10 @@ export default function PublicJobPage() {
     offer.location && { icon: "📍", label: t("info.location"), value: offer.location },
     offer.salary && { icon: "💰", label: t("info.salary"), value: offer.salary },
     offer.experience_required && { icon: "🎯", label: t("info.experience"), value: offer.experience_required },
-    offer.deadline && !isNaN(new Date(offer.deadline).getTime()) && {
-      icon: "⏳",
-      label: t("info.deadline"),
-      value: new Date(offer.deadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
+    offer.number_of_profiles && {
+      icon: "👥",
+      label: t("info.numberOfProfiles"),
+      value: String(offer.number_of_profiles),
     },
   ].filter(Boolean) as { icon: string; label: string; value: string }[];
 

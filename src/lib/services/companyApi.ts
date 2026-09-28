@@ -61,6 +61,7 @@ export const companyApi = createApi({
           page: pageParam,
           limit: queryArg.limit || 10,
           ...(queryArg.search && { search: queryArg.search }),
+          ...(queryArg.excludeClientCompanies && { excludeClientCompanies: true }),
         },
       }),
       infiniteQueryOptions: {

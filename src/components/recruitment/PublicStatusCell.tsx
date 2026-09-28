@@ -1,6 +1,6 @@
 'use client';
 
-import { Eye, Lock } from "lucide-react";
+import { Eye, Lock, Check, Globe } from "lucide-react";
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { ApplicationRequest } from '@/types/applicationRequest';
@@ -37,14 +37,14 @@ export default function PublicStatusCell({ row, optimisticState, onToggle }: Pub
       <div className="flex flex-col gap-2">
         {/* Badge statut */}
         <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
-          <Eye size={16} strokeWidth={1.8} className="icon-glow" />
-          ✓ {t('publicOffer.publicBadge')}
+          <Check size={16} strokeWidth={1.8} className="icon-glow" />
+          {t('publicOffer.publicBadge')}
         </div>
 
         {/* Infos - afficher même si public_slug n'est pas encore généré */}
         <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-600 dark:text-gray-400">
-            👁️ {t('publicOffer.viewsCount', { count: row.public_views_count || 0 })}
+          <span className="inline-flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
+            <Eye size={13} strokeWidth={1.8} className="icon-glow" /> {t('publicOffer.viewsCount', { count: row.public_views_count || 0 })}
           </span>
         </div>
 
@@ -68,8 +68,8 @@ export default function PublicStatusCell({ row, optimisticState, onToggle }: Pub
       disabled={isLoading}
       className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 hover:scale-105 transition-all disabled:opacity-50"
     >
-      <Eye size={16} strokeWidth={1.8} className="icon-glow" />
-      {isLoading ? t('publicOffer.makePublicLoading') : `🌐 ${t('publicOffer.makePublic')}`}
+      <Globe size={16} strokeWidth={1.8} className="icon-glow" />
+      {isLoading ? t('publicOffer.makePublicLoading') : t('publicOffer.makePublic')}
     </button>
   );
 }

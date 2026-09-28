@@ -279,6 +279,7 @@ export default function RecruitmentPage() {
         if (formData.daily_rate_max !== undefined) updateData.daily_rate_max = formData.daily_rate_max;
         if (formData.location) updateData.location = formData.location;
         if (formData.country) updateData.country = formData.country;
+        if ((formData as any).sector !== undefined) updateData.sector = (formData as any).sector;
         if (formData.work_type) updateData.work_type = formData.work_type;
         if (formData.remote_days_per_week !== undefined) updateData.remote_days_per_week = formData.remote_days_per_week;
         if (formData.remote_possible !== undefined) updateData.remote_possible = formData.remote_possible;
@@ -315,6 +316,7 @@ export default function RecruitmentPage() {
           contract_types: formData.contract_types || [],
           location: formData.location,
           country: formData.country,
+          sector: (formData as any).sector || undefined,
           work_type: formData.work_type,
           languages: formData.languages,
           workflow_steps: (formData as any).workflow_steps,

@@ -175,6 +175,7 @@ export default function ClientsPage() {
           status: formData.status,
           internal_note: formData.internal_note,
           source: (formData as { source?: string }).source,
+          industry: (formData as { industry?: string }).industry,
         };
         await updateClient({ id: editingClient.id, data: updateData }).unwrap();
         addToast("success", tc("status.success"), t("toasts.updateSuccess"));
@@ -198,6 +199,7 @@ export default function ClientsPage() {
         if (formData.adminPosition) formDataToSend.append("adminPosition", formData.adminPosition);
         if (formData.internal_note) formDataToSend.append("internal_note", formData.internal_note);
         if ((formData as { source?: string }).source) formDataToSend.append("source", (formData as { source?: string }).source as string);
+        if ((formData as { industry?: string }).industry) formDataToSend.append("industry", (formData as { industry?: string }).industry as string);
 
         const logo = (formData as any).logo;
         const adminPhoto = (formData as any).adminPhoto;

@@ -54,7 +54,7 @@
     "experience": "Required experience",
     "experienceMin": "{years} years minimum",
     "skills": "Required skills",
-    "deadline": "Deadline",
+    "numberOfProfiles": "Number of positions to fill",
     "stats": "Statistics",
     "views": "Views",
     "publishedDate": "Publication date",
@@ -117,7 +117,7 @@
       "min_experience": "Required experience",
       "salary": "Salary",
       "remote_possible": "Remote work",
-      "deadline": "Deadline",
+      "number_of_profiles": "Number of positions to fill",
       "desired_start_date": "Desired start date",
       "reference": "Reference",
       "industry": "Industry"

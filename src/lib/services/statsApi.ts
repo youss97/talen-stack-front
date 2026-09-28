@@ -45,6 +45,7 @@ export interface DashboardStats {
   monthlyCompanies?: MonthCount[];
   companiesByStatus?: StatusCount[];
   topCompaniesTraffic?: { name: string; value: number }[];
+  companiesList?: { id?: string; name: string; status: string; hasPlan: boolean }[];
 }
 
 export interface SearchResult {

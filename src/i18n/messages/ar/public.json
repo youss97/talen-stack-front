@@ -46,7 +46,7 @@
       "remoteYes": "متاح",
       "remoteNo": "غير متاح",
       "remoteHybrid": "هجين ({count} يوم عمل عن بعد/أسبوع)",
-      "deadline": "آخر أجل للترشح",
+      "numberOfProfiles": "عدد المناصب المطلوبة",
       "startDate": "تاريخ الانطلاق المرغوب",
       "industry": "القطاع"
     },
@@ -170,7 +170,7 @@
       "location": "الموقع",
       "salary": "الراتب",
       "experience": "الخبرة",
-      "deadline": "آخر أجل للترشح"
+      "numberOfProfiles": "عدد المناصب المطلوبة"
     },
     "details": "تفاصيل الوظيفة",
     "form": {
