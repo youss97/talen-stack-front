@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Eye, ShieldCheck, CalendarClock, Mail, Copy } from "lucide-react";
 import { buildCandidateScorePrompt } from "@/utils/candidateScorePrompt";
+import { toExternalUrl } from "@/utils/externalUrl";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import { openCvInNewTab } from "@/utils/cvView";
@@ -434,7 +435,7 @@ export default function RecruiterDetailModal({
                       <div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">LinkedIn</p>
                         <a
-                          href={recruiter.cv.linkedin_url}
+                          href={toExternalUrl(recruiter.cv.linkedin_url) ?? undefined}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400 break-all"

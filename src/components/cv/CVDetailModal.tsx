@@ -35,6 +35,7 @@ import { useGetRecruitersQuery } from "@/lib/services/recruiterApi";
 import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
 import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
 import { formatDate } from "@/utils/dateFormat";
+import { toExternalUrl } from "@/utils/externalUrl";
 import Pagination from "@/components/tables/Pagination";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
 
@@ -180,13 +181,13 @@ export default function CVDetailModal({
               <div className="mt-3.5 flex flex-wrap gap-2">
                 {cv.candidate_email && <InfoChip icon={Mail} text={cv.candidate_email} />}
                 {cv.candidate_phone && <InfoChip icon={Phone} text={cv.candidate_phone} />}
-                {cv.linkedin_url && (
-                  <a href={cv.linkedin_url} target="_blank" rel="noopener noreferrer">
+                {toExternalUrl(cv.linkedin_url) && (
+                  <a href={toExternalUrl(cv.linkedin_url)!} target="_blank" rel="noopener noreferrer">
                     <InfoChip icon={ExternalLink} text="LinkedIn" />
                   </a>
                 )}
-                {cv.portfolio_url && (
-                  <a href={cv.portfolio_url} target="_blank" rel="noopener noreferrer">
+                {toExternalUrl(cv.portfolio_url) && (
+                  <a href={toExternalUrl(cv.portfolio_url)!} target="_blank" rel="noopener noreferrer">
                     <InfoChip icon={ExternalLink} text={t("detailModal.portfolio")} />
                   </a>
                 )}

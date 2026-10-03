@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Info, Lock, Mail } from "lucide-react";
+import { toExternalUrl } from "@/utils/externalUrl";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
@@ -102,7 +103,7 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
             <Row label={t("candidateDetail.email")} value={cv?.candidate_email} />
             <Row label={t("candidateDetail.phone")} value={cv?.candidate_phone} />
             <Row label="LinkedIn" value={cv?.linkedin_url ? (
-              <a href={cv.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand-600 hover:underline dark:text-brand-400 break-all">
+              <a href={toExternalUrl(cv.linkedin_url) ?? undefined} target="_blank" rel="noopener noreferrer" className="text-brand-600 hover:underline dark:text-brand-400 break-all">
                 {cv.linkedin_url}
               </a>
             ) : undefined} />

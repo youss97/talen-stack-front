@@ -1,5 +1,6 @@
 "use client";
 import type { ComponentType } from "react";
+import { toExternalUrl } from "@/utils/externalUrl";
 import { useTranslations } from "next-intl";
 import { Mail, Phone, MapPin, Calendar, User, MessageSquare, HelpCircle, FileText, Eye, Link2, ExternalLink } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
@@ -41,7 +42,7 @@ export default function PublicApplicationDetailModal({
             {application.phone && <InfoChip icon={Phone} text={application.phone} />}
             {application.city && <InfoChip icon={MapPin} text={application.city} />}
             {application.linkedin_url && (
-              <a href={application.linkedin_url} target="_blank" rel="noopener noreferrer">
+              <a href={toExternalUrl(application.linkedin_url) ?? undefined} target="_blank" rel="noopener noreferrer">
                 <InfoChip icon={ExternalLink} text="LinkedIn" />
               </a>
             )}
