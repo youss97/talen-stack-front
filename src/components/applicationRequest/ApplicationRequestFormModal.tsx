@@ -694,7 +694,45 @@ export default function ApplicationRequestFormModal({
               </div>
             </div>
 
-            {/* Section 5: Budget */}
+            {/* Section 6: Avantages et primes */}
+            <div>
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+                {t("form.sections.benefits")}
+              </h3>
+              <div className="grid grid-cols-1 gap-5">
+                <div>
+                  <Label>{t("form.fields.benefitsLabel")}</Label>
+                  <TextArea
+                    placeholder={t("form.fields.benefitsPlaceholder")}
+                    {...register("benefits")}
+                    error={!!errors.benefits}
+                    rows={2}
+                  />
+                </div>
+
+                <div>
+                  <Label>{t("form.fields.bonusesLabel")}</Label>
+                  <TextArea
+                    placeholder={t("form.fields.bonusesPlaceholder")}
+                    {...register("bonuses")}
+                    error={!!errors.bonuses}
+                    rows={2}
+                  />
+                </div>
+
+                <div>
+                  <Label>{t("form.fields.variablesLabel")}</Label>
+                  <TextArea
+                    placeholder={t("form.fields.variablesPlaceholder")}
+                    {...register("variables")}
+                    error={!!errors.variables}
+                    rows={2}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 7: Budget */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
                 {t("form.sections.budget")}
@@ -1044,44 +1082,6 @@ export default function ApplicationRequestFormModal({
               </div>
             </div>
 
-            {/* Section 9: Avantages */}
-            <div>
-              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
-                {t("form.sections.benefits")}
-              </h3>
-              <div className="grid grid-cols-1 gap-5">
-                <div>
-                  <Label>{t("form.fields.benefitsLabel")}</Label>
-                  <TextArea
-                    placeholder={t("form.fields.benefitsPlaceholder")}
-                    {...register("benefits")}
-                    error={!!errors.benefits}
-                    rows={2}
-                  />
-                </div>
-
-                <div>
-                  <Label>{t("form.fields.bonusesLabel")}</Label>
-                  <TextArea
-                    placeholder={t("form.fields.bonusesPlaceholder")}
-                    {...register("bonuses")}
-                    error={!!errors.bonuses}
-                    rows={2}
-                  />
-                </div>
-
-                <div>
-                  <Label>{t("form.fields.variablesLabel")}</Label>
-                  <TextArea
-                    placeholder={t("form.fields.variablesPlaceholder")}
-                    {...register("variables")}
-                    error={!!errors.variables}
-                    rows={2}
-                  />
-                </div>
-              </div>
-            </div>
-
             {/* Section 10: Priorité et Statut */}
             <div>
               <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
@@ -1198,19 +1198,31 @@ export default function ApplicationRequestFormModal({
               <div className="space-y-4">
                 <div>
                   <Label>{t("form.fields.noteClient")}</Label>
-                  <TextArea
-                    placeholder={t("form.fields.noteClientPlaceholder")}
-                    {...register("note_client" as any)}
-                    rows={3}
+                  <Controller
+                    name={"note_client" as any}
+                    control={control}
+                    render={({ field }) => (
+                      <RichTextEditor
+                        value={field.value as string}
+                        onChange={field.onChange}
+                        placeholder={t("form.fields.noteClientPlaceholder")}
+                      />
+                    )}
                   />
                   <p className="mt-1 text-xs text-gray-400">{t("form.fields.noteClientHelp")}</p>
                 </div>
                 <div>
                   <Label>{t("form.fields.noteInterne")}</Label>
-                  <TextArea
-                    placeholder={t("form.fields.noteInternePlaceholder")}
-                    {...register("note_interne" as any)}
-                    rows={3}
+                  <Controller
+                    name={"note_interne" as any}
+                    control={control}
+                    render={({ field }) => (
+                      <RichTextEditor
+                        value={field.value as string}
+                        onChange={field.onChange}
+                        placeholder={t("form.fields.noteInternePlaceholder")}
+                      />
+                    )}
                   />
                   <p className="mt-1 text-xs text-gray-400">{t("form.fields.noteInterneHelp")}</p>
                 </div>

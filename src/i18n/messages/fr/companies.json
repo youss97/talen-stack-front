@@ -1,4 +1,15 @@
 {
+  "markPaid": {
+    "title": "Rendre « {name} » payante",
+    "plansTitle": "Abonnement",
+    "noPlans": "Aucun abonnement actif. Créez-en un dans les paramètres d'abonnement.",
+    "modulesTitle": "Personnalisation des modules",
+    "choosePlan": "Choisissez un abonnement.",
+    "error": "Erreur lors de la mise à jour.",
+    "cancel": "Annuler",
+    "saving": "Enregistrement...",
+    "confirm": "Confirmer"
+  },
   "list": {
     "title": "Entreprises",
     "subtitle": "Gérez les entreprises et leurs modules accessibles",
@@ -12,7 +23,8 @@
       "email": "Email",
       "phone": "Téléphone",
       "status": "Statut",
-      "paymentStatus": "Abonnement"
+      "paymentStatus": "Abonnement",
+      "clientsCount": "Clients"
     },
     "paymentStatus": {
       "paid": "Payé",
@@ -24,6 +36,9 @@
       "deleted": "Supprimée"
     },
     "rowActions": {
+      "markPaid": "Rendre payante",
+      "markUnpaid": "Rendre non payante (désactive la société)",
+      "markUnpaidConfirm": "Rendre « {name} » non payante ? La société et tous ses utilisateurs seront désactivés.",
       "activate": "Activer",
       "deactivate": "Désactiver",
       "remind": "Relancer pour abonnement"

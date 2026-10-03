@@ -10,7 +10,8 @@
     "start": "Dictate with voice",
     "stop": "Stop dictation",
     "listening": "Listening...",
-    "notSupported": "Voice dictation not available on this browser"
+    "notSupported": "Voice dictation not available on this browser",
+    "label": "Voice input"
   },
   "actions": {
     "save": "Save",

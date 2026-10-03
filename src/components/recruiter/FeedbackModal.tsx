@@ -5,6 +5,7 @@ import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import VoiceInputButton from "@/components/form/VoiceInputButton";
 import VoiceNoteRecorder from "@/components/form/VoiceNoteRecorder";
+import RichTextEditor from "@/components/form/RichTextEditor";
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -26,11 +27,13 @@ export default function FeedbackModal({
   const [audio, setAudio] = useState<Blob | null>(null);
   const [error, setError] = useState("");
 
+  const isDescriptionEmpty = (html: string) => !html.replace(/<[^>]*>/g, "").trim();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (!title.trim() || (!description.trim() && !audio)) {
+    if (!title.trim() || (isDescriptionEmpty(description) && !audio)) {
       setError(t("feedback.errors.fillAllFields"));
       return;
     }
@@ -79,26 +82,18 @@ export default function FeedbackModal({
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               {t("feedback.descriptionLabel")}
             </label>
-            <div className="flex items-start gap-2">
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={4}
-                style={{ minHeight: '110px' }}
-                onInput={(e) => {
-                  const target = e.target as HTMLTextAreaElement;
-                  target.style.height = 'auto';
-                  target.style.height = target.scrollHeight + 'px';
-                }}
-                className="w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 resize-none"
-                placeholder={t("feedback.descriptionPlaceholder")}
-                required={!audio}
-              />
+            <RichTextEditor
+              value={description}
+              onChange={setDescription}
+              placeholder={t("feedback.descriptionPlaceholder")}
+            />
+            <div className="mt-2 flex flex-wrap items-center gap-2">
               <VoiceInputButton
+                labeled
                 onResult={(text) => setDescription((prev) => (prev ? `${prev} ${text}` : text))}
               />
+              <VoiceNoteRecorder value={audio} onChange={setAudio} />
             </div>
-            <VoiceNoteRecorder className="mt-2" value={audio} onChange={setAudio} />
           </div>
         </div>
 

@@ -64,20 +64,9 @@ export function usePermissions(): UsePermissionsReturn {
     // Notifications : accessibles à tout utilisateur authentifié
     if (normalizedPath === "/notifications") return true;
 
-    // Statistiques : accessibles à tout utilisateur authentifié SAUF l'espace client
-    // (société rattachée à une société mère, rôle Client Manager, ou utilisateur lié à un client).
-    if (normalizedPath === "/statistics") {
-      const u = user as unknown as {
-        company?: { parent_company_id?: string | null };
-        client_id?: string | null;
-        role?: { code?: string };
-      };
-      const isClientSpace =
-        !!u?.company?.parent_company_id ||
-        !!u?.client_id ||
-        (u?.role?.code || "").toUpperCase().startsWith("CLIENT_MANAGER");
-      return !isClientSpace;
-    }
+    // Statistiques : accessibles à tout utilisateur authentifié, y compris l'espace client
+    // (qui y voit ses statistiques et, s'il est administrateur, celles de ses collaborateurs).
+    if (normalizedPath === "/statistics") return true;
 
     if (!features || features.length === 0) return false;
 

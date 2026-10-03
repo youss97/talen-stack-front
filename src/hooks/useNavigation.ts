@@ -42,9 +42,9 @@ export function useNavigation() {
     const items: NavItem[] = [];
     const seenPaths = new Set<string>();
 
-    // Statistiques : masquée pour les espaces client (uniquement RH / super admin)
+    // Statistiques : pour tous (espace client : ses propres statistiques et celles de ses collaborateurs)
     const statsConfig = NAV_CONFIG["/statistics"];
-    if (statsConfig && !isClientSpace) {
+    if (statsConfig) {
       items.push({ title: t(`items./statistics`), path: "/statistics", icon: statsConfig.icon, group: statsConfig.group });
       seenPaths.add("/statistics");
     }

@@ -10,7 +10,8 @@
     "start": "Dicter avec la voix",
     "stop": "Arrêter la dictée",
     "listening": "Écoute en cours...",
-    "notSupported": "Dictée vocale non disponible sur ce navigateur"
+    "notSupported": "Dictée vocale non disponible sur ce navigateur",
+    "label": "Saisie vocale"
   },
   "actions": {
     "save": "Enregistrer",

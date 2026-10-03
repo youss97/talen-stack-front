@@ -106,6 +106,8 @@ export interface AnonymizedCvPayload {
     experiences?: Array<{ title?: string; company?: string; location?: string; start_date?: string; end_date?: string; description?: string }>;
     formations?: Array<{ degree?: string; field?: string; institution?: string; start_date?: string; end_date?: string }>;
     customBlocks?: Array<{ title?: string; text?: string }>;
+    showResponsible?: boolean;
+    location?: string;
   };
 }
 

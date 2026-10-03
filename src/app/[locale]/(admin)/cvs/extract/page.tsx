@@ -149,9 +149,10 @@ export default function CVExtractPage() {
         }));
 
         // Experiences / formations
-        const exps: CvExperience[] = (cv as any).experiences || [];
+        // Les champs absents en base deviennent "" : sinon les inputs passent de contrôlés à non contrôlés
+        const exps: CvExperience[] = ((cv as any).experiences || []).map((e: Partial<CvExperience>) => ({ ...emptyExp(), ...Object.fromEntries(Object.entries(e).map(([k, v]) => [k, v ?? ""])) }));
         setExperiences(exps.length ? exps : [emptyExp()]);
-        const forms: CvFormation[] = (cv as any).formations || [];
+        const forms: CvFormation[] = ((cv as any).formations || []).map((f: Partial<CvFormation>) => ({ ...emptyForm(), ...Object.fromEntries(Object.entries(f).map(([k, v]) => [k, v ?? ""])) }));
         setFormations(forms.length ? forms : [emptyForm()]);
 
         if (cv.file_path || (cv as any).cloudinary_url) {
@@ -960,12 +961,10 @@ export default function CVExtractPage() {
             <Lock size={14} strokeWidth={1.8} className="icon-glow" />
             {t("steps.internalNote")} <span className="text-gray-400 font-normal">{t("internalNote.hint")}</span>
           </h3>
-          <textarea
-            className={`${inputClass} h-auto py-2 resize-none`}
-            rows={3}
-            placeholder={t("internalNote.placeholder")}
+          <RichTextEditor
             value={internalNote}
-            onChange={(e) => setInternalNote(e.target.value)}
+            onChange={setInternalNote}
+            placeholder={t("internalNote.placeholder")}
           />
         </div>
 

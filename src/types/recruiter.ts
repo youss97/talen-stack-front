@@ -82,6 +82,7 @@ export interface Recruiter {
     candidate_last_name?: string;
     candidate_email?: string;
     candidate_phone?: string;
+    linkedin_url?: string | null;
     last_position?: string;
     profile_title?: string;
     total_experience?: number;
@@ -229,6 +230,7 @@ export interface RecruiterPaginationParams {
   request_id?: string;
   recruiter_id?: string;
   client_id?: string;
+  cv_id?: string;
   workflow_status?: WorkflowStatus;
   responsible_id?: string;
   unassigned?: boolean;

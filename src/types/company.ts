@@ -36,6 +36,7 @@ export interface Company {
   status: "active" | "inactive";
   parent_company_id?: string | null;
   subscription_plan_id?: string | null;
+  clients_count?: number;
   users?: CompanyUser[];
   created_at?: string;
   updated_at?: string;

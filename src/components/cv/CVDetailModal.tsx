@@ -31,6 +31,12 @@ import Badge from "@/components/ui/badge/Badge";
 import type { CV } from "@/types/cv";
 import { openCvInNewTab } from "@/utils/cvView";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
+import { useGetRecruitersQuery } from "@/lib/services/recruiterApi";
+import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
+import { resolveStatusLabel } from "@/utils/applicationStatusLabels";
+import { formatDate } from "@/utils/dateFormat";
+import Pagination from "@/components/tables/Pagination";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 
 interface CVDetailModalProps {
   isOpen: boolean;
@@ -201,6 +207,9 @@ export default function CVDetailModal({
           </div>
         ) : cv ? (
           <div className="space-y-4">
+            {/* Candidatures du talent (aperçu) */}
+            {cv.id && <ApplicationsPreviewSection cvId={cv.id} />}
+
             {/* Infos complémentaires */}
             {(cv.specialty || cv.industry_experience || cv.remote_preferred != null || cv.source) && (
               <Section title={t("detailModal.sections.information")} icon={Info}>
@@ -210,6 +219,8 @@ export default function CVDetailModal({
                   <DetailItem label={t("detailModal.fields.sector")} value={cv.industry_experience || "-"} />
                   <DetailItem label={t("detailModal.fields.remote")} value={cv.remote_preferred ? t("detailModal.fields.remoteOnly") : t("detailModal.fields.no")} />
                   <DetailItem label={t("detailModal.fields.source")} value={cv.source || "-"} />
+                  {cv.created_at && <DetailItem label={t("detailModal.fields.createdAt")} value={formatDate(cv.created_at)} />}
+                  {cv.updated_at && <DetailItem label={t("detailModal.fields.updatedAt")} value={formatDate(cv.updated_at)} />}
                 </div>
               </Section>
             )}
@@ -428,12 +439,11 @@ export default function CVDetailModal({
             {/* Note interne (jamais visible par le client) */}
             {cv.internal_note && (
               <Section title={t("detailModal.sections.internalNote")} icon={Lock}>
-                <p
-                  className="text-sm leading-relaxed rounded-lg p-3.5 whitespace-pre-wrap break-words"
+                <div
+                  className="text-sm leading-relaxed rounded-lg p-3.5 break-words [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5 [&_a]:underline"
                   style={{ background: "var(--surface)", borderInlineStart: "4px solid var(--brand-500, #465fff)", color: "var(--text)" }}
-                >
-                  {cv.internal_note}
-                </p>
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(cv.internal_note) }}
+                />
               </Section>
             )}
 
@@ -480,6 +490,84 @@ export default function CVDetailModal({
         </Button>
       </div>
     </Modal>
+  );
+}
+
+/** Aperçu des candidatures de ce talent (date, poste, client, étape, statut) — § vivier. */
+function ApplicationsPreviewSection({ cvId }: { cvId: string }) {
+  const t = useTranslations("cvs");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useLimitPreference("cv-detail-applications", 5);
+  const { data, isLoading, isFetching } = useGetRecruitersQuery({ cv_id: cvId, page, limit, sortBy: "proposed_at", sortOrder: "DESC" });
+  const { data: applicationStatusesData } = useGetApplicationStatusesQuery({ page: 1, limit: 100, is_active: true });
+  const applications = data?.data || [];
+  const total = data?.pagination?.total ?? applications.length;
+
+  if (isLoading) {
+    return (
+      <Section title={t("detailModal.sections.applications", { count: 0 })} icon={Briefcase}>
+        <div className="flex items-center justify-center py-4">
+          <div className="w-5 h-5 border-2 border-gray-200 border-t-brand-500 rounded-full animate-spin" />
+        </div>
+      </Section>
+    );
+  }
+
+  if (total === 0) return null;
+
+  return (
+    <Section title={t("detailModal.sections.applications", { count: total })} icon={Briefcase}>
+      <div className="overflow-x-auto -mx-1">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs" style={{ color: "var(--text-3)" }}>
+              <th className="px-1 pb-2 font-medium">{t("detailModal.applications.date")}</th>
+              <th className="px-1 pb-2 font-medium">{t("detailModal.applications.position")}</th>
+              <th className="px-1 pb-2 font-medium">{t("detailModal.applications.client")}</th>
+              <th className="px-1 pb-2 font-medium">{t("detailModal.applications.step")}</th>
+              <th className="px-1 pb-2 font-medium">{t("detailModal.applications.status")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {applications.map((app) => (
+              <tr key={app.id} className="border-t" style={{ borderColor: "var(--border)" }}>
+                <td className="px-1 py-2 whitespace-nowrap" style={{ color: "var(--text-2)" }}>
+                  {app.proposed_at ? formatDate(app.proposed_at) : "-"}
+                </td>
+                <td className="px-1 py-2 font-medium" style={{ color: "var(--text)" }}>
+                  {app.request?.title || "-"}
+                </td>
+                <td className="px-1 py-2" style={{ color: "var(--text-2)" }}>
+                  {app.request?.client?.name || "-"}
+                </td>
+                <td className="px-1 py-2" style={{ color: "var(--text-2)" }}>
+                  {app.current_step || "-"}
+                </td>
+                <td className="px-1 py-2">
+                  <Badge color="light" variant="light" size="sm">
+                    {resolveStatusLabel(app.status, applicationStatusesData?.data || [])}
+                  </Badge>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {data?.pagination && (
+        <div className="mt-3">
+          <Pagination
+            currentPage={page}
+            totalPages={data.pagination.totalPages}
+            totalItems={total}
+            itemsPerPage={limit}
+            onPageChange={setPage}
+            onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
+            pageSizeOptions={[5, 10, 20]}
+          />
+        </div>
+      )}
+      {isFetching && !isLoading && <p className="mt-2 text-xs" style={{ color: "var(--text-3)" }}>…</p>}
+    </Section>
   );
 }
 

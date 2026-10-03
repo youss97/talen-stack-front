@@ -64,7 +64,10 @@
     "feedbackForStepPlaceholder": "ملاحظاتك حول هذه المرحلة…",
     "chooseStepAndFeedback": "اختر مرحلة وأدخل ملاحظة.",
     "adding": "جارٍ الإضافة...",
-    "addFeedbackButton": "إضافة الملاحظة"
+    "addFeedbackButton": "إضافة الملاحظة",
+    "stepClickTitle": "الانتقال إلى المرحلة « {step} »",
+    "stepClickHint": "السبب إلزامي وسيُحفظ كملاحظة لهذه المرحلة.",
+    "stepReasonPlaceholder": "السبب (إلزامي)…"
   },
   "feedback": {
     "title": "إضافة ملاحظة",

@@ -64,7 +64,10 @@
     "feedbackForStepPlaceholder": "Your feedback for this step…",
     "chooseStepAndFeedback": "Choose a step and enter feedback.",
     "adding": "Adding...",
-    "addFeedbackButton": "Add feedback"
+    "addFeedbackButton": "Add feedback",
+    "stepClickTitle": "Move to step \"{step}\"",
+    "stepClickHint": "The reason is required and will be saved as feedback for this step.",
+    "stepReasonPlaceholder": "Reason (required)…"
   },
   "feedback": {
     "title": "Add feedback",

@@ -64,7 +64,10 @@
     "feedbackForStepPlaceholder": "Votre feedback pour cette étape…",
     "chooseStepAndFeedback": "Choisissez une étape et saisissez un feedback.",
     "adding": "Ajout...",
-    "addFeedbackButton": "Ajouter le feedback"
+    "addFeedbackButton": "Ajouter le feedback",
+    "stepClickTitle": "Passer à l'étape « {step} »",
+    "stepClickHint": "Le motif est obligatoire et sera enregistré comme feedback de cette étape.",
+    "stepReasonPlaceholder": "Motif (obligatoire)…"
   },
   "feedback": {
     "title": "Ajouter un feedback",

@@ -7,6 +7,8 @@ interface VoiceInputButtonProps {
   /** Appelé avec le texte transcrit final à chaque segment reconnu (à concaténer côté appelant). */
   onResult: (transcript: string) => void;
   className?: string;
+  /** Affiche un bouton texte "Saisie vocale" (même gabarit que VoiceNoteRecorder) au lieu de l'icône seule. */
+  labeled?: boolean;
 }
 
 const LOCALE_TO_LANG: Record<string, string> = {
@@ -20,7 +22,7 @@ const LOCALE_TO_LANG: Record<string, string> = {
  * navigateur (gratuit, sans backend). Non supporté par tous les navigateurs (Chrome/Edge oui,
  * Firefox non, Safari partiel) : le bouton est alors grisé avec une infobulle explicative.
  */
-export default function VoiceInputButton({ onResult, className = "" }: VoiceInputButtonProps) {
+export default function VoiceInputButton({ onResult, className = "", labeled = false }: VoiceInputButtonProps) {
   const locale = useLocale();
   const t = useTranslations("common.voiceInput");
   const [isListening, setIsListening] = useState(false);
@@ -72,7 +74,18 @@ export default function VoiceInputButton({ onResult, className = "" }: VoiceInpu
 
   // Navigateur sans reconnaissance vocale (ex. Firefox) : bouton grisé avec explication plutôt qu'invisible
   if (!isSupported) {
-    return (
+    return labeled ? (
+      <button
+        type="button"
+        disabled
+        title={t("notSupported")}
+        aria-label={t("notSupported")}
+        className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium border-gray-200 text-gray-300 cursor-not-allowed dark:border-gray-800 dark:text-gray-600 ${className}`}
+      >
+        <Mic size={14} strokeWidth={1.8} />
+        {t("label")}
+      </button>
+    ) : (
       <button
         type="button"
         disabled
@@ -81,6 +94,25 @@ export default function VoiceInputButton({ onResult, className = "" }: VoiceInpu
         className={`inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 text-gray-300 cursor-not-allowed flex-shrink-0 dark:border-gray-800 dark:text-gray-600 ${className}`}
       >
         <Mic size={16} strokeWidth={1.8} />
+      </button>
+    );
+  }
+
+  if (labeled) {
+    return (
+      <button
+        type="button"
+        onClick={toggleListening}
+        title={isListening ? t("stop") : t("start")}
+        aria-label={isListening ? t("stop") : t("start")}
+        className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${
+          isListening
+            ? "border-red-500 bg-red-500 text-white animate-pulse"
+            : "border-gray-300 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+        } ${className}`}
+      >
+        {isListening ? <Square size={13} fill="currentColor" /> : <Mic size={14} strokeWidth={1.8} />}
+        {isListening ? t("listening") : t("label")}
       </button>
     );
   }

@@ -193,6 +193,14 @@
       "other": "Autre"
     },
     "qualificationSection": "Compte-rendu de qualification",
+    "scorePrompt": {
+      "button": "Copier pour IA",
+      "buttonTitle": "Copie la candidature, le CV, le descriptif du poste et un prompt de scoring, à coller dans ChatGPT ou un autre assistant",
+      "copiedTitle": "Copié",
+      "copiedMessage": "Candidature, CV et prompt de scoring copiés dans le presse-papiers.",
+      "copyErrorTitle": "Copie impossible",
+      "copyErrorMessage": "Le presse-papiers n'est pas accessible dans ce navigateur."
+    },
     "qualificationScoreBadge": "Score : {score}/100",
     "languagesSection": "Langues",
     "languageLevel": "{language} — {level}/5",

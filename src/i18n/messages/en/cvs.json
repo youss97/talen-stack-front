@@ -208,6 +208,7 @@
     "title": "Anonymized CV",
     "subtitle": "Edit the content, choose the sections and their order, add your own blocks: the preview updates automatically.",
     "privacyNote": "The candidate's name, email, phone and address are never added automatically. Do not type them in your free blocks.",
+    "showResponsible": "Show the responsible person (footer)",
     "editNote": "These changes do not modify the candidate's record: they only apply to this PDF.",
     "orderLabel": "Sections and order",
     "tabEdit": "Edit",
@@ -219,6 +220,8 @@
     "close": "Close",
     "fields": {
       "title": "Job title",
+      "location": "Location",
+      "locationPlaceholder": "E.g. Casablanca, Morocco",
       "quickFacts": "Text under the title",
       "quickFactsPlaceholder": "E.g. 5 years of experience (leave empty to hide)",
       "summary": "Professional summary",
@@ -270,7 +273,15 @@
     "yearsExperience": "{years} years of experience",
     "remoteWork": "Remote only",
     "portfolio": "Portfolio",
+    "applications": {
+      "date": "Date",
+      "position": "Position",
+      "client": "Client",
+      "step": "Step",
+      "status": "Status"
+    },
     "sections": {
+      "applications": "Applications ({count})",
       "information": "Information",
       "completeness": "Profile completeness",
       "summary": "Professional summary",
@@ -288,6 +299,8 @@
       "document": "CV document"
     },
     "fields": {
+      "createdAt": "Added on",
+      "updatedAt": "Last updated",
       "specialty": "Specialty",
       "location": "Location",
       "sector": "Sector",

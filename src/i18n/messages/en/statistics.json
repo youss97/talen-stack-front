@@ -8,6 +8,17 @@
     "description": "Overview of recruitment activity",
     "loadingDescription": "Overview of activity"
   },
+  "collaborators": {
+    "title": "Statistics by collaborator",
+    "columns": {
+      "name": "Collaborator",
+      "requests": "Requests",
+      "applications": "Applications",
+      "closureRate": "Closure rate",
+      "avgDays": "Avg. time to 1st application"
+    },
+    "days": "{count} d"
+  },
   "kpis": {
     "companies": "Companies",
     "clients": "Clients",

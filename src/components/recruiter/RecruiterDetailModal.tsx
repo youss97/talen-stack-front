@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Eye, ShieldCheck, CalendarClock, Mail } from "lucide-react";
+import { Eye, ShieldCheck, CalendarClock, Mail, Copy } from "lucide-react";
+import { buildCandidateScorePrompt } from "@/utils/candidateScorePrompt";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
 import { openCvInNewTab } from "@/utils/cvView";
@@ -385,6 +386,24 @@ export default function RecruiterDetailModal({
             {t("subtitle")}
           </p>
         )}
+        {recruiter && (
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(buildCandidateScorePrompt(recruiter));
+                success(t("scorePrompt.copiedTitle"), t("scorePrompt.copiedMessage"));
+              } catch {
+                showError(t("scorePrompt.copyErrorTitle"), t("scorePrompt.copyErrorMessage"));
+              }
+            }}
+            title={t("scorePrompt.buttonTitle")}
+            className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+          >
+            <Copy size={14} strokeWidth={1.8} className="icon-glow" />
+            {t("scorePrompt.button")}
+          </button>
+        )}
       </div>
 
       <div className={asPage ? "" : "flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar"}>
@@ -411,6 +430,19 @@ export default function RecruiterDetailModal({
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <DetailItem label={t("phone")} value={recruiter.cv.candidate_phone || "-"} />
+                    {recruiter.cv.linkedin_url && (
+                      <div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">LinkedIn</p>
+                        <a
+                          href={recruiter.cv.linkedin_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400 break-all"
+                        >
+                          {recruiter.cv.linkedin_url}
+                        </a>
+                      </div>
+                    )}
                   </div>
                   {recruiter.cv.skills && recruiter.cv.skills.length > 0 && (
                     <div>

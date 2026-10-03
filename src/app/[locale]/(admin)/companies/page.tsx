@@ -1,7 +1,7 @@
 "use client";
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { RefreshCw, Plus, Lock, Unlock, BellRing } from "lucide-react";
+import { RefreshCw, Plus, Lock, Unlock, BellRing, BadgeCheck, BadgeX } from "lucide-react";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
@@ -10,6 +10,7 @@ import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import CompanyFormModal from "@/components/company/CompanyFormModal";
+import MarkPaidModal from "@/components/company/MarkPaidModal";
 import CompanyDetailModal from "@/components/company/CompanyDetailModal";
 import {
   useGetCompaniesQuery,
@@ -68,7 +69,7 @@ export default function CompaniesPage() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const { data, isLoading, isFetching } = useGetCompaniesQuery({
+  const { data, isLoading, isFetching, refetch } = useGetCompaniesQuery({
     page,
     limit,
     search: search || undefined,
@@ -92,6 +93,26 @@ export default function CompaniesPage() {
 
   const getErrorMessage = (error: unknown, defaultMessage: string): string =>
     getApiErrorMessage(error, defaultMessage);
+
+  // Rendre payante : assigne directement le plan actif (sans passer par le formulaire). S'il y a
+  // plusieurs plans actifs, le choix reste au formulaire de modification.
+  const [markPaidCompany, setMarkPaidCompany] = useState<Company | null>(null);
+  const markPaid = (company: Company) => setMarkPaidCompany(company);
+
+  // Rendre non payante : retire l'abonnement, ce qui désactive la société (et ses utilisateurs).
+  const markUnpaid = async (company: Company) => {
+    if (!window.confirm(t("list.rowActions.markUnpaidConfirm", { name: company.name }))) return;
+    setQuickTogglingId(company.id);
+    try {
+      await removeCompanyPlan(company.id).unwrap();
+      refetch();
+      addToast("success", t("toasts.companyDeactivatedTitle"), t("toasts.companyDeactivatedMessage", { name: company.name }));
+    } catch (error) {
+      addToast("error", tc("status.error"), getErrorMessage(error, t("toasts.statusUpdateError")));
+    } finally {
+      setQuickTogglingId(null);
+    }
+  };
 
   const toggleCompanyStatus = async (company: Company) => {
     setQuickTogglingId(company.id);
@@ -144,6 +165,15 @@ export default function CompaniesPage() {
     { key: "city", header: t("list.columns.city") },
     { key: "email", header: t("list.columns.email") },
     { key: "phone", header: t("list.columns.phone") },
+    {
+      key: "clients_count",
+      header: t("list.columns.clientsCount"),
+      render: (value) => (
+        <span className="inline-flex items-center rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700 dark:bg-brand-500/10 dark:text-brand-400">
+          {(value as number) ?? 0}
+        </span>
+      ),
+    },
     {
       key: "status",
       header: t("list.columns.status"),
@@ -367,6 +397,20 @@ export default function CompaniesPage() {
           canDeleteRow={(row) => row.status === "active"}
           customActions={[
             {
+              label: t("list.rowActions.markPaid"),
+              icon: <BadgeCheck size={16} strokeWidth={1.8} className="icon-glow" />,
+              color: "success",
+              onClick: (row) => markPaid(row),
+              hidden: (row) => !!row.subscription_plan_id,
+            },
+            {
+              label: t("list.rowActions.markUnpaid"),
+              icon: <BadgeX size={16} strokeWidth={1.8} className="icon-glow" />,
+              color: "warning",
+              onClick: (row) => markUnpaid(row),
+              hidden: (row) => !row.subscription_plan_id,
+            },
+            {
               label: t("list.rowActions.deactivate"),
               icon: <LockIcon />,
               color: "warning",
@@ -404,6 +448,16 @@ export default function CompaniesPage() {
           </div>
         )}
       </div>
+
+      <MarkPaidModal
+        isOpen={markPaidCompany !== null}
+        onClose={() => setMarkPaidCompany(null)}
+        company={markPaidCompany}
+        onDone={(name) => {
+          refetch();
+          addToast("success", t("toasts.companyActivatedTitle"), t("toasts.companyActivatedMessage", { name }));
+        }}
+      />
 
       <CompanyFormModal
         isOpen={isFormModalOpen}

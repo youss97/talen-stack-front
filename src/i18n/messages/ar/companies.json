@@ -1,4 +1,15 @@
 {
+  "markPaid": {
+    "title": "تحديد « {name} » كمدفوعة",
+    "plansTitle": "الاشتراك",
+    "noPlans": "لا يوجد اشتراك نشط. أنشئ واحدًا في إعدادات الاشتراك.",
+    "modulesTitle": "تخصيص الوحدات",
+    "choosePlan": "اختر اشتراكًا.",
+    "error": "خطأ أثناء التحديث.",
+    "cancel": "إلغاء",
+    "saving": "جارٍ الحفظ...",
+    "confirm": "تأكيد"
+  },
   "list": {
     "title": "الشركات",
     "subtitle": "إدارة الشركات والوحدات المتاحة لها",
@@ -12,7 +23,8 @@
       "email": "البريد الإلكتروني",
       "phone": "الهاتف",
       "status": "الحالة",
-      "paymentStatus": "الاشتراك"
+      "paymentStatus": "الاشتراك",
+      "clientsCount": "العملاء"
     },
     "paymentStatus": {
       "paid": "مدفوع",
@@ -24,6 +36,9 @@
       "deleted": "محذوفة"
     },
     "rowActions": {
+      "markPaid": "تحديد كمدفوعة",
+      "markUnpaid": "تحديد كغير مدفوعة (تعطيل الشركة)",
+      "markUnpaidConfirm": "هل تريد تحديد « {name} » كغير مدفوعة؟ سيتم تعطيل الشركة وجميع مستخدميها.",
       "activate": "تفعيل",
       "deactivate": "تعطيل",
       "remind": "تذكير بالاشتراك"

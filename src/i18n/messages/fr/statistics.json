@@ -8,6 +8,17 @@
     "active": "Active",
     "inactive": "Inactive"
   },
+  "collaborators": {
+    "title": "Statistiques par collaborateur",
+    "columns": {
+      "name": "Collaborateur",
+      "requests": "Demandes",
+      "applications": "Candidatures",
+      "closureRate": "Taux de clôture",
+      "avgDays": "Délai 1re candidature"
+    },
+    "days": "{count} j"
+  },
   "kpis": {
     "companies": "Entreprises",
     "clients": "Clients",

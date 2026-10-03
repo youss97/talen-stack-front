@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import Button from "@/components/ui/button/Button";
+import { Modal } from "@/components/ui/modal";
 import VoiceInputButton from "@/components/form/VoiceInputButton";
 import VoiceNoteRecorder from "@/components/form/VoiceNoteRecorder";
 
@@ -41,8 +42,9 @@ export default function WorkflowStepper({
   const sorted = provided.length ? provided : DEFAULT_STEPS;
   const allOptions = [...sorted.map((s) => s.name), ...TERMINAL];
 
-  // Changer d'étape
-  const [targetStep, setTargetStep] = useState("");
+  // Changer d'étape — par défaut l'étape actuelle
+  const [targetStep, setTargetStep] = useState(currentStep || "");
+  useEffect(() => { setTargetStep(currentStep || ""); }, [currentStep]);
   const [moveFeedback, setMoveFeedback] = useState("");
   const [moveError, setMoveError] = useState(false);
   const [moveAudio, setMoveAudio] = useState<Blob | null>(null);
@@ -60,6 +62,29 @@ export default function WorkflowStepper({
   const [fbAudio, setFbAudio] = useState<Blob | null>(null);
 
   const currentIndex = sorted.findIndex((s) => s.name === currentStep);
+
+  // Clic sur une étape (y compris l'étape actuelle) → confirmation avec motif obligatoire,
+  // enregistré comme feedback de l'étape.
+  const [pendingStep, setPendingStep] = useState<string | null>(null);
+  const [pendingReason, setPendingReason] = useState("");
+  const [pendingError, setPendingError] = useState(false);
+  const [pendingAudio, setPendingAudio] = useState<Blob | null>(null);
+
+  const openPending = (step: string) => {
+    setPendingStep(step); setPendingReason(""); setPendingError(false); setPendingAudio(null);
+  };
+  const closePending = () => {
+    setPendingStep(null); setPendingReason(""); setPendingError(false); setPendingAudio(null);
+  };
+  const confirmPending = async () => {
+    if (!pendingStep) return;
+    if (!pendingReason.trim() && !pendingAudio) { setPendingError(true); return; }
+    const step = pendingStep;
+    const reason = pendingReason.trim() || undefined;
+    const audio = pendingAudio;
+    closePending();
+    await onChangeStep(step, reason, audio);
+  };
 
   const submitMove = async () => {
     if (!targetStep) return;
@@ -104,13 +129,29 @@ export default function WorkflowStepper({
           return (
             <span key={i} className="flex items-center gap-2">
               {i > 0 && <span className="text-gray-300 dark:text-gray-600 inline-block rtl:rotate-180">→</span>}
-              <span className={`px-3 py-1.5 rounded-full text-xs font-medium border ${
-                isCurrent ? "bg-brand-500 text-white border-brand-500"
-                : isPast ? "bg-brand-50 text-brand-600 border-brand-200 dark:bg-brand-500/10 dark:text-brand-300 dark:border-brand-500/30"
-                : "bg-gray-50 text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
-              }`}>
-                {step.name}
-              </span>
+              {canEdit ? (
+                <button
+                  type="button"
+                  onClick={() => openPending(step.name)}
+                  disabled={isSaving}
+                  title={t("workflowStepper.stepClickTitle", { step: step.name })}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors hover:ring-2 hover:ring-brand-500/30 disabled:opacity-50 ${
+                    isCurrent ? "bg-brand-500 text-white border-brand-500"
+                    : isPast ? "bg-brand-50 text-brand-600 border-brand-200 hover:bg-brand-100 dark:bg-brand-500/10 dark:text-brand-300 dark:border-brand-500/30"
+                    : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
+                  }`}
+                >
+                  {step.name}
+                </button>
+              ) : (
+                <span className={`px-3 py-1.5 rounded-full text-xs font-medium border ${
+                  isCurrent ? "bg-brand-500 text-white border-brand-500"
+                  : isPast ? "bg-brand-50 text-brand-600 border-brand-200 dark:bg-brand-500/10 dark:text-brand-300 dark:border-brand-500/30"
+                  : "bg-gray-50 text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
+                }`}>
+                  {step.name}
+                </span>
+              )}
             </span>
           );
         })}
@@ -137,24 +178,24 @@ export default function WorkflowStepper({
               >
                 <option value="">{t("workflowStepper.selectStepPlaceholder")}</option>
                 {sorted.map((s) => (
-                  <option key={s.name} value={s.name} disabled={s.name === currentStep}>{s.name}</option>
+                  <option key={s.name} value={s.name}>{s.name}</option>
                 ))}
               </select>
-              <Button onClick={submitMove} disabled={isSaving || !targetStep}>
+              <Button onClick={submitMove} disabled={isSaving || !targetStep || targetStep === currentStep}>
                 {isSaving ? t("workflowStepper.updating") : t("workflowStepper.updateButton")}
               </Button>
             </div>
-            <div className="flex items-start gap-2">
-              <textarea
-                value={moveFeedback}
-                onChange={(e) => { setMoveFeedback(e.target.value); if (e.target.value.trim()) setMoveError(false); }}
-                rows={2}
-                placeholder={t("workflowStepper.feedbackPlaceholder")}
-                className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${moveError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
-              />
-              <VoiceInputButton onResult={(text) => { setMoveFeedback((prev) => (prev ? `${prev} ${text}` : text)); setMoveError(false); }} />
+            <textarea
+              value={moveFeedback}
+              onChange={(e) => { setMoveFeedback(e.target.value); if (e.target.value.trim()) setMoveError(false); }}
+              rows={2}
+              placeholder={t("workflowStepper.feedbackPlaceholder")}
+              className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${moveError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
+            />
+            <div className="flex flex-wrap items-center gap-2">
+              <VoiceInputButton labeled onResult={(text) => { setMoveFeedback((prev) => (prev ? `${prev} ${text}` : text)); setMoveError(false); }} />
+              <VoiceNoteRecorder value={moveAudio} onChange={(blob) => { setMoveAudio(blob); if (blob) setMoveError(false); }} />
             </div>
-            <VoiceNoteRecorder value={moveAudio} onChange={(blob) => { setMoveAudio(blob); if (blob) setMoveError(false); }} />
             {moveError && <p className="text-xs text-error-500">{t("workflowStepper.reasonRequired")}</p>}
           </div>
 
@@ -171,17 +212,17 @@ export default function WorkflowStepper({
             </div>
             {closureTarget && (
               <div className="space-y-2 pt-1">
-                <div className="flex items-start gap-2">
-                  <textarea
-                    value={closureReason}
-                    onChange={(e) => { setClosureReason(e.target.value); if (e.target.value.trim()) setClosureError(false); }}
-                    rows={2}
-                    placeholder={t("workflowStepper.reasonPlaceholder", { step: closureTarget })}
-                    className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${closureError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
-                  />
-                  <VoiceInputButton onResult={(text) => { setClosureReason((prev) => (prev ? `${prev} ${text}` : text)); setClosureError(false); }} />
+                <textarea
+                  value={closureReason}
+                  onChange={(e) => { setClosureReason(e.target.value); if (e.target.value.trim()) setClosureError(false); }}
+                  rows={2}
+                  placeholder={t("workflowStepper.reasonPlaceholder", { step: closureTarget })}
+                  className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${closureError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
+                />
+                <div className="flex flex-wrap items-center gap-2">
+                  <VoiceInputButton labeled onResult={(text) => { setClosureReason((prev) => (prev ? `${prev} ${text}` : text)); setClosureError(false); }} />
+                  <VoiceNoteRecorder value={closureAudio} onChange={(blob) => { setClosureAudio(blob); if (blob) setClosureError(false); }} />
                 </div>
-                <VoiceNoteRecorder value={closureAudio} onChange={(blob) => { setClosureAudio(blob); if (blob) setClosureError(false); }} />
                 {closureError && <p className="text-xs text-error-500">{t("workflowStepper.reasonRequiredShort")}</p>}
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" onClick={() => { setClosureTarget(null); setClosureReason(""); setClosureError(false); }} disabled={isSaving}>{tc("actions.cancel")}</Button>
@@ -205,17 +246,17 @@ export default function WorkflowStepper({
                   <option key={name} value={name}>{name}</option>
                 ))}
               </select>
-              <div className="flex items-start gap-2">
-                <textarea
-                  value={fbText}
-                  onChange={(e) => { setFbText(e.target.value); if (e.target.value.trim()) setFbError(false); }}
-                  rows={2}
-                  placeholder={t("workflowStepper.feedbackForStepPlaceholder")}
-                  className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${fbError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
-                />
-                <VoiceInputButton onResult={(text) => { setFbText((prev) => (prev ? `${prev} ${text}` : text)); setFbError(false); }} />
+              <textarea
+                value={fbText}
+                onChange={(e) => { setFbText(e.target.value); if (e.target.value.trim()) setFbError(false); }}
+                rows={2}
+                placeholder={t("workflowStepper.feedbackForStepPlaceholder")}
+                className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${fbError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
+              />
+              <div className="flex flex-wrap items-center gap-2">
+                <VoiceInputButton labeled onResult={(text) => { setFbText((prev) => (prev ? `${prev} ${text}` : text)); setFbError(false); }} />
+                <VoiceNoteRecorder value={fbAudio} onChange={(blob) => { setFbAudio(blob); if (blob) setFbError(false); }} />
               </div>
-              <VoiceNoteRecorder value={fbAudio} onChange={(blob) => { setFbAudio(blob); if (blob) setFbError(false); }} />
               {fbError && <p className="text-xs text-error-500">{t("workflowStepper.chooseStepAndFeedback")}</p>}
               <div className="flex justify-end">
                 <Button onClick={submitFeedback} disabled={isAddingFeedback || !fbStep || (!fbText.trim() && !fbAudio)}>
@@ -226,6 +267,35 @@ export default function WorkflowStepper({
           )}
         </>
       )}
+
+      <Modal isOpen={pendingStep !== null} onClose={closePending} className="max-w-md">
+        <div className="p-6 sm:p-8 space-y-4">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+            {t("workflowStepper.stepClickTitle", { step: pendingStep || "" })}
+          </h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            {t("workflowStepper.stepClickHint")}
+          </p>
+          <textarea
+            value={pendingReason}
+            onChange={(e) => { setPendingReason(e.target.value); if (e.target.value.trim()) setPendingError(false); }}
+            rows={3}
+            placeholder={t("workflowStepper.stepReasonPlaceholder")}
+            className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-hidden focus:ring-2 dark:bg-gray-900 dark:text-white/90 ${pendingError ? "border-error-500" : "border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700"}`}
+          />
+          <div className="flex flex-wrap items-center gap-2">
+            <VoiceInputButton labeled onResult={(text) => { setPendingReason((prev) => (prev ? `${prev} ${text}` : text)); setPendingError(false); }} />
+            <VoiceNoteRecorder value={pendingAudio} onChange={(blob) => { setPendingAudio(blob); if (blob) setPendingError(false); }} />
+          </div>
+          {pendingError && <p className="text-xs text-error-500">{t("workflowStepper.reasonRequiredShort")}</p>}
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="outline" onClick={closePending} disabled={isSaving}>{tc("actions.cancel")}</Button>
+            <Button onClick={confirmPending} disabled={isSaving}>
+              {isSaving ? t("workflowStepper.updating") : t("workflowStepper.confirmButton", { step: pendingStep || "" })}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

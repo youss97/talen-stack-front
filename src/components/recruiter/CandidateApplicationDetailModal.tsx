@@ -101,6 +101,11 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
             <Row label={t("candidateDetail.reference")} value={candidate.request?.reference} />
             <Row label={t("candidateDetail.email")} value={cv?.candidate_email} />
             <Row label={t("candidateDetail.phone")} value={cv?.candidate_phone} />
+            <Row label="LinkedIn" value={cv?.linkedin_url ? (
+              <a href={cv.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-brand-600 hover:underline dark:text-brand-400 break-all">
+                {cv.linkedin_url}
+              </a>
+            ) : undefined} />
             <Row label={t("candidateDetail.experience")} value={
               candidate.adjusted_experience != null
                 ? t("candidateDetail.yearsValue", { years: candidate.adjusted_experience })

@@ -192,7 +192,15 @@
       "three_months": "3 months",
       "other": "Other"
     },
-    "qualificationSection": "Qualification summary",
+    "scorePrompt": {
+      "button": "Copy for AI",
+      "buttonTitle": "Copies the application, CV, job description and a scoring prompt to paste into ChatGPT or another assistant",
+      "copiedTitle": "Copied",
+      "copiedMessage": "Application, CV and scoring prompt copied to the clipboard.",
+      "copyErrorTitle": "Copy failed",
+      "copyErrorMessage": "The clipboard is not accessible in this browser."
+    },
+    "qualificationSection":"Qualification summary",
     "qualificationScoreBadge": "Score: {score}/100",
     "languagesSection": "Languages",
     "languageLevel": "{language} — {level}/5",

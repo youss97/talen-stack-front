@@ -16,6 +16,7 @@ import ApplicationRequestDetailModal from "@/components/applicationRequest/Appli
 import ManagerRequestFormModal from "@/components/applicationRequest/ManagerRequestFormModal";
 import Pagination from "@/components/tables/Pagination";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
 import { openCvInNewTab, openAnonymizedCvInNewTab } from "@/utils/cvView";
 import { getFeedbackCardColor } from "@/utils/feedbackColors";
@@ -52,12 +53,14 @@ export default function RequestCandidatesPage() {
   const { data: offer } = useGetManagerRequestByIdQuery(requestId, { skip: !requestId });
   const [updateOwnRequest, { isLoading: isUpdatingOffer }] = useUpdateManagerOwnRequestMutation();
 
+  const [pageLimit, setPageLimit] = useLimitPreference("client-request-candidates", 5);
+
   const { data, isLoading, isFetching, refetch } = useGetCandidatesForRequestQuery({
     requestId,
     page,
     // Venant d'une notification pour une candidature précise : charger toute la liste (pas de pagination)
     // pour la retrouver quelle que soit sa page normale, puis ouvrir directement son détail.
-    limit: targetApplicationId ? 1000 : 5,
+    limit: targetApplicationId ? 1000 : pageLimit,
     search: debouncedSearch,
     step: statusFilter || undefined,
     source: sourceFilter || undefined,
@@ -520,8 +523,11 @@ export default function RequestCandidatesPage() {
           <Pagination
             currentPage={page}
             totalPages={data.pagination.totalPages}
+            totalItems={data.pagination.total}
             onPageChange={setPage}
-            itemsPerPage={5}
+            itemsPerPage={pageLimit}
+            onItemsPerPageChange={(n) => { setPageLimit(n); setPage(1); }}
+            pageSizeOptions={[5, 10, 20, 50]}
           />
         </div>
       )}

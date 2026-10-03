@@ -208,6 +208,7 @@
     "title": "CV anonymisé",
     "subtitle": "Modifiez le contenu, choisissez les sections et leur ordre, ajoutez vos propres blocs : l'aperçu se met à jour automatiquement.",
     "privacyNote": "Le nom, l'email, le téléphone et l'adresse du candidat ne sont jamais ajoutés automatiquement. Ne les saisissez pas dans vos blocs libres.",
+    "showResponsible": "Afficher le responsable (pied de page)",
     "editNote": "Ces modifications ne changent pas la fiche du candidat : elles ne s'appliquent qu'à ce PDF.",
     "orderLabel": "Sections et ordre",
     "tabEdit": "Modifier",
@@ -219,6 +220,8 @@
     "close": "Fermer",
     "fields": {
       "title": "Intitulé du poste",
+      "location": "Lieu",
+      "locationPlaceholder": "Ex. Casablanca, Maroc",
       "quickFacts": "Texte sous le titre",
       "quickFactsPlaceholder": "Ex. 5 ans d'expérience (laisser vide pour masquer)",
       "summary": "Profil professionnel",
@@ -270,7 +273,15 @@
     "yearsExperience": "{years} ans d'expérience",
     "remoteWork": "Télétravail uniquement",
     "portfolio": "Portfolio",
+    "applications": {
+      "date": "Date",
+      "position": "Poste",
+      "client": "Client",
+      "step": "Étape",
+      "status": "Statut"
+    },
     "sections": {
+      "applications": "Candidatures ({count})",
       "information": "Informations",
       "completeness": "Complétude du profil",
       "summary": "Résumé professionnel",
@@ -288,6 +299,8 @@
       "document": "Document CV"
     },
     "fields": {
+      "createdAt": "Date d'ajout",
+      "updatedAt": "Dernière mise à jour",
       "specialty": "Spécialité",
       "location": "Lieu",
       "sector": "Secteur",

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
@@ -10,6 +10,7 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import ImageUpload from "@/components/form/input/ImageUpload";
 import CloudinaryImageUpload from "@/components/form/input/CloudinaryImageUpload";
+import RichTextEditor from "@/components/form/RichTextEditor";
 import Badge from "@/components/ui/badge/Badge";
 import { generatePassword } from "@/utils/generatePassword";
 import {
@@ -22,6 +23,7 @@ import { COUNTRY_LIST } from "@/types/client";
 import { EyeIcon, EyeCloseIcon } from "@/icons";
 import { Lock } from "lucide-react";
 import { getImageUrl } from "@/utils/imageHelper";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 interface ClientFormModalProps {
   isOpen: boolean;
@@ -62,6 +64,7 @@ export default function ClientFormModal({
     handleSubmit,
     reset,
     setValue,
+    control,
     formState: { errors },
   } = useForm<CreateClientFormData>({
     resolver: yupResolver(isEditing ? updateClientSchema : createClientSchema) as any,
@@ -472,16 +475,24 @@ export default function ClientFormModal({
             </h3>
             {readOnly ? (
               client?.internal_note ? (
-                <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap break-words">{client.internal_note}</p>
+                <div
+                  className="text-sm text-gray-900 dark:text-white [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5 [&_a]:text-brand-600 [&_a]:underline"
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(client.internal_note) }}
+                />
               ) : (
                 <p className="text-sm text-gray-400">{t("fields.internalNoteEmpty")}</p>
               )
             ) : (
-              <textarea
-                {...register("internal_note")}
-                rows={3}
-                placeholder={t("fields.internalNotePlaceholder")}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+              <Controller
+                name="internal_note"
+                control={control}
+                render={({ field }) => (
+                  <RichTextEditor
+                    value={field.value as string}
+                    onChange={field.onChange}
+                    placeholder={t("fields.internalNotePlaceholder")}
+                  />
+                )}
               />
             )}
           </section>

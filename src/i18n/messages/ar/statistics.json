@@ -8,6 +8,17 @@
     "description": "نظرة عامة على نشاط التوظيف",
     "loadingDescription": "نظرة عامة على النشاط"
   },
+  "collaborators": {
+    "title": "إحصاءات حسب المتعاون",
+    "columns": {
+      "name": "المتعاون",
+      "requests": "الطلبات",
+      "applications": "الترشيحات",
+      "closureRate": "نسبة الإغلاق",
+      "avgDays": "متوسط المدة حتى أول ترشيح"
+    },
+    "days": "{count} يوم"
+  },
   "kpis": {
     "companies": "الشركات",
     "clients": "العملاء",

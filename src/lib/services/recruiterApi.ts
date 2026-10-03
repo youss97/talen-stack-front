@@ -36,6 +36,7 @@ export const recruiterApi = createApi({
           ...(params.status && { status: params.status }),
           ...(params.workflow_status && { workflow_status: params.workflow_status }),
           ...(params.client_id && { client_id: params.client_id }),
+          ...(params.cv_id && { cv_id: params.cv_id }),
           ...(params.request_id && { request_id: params.request_id }),
           ...(params.recruiter_id && { recruiter_id: params.recruiter_id }),
           ...(params.responsible_id && { responsible_id: params.responsible_id }),

@@ -6,6 +6,7 @@ import Button from "@/components/ui/button/Button";
 import FeedbackModal from "./FeedbackModal";
 import { formatDateTime } from "@/utils/dateFormat";
 import { getFeedbackCardColor } from "@/utils/feedbackColors";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import type { ApplicationFeedback } from "@/types/recruiter";
 
 interface FeedbackListModalProps {
@@ -40,7 +41,7 @@ export default function FeedbackListModal({
     <>
       <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl">
         <div className="p-6 sm:p-8 pb-0">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3 pe-14 sm:pe-16">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
               {t("feedbackList.title")}
             </h2>
@@ -78,9 +79,10 @@ export default function FeedbackListModal({
                   </div>
                   
                   {feedback.description && (
-                    <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words mb-3">
-                      {feedback.description}
-                    </p>
+                    <div
+                      className="text-sm text-gray-700 dark:text-gray-300 break-words mb-3 [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5 [&_a]:text-brand-600 [&_a]:underline"
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(feedback.description) }}
+                    />
                   )}
                   {feedback.audio_url && <audio controls preload="none" src={feedback.audio_url} className="mb-3 h-9 w-full" />}
                   

@@ -46,6 +46,18 @@ export interface DashboardStats {
   companiesByStatus?: StatusCount[];
   topCompaniesTraffic?: { name: string; value: number }[];
   companiesList?: { id?: string; name: string; status: string; hasPlan: boolean }[];
+  collaborators?: CollaboratorStats[];
+}
+
+export interface CollaboratorStats {
+  id: string;
+  name: string;
+  email: string;
+  requests: number;
+  applications: number;
+  filled: number;
+  closureRate: number;
+  avgDaysToFirstApplication: number | null;
 }
 
 export interface SearchResult {

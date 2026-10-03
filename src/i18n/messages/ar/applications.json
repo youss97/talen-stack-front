@@ -192,7 +192,15 @@
       "three_months": "ثلاثة أشهر",
       "other": "أخرى"
     },
-    "qualificationSection": "تقرير التأهيل",
+    "scorePrompt": {
+      "button": "نسخ لـ IA",
+      "buttonTitle": "ينسخ الترشيح والسيرة الذاتية ووصف الوظيفة وطلب تقييم لتلصقه في ChatGPT أو مساعد آخر",
+      "copiedTitle": "تم النسخ",
+      "copiedMessage": "تم نسخ الترشيح والسيرة الذاتية وطلب التقييم إلى الحافظة.",
+      "copyErrorTitle": "تعذّر النسخ",
+      "copyErrorMessage": "الحافظة غير متاحة في هذا المتصفح."
+    },
+    "qualificationSection":"تقرير التأهيل",
     "qualificationScoreBadge": "الدرجة: {score}/100",
     "languagesSection": "اللغات",
     "languageLevel": "{language} — {level}/5",

@@ -1,4 +1,15 @@
 {
+  "markPaid": {
+    "title": "Mark \"{name}\" as paid",
+    "plansTitle": "Subscription",
+    "noPlans": "No active subscription. Create one in the subscription settings.",
+    "modulesTitle": "Module customization",
+    "choosePlan": "Choose a subscription.",
+    "error": "Error while updating.",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "confirm": "Confirm"
+  },
   "list": {
     "title": "Companies",
     "subtitle": "Manage companies and their accessible modules",
@@ -12,7 +23,8 @@
       "email": "Email",
       "phone": "Phone",
       "status": "Status",
-      "paymentStatus": "Subscription"
+      "paymentStatus": "Subscription",
+      "clientsCount": "Clients"
     },
     "paymentStatus": {
       "paid": "Paid",
@@ -24,6 +36,9 @@
       "deleted": "Deleted"
     },
     "rowActions": {
+      "markPaid": "Mark as paid",
+      "markUnpaid": "Mark as unpaid (deactivates the company)",
+      "markUnpaidConfirm": "Mark \"{name}\" as unpaid? The company and all its users will be deactivated.",
       "activate": "Activate",
       "deactivate": "Deactivate",
       "remind": "Remind for subscription"

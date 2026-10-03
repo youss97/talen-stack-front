@@ -70,39 +70,36 @@ const newId = () => Math.random().toString(36).slice(2, 9);
  * elles ne s'appliquent qu'au PDF généré ici.
  */
 export default function AnonymizedCvOptionsModal({
-  isOpen, onClose, cvId, initialTitle, initialSummary, initialSkills, initialExperiences, initialFormations,
+  isOpen, onClose, cvId,
 }: Props) {
   const t = useTranslations("cvs.anonymizedOptions");
 
   // Le CV est toujours chargé ici (ligne sous le titre, et valeurs par défaut si non fournies)
-  const needsFetch = initialExperiences === undefined && initialFormations === undefined;
+  // Valeurs de départ = données brutes saisies sur le talent (même source que son formulaire
+  // d'édition), et non les versions normalisées de la fiche (qui remplacent les vides par « Non spécifié »).
   const { data: fetchedCv, isFetching: isFetchingCv } = useGetCVByIdQuery(cvId, { skip: !isOpen });
   const initial = useMemo(() => {
     const cv: any = fetchedCv || {};
     const extraction = cv.full_information?.extraction || {};
     const years = cv.total_experience ?? extraction.experience_years;
     const quickFacts = years != null && years !== "" ? `${years} an${Number(years) > 1 ? "s" : ""} d'expérience` : "";
-    if (!needsFetch) {
-      return {
-        title: initialTitle || "", summary: initialSummary || "", skills: initialSkills || [],
-        experiences: initialExperiences || [], formations: initialFormations || [], quickFacts,
-      };
-    }
     return {
       title: cv.profile_title || cv.last_position || "",
+      location: cv.location || "",
       summary: htmlToText(cv.full_information?.summary || extraction.summary || ""),
       skills: (cv.skills?.length ? cv.skills : extraction.skills) || [],
       experiences: (cv.experiences?.length ? cv.experiences : extraction.experiences) || [],
       formations: (cv.formations?.length ? cv.formations : extraction.formations) || [],
       quickFacts,
     };
-  }, [needsFetch, fetchedCv, initialTitle, initialSummary, initialSkills, initialExperiences, initialFormations]);
+  }, [fetchedCv]);
   const [quickFacts, setQuickFacts] = useState("");
   const [pdfFilename, setPdfFilename] = useState("cv-anonymise.pdf");
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
   const [rows, setRows] = useState<Row[]>([]);
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [title, setTitle] = useState("");
+  const [location, setLocation] = useState("");
   const [summary, setSummary] = useState("");
   const [skillsText, setSkillsText] = useState("");
   const [experiences, setExperiences] = useState<ExpRow[]>([]);
@@ -121,6 +118,7 @@ export default function AnonymizedCvOptionsModal({
     setMobileTab("edit");
     setQuickFacts(initial.quickFacts);
     setTitle(initial.title);
+    setLocation(initial.location || "");
     setSummary(initial.summary);
     setSkillsText(initial.skills.join(", "));
     setExperiences(initial.experiences.map(toExpRow));
@@ -140,6 +138,8 @@ export default function AnonymizedCvOptionsModal({
   useEffect(() => () => { if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current); }, []);
 
   // Payload envoyé au serveur : les blocs libres sont indexés dans l'ordre d'apparition
+  const [showResponsible, setShowResponsible] = useState(true);
+
   const payload: AnonymizedCvPayload = useMemo(() => {
     const blockOrder = rows.filter((r) => r.checked && r.key.startsWith("block:")).map((r) => r.key.slice(6));
     const usedBlocks = blockOrder.map((id) => blocks.find((b) => b.id === id)).filter(Boolean) as Block[];
@@ -151,15 +151,17 @@ export default function AnonymizedCvOptionsModal({
       sections,
       overrides: {
         profileTitle: title.trim() || undefined,
+        location,
         summary: summary.trim() || undefined,
         skills: skills.length ? skills : undefined,
         quickFacts,
         experiences,
         formations,
         customBlocks: usedBlocks.map((b) => ({ title: b.title, text: b.text })),
+        showResponsible,
       },
     };
-  }, [rows, blocks, title, summary, skillsText, quickFacts, experiences, formations]);
+  }, [rows, blocks, title, location, summary, skillsText, quickFacts, experiences, formations, showResponsible]);
 
   const payloadKey = JSON.stringify(payload);
 
@@ -262,6 +264,8 @@ export default function AnonymizedCvOptionsModal({
             <div>
               <Label>{t("fields.title")}</Label>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Label className="mt-3">{t("fields.location")}</Label>
+              <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder={t("fields.locationPlaceholder")} />
             </div>
             <div>
               <Label>{t("fields.quickFacts")}</Label>
@@ -403,6 +407,16 @@ export default function AnonymizedCvOptionsModal({
                 <Plus size={15} strokeWidth={1.8} /> {t("customBlocks.add")}
               </button>
             </div>
+
+            <label className="flex cursor-pointer items-center gap-2.5 rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300">
+              <input
+                type="checkbox"
+                checked={showResponsible}
+                onChange={(e) => setShowResponsible(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+              />
+              {t("showResponsible")}
+            </label>
 
             <p className="text-xs text-gray-400">{t("privacyNote")}</p>
             <p className="text-xs text-gray-400">{t("editNote")}</p>
