@@ -51,6 +51,7 @@
     "trafficByCompany": "Trafic par entreprise (candidatures)",
     "applicationsPerMonth": "Candidatures par mois",
     "requestsByStatus": "Demandes par statut",
+    "applicationsByStatus": "Candidatures par statut",
     "integrationsByStatus": "Intégrations par statut",
     "topClients": "Top clients (demandes)",
     "requestsPerMonth": "Demandes de recrutement par mois",

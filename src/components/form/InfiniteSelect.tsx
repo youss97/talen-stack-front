@@ -27,6 +27,8 @@ interface InfiniteSelectProps<T> {
   initialSelectedItems?: T[];
   /** Valeurs (itemValueKey) à exclure de la liste de suggestions — ex: personnes déjà sélectionnées ailleurs dans le formulaire. */
   excludeValues?: string[];
+  /** Ouvre directement la recherche au montage — utile quand ce composant est déjà affiché à l'intérieur d'un déclencheur externe (ex. bouton "Kanban" qui ouvre ce select). */
+  defaultOpen?: boolean;
 }
 
 function InfiniteSelectInner<T extends Record<string, unknown>>(
@@ -45,10 +47,11 @@ function InfiniteSelectInner<T extends Record<string, unknown>>(
     placeholder = "Sélectionner...",
     initialSelectedItems = [],
     excludeValues,
+    defaultOpen = false,
   }: InfiniteSelectProps<T>,
   _ref: React.ForwardedRef<HTMLDivElement>
 ) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const [searchText, setSearchText] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
@@ -103,8 +106,16 @@ function InfiniteSelectInner<T extends Record<string, unknown>>(
       }
       setIsOpen(false);
     };
+    // Sur mobile (PWA incluse), l'ouverture donne le focus au champ de recherche (autoFocus
+    // ci-dessous), ce qui fait apparaître le clavier virtuel — qui redimensionne la fenêtre et
+    // déclenche "resize". Sans cette garde, le dropdown se refermait alors immédiatement après
+    // s'être ouvert (invisible à l'œil : il semblait "ne jamais s'ouvrir"). Une vraie rotation
+    // d'écran ou un resize desktop change la LARGEUR ; le clavier ne change que la hauteur.
+    const widthAtOpen = window.innerWidth;
     const handleResize = () => {
-      setIsOpen(false);
+      if (window.innerWidth !== widthAtOpen) {
+        setIsOpen(false);
+      }
     };
 
     window.addEventListener("scroll", handleScroll, true);

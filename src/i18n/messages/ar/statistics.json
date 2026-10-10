@@ -51,6 +51,7 @@
     "trafficByCompany": "الحركة حسب الشركة (الترشيحات)",
     "applicationsPerMonth": "الترشيحات الشهرية",
     "requestsByStatus": "الطلبات حسب الحالة",
+    "applicationsByStatus": "الترشيحات حسب الحالة",
     "integrationsByStatus": "التكاملات حسب الحالة",
     "topClients": "أفضل العملاء (الطلبات)",
     "requestsPerMonth": "طلبات التوظيف شهريًا",

@@ -61,8 +61,10 @@
       "one_month": "شهر واحد",
       "two_months": "شهران",
       "three_months": "ثلاثة أشهر",
-      "other": "أخرى"
+      "other": "مخصصة"
     },
+    "months": "أشهر",
+    "days": "أيام",
     "terminalSteps": {
       "accepted": "مقبول",
       "ko": "مرفوض",
@@ -80,7 +82,7 @@
     "editOffer": "تعديل التوظيف",
     "refresh": "تحديث",
     "searchPlaceholder": "البحث حسب الاسم أو البريد الإلكتروني...",
-    "allStatuses": "كل الحالات",
+    "allStatuses": "كل المراحل",
     "empty": {
       "title": "لم يتم العثور على أي مرشح",
       "filtered": "حاول تعديل عوامل التصفية الخاصة بك",
@@ -88,12 +90,15 @@
     },
     "years": "سنوات",
     "skillsLabel": "المهارات:",
+    "languagesLabel": "اللغات:",
+    "languageLevel": "{language} — {level}/5",
     "feedback": {
       "hrEvaluations": "تقييمات الموارد البشرية ({count})",
-      "myFeedbacks": "ملاحظاتي ({count})",
-      "viewAll": "عرض الكل"
+      "myFeedbacks": "رسائلي ({count})",
+      "viewAll": "عرض الكل",
+      "more": "+{count} رسالة أخرى — عرض الكل"
     },
-    "addFeedback": "إضافة ملاحظة",
+    "addFeedback": "إضافة رسالة",
     "consultApplication": "الاطّلاع على الترشيح",
     "viewCv": "عرض السيرة الذاتية",
     "downloadCv": "تحميل السيرة الذاتية",
@@ -186,7 +191,7 @@
     "editSubmit": "تعديل التوظيف",
     "defaultWorkflowSteps": {
       "proposed": "مقترح",
-      "hrInterview": "مقابلة الموارد البشرية",
+      "hrInterview": "مقابلة تقنية",
       "clientInterview": "مقابلة العميل",
       "offer": "عرض"
     }

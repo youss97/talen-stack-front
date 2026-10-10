@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { AlertTriangle } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import InputField from "@/components/form/input/InputField";
@@ -96,7 +97,7 @@ export default function StatusChangeModal({
             </select>
             {newStatus === currentStatus && (
               <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
-                ⚠️ {t("statusChange.selectDifferentWarning")}
+                <span className="inline-flex items-center gap-1"><AlertTriangle size={13} strokeWidth={1.8} /> {t("statusChange.selectDifferentWarning")}</span>
               </p>
             )}
           </div>

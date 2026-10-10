@@ -3,7 +3,7 @@
 export type Currency = string; // Accepte tous les codes de devises de la bibliothèque
 export type AvailabilityType = 'immediate' | 'less_than_one_month' | 'one_month' | 'two_months' | 'three_months' | 'other';
 export type AvailabilityUnit = 'days' | 'months';
-export type WorkflowStatus = 'draft' | 'active' | 'archived';
+export type WorkflowStatus = 'draft' | 'active';
 
 export interface LanguageSkill {
   language: string;
@@ -33,6 +33,7 @@ export interface Recruiter {
   package_rate?: number;
   salary_expectation?: number;
   daily_rate_expectation?: number;
+  expectation_currency?: string | null;
   package_current?: string;
   package_desired?: string;
   salary_expectation_notes?: string;
@@ -63,6 +64,8 @@ export interface Recruiter {
 
   // Anonymisation et ajustements
   is_anonymized?: boolean;
+  anonymous_label?: string; // « Candidat DDMMYY-NN » — fourni par le backend pour les candidatures anonymisées
+  skills?: string[]; // Compétences évaluées par le recruteur après entretien
   adjusted_experience?: number;
   
   // Visibilité
@@ -83,6 +86,7 @@ export interface Recruiter {
     candidate_email?: string;
     candidate_phone?: string;
     linkedin_url?: string | null;
+    portfolio_url?: string | null;
     last_position?: string;
     profile_title?: string;
     total_experience?: number;
@@ -176,6 +180,8 @@ export interface CreateRecruiterRequest {
 
   // Anonymisation et ajustements
   is_anonymized?: boolean;
+  anonymous_label?: string; // « Candidat DDMMYY-NN » — fourni par le backend pour les candidatures anonymisées
+  skills?: string[]; // Compétences évaluées par le recruteur après entretien
   adjusted_experience?: number | null;
 }
 
@@ -219,6 +225,8 @@ export interface UpdateRecruiterRequest {
 
   // Anonymisation et ajustements
   is_anonymized?: boolean;
+  anonymous_label?: string; // « Candidat DDMMYY-NN » — fourni par le backend pour les candidatures anonymisées
+  skills?: string[]; // Compétences évaluées par le recruteur après entretien
   adjusted_experience?: number | null;
 }
 

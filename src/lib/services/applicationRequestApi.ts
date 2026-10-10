@@ -33,7 +33,7 @@ export const applicationRequestApi = createApi({
           ...(params.search && { search: params.search }),
           ...(params.status && { status: params.status }),
           ...(params.required_skills && { required_skills: params.required_skills }),
-          ...(params.experience_level && { experience_level: params.experience_level }),
+          ...(params.priority && { priority: params.priority }),
           ...(params.contract_type && { contract_type: params.contract_type }),
           ...(params.location && { location: params.location }),
           ...(params.responsible_id && { responsible_id: params.responsible_id }),
@@ -63,7 +63,7 @@ export const applicationRequestApi = createApi({
       infiniteQueryOptions: {
         initialPageParam: {
           page: 1,
-          limit: 10,
+          limit: 5,
         },
         getNextPageParam: (lastPage, _allPages, lastPageParam) => {
           const currentPage = lastPage.pagination.page;

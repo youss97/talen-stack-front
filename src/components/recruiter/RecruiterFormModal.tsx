@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm, Resolver, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useTranslations } from "next-intl";
+import { AlertTriangle } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Label from "@/components/form/Label";
@@ -22,6 +23,8 @@ import type { Recruiter, LanguageSkill } from "@/types/recruiter";
 import type { ApplicationRequest } from "@/types/applicationRequest";
 import type { CV } from "@/types/cv";
 import { useGetCVsForSelectInfiniteQuery, useLazyGetCVByIdQuery } from "@/lib/services/cvApi";
+import { Copy } from "lucide-react";
+import { buildCandidateScorePrompt } from "@/utils/candidateScorePrompt";
 import { useGetApplicationRequestsForSelectInfiniteQuery, useLazyGetApplicationRequestByIdQuery } from "@/lib/services/applicationRequestApi";
 import { useGetContractTypesQuery } from "@/lib/services/contractTypeApi";
 import { useGetApplicationStatusesQuery } from "@/lib/services/applicationStatusApi";
@@ -52,7 +55,10 @@ export default function RecruiterFormModal({
   const isEditing = !!recruiter && !isDuplicate;
   const [selectedCV, setSelectedCV] = useState<CV | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<ApplicationRequest | null>(null);
+  const [promptCopied, setPromptCopied] = useState(false);
   const [languages, setLanguages] = useState<LanguageSkill[]>([]);
+  const [skills, setSkills] = useState<string[]>([]);
+  const [skillDraft, setSkillDraft] = useState("");
   const [showSalaryNotes, setShowSalaryNotes] = useState(false);
   const [missingFields, setMissingFields] = useState<string[]>([]);
 
@@ -108,6 +114,7 @@ export default function RecruiterFormModal({
       availability_custom_unit: "days",
       availability_negotiable: false,
       languages: [],
+      skills: [],
       qualification_report: "",
       recruiter_notes: "",
       recruiter_interview_date: undefined,
@@ -221,6 +228,7 @@ export default function RecruiterFormModal({
         package_rate: recruiter.package_rate,
         salary_expectation: recruiter.salary_expectation,
         daily_rate_expectation: recruiter.daily_rate_expectation,
+        expectation_currency: recruiter.expectation_currency || undefined,
         package_current: recruiter.package_current || "",
         package_desired: recruiter.package_desired || "",
         currency: recruiter.currency || "MAD",
@@ -232,6 +240,7 @@ export default function RecruiterFormModal({
         availability_custom_unit: recruiter.availability_custom_unit || "days",
         availability_negotiable: recruiter.availability_negotiable || false,
         languages: existingLanguages,
+        skills: recruiter.skills || [],
         qualification_report: recruiter.qualification_report || "",
         qualification_score: recruiter.qualification_score,
         salary_expectation_notes: recruiter.salary_expectation_notes || "",
@@ -244,6 +253,7 @@ export default function RecruiterFormModal({
         adjusted_experience: recruiter.adjusted_experience,
       });
       setLanguages(existingLanguages);
+      setSkills(recruiter.skills || []);
       setShowSalaryNotes(!!recruiter.salary_expectation_notes);
       if (recruiter.cv) setSelectedCV(recruiter.cv as CV);
       if (recruiter.request) setSelectedRequest(recruiter.request as ApplicationRequest);
@@ -267,6 +277,7 @@ export default function RecruiterFormModal({
         availability_custom_unit: "days",
         availability_negotiable: false,
         languages: [],
+        skills: [],
         qualification_report: "",
         qualification_score: undefined,
         salary_expectation_notes: "",
@@ -279,6 +290,7 @@ export default function RecruiterFormModal({
         adjusted_experience: undefined,
       });
       setLanguages([]);
+      setSkills([]);
       setShowSalaryNotes(false);
       setSelectedCV(null);
       setSelectedRequest(null);
@@ -410,6 +422,7 @@ export default function RecruiterFormModal({
       languages: (data.languages || []).filter(
         (lang) => lang && lang.language && lang.language.trim() !== ""
       ),
+      skills: skills.map((s) => s.trim()).filter(Boolean),
     };
     // Auto-clean: appeler onSubmit puis reset le formulaire
     onSubmit(cleanedData);
@@ -792,6 +805,21 @@ export default function RecruiterFormModal({
                 )}
               </div>
 
+              {(wantsSalaryExpectation || wantsTjmExpectation) && !desiredSalaryDeferred && (
+                <div className="max-w-xs">
+                  <Label>{t("expectationCurrencyLabel")}</Label>
+                  <CurrencySelector
+                    value={watch("expectation_currency") || watch("currency") || "MAD"}
+                    onChange={(currencyCode) => setValue("expectation_currency", currencyCode)}
+                    placeholder={t("currencyPlaceholder")}
+                    className="h-11"
+                    showPopular={true}
+                    showRegions={true}
+                  />
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{t("expectationCurrencyHint")}</p>
+                </div>
+              )}
+
               {/* Discuter de la rémunération ultérieurement */}
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
@@ -865,7 +893,6 @@ export default function RecruiterFormModal({
                   className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                 >
                   <option value="immediate">{t("availabilityOptions.immediate")}</option>
-                  <option value="less_than_one_month">{t("availabilityOptions.less_than_one_month")}</option>
                   <option value="one_month">{t("availabilityOptions.one_month")}</option>
                   <option value="two_months">{t("availabilityOptions.two_months")}</option>
                   <option value="three_months">{t("availabilityOptions.three_months")}</option>
@@ -887,27 +914,6 @@ export default function RecruiterFormModal({
                   {errors.availability_reason && (
                     <p className="mt-1 text-sm text-error-500">
                       {errors.availability_reason.message}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {availabilityType === "less_than_one_month" && (
-                <div>
-                  <Label>
-                    {t("daysCountLabel")} <span className="text-error-500">*</span>
-                  </Label>
-                  <input
-                    type="number"
-                    {...register("availability_days")}
-                    placeholder="15"
-                    min="1"
-                    max="30"
-                    className="h-11 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
-                  />
-                  {errors.availability_days && (
-                    <p className="mt-1 text-sm text-error-500">
-                      {errors.availability_days.message}
                     </p>
                   )}
                 </div>
@@ -980,66 +986,6 @@ export default function RecruiterFormModal({
               )}
             </div>
 
-            {/* Section 6: Langues */}
-            <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                  {t("sections.languages")}
-                </h3>
-                <Button type="button" variant="outline" size="sm" onClick={addLanguage}>
-                  {t("addLanguage")}
-                </Button>
-              </div>
-
-              {languages.map((lang, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                  <div className="flex-1">
-                    <input
-                      type="text"
-                      value={lang.language ?? ""}
-                      onChange={(e) => handleLanguageChange(index, 'language', e.target.value)}
-                      placeholder={t("languageNamePlaceholder")}
-                      className="h-10 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
-                    />
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => handleLanguageChange(index, 'level', star)}
-                        className="focus:outline-none"
-                      >
-                        <Star
-                          size={24}
-                          strokeWidth={1.8}
-                          fill={star <= lang.level ? "currentColor" : "none"}
-                          className={`icon-glow ${
-                            star <= lang.level
-                              ? "text-yellow-400"
-                              : "text-gray-300 dark:text-gray-600"
-                          }`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeLanguage(index)}
-                    className="text-error-500 hover:text-error-600 p-1"
-                  >
-                    <X size={20} strokeWidth={1.8} className="icon-glow" />
-                  </button>
-                </div>
-              ))}
-
-              {languages.length === 0 && (
-                <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-                  {t("noLanguages")}
-                </p>
-              )}
-            </div>
-
             {/* Section 7: Compte Rendu de Qualification */}
             <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
@@ -1087,8 +1033,143 @@ export default function RecruiterFormModal({
                 )}
               </div>
 
+              {/* Compétences évaluées après entretien (facultatif) */}
               <div>
-                <Label>{t("qualificationScoreLabel")}</Label>
+                <Label>{t("skillsLabel")}</Label>
+                <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">{t("skillsHint")}</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={skillDraft}
+                    onChange={(e) => setSkillDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const v = skillDraft.trim();
+                        if (v && !skills.includes(v)) {
+                          const next = [...skills, v];
+                          setSkills(next);
+                          setValue("skills", next);
+                        }
+                        setSkillDraft("");
+                      }
+                    }}
+                    placeholder={t("skillsPlaceholder")}
+                    className="h-11 flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                  />
+                </div>
+                {skills.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700 dark:bg-brand-500/15 dark:text-brand-300"
+                      >
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const next = skills.filter((s) => s !== skill);
+                            setSkills(next);
+                            setValue("skills", next);
+                          }}
+                          className="text-brand-500 hover:text-brand-700"
+                          aria-label={t("removeSkill")}
+                        >
+                          <X size={12} strokeWidth={2} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Langues (facultatif) */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label>{t("sections.languages")}</Label>
+                  <Button type="button" variant="outline" size="sm" onClick={addLanguage}>
+                    {t("addLanguage")}
+                  </Button>
+                </div>
+
+                {languages.map((lang, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        value={lang.language ?? ""}
+                        onChange={(e) => handleLanguageChange(index, 'language', e.target.value)}
+                        placeholder={t("languageNamePlaceholder")}
+                        className="h-10 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                      />
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => handleLanguageChange(index, 'level', star)}
+                          className="focus:outline-none"
+                        >
+                          <Star
+                            size={24}
+                            strokeWidth={1.8}
+                            fill={star <= lang.level ? "currentColor" : "none"}
+                            className={`icon-glow ${
+                              star <= lang.level
+                                ? "text-yellow-400"
+                                : "text-gray-300 dark:text-gray-600"
+                            }`}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeLanguage(index)}
+                      className="text-error-500 hover:text-error-600 p-1"
+                    >
+                      <X size={20} strokeWidth={1.8} className="icon-glow" />
+                    </button>
+                  </div>
+                ))}
+
+                {languages.length === 0 && (
+                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+                    {t("noLanguages")}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <div className="mb-1.5 flex items-center justify-between gap-2">
+                  <Label>{t("qualificationScoreLabel")}</Label>
+                  <button
+                    type="button"
+                    disabled={!selectedCV}
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(
+                          buildCandidateScorePrompt({
+                            cv: selectedCV,
+                            request: selectedRequest,
+                            adjusted_experience: watch("adjusted_experience"),
+                          }),
+                        );
+                        setPromptCopied(true);
+                        setTimeout(() => setPromptCopied(false), 2000);
+                      } catch {
+                        setPromptCopied(false);
+                      }
+                    }}
+                    title={t("scorePromptButtonTitle")}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-2.5 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                  >
+                    <Copy size={13} strokeWidth={1.8} className="icon-glow" />
+                    {promptCopied ? t("scorePromptCopied") : t("scorePromptButton")}
+                  </button>
+                </div>
                 <input
                   type="number"
                   min={0}
@@ -1150,7 +1231,7 @@ export default function RecruiterFormModal({
 
           {serverError && (
             <div className="mx-6 sm:mx-8 mb-3 rounded-lg border border-error-200 bg-error-50 px-4 py-3 text-sm text-error-600 dark:border-error-500/30 dark:bg-error-500/10 dark:text-error-400">
-              <span className="me-1">⚠️</span>{serverError}
+              <AlertTriangle size={14} strokeWidth={1.8} className="me-1 inline-block align-text-bottom" />{serverError}
             </div>
           )}
           {missingFields.length > 0 && (

@@ -41,13 +41,32 @@
       "markUnpaidConfirm": "Rendre « {name} » non payante ? La société et tous ses utilisateurs seront désactivés.",
       "activate": "Activer",
       "deactivate": "Désactiver",
-      "remind": "Relancer pour abonnement"
+      "remind": "Relancer pour abonnement",
+      "permanentDelete": "Supprimer définitivement"
     },
     "emptyState": "Aucune entreprise trouvée",
     "deactivateModal": {
       "title": "Désactiver l'entreprise",
       "message": "Êtes-vous sûr de vouloir désactiver l'entreprise \"{name}\" ? Tous ses comptes seront désactivés. Vous pourrez la réactiver depuis le tableau.",
       "confirm": "Désactiver"
+    },
+    "permanentDeleteModal": {
+      "title": "Supprimer définitivement l'entreprise",
+      "message": "Vous allez supprimer définitivement l'entreprise \"{name}\" et toutes les données qui lui sont rattachées :",
+      "items": {
+        "users": "Tous ses utilisateurs et leurs comptes de connexion",
+        "clients": "Ses clients, leurs contacts et leurs comptes portail",
+        "cvs": "Tous ses CV (talents) et leurs fichiers",
+        "requests": "Toutes ses demandes de recrutement",
+        "applications": "Toutes ses candidatures, feedbacks et entretiens",
+        "crm": "Ses données CRM (sociétés prospects, contacts, opportunités, activités, tâches)",
+        "other": "Ses rôles, modèles d'emails, types de contrat, sources de CV et autres paramètres"
+      },
+      "irreversible": "Cette action est irréversible. Les données supprimées ne pourront pas être récupérées.",
+      "typeNameLabel": "Pour confirmer, saisissez le nom exact de l'entreprise : {name}",
+      "cancel": "Annuler",
+      "confirm": "Supprimer définitivement",
+      "deleting": "Suppression..."
     }
   },
   "toasts": {
@@ -64,6 +83,8 @@
     "loadDetailError": "Erreur lors du chargement des détails de l'entreprise",
     "deleteSuccess": "Entreprise supprimée avec succès",
     "deleteError": "Erreur lors de la suppression",
+    "permanentDeleteSuccess": "Entreprise et toutes ses données supprimées définitivement",
+    "permanentDeleteError": "Erreur lors de la suppression définitive",
     "updateSuccess": "Entreprise modifiée avec succès",
     "updateError": "Erreur lors de la modification de l'entreprise",
     "createSuccess": "Entreprise créée avec succès",
@@ -105,6 +126,17 @@
       "adminLoginHint": "Optionnel — laisser vide pour utiliser l'email. Utile si cette personne administre déjà une autre société avec le même email.",
       "password": "Mot de passe",
       "notEditable": "Non modifiable",
+      "generatePassword": "Générer",
+      "source": "Origine de la société",
+      "sources": {
+        "placeholder": "— Sélectionner —",
+        "website": "Via le site",
+        "referral": "Via recommandation",
+        "prospecting": "Via prospection",
+        "publication": "Via publication",
+        "ads": "Via publicité (ads)",
+        "other": "Autre"
+      },
       "adminPhone": "Téléphone de l'administrateur",
       "position": "Poste / Position",
       "subscriptionPlan": "Plan d'abonnement",

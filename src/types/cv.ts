@@ -17,6 +17,18 @@ export interface CvFormation {
   end_date?: string;
 }
 
+export interface CvCertification {
+  name: string;
+  organization?: string;
+  url?: string;
+  // Mois/année : "MM/YYYY"
+  issue_date?: string;
+  expiration_date?: string;
+}
+
+// Rétrocompatibilité : les CV créés avant cette évolution stockent une simple liste de noms.
+export type CvCertificationEntry = CvCertification | string;
+
 export enum ContractType {
   CDI = 'CDI',
   CDD = 'CDD',
@@ -80,7 +92,7 @@ export interface CV {
   specialty?: string;
   location?: string;
   soft_skills?: string[];
-  certifications?: string[];
+  certifications?: CvCertificationEntry[];
   geographic_mobility?: string[];
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
@@ -143,7 +155,7 @@ export interface CreateCVRequest {
   specialty?: string;
   location?: string;
   soft_skills?: string[];
-  certifications?: string[];
+  certifications?: CvCertification[];
   geographic_mobility?: string[];
   contract_type_preferences?: string[];
   remote_preferred?: boolean;
@@ -172,7 +184,7 @@ export interface UpdateCVRequest {
   specialty?: string;
   location?: string;
   soft_skills?: string[];
-  certifications?: string[];
+  certifications?: CvCertification[];
   geographic_mobility?: string[];
   contract_type_preferences?: string[];
   remote_preferred?: boolean;

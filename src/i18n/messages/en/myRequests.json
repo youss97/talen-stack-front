@@ -55,7 +55,7 @@
     "qualificationScoreHint": "The candidate's qualification score, out of 100, assessed by the recruiter against the criteria sought for this role.",
     "allSources": "All sources",
     "experienceYears": "{years} years of experience",
-    "desiredSalaryValue": "Expected: {amount} {currency}",
+    "desiredSalaryValue": "Expected salary: {amount} {currency}",
     "desiredDailyRateValue": "Expected rate: {amount} {currency}/day",
     "availabilityOptions": {
       "immediate": "Immediate",
@@ -63,8 +63,10 @@
       "one_month": "1 month",
       "two_months": "2 months",
       "three_months": "3 months",
-      "other": "Other"
+      "other": "Custom"
     },
+    "months": "months",
+    "days": "days",
     "terminalSteps": {
       "accepted": "Accepted",
       "ko": "Rejected",
@@ -82,7 +84,7 @@
     "editOffer": "Edit recruitment",
     "refresh": "Refresh",
     "searchPlaceholder": "Search by name, email...",
-    "allStatuses": "All statuses",
+    "allStatuses": "All steps",
     "empty": {
       "title": "No candidates found",
       "filtered": "Try adjusting your filters",
@@ -90,12 +92,15 @@
     },
     "years": "years",
     "skillsLabel": "Skills:",
+    "languagesLabel": "Languages:",
+    "languageLevel": "{language} — {level}/5",
     "feedback": {
       "hrEvaluations": "HR evaluations ({count})",
-      "myFeedbacks": "My feedback ({count})",
-      "viewAll": "View all"
+      "myFeedbacks": "My messages ({count})",
+      "viewAll": "View all",
+      "more": "+{count} other message — view all"
     },
-    "addFeedback": "Add feedback",
+    "addFeedback": "Add message",
     "consultApplication": "View application",
     "viewCv": "View CV",
     "downloadCv": "Download CV",
@@ -188,7 +193,7 @@
     "editSubmit": "Update recruitment",
     "defaultWorkflowSteps": {
       "proposed": "Proposed",
-      "hrInterview": "HR interview",
+      "hrInterview": "Technical interview",
       "clientInterview": "Client interview",
       "offer": "Offer"
     }

@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Mail, Phone, Wallet, User, CalendarDays, Target, EyeOff, ClipboardList } from "lucide-react";
 import ActionsMenu from "@/components/tables/ActionsMenu";
 import Button from "@/components/ui/button/Button";
 import VoiceNoteRecorder from "@/components/form/VoiceNoteRecorder";
@@ -200,31 +201,32 @@ export default function ApplicationsKanbanBoard({ candidates, isLoading, request
                     )}
 
                     <div className="mt-2 space-y-0.5 text-xs text-gray-500 dark:text-gray-400">
-                      {c.cv?.candidate_email && <p className="truncate">✉ {c.cv.candidate_email}</p>}
-                      {c.cv?.candidate_phone && <p className="truncate">☎ {c.cv.candidate_phone}</p>}
+                      {c.cv?.candidate_email && <p className="truncate inline-flex items-center gap-1.5"><Mail size={12} strokeWidth={1.8} className="icon-glow shrink-0" /> {c.cv.candidate_email}</p>}
+                      {c.cv?.candidate_phone && <p className="truncate inline-flex items-center gap-1.5"><Phone size={12} strokeWidth={1.8} className="icon-glow shrink-0" /> {c.cv.candidate_phone}</p>}
                       {(c.salary_expectation != null || (c as any).daily_rate_expectation != null) && !c.desired_salary_deferred && (
-                        <p className="truncate">
-                          💰 {c.salary_expectation != null ? `${Number(c.salary_expectation).toLocaleString("fr-FR")} ${(c as any).currency || "MAD"}` : ""}
-                          {(c as any).daily_rate_expectation != null ? ` · TJM ${Number((c as any).daily_rate_expectation).toLocaleString("fr-FR")}` : ""}
+                        <p className="truncate inline-flex items-center gap-1.5">
+                          <Wallet size={12} strokeWidth={1.8} className="icon-glow shrink-0" />
+                          {c.salary_expectation != null ? `${Number(c.salary_expectation).toLocaleString("fr-FR")} ${(c as any).expectation_currency || (c as any).currency || "MAD"}` : ""}
+                          {(c as any).daily_rate_expectation != null ? ` · TJM ${Number((c as any).daily_rate_expectation).toLocaleString("fr-FR")} ${(c as any).expectation_currency || (c as any).currency || "MAD"}` : ""}
                         </p>
                       )}
-                      {c.recruiter && <p className="truncate">👤 {`${c.recruiter.first_name || ""} ${c.recruiter.last_name || ""}`.trim()}</p>}
-                      {c.proposed_at && <p className="truncate">📅 {formatDate(c.proposed_at)}</p>}
+                      {c.recruiter && <p className="truncate inline-flex items-center gap-1.5"><User size={12} strokeWidth={1.8} className="icon-glow shrink-0" /> {`${c.recruiter.first_name || ""} ${c.recruiter.last_name || ""}`.trim()}</p>}
+                      {c.proposed_at && <p className="truncate inline-flex items-center gap-1.5"><CalendarDays size={12} strokeWidth={1.8} className="icon-glow shrink-0" /> {formatDate(c.proposed_at)}</p>}
                     </div>
 
                     <div className="mt-2.5 flex flex-wrap gap-1.5">
                       {typeof c.cv?.total_experience === "number" && c.cv.total_experience > 0 && (
-                        <span className="gw-chip !h-6 !text-[11px]">🎯 {t("kanban.experienceYears", { count: c.cv.total_experience })}</span>
+                        <span className="gw-chip !h-6 !text-[11px] inline-flex items-center gap-1"><Target size={11} strokeWidth={1.8} className="icon-glow" /> {t("kanban.experienceYears", { count: c.cv.total_experience })}</span>
                       )}
                       {c.status && <span className="gw-badge gw-badge-brand !h-6 !text-[11px]">{c.status}</span>}
                       {c.workflow_status === "draft" && <span className="gw-chip !h-6 !text-[11px]">{ta("list.workflowDraft")}</span>}
-                      {c.is_anonymized && <span className="gw-chip !h-6 !text-[11px]">🕶</span>}
+                      {c.is_anonymized && <span className="gw-chip !h-6 !text-[11px] inline-flex items-center gap-1"><EyeOff size={11} strokeWidth={1.8} className="icon-glow" /></span>}
                     </div>
                   </div>
                 ))}
                 {items.length === 0 && (
                   <div className="flex flex-col items-center justify-center h-[45vh] rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 text-center px-3">
-                    <span className="text-3xl mb-2 opacity-40">📋</span>
+                    <ClipboardList size={30} strokeWidth={1.5} className="mb-2 opacity-40" />
                     <p className="text-xs text-gray-400">{t("kanban.emptyColumn.title")}</p>
                   </div>
                 )}

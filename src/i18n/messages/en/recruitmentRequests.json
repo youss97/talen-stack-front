@@ -23,6 +23,7 @@
       "skillsPlaceholder": "Filter by required skills...",
       "allExperienceLevels": "All experience levels",
       "allContractTypes": "All contract types",
+      "allPriorities": "All urgencies",
       "locationPlaceholder": "Filter by location..."
     },
     "statusOptions": {
@@ -51,6 +52,9 @@
     "exportExcel": "Export Excel",
     "addRequest": "Add a request",
     "kanban": "Kanban",
+    "kanbanSearchPlaceholder": "Search a request...",
+    "kanbanPickerTitle": "Open a request's Kanban",
+    "kanbanPickerSubtitle": "Search and select the recruitment request to view in Kanban.",
     "assign": "Assign",
     "duplicate": "Duplicate"
   },
@@ -102,6 +106,8 @@
     "referenceBadge": "Ref. {ref}",
     "pipelineBadge": "Pipeline",
     "dragHint": "Drag and drop between stages",
+    "switchRequestPlaceholder": "Switch request...",
+    "switchRequestEmpty": "No request found",
     "candidateCount": "{count, plural, one {# application} other {# applications}}",
     "experienceYears": "{count, plural, one {# year} other {# years}}",
     "skillsCount": "{count} skill(s)",
@@ -274,7 +280,7 @@
     },
     "defaultWorkflowSteps": {
       "proposed": "Proposed",
-      "hrInterview": "HR interview",
+      "hrInterview": "Technical interview",
       "clientInterview": "Client interview",
       "offer": "Offer"
     }
@@ -339,7 +345,7 @@
     "addStep": "+ Add a step",
     "suggestions": {
       "proposed": "Proposed",
-      "hrInterview": "HR interview",
+      "hrInterview": "Technical interview",
       "clientInterview": "Client interview",
       "offer": "Offer",
       "recruited": "Hired"

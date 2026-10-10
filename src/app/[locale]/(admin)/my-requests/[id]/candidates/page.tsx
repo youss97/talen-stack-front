@@ -10,7 +10,6 @@ import { useCreateFeedbackMutation } from "@/lib/services/recruiterApi";
 import Button from "@/components/ui/button/Button";
 import InputField from "@/components/form/input/InputField";
 import FeedbackModal from "@/components/recruiter/FeedbackModal";
-import FeedbackListModal from "@/components/recruiter/FeedbackListModal";
 import CandidateApplicationDetailModal from "@/components/recruiter/CandidateApplicationDetailModal";
 import ApplicationRequestDetailModal from "@/components/applicationRequest/ApplicationRequestDetailModal";
 import ManagerRequestFormModal from "@/components/applicationRequest/ManagerRequestFormModal";
@@ -19,10 +18,9 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
 import { formatDate, formatDateTime } from "@/utils/dateFormat";
 import { openCvInNewTab, openAnonymizedCvInNewTab } from "@/utils/cvView";
-import { getFeedbackCardColor } from "@/utils/feedbackColors";
 import type { Recruiter } from "@/types/recruiter";
 import type { ApplicationRequest } from "@/types/applicationRequest";
-import { Users, Eye, Pencil, RefreshCw, ClipboardList, MessageCircle, FileText, LayoutGrid, Info } from "lucide-react";
+import { Users, Eye, Pencil, RefreshCw, ClipboardList, FileText, LayoutGrid, Info } from "lucide-react";
 
 export default function RequestCandidatesPage() {
   const t = useTranslations("myRequests.candidates");
@@ -32,6 +30,11 @@ export default function RequestCandidatesPage() {
   const requestId = params.id as string;
   // Venant d'une notification : ouvrir directement le détail de cette candidature
   const targetApplicationId = searchParams.get("applicationId");
+  // Fixé au moment de l'ouverture de la fiche (voir l'effet ci-dessous), pas au montage de la
+  // page : si l'utilisateur a déjà visité cette page de candidatures avant de passer par le
+  // Kanban, Next.js réutilise souvent l'instance déjà montée au lieu de la remonter, et un
+  // useState figé au montage ne serait jamais réévalué avec le nouveau "from=kanban" de l'URL.
+  const [openedFromKanban, setOpenedFromKanban] = useState(false);
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -41,7 +44,6 @@ export default function RequestCandidatesPage() {
   const cvSources = cvSourcesData?.data || [];
   const [selectedCandidate, setSelectedCandidate] = useState<Recruiter | null>(null);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-  const [isFeedbackListModalOpen, setIsFeedbackListModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailCandidate, setDetailCandidate] = useState<Recruiter | null>(null);
   const [isOfferDetailOpen, setIsOfferDetailOpen] = useState(false);
@@ -66,11 +68,14 @@ export default function RequestCandidatesPage() {
     source: sourceFilter || undefined,
   }, { pollingInterval: 30000 });
 
-  // Auto-ouverture du détail de la candidature ciblée par la notification (une seule fois)
+  // Auto-ouverture du détail de la candidature ciblée par la notification ou par le Kanban
+  // (une seule fois). On lit "from" directement ici plutôt que de se fier à un état figé au
+  // montage, car searchParams reste réactif même quand la page est réutilisée sans remonter.
   useEffect(() => {
     if (!targetApplicationId || !data?.data?.length) return;
     const target = data.data.find((c) => c.id === targetApplicationId);
     if (target) {
+      setOpenedFromKanban(searchParams.get("from") === "kanban");
       setDetailCandidate(target);
       setIsDetailModalOpen(true);
       // Nettoyer l'URL pour ne pas rouvrir la modale à chaque re-render/rafraîchissement
@@ -94,11 +99,6 @@ export default function RequestCandidatesPage() {
     } catch {
       alert(t("identityReveal.error"));
     }
-  };
-
-  const handleOpenFeedbackListModal = (candidate: Recruiter) => {
-    setSelectedCandidate(candidate);
-    setIsFeedbackListModalOpen(true);
   };
 
   const handleEditOffer = async (formData: any) => {
@@ -282,7 +282,9 @@ export default function RequestCandidatesPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {candidate.cv?.candidate_first_name} {candidate.cv?.candidate_last_name}
+                      {candidate.is_anonymized && candidate.anonymous_label
+                        ? candidate.anonymous_label
+                        : `${candidate.cv?.candidate_first_name ?? ""} ${candidate.cv?.candidate_last_name ?? ""}`.trim()}
                     </h3>
                     {/* Le client ne voit que l'étape (pas le statut interne RH) */}
                     {candidate.current_step && (
@@ -312,7 +314,11 @@ export default function RequestCandidatesPage() {
                       <div className="flex items-center gap-1">
                         <RefreshCw className="icon-glow" size={16} strokeWidth={1.8} />
                         <span>
-                          {t.has(`availabilityOptions.${candidate.availability_type}`)
+                          {/* Disponibilité "personnalisée" avec valeur saisie : afficher directement
+                              la valeur ("21 jours") plutôt que le libellé générique. */}
+                          {candidate.availability_type === "other" && candidate.availability_custom_value != null
+                            ? `${candidate.availability_custom_value} ${candidate.availability_custom_unit === "months" ? t("months") : t("days")}`
+                            : t.has(`availabilityOptions.${candidate.availability_type}`)
                             ? t(`availabilityOptions.${candidate.availability_type}`)
                             : candidate.availability_type}
                         </span>
@@ -330,12 +336,13 @@ export default function RequestCandidatesPage() {
                     )}
                   </div>
 
-                  {/* Skills */}
-                  {candidate.cv?.skills && candidate.cv.skills.length > 0 && (
+                  {/* Compétences évaluées par le recruteur pour cette candidature (pas celles du
+                      vivier de talents) — masqué si le recruteur n'a rien saisi. */}
+                  {candidate.skills && candidate.skills.length > 0 && (
                     <div className="mb-3">
                       <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">{t("skillsLabel")}</p>
                       <div className="flex flex-wrap gap-2">
-                        {candidate.cv.skills.slice(0, 8).map((skill: string, index: number) => (
+                        {candidate.skills.slice(0, 8).map((skill: string, index: number) => (
                           <span
                             key={index}
                             className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"
@@ -343,103 +350,33 @@ export default function RequestCandidatesPage() {
                             {skill}
                           </span>
                         ))}
-                        {candidate.cv.skills.length > 8 && (
+                        {candidate.skills.length > 8 && (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
-                            +{candidate.cv.skills.length - 8}
+                            +{candidate.skills.length - 8}
                           </span>
                         )}
                       </div>
                     </div>
                   )}
 
-                  {/* Feedbacks Section — même UI/UX que côté RH (nom, rôle, couleur par rôle, tri par date) */}
-                  {(() => {
-                    // Le backend renvoie déjà les feedbacks triés created_at DESC (le plus récent en premier)
-                    const allFeedbacks = candidate.feedbacks || [];
-                    if (allFeedbacks.length === 0) return null;
-                    const clientFeedbacks = allFeedbacks.filter((f) =>
-                      !f.created_by?.role?.code || f.created_by.role.code.startsWith('CLIENT_MANAGER_')
-                    );
-                    const rhFeedbacks = allFeedbacks.filter((f) =>
-                      f.created_by?.role?.code && !f.created_by.role.code.startsWith('CLIENT_MANAGER_')
-                    );
-                    const renderFeedbackCard = (feedback: (typeof allFeedbacks)[number]) => (
-                      <div
-                        key={feedback.id}
-                        className={`rounded-lg p-3 border-s-4 ${getFeedbackCardColor(feedback)}`}
-                      >
-                        <div className="flex items-start justify-between mb-1">
-                          <h4 className="text-sm font-medium text-gray-900 dark:text-white">{feedback.title}</h4>
-                          <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ms-4">{formatDateTime(feedback.created_at)}</span>
-                        </div>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 mb-2">{feedback.description}</p>
-                        {feedback.created_by && (
-                          <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-                            <span className="font-medium">{feedback.created_by.first_name} {feedback.created_by.last_name}</span>
-                            {feedback.created_by.role && (
-                              <><span>•</span><span>{feedback.created_by.role.name}</span></>
-                            )}
-                          </div>
-                        )}
+                  {/* Langues évaluées par le recruteur pour cette candidature — même règle,
+                      aucun repli sur les langues du vivier de talents si rien n'est saisi. */}
+                  {candidate.languages && candidate.languages.filter((l) => l && l.language).length > 0 && (
+                    <div className="mb-3">
+                      <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">{t("languagesLabel")}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {candidate.languages.filter((l) => l && l.language).map((lang, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                          >
+                            {t("languageLevel", { language: lang.language, level: lang.level })}
+                          </span>
+                        ))}
                       </div>
-                    );
-                    return (
-                    <div className="mb-4 space-y-3">
-                      {/* Évaluations RH */}
-                      {rhFeedbacks.length > 0 && (
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <p className="text-xs font-medium text-gray-700 dark:text-gray-300 inline-flex items-center gap-1.5">
-                              <ClipboardList size={14} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
-                              {t("feedback.hrEvaluations", { count: rhFeedbacks.length })}
-                            </p>
-                            {rhFeedbacks.length > 1 && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedCandidate({ ...candidate, feedbacks: allFeedbacks });
-                                  setIsFeedbackListModalOpen(true);
-                                }}
-                              >
-                                {t("feedback.viewAll")}
-                              </Button>
-                            )}
-                          </div>
-                          <div className="space-y-2">
-                            {rhFeedbacks.slice(0, 1).map(renderFeedbackCard)}
-                          </div>
-                        </div>
-                      )}
-                      {/* Mes feedbacks (client) */}
-                      {clientFeedbacks.length > 0 && (
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <p className="text-xs font-medium text-gray-700 dark:text-gray-300 inline-flex items-center gap-1.5">
-                              <MessageCircle size={14} strokeWidth={1.8} className="icon-glow text-gray-500 dark:text-gray-400" />
-                              {t("feedback.myFeedbacks", { count: clientFeedbacks.length })}
-                            </p>
-                            {clientFeedbacks.length > 2 && rhFeedbacks.length === 0 && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedCandidate({ ...candidate, feedbacks: allFeedbacks });
-                                  setIsFeedbackListModalOpen(true);
-                                }}
-                              >
-                                {t("feedback.viewAll")}
-                              </Button>
-                            )}
-                          </div>
-                          <div className="space-y-2">
-                            {clientFeedbacks.slice(0, 2).map(renderFeedbackCard)}
-                          </div>
-                        </div>
-                      )}
                     </div>
-                    );
-                  })()}
+                  )}
+
                 </div>
               </div>
 
@@ -448,6 +385,7 @@ export default function RequestCandidatesPage() {
                   size="sm"
                   variant="outline"
                   onClick={() => {
+                    setOpenedFromKanban(false);
                     setDetailCandidate(candidate);
                     setIsDetailModalOpen(true);
                   }}
@@ -543,19 +481,6 @@ export default function RequestCandidatesPage() {
         isLoading={isCreatingFeedback}
       />
 
-      {/* Feedback List Modal */}
-      <FeedbackListModal
-        isOpen={isFeedbackListModalOpen}
-        onClose={() => {
-          setIsFeedbackListModalOpen(false);
-          setSelectedCandidate(null);
-        }}
-        feedbacks={selectedCandidate?.feedbacks || []}
-        isLoading={false}
-        onCreateFeedback={handleCreateFeedback}
-        isCreating={isCreatingFeedback}
-        canAddFeedback={true}
-      />
 
       {/* Candidate Application Detail Modal */}
       <CandidateApplicationDetailModal
@@ -563,6 +488,7 @@ export default function RequestCandidatesPage() {
         onClose={() => {
           setIsDetailModalOpen(false);
           setDetailCandidate(null);
+          if (openedFromKanban) router.push(`/my-requests/${requestId}/kanban`);
         }}
         candidate={detailCandidate}
         canEditStep

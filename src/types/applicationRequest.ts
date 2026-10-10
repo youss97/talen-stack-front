@@ -321,7 +321,7 @@ export interface ApplicationRequestPaginationParams {
   search?: string;
   status?: string;
   required_skills?: string;
-  experience_level?: string;
+  priority?: string;
   contract_type?: string;
   location?: string;
   responsible_id?: string;

@@ -10,6 +10,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import ActionsMenu from "./ActionsMenu";
+import { useTableSort } from "./useTableSort";
 import TableSkeleton from "@/components/common/TableSkeleton";
 import EmptyState from "@/components/common/EmptyState";
 
@@ -80,6 +81,11 @@ function DataTableWithSelection<T extends { id: string }>({
   const resolvedEmptyMessage = emptyMessage ?? t("status.noDataAvailable");
   const hasActionHandlers = onView || onEdit || onDelete || customActions;
   const [view, setView] = useState<"table" | "cards">(defaultView);
+  const { sortedData, effectiveSortKey, effectiveSortOrder, handleSort, isSortable } = useTableSort(columns, data, {
+    sortBy,
+    sortOrder,
+    onSort,
+  });
 
   // Construire les actions pour le menu
   const buildActionsMenu = useCallback((row: T) => {
@@ -202,7 +208,7 @@ function DataTableWithSelection<T extends { id: string }>({
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-          {data.map((row) => {
+          {sortedData.map((row) => {
             const [first, ...rest] = columns;
             const selected = selectedItems.includes(row.id);
             return (
@@ -258,22 +264,23 @@ function DataTableWithSelection<T extends { id: string }>({
             </TableCell>
             {columns.map((column) => {
               const columnSortKey = column.sortKey ?? String(column.key);
-              const isSorted = column.sortable && sortBy === columnSortKey;
+              const sortable = isSortable(column);
+              const isSorted = sortable && effectiveSortKey === columnSortKey;
               return (
                 <TableCell
                   key={column.id ?? String(column.key)}
                   isHeader
                   className={`px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 whitespace-nowrap ${
-                    column.sortable ? "cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200" : ""
+                    sortable ? "cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200" : ""
                   }`}
-                  onClick={column.sortable ? () => onSort?.(columnSortKey) : undefined}
+                  onClick={sortable ? () => handleSort(columnSortKey) : undefined}
                 >
-                  {column.sortable ? (
+                  {sortable ? (
                     <span className="inline-flex items-center gap-1">
                       {column.header}
-                      {isSorted && sortOrder === "ASC" ? (
+                      {isSorted && effectiveSortOrder === "ASC" ? (
                         <ArrowUp size={14} strokeWidth={1.8} />
-                      ) : isSorted && sortOrder === "DESC" ? (
+                      ) : isSorted && effectiveSortOrder === "DESC" ? (
                         <ArrowDown size={14} strokeWidth={1.8} />
                       ) : (
                         <ArrowUpDown size={14} strokeWidth={1.8} className="opacity-40" />
@@ -306,7 +313,7 @@ function DataTableWithSelection<T extends { id: string }>({
               </TableCell>
             </TableRow>
           ) : (
-            data.map((row) => (
+            sortedData.map((row) => (
               <TableRow
                 key={row.id}
                 className={`border-b border-[color:var(--border)] ${

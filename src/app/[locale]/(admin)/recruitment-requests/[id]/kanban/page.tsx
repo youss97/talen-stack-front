@@ -7,7 +7,12 @@ import { ChevronLeft, ChevronRight, Building2, Users, Target, Wrench, ClipboardL
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
-import { useGetApplicationRequestByIdQuery } from "@/lib/services/applicationRequestApi";
+import InfiniteSelect from "@/components/form/InfiniteSelect";
+import {
+  useGetApplicationRequestByIdQuery,
+  useGetApplicationRequestsForSelectInfiniteQuery,
+} from "@/lib/services/applicationRequestApi";
+import type { ApplicationRequest } from "@/types/applicationRequest";
 import { useGetRecruitersQuery, useChangeApplicationStepMutation } from "@/lib/services/recruiterApi";
 import type { Recruiter } from "@/types/recruiter";
 import { getApiErrorMessage } from "@/utils/errorMessages";
@@ -187,7 +192,26 @@ export default function RequestKanbanPage() {
             <span className="hidden sm:inline" style={{ color: "var(--text-3)" }}>· {t("kanban.dragHint")}</span>
           </p>
         </div>
-        <span className="gw-badge gw-badge-brand self-start sm:self-center"><span className="gw-badge-dot" /> {t("kanban.pipelineBadge")}</span>
+        <div className="flex items-center gap-3 self-start sm:self-center">
+          <div className="w-64">
+            <InfiniteSelect<ApplicationRequest>
+              label=""
+              value={requestId}
+              initialSelectedItems={request ? [request] : []}
+              onChange={(_value, selectedItem) => {
+                if (selectedItem && selectedItem.id !== requestId) {
+                  router.push(`/recruitment-requests/${selectedItem.id}/kanban`);
+                }
+              }}
+              useInfiniteQuery={useGetApplicationRequestsForSelectInfiniteQuery}
+              itemLabelKey="title"
+              itemValueKey="id"
+              placeholder={t("kanban.switchRequestPlaceholder")}
+              emptyMessage={t("kanban.switchRequestEmpty")}
+            />
+          </div>
+          <span className="gw-badge gw-badge-brand"><span className="gw-badge-dot" /> {t("kanban.pipelineBadge")}</span>
+        </div>
       </div>
 
       {/* Barre de statistiques */}

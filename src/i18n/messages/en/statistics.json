@@ -51,6 +51,7 @@
     "trafficByCompany": "Traffic by company (applications)",
     "applicationsPerMonth": "Applications per month",
     "requestsByStatus": "Requests by status",
+    "applicationsByStatus": "Applications by status",
     "integrationsByStatus": "Integrations by status",
     "topClients": "Top clients (requests)",
     "requestsPerMonth": "Recruitment requests per month",

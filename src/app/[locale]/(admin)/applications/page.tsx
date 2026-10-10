@@ -137,6 +137,14 @@ export default function ApplicationsPage() {
   // Le Kanban n'est pas paginé : toutes les candidatures correspondant aux filtres sont chargées.
   const searchParamsForView = useSearchParams();
   const [isKanbanView, setIsKanbanView] = useState(searchParamsForView.get("view") === "kanban");
+  // Resynchronise avec l'URL à chaque navigation : quand on revient de la fiche détail
+  // (router.push("/applications?view=kanban")), Next.js réutilise souvent l'instance de cette
+  // page déjà montée (cache de navigation côté client) plutôt que de la remonter — l'état
+  // initial figé par useState() ci-dessus ne serait alors jamais réévalué et resterait "false",
+  // faisant retomber l'utilisateur sur la vue Tableau au lieu du Kanban dont il venait.
+  useEffect(() => {
+    if (searchParamsForView.get("view") === "kanban") setIsKanbanView(true);
+  }, [searchParamsForView]);
   const [listView, setListView] = useState<"table" | "cards">("table");
   const {
     data: kanbanData,
@@ -481,7 +489,7 @@ export default function ApplicationsPage() {
   const router = useRouter();
   // 3.1 — Le détail est désormais une page dédiée
   const handleRowClick = async (application: Recruiter) => {
-    router.push(`/applications/${application.id}`);
+    router.push(`/applications/${application.id}${isKanbanView ? "?from=kanban" : ""}`);
   };
 
   // Deep-link ?applicationId=... (ex: depuis l'agenda/entretien) → rediriger vers la page dédiée
@@ -802,7 +810,6 @@ export default function ApplicationsPage() {
                 <option value="">{t("list.filters.allWorkflows")}</option>
                 <option value="draft">{t("list.workflowDraft")}</option>
                 <option value="active">{t("list.workflowActive")}</option>
-                <option value="archived">{t("list.workflowArchived")}</option>
               </select>
             </div>
             <div>

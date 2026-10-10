@@ -1,7 +1,7 @@
 export interface Application {
   id: string;
   status: 'proposed' | 'pending' | 'interview' | 'qualified' | 'accepted' | 'rejected';
-  workflow_status: 'draft' | 'active' | 'archived';
+  workflow_status: 'draft' | 'active';
   proposed_at: string;
   recruiter_notes?: string;
   manager_notes?: string;

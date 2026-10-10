@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
+import { Check, X, Ban } from "lucide-react";
 import VoiceInputButton from "@/components/form/VoiceInputButton";
 import VoiceNoteRecorder from "@/components/form/VoiceNoteRecorder";
 
@@ -27,7 +28,7 @@ const TERMINAL = ["Accepté", "KO", "Désistement"];
 const REQUIRE_REASON = ["KO", "Désistement"];
 const DEFAULT_STEPS: WorkflowStep[] = [
   { name: "Proposé", order: 0 },
-  { name: "Entretien RH", order: 1 },
+  { name: "Entretien technique", order: 1 },
   { name: "Entretien client", order: 2 },
   { name: "Offre", order: 3 },
 ];
@@ -204,11 +205,11 @@ export default function WorkflowStepper({
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t("workflowStepper.closeApplicationTitle")}</p>
             <div className="flex flex-wrap gap-2">
               <button type="button" onClick={() => clickClosure("Accepté")} disabled={isSaving || currentStep === "Accepté"}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500 text-white hover:bg-green-600 disabled:opacity-50">✓ {t("workflowStepper.accepted")}</button>
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500 text-white hover:bg-green-600 disabled:opacity-50"><Check size={12} strokeWidth={2} /> {t("workflowStepper.accepted")}</button>
               <button type="button" onClick={() => clickClosure("KO")} disabled={isSaving || currentStep === "KO"}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50">✕ {t("workflowStepper.ko")}</button>
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50"><X size={12} strokeWidth={2} /> {t("workflowStepper.ko")}</button>
               <button type="button" onClick={() => clickClosure("Désistement")} disabled={isSaving || currentStep === "Désistement"}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500 text-white hover:bg-amber-600 disabled:opacity-50">⊘ {t("workflowStepper.withdrawal")}</button>
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500 text-white hover:bg-amber-600 disabled:opacity-50"><Ban size={12} strokeWidth={2} /> {t("workflowStepper.withdrawal")}</button>
             </div>
             {closureTarget && (
               <div className="space-y-2 pt-1">

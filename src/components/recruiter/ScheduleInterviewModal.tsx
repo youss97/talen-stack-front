@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { Globe, MapPin } from "lucide-react";
 import { Lock } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
@@ -196,7 +197,7 @@ export default function ScheduleInterviewModal({
       <form onSubmit={handleSubmit}>
         <div className="p-6 sm:p-8 pb-0">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-            {existingInterview ? `✏️ ${t("editTitle")}` : `📅 ${t("createTitle")}`}
+            {existingInterview ? t("editTitle") : t("createTitle")}
           </h2>
           {candidateName && (
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -289,7 +290,7 @@ export default function ScheduleInterviewModal({
                   className="w-4 h-4 text-brand-600 focus:ring-brand-500"
                 />
                 <span className="ms-2 text-sm text-gray-700 dark:text-gray-300">
-                  🌐 {t("online")}
+                  <span className="inline-flex items-center gap-1"><Globe size={13} strokeWidth={1.8} className="icon-glow" /> {t("online")}</span>
                 </span>
               </label>
               <label className="flex items-center cursor-pointer">
@@ -302,7 +303,7 @@ export default function ScheduleInterviewModal({
                   className="w-4 h-4 text-brand-600 focus:ring-brand-500"
                 />
                 <span className="ms-2 text-sm text-gray-700 dark:text-gray-300">
-                  📍 {t("presential")}
+                  <span className="inline-flex items-center gap-1"><MapPin size={13} strokeWidth={1.8} className="icon-glow" /> {t("presential")}</span>
                 </span>
               </label>
             </div>

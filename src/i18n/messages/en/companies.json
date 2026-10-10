@@ -41,9 +41,28 @@
       "markUnpaidConfirm": "Mark \"{name}\" as unpaid? The company and all its users will be deactivated.",
       "activate": "Activate",
       "deactivate": "Deactivate",
+      "permanentDelete": "Delete permanently",
       "remind": "Remind for subscription"
     },
     "emptyState": "No companies found",
+    "permanentDeleteModal": {
+      "title": "Permanently delete company",
+      "message": "You are about to permanently delete the company \"{name}\" and all the data attached to it:",
+      "items": {
+        "users": "All its users and their login accounts",
+        "clients": "Its clients, their contacts and portal accounts",
+        "cvs": "All its talent CVs and their files",
+        "requests": "All its recruitment requests",
+        "applications": "All its applications, feedbacks and interviews",
+        "crm": "Its CRM data (prospect companies, contacts, deals, activities, tasks)",
+        "other": "Its roles, email templates, contract types, CV sources and other settings"
+      },
+      "irreversible": "This action is irreversible. Deleted data cannot be recovered.",
+      "typeNameLabel": "To confirm, type the exact company name: {name}",
+      "cancel": "Cancel",
+      "confirm": "Delete permanently",
+      "deleting": "Deleting..."
+    },
     "deactivateModal": {
       "title": "Deactivate company",
       "message": "Are you sure you want to deactivate the company \"{name}\"? All its accounts will be deactivated. You can reactivate it from the table.",
@@ -63,7 +82,9 @@
     "reactivateError": "Error while reactivating",
     "loadDetailError": "Error while loading company details",
     "deleteSuccess": "Company deleted successfully",
-    "deleteError": "Error while deleting",
+    "permanentDeleteSuccess": "Company and all its data permanently deleted",
+    "permanentDeleteError": "Error while permanently deleting the company",
+    "deleteError":"Error while deleting",
     "updateSuccess": "Company updated successfully",
     "updateError": "Error while updating the company",
     "createSuccess": "Company created successfully",
@@ -105,6 +126,17 @@
       "adminLoginHint": "Optional — leave empty to use the email. Useful if this person already administers another company with the same email.",
       "password": "Password",
       "notEditable": "Not editable",
+      "generatePassword": "Generate",
+      "source": "Company source",
+      "sources": {
+        "placeholder": "— Select —",
+        "website": "Via the website",
+        "referral": "Via referral",
+        "prospecting": "Via prospecting",
+        "publication": "Via publication",
+        "ads": "Via ads",
+        "other": "Other"
+      },
       "adminPhone": "Administrator phone",
       "position": "Job title / Position",
       "subscriptionPlan": "Subscription plan",

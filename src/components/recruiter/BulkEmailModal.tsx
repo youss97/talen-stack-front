@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Mail, XCircle } from 'lucide-react';
 import { Modal } from '@/components/ui/modal';
 import Button from '@/components/ui/button/Button';
 import Input from '@/components/form/input/InputField';
@@ -86,7 +87,7 @@ export default function BulkEmailModal({
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-6">
-          <span className="text-2xl">📧</span>
+          <Mail size={24} strokeWidth={1.8} className="icon-glow text-brand-600" />
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
             {t('title')}
           </h2>
@@ -95,7 +96,7 @@ export default function BulkEmailModal({
         {error && (
           <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
             <div className="flex items-center gap-2">
-              <span className="text-red-500">❌</span>
+              <XCircle size={16} strokeWidth={1.8} className="text-red-500" />
               <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
             </div>
           </div>

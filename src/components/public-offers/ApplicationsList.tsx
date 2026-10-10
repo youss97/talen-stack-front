@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
-import { Trash2, Eye } from "lucide-react";
+import { Trash2, Eye, MessageCircle, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
+import { useTableSort } from "@/components/tables/useTableSort";
 import { useTranslations } from "next-intl";
 import Button from "@/components/ui/button/Button";
 import Pagination from "@/components/tables/Pagination";
@@ -34,9 +35,30 @@ export default function ApplicationsList({ applications, onConvert, convertingId
     if (page > totalPages) setPage(1);
   }, [page, totalPages]);
 
+  const applicationColumns = useMemo(
+    () => [
+      { key: "first_name", header: "candidate" },
+      { key: "email", header: "contact" },
+      { key: "created_at", header: "receivedOn" },
+      { key: "referrer.first_name", header: "referrer" },
+    ],
+    []
+  );
+  const { sortedData: sortedApplications, effectiveSortKey, effectiveSortOrder, handleSort } = useTableSort(
+    applicationColumns,
+    filteredApplications,
+    {}
+  );
+  const sortHeader = (key: string, label: string) => (
+    <button type="button" onClick={() => handleSort(key)} className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200">
+      {label}
+      {effectiveSortKey === key && effectiveSortOrder === "ASC" ? <ArrowUp size={12} strokeWidth={1.8} /> : effectiveSortKey === key && effectiveSortOrder === "DESC" ? <ArrowDown size={12} strokeWidth={1.8} /> : <ArrowUpDown size={12} strokeWidth={1.8} className="opacity-40" />}
+    </button>
+  );
+
   const pagedApplications = useMemo(
-    () => filteredApplications.slice((page - 1) * pageSize, page * pageSize),
-    [filteredApplications, page, pageSize]
+    () => sortedApplications.slice((page - 1) * pageSize, page * pageSize),
+    [sortedApplications, page, pageSize]
   );
 
   // Ouvre le CV dans un nouvel onglet plutôt que de forcer un téléchargement, pour éviter
@@ -61,10 +83,10 @@ export default function ApplicationsList({ applications, onConvert, convertingId
           <table className="min-w-full text-sm">
             <thead>
               <tr className="text-start" style={{ background: "var(--surface-2)", color: "var(--text-2)" }}>
-                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{t("table.candidate")}</th>
-                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{t("table.contact")}</th>
-                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{t("table.receivedOn")}</th>
-                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{t("table.referrer")}</th>
+                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{sortHeader("first_name", t("table.candidate"))}</th>
+                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{sortHeader("email", t("table.contact"))}</th>
+                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{sortHeader("created_at", t("table.receivedOn"))}</th>
+                <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs">{sortHeader("referrer.first_name", t("table.referrer"))}</th>
                 <th className="px-4 py-3 font-semibold uppercase tracking-wider text-xs text-end">{t("table.actions")}</th>
               </tr>
             </thead>
@@ -78,7 +100,7 @@ export default function ApplicationsList({ applications, onConvert, convertingId
                       </div>
                       {application.message && (
                         <div className="text-xs text-gray-400 max-w-[220px] truncate" title={application.message}>
-                          💬 {application.message}
+                          <MessageCircle size={12} strokeWidth={1.8} className="inline-block align-text-bottom me-1" /> {application.message}
                         </div>
                       )}
                     </td>

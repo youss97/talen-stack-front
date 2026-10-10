@@ -1,5 +1,23 @@
 {
   "backButton": "Retour aux paramètres",
+  "emailNotifications": {
+    "title": "Notifications par mail",
+    "subtitle": "Choisissez les emails automatiques envoyés par la plateforme. Décoché = aucun email de ce type n'est envoyé pour votre société (les notifications dans l'application restent actives).",
+    "saveError": "Erreur lors de l'enregistrement.",
+    "types": {
+      "request_created": { "label": "Demande de recrutement créée", "description": "Envoyé à l'autre partie (RH ↔ client) lors de la création d'une demande." },
+      "request_status": { "label": "Statut de demande modifié par le client", "description": "Envoyé au RH quand le client change le statut de sa demande." },
+      "application_proposed": { "label": "Candidature proposée", "description": "Envoyé au client quand une candidature lui est proposée." },
+      "application_status": { "label": "Statut ou étape de candidature modifié", "description": "Envoyé au client à chaque changement de statut ou d'étape." },
+      "feedback_created": { "label": "Feedback ajouté", "description": "Envoyé à l'autre partie quand un feedback est ajouté à une candidature." },
+      "interview_scheduled": { "label": "Entretien planifié", "description": "Invitation envoyée au candidat, aux invités et à l'autre partie." },
+      "interview_rescheduled": { "label": "Entretien reporté", "description": "Envoyé au candidat et aux invités quand un entretien est reporté." },
+      "interview_modified": { "label": "Entretien modifié", "description": "Envoyé au candidat et aux invités quand les détails d'un entretien changent." },
+      "interview_cancelled": { "label": "Entretien annulé", "description": "Envoyé au candidat, aux invités et à l'autre partie quand un entretien est annulé." },
+      "candidate_tracking": { "label": "Suivi de candidature (candidat)", "description": "Email envoyé au candidat après le dépôt d'une candidature à une offre publique." },
+      "candidate_application_deleted": { "label": "Candidature retirée (candidat)", "description": "Email envoyé au candidat quand sa candidature d'offre publique est retirée." }
+    }
+  },
   "emailTemplatesPage": {
     "title": "Templates emails",
     "subtitle": "Personnalisez le contenu des emails envoyés automatiquement par la plateforme (candidatures, entretiens, notifications). Vous pouvez enregistrer plusieurs variantes par type et choisir celle utilisée par défaut.",
@@ -133,6 +151,10 @@
       "cvSources": {
         "title": "Gestion des sources de CV",
         "description": "Gérer les sources de CV (Offre publique, Cooptation, LinkedIn, etc.)"
+      },
+      "emailNotifications": {
+        "title": "Gestion des notifications par mail",
+        "description": "Choisir quels emails automatiques la plateforme envoie pour votre société"
       },
       "emailTemplates": {
         "title": "Templates emails",

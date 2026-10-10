@@ -14,7 +14,8 @@ import {
   type CreateCompanyFormData,
 } from "@/validations/companyValidation";
 import type { Company } from "@/types/company";
-import { featureIcon, featureLabel } from "@/utils/featureLabels";
+import { featureLabel } from "@/utils/featureLabels";
+import { generatePassword } from "@/utils/generatePassword";
 import { EyeIcon, EyeCloseIcon } from "@/icons";
 import { Check } from "lucide-react";
 import { getImageUrl } from "@/utils/imageHelper";
@@ -97,6 +98,7 @@ export default function CompanyFormModal({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<CreateCompanyFormData>({
     resolver: yupResolver(
@@ -125,7 +127,7 @@ export default function CompanyFormModal({
       setAdminPhotoPreview(getImageUrl(adminUser?.photo_path || adminUser?.photo));
     } else {
       reset({
-        name: "", company_identifier: "", address: "", city: "", postal_code: "",
+        name: "", company_identifier: "", source: "", address: "", city: "", postal_code: "",
         country: "Maroc", phone: "", email: "", status: "active",
         adminEmail: "", adminLogin: "", adminPassword: "", adminFirstName: "", adminLastName: "",
         adminPhone: "", adminPosition: "",
@@ -259,6 +261,25 @@ export default function CompanyFormModal({
                   <Input placeholder={t("form.placeholders.companyIdentifier")} {...register("company_identifier")} error={!!errors.company_identifier} disabled={readOnly} />
                   {errors.company_identifier && <p className="mt-1 text-sm text-error-500">{errors.company_identifier.message}</p>}
                 </div>
+
+                {!isEditing && !readOnly && (
+                  <div>
+                    <Label>{t("form.fields.source")}</Label>
+                    <select
+                      {...register("source")}
+                      className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                    >
+                      <option value="">{t("form.fields.sources.placeholder")}</option>
+                      <option value="website">{t("form.fields.sources.website")}</option>
+                      <option value="referral">{t("form.fields.sources.referral")}</option>
+                      <option value="prospecting">{t("form.fields.sources.prospecting")}</option>
+                      <option value="publication">{t("form.fields.sources.publication")}</option>
+                      <option value="ads">{t("form.fields.sources.ads")}</option>
+                      <option value="other">{t("form.fields.sources.other")}</option>
+                    </select>
+                    {errors.source && <p className="mt-1 text-sm text-error-500">{errors.source.message}</p>}
+                  </div>
+                )}
 
                 <div className="sm:col-span-2">
                   <Label>{t("form.fields.address")}</Label>
@@ -412,7 +433,20 @@ export default function CompanyFormModal({
 
                   {!isEditing && !readOnly && (
                     <div>
-                      <Label>{t("form.fields.password")} <span className="text-error-500">*</span></Label>
+                      <div className="flex items-center justify-between">
+                        <Label>{t("form.fields.password")} <span className="text-error-500">*</span></Label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const generated = generatePassword();
+                            setValue("adminPassword", generated, { shouldValidate: true, shouldDirty: true });
+                            setShowPassword(true);
+                          }}
+                          className="mb-1.5 text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400"
+                        >
+                          {t("form.fields.generatePassword")}
+                        </button>
+                      </div>
                       <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
@@ -502,7 +536,6 @@ export default function CompanyFormModal({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {allFeatures.map((feature) => {
                       const checked = selectedFeatureIds.has(feature.id);
-                      const icon = featureIcon(feature.name);
                       return (
                         <label
                           key={feature.id}
@@ -520,7 +553,6 @@ export default function CompanyFormModal({
                           <input type="checkbox" checked={checked} onChange={() => toggleFeature(feature.id)} className="sr-only" />
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1">
-                              <span className="text-sm">{icon}</span>
                               <span className={`text-xs font-medium ${checked ? "text-brand-700 dark:text-brand-300" : "text-gray-700 dark:text-gray-300"}`}>
                                 {featureLabel(feature)}
                               </span>
@@ -561,7 +593,6 @@ export default function CompanyFormModal({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {companyFeatures.map((f: Feature) => (
                       <div key={f.id} className="flex items-start gap-2 rounded-xl border border-brand-200 dark:border-brand-800 bg-brand-50 dark:bg-brand-900/20 px-3 py-2.5">
-                        <span className="text-base mt-0.5 shrink-0">{featureIcon(f.name)}</span>
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-brand-700 dark:text-brand-300">{featureLabel(f)}</p>
                           {f.description && (

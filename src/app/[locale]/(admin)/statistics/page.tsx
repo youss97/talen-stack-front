@@ -9,6 +9,7 @@ import { useGetCompaniesInfiniteInfiniteQuery } from "@/lib/services/companyApi"
 import InfiniteSelect from "@/components/form/InfiniteSelect";
 import PageHeader from "@/components/common/PageHeader";
 import DatePicker from "@/components/form/date-picker";
+import DataTable from "@/components/tables/DataTable";
 
 const PRESETS: { id: string; days: number | null }[] = [
   { id: "7d", days: 7 },
@@ -275,6 +276,9 @@ export default function StatisticsPage() {
             <AreaChart title={t("charts.applicationsPerMonth")} name={t("charts.series.applications")} points={data?.applicationsByMonth} />
             <AreaChart title={t("charts.requestsPerMonth")} name={t("charts.series.requests")} points={data?.monthlyRequests} />
             <DonutChart title={t("charts.requestsByStatus")} rows={data?.requestsByStatus} getLabel={statusLabel} />
+            {data?.applicationsByStatus && data.applicationsByStatus.length > 0 && (
+              <DonutChart title={t("charts.applicationsByStatus")} rows={data.applicationsByStatus} getLabel={statusLabel} />
+            )}
             <DonutChart title={t("charts.integrationsByStatus")} rows={data?.integrationsByStatus} getLabel={statusLabel} />
             <BarChart title={t("charts.topClients")} items={topClientsItems} seriesName={t("charts.series.total")} />
           </>
@@ -286,37 +290,38 @@ export default function StatisticsPage() {
           <h2 className="mb-4 text-sm font-semibold" style={{ color: "var(--text)" }}>
             {t("collaborators.title")}
           </h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-xs" style={{ color: "var(--text-3)" }}>
-                  <th className="px-2 pb-2 font-medium">{t("collaborators.columns.name")}</th>
-                  <th className="px-2 pb-2 font-medium text-right">{t("collaborators.columns.requests")}</th>
-                  <th className="px-2 pb-2 font-medium text-right">{t("collaborators.columns.applications")}</th>
-                  <th className="px-2 pb-2 font-medium text-right">{t("collaborators.columns.closureRate")}</th>
-                  <th className="px-2 pb-2 font-medium text-right">{t("collaborators.columns.avgDays")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.collaborators.map((c) => (
-                  <tr key={c.id} className="border-t" style={{ borderColor: "var(--border)" }}>
-                    <td className="px-2 py-2">
-                      <p className="font-medium" style={{ color: "var(--text)" }}>{c.name}</p>
-                      <p className="text-xs" style={{ color: "var(--text-3)" }}>{c.email}</p>
-                    </td>
-                    <td className="px-2 py-2 text-right tabular-nums">{c.requests}</td>
-                    <td className="px-2 py-2 text-right tabular-nums">{c.applications}</td>
-                    <td className="px-2 py-2 text-right tabular-nums">{c.closureRate}%</td>
-                    <td className="px-2 py-2 text-right tabular-nums">
-                      {c.avgDaysToFirstApplication != null
-                        ? t("collaborators.days", { count: c.avgDaysToFirstApplication })
-                        : "-"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable
+            columns={[
+              {
+                key: "name",
+                header: t("collaborators.columns.name"),
+                sortable: true,
+                render: (_v, row) => (
+                  <span>
+                    <span className="block font-medium" style={{ color: "var(--text)" }}>{row.name}</span>
+                    <span className="block text-xs" style={{ color: "var(--text-3)" }}>{row.email}</span>
+                  </span>
+                ),
+              },
+              { key: "requests", header: t("collaborators.columns.requests"), sortable: true },
+              { key: "applications", header: t("collaborators.columns.applications"), sortable: true },
+              {
+                key: "closureRate",
+                header: t("collaborators.columns.closureRate"),
+                sortable: true,
+                render: (v) => `${v}%`,
+              },
+              {
+                key: "avgDaysToFirstApplication",
+                header: t("collaborators.columns.avgDays"),
+                sortable: true,
+                render: (v) => (v != null ? t("collaborators.days", { count: Number(v) }) : "-"),
+              },
+            ]}
+            data={data.collaborators}
+            enableViewToggle={false}
+            useActionsMenu={false}
+          />
         </div>
       )}
 

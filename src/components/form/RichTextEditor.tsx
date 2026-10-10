@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
-import { Bold, Italic, List, ListOrdered, LinkIcon, Undo, Redo } from "lucide-react";
+import Underline from "@tiptap/extension-underline";
+import { Bold, Italic, Underline as UnderlineIcon, List, ListOrdered, LinkIcon, Undo, Redo } from "lucide-react";
 
 interface RichTextEditorProps {
   value?: string;
@@ -18,6 +19,7 @@ export default function RichTextEditor({ value, onChange, placeholder, error }: 
     extensions: [
       StarterKit,
       Link.configure({ openOnClick: false, autolink: true }),
+      Underline,
     ],
     content: value || "",
     editorProps: {
@@ -65,6 +67,9 @@ export default function RichTextEditor({ value, onChange, placeholder, error }: 
         </button>
         <button type="button" className={btnClass(editor.isActive("italic"))} onClick={toggle(() => editor.chain().focus().toggleItalic().run())} title="Italique">
           <Italic size={15} strokeWidth={1.8} />
+        </button>
+        <button type="button" className={btnClass(editor.isActive("underline"))} onClick={toggle(() => editor.chain().focus().toggleUnderline().run())} title="Souligné">
+          <UnderlineIcon size={15} strokeWidth={1.8} />
         </button>
         <button type="button" className={btnClass(editor.isActive("bulletList"))} onClick={toggle(() => editor.chain().focus().toggleBulletList().run())} title="Liste à puces">
           <List size={15} strokeWidth={1.8} />

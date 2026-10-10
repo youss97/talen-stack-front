@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Users, Target, Wrench, ClipboardList } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
@@ -91,7 +91,9 @@ export default function ClientRequestKanbanPage() {
   }, [candidates, stepColumns]);
 
   const candidateName = (c: Recruiter) =>
-    `${c.cv?.candidate_first_name || ""} ${c.cv?.candidate_last_name || ""}`.trim() || t("kanban.candidateFallback");
+    (c.is_anonymized && c.anonymous_label)
+      ? c.anonymous_label
+      : `${c.cv?.candidate_first_name || ""} ${c.cv?.candidate_last_name || ""}`.trim() || t("kanban.candidateFallback");
   const initials = (c: Recruiter) => {
     const f = c.cv?.candidate_first_name?.[0] || "";
     const l = c.cv?.candidate_last_name?.[0] || "";
@@ -174,7 +176,7 @@ export default function ClientRequestKanbanPage() {
             {request?.reference && <span className="gw-badge gw-badge-neutral">{t("kanban.referenceBadge", { ref: request.reference })}</span>}
           </div>
           <p className="mt-1 text-sm flex flex-wrap items-center gap-x-3 gap-y-1" style={{ color: "var(--text-2)" }}>
-            <span>👥 {t("kanban.candidateCount", { count: candidates.length })}</span>
+            <span className="inline-flex items-center gap-1"><Users size={13} strokeWidth={1.8} className="icon-glow" /> {t("kanban.candidateCount", { count: candidates.length })}</span>
             <span className="hidden sm:inline" style={{ color: "var(--text-3)" }}>· {t("kanban.dragHint")}</span>
           </p>
         </div>
@@ -237,7 +239,7 @@ export default function ClientRequestKanbanPage() {
                       draggable
                       onDragStart={() => setDragId(c.id)}
                       onDragEnd={() => setDragId(null)}
-                      onClick={() => router.push(`/my-requests/${requestId}/candidates?applicationId=${c.id}`)}
+                      onClick={() => router.push(`/my-requests/${requestId}/candidates?applicationId=${c.id}&from=kanban`)}
                       className="gw-card cursor-grab active:cursor-grabbing p-3 hover:shadow-md hover:-translate-y-0.5 transition-all"
                     >
                       <div className="flex items-center gap-2.5">
@@ -256,12 +258,12 @@ export default function ClientRequestKanbanPage() {
                       <div className="mt-2.5 flex flex-wrap gap-1.5">
                         {typeof c.cv?.total_experience === "number" && c.cv.total_experience > 0 && (
                           <span className="gw-chip !h-6 !text-[11px]">
-                            🎯 {t("kanban.experienceYears", { count: c.cv.total_experience })}
+                            <Target size={12} strokeWidth={1.8} className="icon-glow" /> {t("kanban.experienceYears", { count: c.cv.total_experience })}
                           </span>
                         )}
                         {Array.isArray(c.cv?.skills) && c.cv.skills.length > 0 && (
                           <span className="gw-chip !h-6 !text-[11px]">
-                            🛠 {t("kanban.skillsCount", { count: c.cv.skills.length })}
+                            <Wrench size={12} strokeWidth={1.8} className="icon-glow" /> {t("kanban.skillsCount", { count: c.cv.skills.length })}
                           </span>
                         )}
                       </div>
@@ -269,7 +271,7 @@ export default function ClientRequestKanbanPage() {
                   ))}
                   {items.length === 0 && (
                     <div className="flex flex-col items-center justify-center h-[45vh] rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 text-center px-3">
-                      <span className="text-3xl mb-2 opacity-40">📋</span>
+                      <ClipboardList size={30} strokeWidth={1.5} className="mb-2 opacity-40" />
                       <p className="text-xs text-gray-400">{t("kanban.emptyColumn.title")}</p>
                       <p className="text-[11px] text-gray-300 dark:text-gray-600 mt-0.5">{t("kanban.emptyColumn.subtitle")}</p>
                     </div>

@@ -45,7 +45,8 @@ export function usePermissions(): UsePermissionsReturn {
     if (!path || typeof path !== "string") return false;
     if (!user) return false;
 
-    const normalizedPath = path.replace(/\/$/, "") || "/";
+    // Le vivier de talents est enregistré côté droits sous son ancien chemin "/cvs"
+    const normalizedPath = (path.replace(/\/$/, "") || "/").replace(/^\/talent-pool(?=\/|$)/, "/cvs");
 
     const isSuperAdmin = user.role?.code === 'super_admin' || (!user.company && user.role?.level >= 999);
     if (isSuperAdmin) {
@@ -106,7 +107,7 @@ export function usePermissions(): UsePermissionsReturn {
       ];
     }
 
-    const normalizedPath = path.replace(/\/$/, "") || "/";
+    const normalizedPath = (path.replace(/\/$/, "") || "/").replace(/^\/talent-pool(?=\/|$)/, "/cvs");
     for (const feature of features) {
       for (const page of feature.pages || []) {
         const normalizedPagePath = page.path?.replace(/\/$/, "") || "/";
@@ -121,7 +122,7 @@ export function usePermissions(): UsePermissionsReturn {
   const getPageByPath = useCallback((path: string): UserPage | undefined => {
     if (!path || typeof path !== "string") return undefined;
 
-    const normalizedPath = path.replace(/\/$/, "") || "/";
+    const normalizedPath = (path.replace(/\/$/, "") || "/").replace(/^\/talent-pool(?=\/|$)/, "/cvs");
     for (const feature of features) {
       for (const page of feature.pages || []) {
         const normalizedPagePath = page.path?.replace(/\/$/, "") || "/";

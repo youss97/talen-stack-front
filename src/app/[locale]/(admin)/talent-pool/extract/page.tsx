@@ -2,9 +2,10 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useDropzone, type FileRejection } from "react-dropzone";
+import { MAX_CV_FILE_SIZE, isCvTooLarge } from "@/utils/cvUpload";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/navigation";
-import { ArrowLeft, Upload, FileText, Plus, X, RefreshCw, Lock } from "lucide-react";
+import { ArrowLeft, Upload, FileText, Plus, X, RefreshCw, Lock, MapPin } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
@@ -16,7 +17,7 @@ import {
   useExtractCVMutation,
 } from "@/lib/services/cvApi";
 import { useGetCvSourcesQuery } from "@/lib/services/cvSourceApi";
-import type { CvExperience, CvFormation } from "@/types/cv";
+import type { CvExperience, CvFormation, CvCertification, CvCertificationEntry } from "@/types/cv";
 import MonthYearPicker from "@/components/form/MonthYearPicker";
 import YearPicker from "@/components/form/YearPicker";
 import RichTextEditor from "@/components/form/RichTextEditor";
@@ -41,6 +42,9 @@ const emptyExp = (): CvExperience => ({
 });
 const emptyForm = (): CvFormation => ({
   institution: "", degree: "", field: "", start_date: "", end_date: "",
+});
+const emptyCertification = (): CvCertification => ({
+  name: "", organization: "", url: "", issue_date: "", expiration_date: "",
 });
 
 export default function CVExtractPage() {
@@ -80,8 +84,6 @@ export default function CVExtractPage() {
   const [skillInput, setSkillInput] = useState("");
   const [softSkills, setSoftSkills] = useState<string[]>([]);
   const [softSkillInput, setSoftSkillInput] = useState("");
-  const [certifications, setCertifications] = useState<string[]>([]);
-  const [certificationInput, setCertificationInput] = useState("");
   const [languages, setLanguages] = useState<{ name: string; level: string }[]>([]);
   const [langName, setLangName] = useState("");
   const [langLevel, setLangLevel] = useState<string>("Courant");
@@ -92,6 +94,7 @@ export default function CVExtractPage() {
   // Structured lists
   const [experiences, setExperiences] = useState<CvExperience[]>([emptyExp()]);
   const [formations, setFormations] = useState<CvFormation[]>([emptyForm()]);
+  const [certifications, setCertifications] = useState<CvCertification[]>([emptyCertification()]);
 
   const [getCVById, { isLoading: isLoadingCV }] = useLazyGetCVByIdQuery();
   const [createCV, { isLoading: isCreating }] = useCreateCVMutation();
@@ -111,9 +114,16 @@ export default function CVExtractPage() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
+  // Verrou : empêche le chargement de se redéclencher pour le même CV, quelle que soit la
+  // cause (dépendance instable de l'effet, re-render...) — une fois chargé, plus jamais
+  // réécrasé tant que cvId ne change pas vraiment.
+  const loadedCvIdRef = useRef<string | null>(null);
+
   // ── Load existing CV ──────────────────────────────────────────────────────
   useEffect(() => {
     if (!cvId) return;
+    if (loadedCvIdRef.current === cvId) return;
+    loadedCvIdRef.current = cvId;
     getCVById(cvId)
       .unwrap()
       .then((cv) => {
@@ -130,7 +140,6 @@ export default function CVExtractPage() {
         setSpecialty(cv.specialty || "");
         setLocation((cv as any).location || "");
         setSoftSkills((cv as any).soft_skills || []);
-        setCertifications((cv as any).certifications || []);
         setSummary((cv.full_information as any)?.summary || "");
         setStatus(cv.status || "new");
         setSource((cv as any).source || "");
@@ -154,6 +163,12 @@ export default function CVExtractPage() {
         setExperiences(exps.length ? exps : [emptyExp()]);
         const forms: CvFormation[] = ((cv as any).formations || []).map((f: Partial<CvFormation>) => ({ ...emptyForm(), ...Object.fromEntries(Object.entries(f).map(([k, v]) => [k, v ?? ""])) }));
         setFormations(forms.length ? forms : [emptyForm()]);
+        // Certifications — rétrocompatibilité : les CV créés avant cette évolution stockent une simple chaîne
+        const certs: CvCertification[] = ((cv as any).certifications || []).map((c: CvCertificationEntry) => {
+          const obj = typeof c === "string" ? { name: c } : c;
+          return { ...emptyCertification(), ...Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v ?? ""])) };
+        });
+        setCertifications(certs.length ? certs : [emptyCertification()]);
 
         if (cv.file_path || (cv as any).cloudinary_url) {
           setPreviewUrl((cv as any).cloudinary_url || cv.file_path as string);
@@ -164,6 +179,10 @@ export default function CVExtractPage() {
 
   // ── File upload + extraction ──────────────────────────────────────────────
   const handleFile = async (file: File) => {
+    if (isCvTooLarge(file)) {
+      addToast("error", t("toasts.invalidFileTitle"), t("toasts.fileTooLargeMessage"));
+      return;
+    }
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
     await extractCVData(file);
@@ -182,6 +201,7 @@ export default function CVExtractPage() {
     noClick: true,
     noKeyboard: true,
     multiple: false,
+    maxSize: MAX_CV_FILE_SIZE,
     accept: {
       "application/pdf": [".pdf"],
       "application/msword": [".doc"],
@@ -196,10 +216,11 @@ export default function CVExtractPage() {
       if (file) handleFile(file);
     },
     onDropRejected: (fileRejections: FileRejection[]) => {
+      const tooLarge = fileRejections[0]?.errors.some((e) => e.code === "file-too-large");
       addToast(
         "error",
         t("toasts.invalidFileTitle"),
-        fileRejections[0]?.errors[0]?.message || t("toasts.unsupportedFormat")
+        tooLarge ? t("toasts.fileTooLargeMessage") : fileRejections[0]?.errors[0]?.message || t("toasts.unsupportedFormat")
       );
     },
   });
@@ -290,16 +311,6 @@ export default function CVExtractPage() {
   };
   const removeSoftSkill = (s: string) => setSoftSkills((prev) => prev.filter((x) => x !== s));
 
-  // ── Certifications helpers ────────────────────────────────────────────────
-  const addCertification = () => {
-    const val = certificationInput.trim();
-    if (!val) return;
-    const items = val.split(",").map((s) => s.trim()).filter(Boolean);
-    setCertifications((prev) => [...new Set([...prev, ...items])]);
-    setCertificationInput("");
-  };
-  const removeCertification = (s: string) => setCertifications((prev) => prev.filter((x) => x !== s));
-
   // ── Language helpers ──────────────────────────────────────────────────────
   const addLanguage = () => {
     const name = langName.trim();
@@ -341,6 +352,13 @@ export default function CVExtractPage() {
   const addForm = () => setFormations((prev) => [...prev, emptyForm()]);
   const removeForm = (i: number) => setFormations((prev) => prev.filter((_, idx) => idx !== i));
 
+  // ── Certification helpers ─────────────────────────────────────────────────
+  const updateCertification = (i: number, field: keyof CvCertification, value: string) => {
+    setCertifications((prev) => prev.map((c, idx) => idx === i ? { ...c, [field]: value } : c));
+  };
+  const addCertification = () => setCertifications((prev) => [...prev, emptyCertification()]);
+  const removeCertification = (i: number) => setCertifications((prev) => prev.filter((_, idx) => idx !== i));
+
   // ── Submit ────────────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -355,6 +373,7 @@ export default function CVExtractPage() {
     if (!firstName.trim()) missing.push(t("toasts.missingFirstName"));
     if (!lastName.trim()) missing.push(t("toasts.missingLastName"));
     if (!email.trim()) missing.push(t("toasts.missingEmail"));
+    if (!source.trim()) missing.push(t("toasts.missingSource"));
     if (missing.length > 0) {
       addToast("error", t("toasts.missingFieldsTitle"), t("toasts.missingFieldsMessage", { fields: missing.join(", ") }));
       return;
@@ -363,6 +382,7 @@ export default function CVExtractPage() {
     // Build payload
     const cleanExperiences = experiences.filter((ex) => ex.company || ex.title);
     const cleanFormations = formations.filter((f) => f.institution || f.degree);
+    const cleanCertifications = certifications.filter((c) => c.name.trim());
     const langStrings = languages.map((l) => `${l.name} (${l.level})`);
 
     try {
@@ -372,24 +392,25 @@ export default function CVExtractPage() {
           candidate_last_name: lastName,
           candidate_email: email,
           candidate_phone: phone,
-          linkedin_url: linkedinUrl || undefined,
-          portfolio_url: portfolioUrl || undefined,
-          internal_note: internalNote || undefined,
-          profile_title: profileTitle || undefined,
-          summary: summary || undefined,
+          // Chaîne vide (et non undefined) : sans ça, JSON.stringify retire le champ et le serveur ne peut pas l'effacer
+          linkedin_url: linkedinUrl.trim(),
+          portfolio_url: portfolioUrl.trim(),
+          internal_note: internalNote,
+          profile_title: profileTitle.trim(),
+          summary: summary.trim(),
           total_experience: totalExperience ? Number(totalExperience) : undefined,
           industry_experience: industry,
-          specialty: specialty || undefined,
-          location: location || undefined,
+          specialty: specialty.trim(),
+          location: location.trim(),
           additional_skills: skills,
           soft_skills: softSkills,
-          certifications,
+          certifications: cleanCertifications,
           languages: langStrings,
           geographic_mobility: mobility,
           contract_type_preferences: contractTypes,
           remote_preferred: remotePreferred,
           status,
-          source: source || undefined,
+          source: source.trim(),
           experiences: cleanExperiences,
           formations: cleanFormations,
         };
@@ -418,7 +439,6 @@ export default function CVExtractPage() {
 
         skills.forEach((s) => formData.append("additional_skills", s));
         softSkills.forEach((s) => formData.append("soft_skills", s));
-        certifications.forEach((c) => formData.append("certifications", c));
         langStrings.forEach((l) => formData.append("languages", l));
         mobility.forEach((m) => formData.append("geographic_mobility", m));
         contractTypes.forEach((c) => formData.append("contract_type_preferences", c));
@@ -429,12 +449,15 @@ export default function CVExtractPage() {
         if (cleanFormations.length) {
           formData.append("formations", JSON.stringify(cleanFormations));
         }
+        if (cleanCertifications.length) {
+          formData.append("certifications", JSON.stringify(cleanCertifications));
+        }
 
         await createCV(formData).unwrap();
         addToast("success", t("toasts.updateSuccessTitle"), t("toasts.createSuccessMessage"));
       }
 
-      setTimeout(() => router.push("/cvs"), 1200);
+      setTimeout(() => router.push("/talent-pool"), 1200);
     } catch (err: unknown) {
       const errData = (err as { data?: { message?: string | string[]; error?: string; statusCode?: number } })?.data;
       let msg: string;
@@ -465,7 +488,7 @@ export default function CVExtractPage() {
 
       {/* Back */}
       <div className="mb-6">
-        <Button variant="outline" onClick={() => router.push("/cvs")} startIcon={<ArrowLeftIcon />}>
+        <Button variant="outline" onClick={() => router.push("/talent-pool")} startIcon={<ArrowLeftIcon />}>
           {t("backButton")}
         </Button>
       </div>
@@ -566,15 +589,15 @@ export default function CVExtractPage() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <Label>{t("fields.firstName")}</Label>
+              <Label>{t("fields.firstName")} <span className="text-error-500">*</span></Label>
               <input className={inputClass} placeholder="Jean" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
             </div>
             <div>
-              <Label>{t("fields.lastName")}</Label>
+              <Label>{t("fields.lastName")} <span className="text-error-500">*</span></Label>
               <input className={inputClass} placeholder="Dupont" value={lastName} onChange={(e) => setLastName(e.target.value)} />
             </div>
             <div>
-              <Label>{t("fields.email")}</Label>
+              <Label>{t("fields.email")} <span className="text-error-500">*</span></Label>
               <input className={inputClass} type="email" placeholder="jean@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div>
@@ -618,7 +641,7 @@ export default function CVExtractPage() {
               </select>
             </div>
             <div>
-              <Label>{t("fields.source")}</Label>
+              <Label>{t("fields.source")} <span className="text-error-500">*</span></Label>
               <select className={inputClass} value={source} onChange={(e) => setSource(e.target.value)}>
                 <option value="">{t("fields.selectSource")}</option>
                 {cvSources.map((s) => (
@@ -643,9 +666,6 @@ export default function CVExtractPage() {
                 {experiences.filter(e => e.company || e.title).length}
               </span>
             </h3>
-            <Button type="button" size="sm" variant="outline" onClick={addExp} startIcon={<PlusIcon />}>
-              {t("experiences.addButton")}
-            </Button>
           </div>
 
           <div className="space-y-4">
@@ -700,6 +720,9 @@ export default function CVExtractPage() {
               </div>
             ))}
           </div>
+          <Button type="button" size="sm" variant="outline" onClick={addExp} startIcon={<PlusIcon />} className="mt-4">
+            {t("experiences.addButton")}
+          </Button>
         </div>
 
         {/* ── 4. Formations ── */}
@@ -712,9 +735,6 @@ export default function CVExtractPage() {
                 {formations.filter(f => f.institution || f.degree).length}
               </span>
             </h3>
-            <Button type="button" size="sm" variant="outline" onClick={addForm} startIcon={<PlusIcon />}>
-              {t("formations.addButton")}
-            </Button>
           </div>
 
           <div className="space-y-4">
@@ -763,12 +783,75 @@ export default function CVExtractPage() {
               </div>
             ))}
           </div>
+          <Button type="button" size="sm" variant="outline" onClick={addForm} startIcon={<PlusIcon />} className="mt-4">
+            {t("formations.addButton")}
+          </Button>
         </div>
 
-        {/* ── 5. Compétences ── */}
+        {/* ── 5. Certifications ── */}
+        <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
+          <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <span className={stepBadge}>5</span>
+              {t("steps.certifications")}
+              <span className="ml-1 inline-flex items-center rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-600 dark:bg-brand-900/30 dark:text-brand-400">
+                {certifications.filter(c => c.name.trim()).length}
+              </span>
+            </h3>
+          </div>
+
+          <div className="space-y-4">
+            {certifications.map((c, i) => (
+              <div key={i} className="relative rounded-xl border border-gray-200 dark:border-gray-700 p-4 bg-gray-50/50 dark:bg-gray-800/30">
+                <div className="absolute top-3 right-3">
+                  <button type="button" onClick={() => removeCertification(i)}
+                    className="w-6 h-6 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <XIcon />
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pr-6">
+                  <div>
+                    <Label>{t("certifications.name")}</Label>
+                    <input className={inputClass} placeholder={t("certifications.namePlaceholder")} value={c.name}
+                      onChange={(e) => updateCertification(i, "name", e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>{t("certifications.organization")}</Label>
+                    <input className={inputClass} placeholder={t("certifications.organizationPlaceholder")} value={c.organization || ""}
+                      onChange={(e) => updateCertification(i, "organization", e.target.value)} />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <Label>{t("certifications.url")}</Label>
+                    <input className={inputClass} placeholder={t("certifications.urlPlaceholder")} value={c.url || ""}
+                      onChange={(e) => updateCertification(i, "url", e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>{t("certifications.issueDate")}</Label>
+                    <MonthYearPicker
+                      value={c.issue_date || ""}
+                      onChange={(v) => updateCertification(i, "issue_date", v)}
+                    />
+                  </div>
+                  <div>
+                    <Label>{t("certifications.expirationDate")} <span className="text-gray-400 font-normal">{t("certifications.expirationHint")}</span></Label>
+                    <MonthYearPicker
+                      value={c.expiration_date || ""}
+                      onChange={(v) => updateCertification(i, "expiration_date", v)}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Button type="button" size="sm" variant="outline" onClick={addCertification} startIcon={<PlusIcon />} className="mt-4">
+            {t("certifications.addButton")}
+          </Button>
+        </div>
+
+        {/* ── 6. Compétences ── */}
         <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
           <h3 className={sectionHeadClass}>
-            <span className={stepBadge}>5</span>
+            <span className={stepBadge}>6</span>
             {t("steps.skills")}
           </h3>
           <div className="flex gap-2 mb-3">
@@ -820,38 +903,12 @@ export default function CVExtractPage() {
               ))}
             </div>
           )}
-
-          {/* Certifications */}
-          <Label>{t("certifications.label")}</Label>
-          <div className="flex gap-2 mb-3">
-            <input
-              className={`${inputClass} flex-1`}
-              placeholder={t("certifications.placeholder")}
-              value={certificationInput}
-              onChange={(e) => setCertificationInput(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addCertification(); } }}
-            />
-            <Button type="button" variant="outline" onClick={addCertification}>{t("skills.addButton")}</Button>
-          </div>
-          {certifications.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {certifications.map((s) => (
-                <span key={s}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
-                  {s}
-                  <button type="button" onClick={() => removeCertification(s)} className="hover:text-red-500 transition-colors">
-                    <XSmallIcon />
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
         </div>
 
-        {/* ── 6. Langues ── */}
+        {/* ── 7. Langues ── */}
         <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
           <h3 className={sectionHeadClass}>
-            <span className={stepBadge}>6</span>
+            <span className={stepBadge}>7</span>
             {t("steps.languages")}
           </h3>
           <div className="flex gap-2 mb-3">
@@ -887,10 +944,10 @@ export default function CVExtractPage() {
           )}
         </div>
 
-        {/* ── 7. Préférences ── */}
+        {/* ── 8. Préférences ── */}
         <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
           <h3 className={sectionHeadClass}>
-            <span className={stepBadge}>7</span>
+            <span className={stepBadge}>8</span>
             {t("steps.preferences")}
           </h3>
           <div className="space-y-4">
@@ -912,7 +969,8 @@ export default function CVExtractPage() {
                   {mobility.map((m) => (
                     <span key={m}
                       className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                      📍 {m}
+                      <MapPin size={12} strokeWidth={1.8} className="icon-glow" />
+                      {m}
                       <button type="button" onClick={() => removeMobility(m)} className="hover:text-red-500 transition-colors">
                         <XSmallIcon />
                       </button>
@@ -954,10 +1012,10 @@ export default function CVExtractPage() {
           </div>
         </div>
 
-        {/* ── 8. Note interne ── */}
+        {/* ── 9. Note interne ── */}
         <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
           <h3 className={sectionHeadClass}>
-            <span className={stepBadge}>8</span>
+            <span className={stepBadge}>9</span>
             <Lock size={14} strokeWidth={1.8} className="icon-glow" />
             {t("steps.internalNote")} <span className="text-gray-400 font-normal">{t("internalNote.hint")}</span>
           </h3>
@@ -970,7 +1028,7 @@ export default function CVExtractPage() {
 
         {/* ── Footer buttons ── */}
         <div className="flex justify-end gap-3 pt-2">
-          <Button type="button" variant="outline" onClick={() => router.push("/cvs")} disabled={isSaving}>
+          <Button type="button" variant="outline" onClick={() => router.push("/talent-pool")} disabled={isSaving}>
             {t("footer.cancel")}
           </Button>
           <Button type="submit" disabled={isSaving || isExtracting || (!isEditing && !selectedFile)}>

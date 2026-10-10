@@ -25,6 +25,7 @@ export interface Company {
   siret?: string;
   ice?: string;
   company_identifier?: string;
+  source?: string | null;
   address: string;
   city: string;
   postal_code: string;
@@ -46,6 +47,7 @@ export interface CreateCompanyRequest {
   name: string;
   siret: string;
   company_identifier?: string;
+  source?: string | null;
   address: string;
   city: string;
   postal_code: string;
@@ -66,6 +68,7 @@ export interface UpdateCompanyRequest {
   name?: string;
   siret?: string;
   company_identifier?: string;
+  source?: string | null;
   address?: string;
   city?: string;
   postal_code?: string;

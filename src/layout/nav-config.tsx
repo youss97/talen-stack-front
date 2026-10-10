@@ -56,7 +56,7 @@ export const NAV_CONFIG: Record<string, { title: string; icon: React.ReactNode; 
   },
   "/platform-clients": {
     title: "Clients (plateforme)",
-    icon: <Users size={18} strokeWidth={1.8} />,
+    icon: <Users size={18} strokeWidth={1.8} className="icon-glow" />,
     group: "Administration",
   },
   "/managers": {
@@ -141,32 +141,32 @@ export const NAV_CONFIG: Record<string, { title: string; icon: React.ReactNode; 
   },
   "/crm-companies": {
     title: "Prospects",
-    icon: <Building2 size={18} strokeWidth={1.8} />,
+    icon: <Building2 size={18} strokeWidth={1.8} className="icon-glow" />,
     group: "Commercial",
   },
   "/crm-deals": {
     title: "Opportunités",
-    icon: <Handshake size={18} strokeWidth={1.8} />,
+    icon: <Handshake size={18} strokeWidth={1.8} className="icon-glow" />,
     group: "Commercial",
   },
   "/crm-dashboard": {
     title: "Tableau de bord CRM",
-    icon: <LayoutDashboard size={18} strokeWidth={1.8} />,
+    icon: <LayoutDashboard size={18} strokeWidth={1.8} className="icon-glow" />,
     group: "Commercial",
   },
   "/test-questions": {
     title: "Tests techniques & psychotechniques",
-    icon: <ClipboardList size={18} strokeWidth={1.8} />,
+    icon: <ClipboardList size={18} strokeWidth={1.8} className="icon-glow" />,
     group: "Talents",
   },
   "/test-sessions": {
     title: "Tests envoyés",
-    icon: <ClipboardCheck size={18} strokeWidth={1.8} />,
+    icon: <ClipboardCheck size={18} strokeWidth={1.8} className="icon-glow" />,
     group: "Talents",
   },
   "/coding-challenges": {
     title: "Exercices de code",
-    icon: <Code2 size={18} strokeWidth={1.8} />,
+    icon: <Code2 size={18} strokeWidth={1.8} className="icon-glow" />,
     group: "Talents",
   },
 };

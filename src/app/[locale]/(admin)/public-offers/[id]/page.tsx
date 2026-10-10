@@ -183,8 +183,12 @@ export default function PublicOfferDetailPage() {
   };
 
   const publicCompanySlug = offer?.client?.company?.slug;
+  // Pas de `ref` ici : ce lien doit rester identique quel que soit le compte connecté au
+  // moment où il est affiché/copié — sinon une candidature soumise via ce lien se retrouve
+  // attribuée au mauvais recruteur (le backend retombe sur offer.responsible_id en l'absence
+  // de ref, ce qui est le comportement correct par défaut).
   const publicUrl = offer?.public_slug && typeof window !== "undefined"
-    ? `${window.location.origin}${publicCompanySlug ? `/${publicCompanySlug}` : "/apply"}/${offer.public_slug}${currentUser?.id ? `?ref=${currentUser.id}` : ""}`
+    ? `${window.location.origin}${publicCompanySlug ? `/${publicCompanySlug}` : "/apply"}/${offer.public_slug}`
     : "";
 
   const addToast = (

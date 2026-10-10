@@ -23,6 +23,7 @@
       "skillsPlaceholder": "Filtrer par compétences requises...",
       "allExperienceLevels": "Tous les niveaux d'expérience",
       "allContractTypes": "Tous les types de contrat",
+      "allPriorities": "Toutes les urgences",
       "locationPlaceholder": "Filtrer par localisation..."
     },
     "statusOptions": {
@@ -51,6 +52,9 @@
     "exportExcel": "Exporter Excel",
     "addRequest": "Ajouter une demande",
     "kanban": "Kanban",
+    "kanbanSearchPlaceholder": "Rechercher une demande...",
+    "kanbanPickerTitle": "Ouvrir le Kanban d'une demande",
+    "kanbanPickerSubtitle": "Recherchez et sélectionnez la demande de recrutement à afficher en Kanban.",
     "assign": "Affecter",
     "duplicate": "Dupliquer"
   },
@@ -102,6 +106,8 @@
     "referenceBadge": "Réf. {ref}",
     "pipelineBadge": "Pipeline",
     "dragHint": "Glissez-déposez entre les étapes",
+    "switchRequestPlaceholder": "Changer de demande...",
+    "switchRequestEmpty": "Aucune demande trouvée",
     "candidateCount": "{count, plural, one {# candidature} other {# candidatures}}",
     "experienceYears": "{count, plural, one {# an} other {# ans}}",
     "skillsCount": "{count} comp.",
@@ -274,7 +280,7 @@
     },
     "defaultWorkflowSteps": {
       "proposed": "Proposé",
-      "hrInterview": "Entretien RH",
+      "hrInterview": "Entretien technique",
       "clientInterview": "Entretien client",
       "offer": "Offre"
     }
@@ -334,12 +340,12 @@
   },
   "workflowStepsEditor": {
     "label": "Étapes du workflow",
-    "help": "Définissez les étapes que suivront les candidatures de cette demande (ex. Entretien RH → Entretien client → Offre). \"Proposé\" est toujours la première étape automatique, inutile de l'ajouter.",
+    "help": "Définissez les étapes que suivront les candidatures de cette demande (ex. Entretien technique → Entretien client → Offre). \"Proposé\" est toujours la première étape automatique, inutile de l'ajouter.",
     "stepPlaceholder": "Étape {index}",
     "addStep": "+ Ajouter une étape",
     "suggestions": {
       "proposed": "Proposé",
-      "hrInterview": "Entretien RH",
+      "hrInterview": "Entretien technique",
       "clientInterview": "Entretien client",
       "offer": "Offre",
       "recruited": "Recruté"

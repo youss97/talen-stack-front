@@ -1,10 +1,8 @@
 "use client";
 import { useState, useCallback } from "react";
-import { useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { FolderOpen, Eye, Link2, Settings, RefreshCw, Plus } from "lucide-react";
-import type { RootState } from "@/lib/store";
 import { usePermissions } from "@/hooks/usePermissions";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
@@ -32,7 +30,6 @@ export default function PublicOffersPage() {
   const t = useTranslations("publicOffers.list");
   const router = useRouter();
   const { canDoAction } = usePermissions();
-  const currentUser = useSelector((state: RootState) => state.auth.user);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useLimitPreference("public-offers", 20);
@@ -76,8 +73,12 @@ export default function PublicOffersPage() {
     }
   };
 
+  // Pas de `ref` ici : ce bouton copie LE lien public canonique de l'offre, qui doit rester
+  // identique quel que soit le compte connecté au moment de la copie (sinon une candidature
+  // soumise via ce lien se retrouve attribuée au mauvais recruteur — cf. fallback côté backend
+  // sur offer.responsible_id en l'absence de ref).
   const copyLink = (offer: PublicJobOffer) => {
-    const url = buildPublicOfferUrl(offer, currentUser?.id);
+    const url = buildPublicOfferUrl(offer);
     navigator.clipboard.writeText(url);
     addToast("success", t("toast.linkCopied"), t("toast.linkCopiedMessage"));
   };
@@ -166,7 +167,7 @@ export default function PublicOffersPage() {
       icon: <Eye size={16} strokeWidth={1.8} className="icon-glow" />,
       onClick: (offer: PublicJobOffer) => {
         if (offer.is_public && offer.public_slug) {
-          window.open(buildPublicOfferUrl(offer, currentUser?.id), '_blank');
+          window.open(buildPublicOfferUrl(offer), '_blank');
         } else {
           addToast("warning", t("toast.attention"), t("toast.notPublicWarning"));
         }

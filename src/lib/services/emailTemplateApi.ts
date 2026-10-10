@@ -16,6 +16,20 @@ export const emailTemplateApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ["EmailTemplate"],
   endpoints: (builder) => ({
+    getAutoEmailSettings: builder.query<Record<string, boolean>, void>({
+      query: () => ({ url: "/email-templates/auto-settings", method: "GET" }),
+      providesTags: ["EmailTemplate"],
+    }),
+
+    setAutoEmailSetting: builder.mutation<Record<string, boolean>, { type: string; enabled: boolean }>({
+      query: ({ type, enabled }) => ({
+        url: `/email-templates/auto-settings/${type}`,
+        method: "PATCH",
+        body: { enabled },
+      }),
+      invalidatesTags: ["EmailTemplate"],
+    }),
+
     getEmailTemplateVariables: builder.query<EmailTemplateVariableInfo[], void>({
       query: () => ({ url: "/email-templates/variables", method: "GET" }),
     }),
@@ -114,6 +128,8 @@ export const emailTemplateApi = createApi({
 });
 
 export const {
+  useGetAutoEmailSettingsQuery,
+  useSetAutoEmailSettingMutation,
   useGetEmailTemplateVariablesQuery,
   useGetEmailTemplatesQuery,
   useGetEmailTemplatesForSelectInfiniteQuery,

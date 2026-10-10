@@ -12,6 +12,7 @@ import {
 } from "@/lib/services/publicJobOfferApi";
 import { formatDate } from "@/utils/dateFormat";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
+import { Bookmark, FileText, MapPin, Target, Wallet, Clock, Home, Users, Rocket, Factory } from "lucide-react";
 import { getCurrencyByCode, DEFAULT_CURRENCY } from "@/lib/currencies";
 import type { PublicOfferQuestion } from "@/types/publicJobOffer";
 import { X, AlertCircle, CheckCircle2, UploadCloud, Send, SearchX, Plus, Check, ArrowRight } from "lucide-react";
@@ -513,12 +514,12 @@ export default function PublicOfferApplyView({
   const vis = (k: string) => !visibleFields || visibleFields.length === 0 || visibleFields.includes(k);
 
   const infoGrid = [
-    vis("reference") && offer.reference         && { icon:"🔖", label:t("sidebar.reference"),       value: offer.reference },
-    vis("contract_type") && offer.contract_type && { icon:"📋", label:t("sidebar.contract"),         value: offer.contract_type },
-    vis("location") && offer.location           && { icon:"📍", label:t("sidebar.location"),            value: offer.location },
-    vis("min_experience") && offer.min_experience && { icon:"🎯", label:t("sidebar.experience"),    value: t("sidebar.experienceValue", { count: offer.min_experience }) },
+    vis("reference") && offer.reference         && { icon:<Bookmark size={16} strokeWidth={1.8} className="icon-glow" />, label:t("sidebar.reference"),       value: offer.reference },
+    vis("contract_type") && offer.contract_type && { icon:<FileText size={16} strokeWidth={1.8} className="icon-glow" />, label:t("sidebar.contract"),         value: offer.contract_type },
+    vis("location") && offer.location           && { icon:<MapPin size={16} strokeWidth={1.8} className="icon-glow" />, label:t("sidebar.location"),            value: offer.location },
+    vis("min_experience") && offer.min_experience && { icon:<Target size={16} strokeWidth={1.8} className="icon-glow" />, label:t("sidebar.experience"),    value: t("sidebar.experienceValue", { count: offer.min_experience }) },
     vis("salary") && (offer.min_salary || offer.max_salary) && {
-      icon:"💰", label:t("sidebar.salary"),
+      icon:<Wallet size={16} strokeWidth={1.8} className="icon-glow" />, label:t("sidebar.salary"),
       value: (() => {
         const symbol = getCurrencyByCode(offer.currency || DEFAULT_CURRENCY)?.symbol || offer.currency || "";
         return offer.min_salary && offer.max_salary
@@ -526,9 +527,9 @@ export default function PublicOfferApplyView({
           : offer.min_salary ? t("sidebar.salaryFrom", { value: `${offer.min_salary} ${symbol}` }) : t("sidebar.salaryTo", { value: `${offer.max_salary} ${symbol}` });
       })(),
     },
-    vis("contract_duration") && offer.contract_duration && { icon:"⏱",  label:t("sidebar.duration"),  value: offer.contract_duration },
+    vis("contract_duration") && offer.contract_duration && { icon:<Clock size={16} strokeWidth={1.8} className="icon-glow" />, label:t("sidebar.duration"),  value: offer.contract_duration },
     vis("remote_possible") && (offer.work_type !== undefined || offer.remote_possible !== undefined) && {
-      icon:"🏠", label:t("sidebar.remote"),
+      icon:<Home size={16} strokeWidth={1.8} className="icon-glow" />, label:t("sidebar.remote"),
       value: offer.work_type === "hybrid"
         ? (offer.remote_days_per_week ? t("sidebar.remoteHybrid", { count: offer.remote_days_per_week }) : t("sidebar.remoteYes"))
         : offer.work_type === "remote"
@@ -537,12 +538,12 @@ export default function PublicOfferApplyView({
         ? t("sidebar.remoteNo")
         : offer.remote_possible ? t("sidebar.remoteYes") : t("sidebar.remoteNo"),
     },
-    vis("number_of_profiles") && offer.number_of_profiles && { icon:"👥", label:t("sidebar.numberOfProfiles"),
+    vis("number_of_profiles") && offer.number_of_profiles && { icon:<Users size={16} strokeWidth={1.8} className="icon-glow" />, label:t("sidebar.numberOfProfiles"),
       value: String(offer.number_of_profiles) },
-    vis("desired_start_date") && offer.desired_start_date && { icon:"🚀", label:t("sidebar.startDate"),
+    vis("desired_start_date") && offer.desired_start_date && { icon:<Rocket size={16} strokeWidth={1.8} className="icon-glow" />, label:t("sidebar.startDate"),
       value: formatDate(offer.desired_start_date, { day:"numeric", month:"long", year:"numeric" }) },
-    vis("industry") && offer.client?.industry  && { icon:"🏭", label:t("sidebar.industry"),         value: offer.client.industry },
-  ].filter(Boolean) as { icon:string; label:string; value:string }[];
+    vis("industry") && offer.client?.industry  && { icon:<Factory size={16} strokeWidth={1.8} className="icon-glow" />, label:t("sidebar.industry"),         value: offer.client.industry },
+  ].filter(Boolean) as { icon:React.ReactNode; label:string; value:string }[];
 
   const descriptionIsLong = (offer.description?.length || 0) > DESCRIPTION_TRUNCATE_THRESHOLD;
 
@@ -614,17 +615,17 @@ export default function PublicOfferApplyView({
           >
             {vis("location") && offer.location && (
               <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-white/80 bg-white/10 border border-white/10 backdrop-blur-sm">
-                📍 {offer.location}
+                <MapPin size={14} strokeWidth={1.8} /> {offer.location}
               </span>
             )}
             {vis("contract_type") && offer.contract_type && (
               <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-white/80 bg-white/10 border border-white/10 backdrop-blur-sm">
-                📋 {offer.contract_type}
+                <FileText size={14} strokeWidth={1.8} /> {offer.contract_type}
               </span>
             )}
             {vis("min_experience") && offer.min_experience && (
               <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-white/80 bg-white/10 border border-white/10 backdrop-blur-sm">
-                🎯 {t("hero.experience", { count: offer.min_experience })}
+                <Target size={14} strokeWidth={1.8} /> {t("hero.experience", { count: offer.min_experience })}
               </span>
             )}
           </motion.div>

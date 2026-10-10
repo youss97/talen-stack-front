@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { FileText, FolderOpen, Check } from "lucide-react";
 
 interface ConversionLoaderProps {
   /** Affiche l'overlay quand true */
@@ -9,7 +10,7 @@ interface ConversionLoaderProps {
   done?: boolean;
 }
 
-const STEP_ICONS = ["📄", "🗂️", "✅"];
+const STEP_ICONS = [FileText, FolderOpen, Check];
 const STEP_KEYS = ["extract", "save", "create"] as const;
 
 /**
@@ -20,7 +21,7 @@ const STEP_KEYS = ["extract", "save", "create"] as const;
 export default function ConversionLoader({ active, done }: ConversionLoaderProps) {
   const t = useTranslations("publicOffers.conversion");
   const [current, setCurrent] = useState(0);
-  const STEPS = STEP_KEYS.map((key, i) => ({ icon: STEP_ICONS[i], label: t(`steps.${key}`) }));
+  const STEPS = STEP_KEYS.map((key, i) => ({ Icon: STEP_ICONS[i], label: t(`steps.${key}`) }));
 
   useEffect(() => {
     if (!active) {
@@ -68,12 +69,12 @@ export default function ConversionLoader({ active, done }: ConversionLoaderProps
                   }}
                 >
                   {isDone ? (
-                    <span style={{ color: "var(--brand-strong)" }}>✓</span>
+                    <Check size={16} strokeWidth={2} style={{ color: "var(--brand-strong)" }} />
                   ) : isActive ? (
                     <span className="h-4 w-4 rounded-full border-2 border-t-transparent animate-spin"
                       style={{ borderColor: "var(--brand)", borderTopColor: "transparent" }} />
                   ) : (
-                    <span>{step.icon}</span>
+                    <step.Icon size={16} strokeWidth={1.8} style={{ color: "var(--text-3)" }} />
                   )}
                 </span>
                 <span

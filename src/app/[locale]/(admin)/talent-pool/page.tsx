@@ -229,11 +229,11 @@ export default function CVsPage() {
   };
 
   const handleAddClick = () => {
-    router.push("/cvs/extract");
+    router.push("/talent-pool/extract");
   };
 
   const handleEditClick = (cv: CV) => {
-    router.push(`/cvs/extract?id=${cv.id}`);
+    router.push(`/talent-pool/extract?id=${cv.id}`);
   };
 
   const handleDeleteClick = (cv: CV) => {

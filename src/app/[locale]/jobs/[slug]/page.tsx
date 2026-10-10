@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, type ComponentType } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { motion, type Variants } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { Frown, CheckCircle2, Upload, Send, Check } from "lucide-react";
+import { Frown, CheckCircle2, Upload, Send, Check, FileText, MapPin, Wallet, Target, Users } from "lucide-react";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import {
   useGetPublicJobOfferBySlugQuery,
@@ -127,16 +127,16 @@ export default function PublicJobPage() {
   const clientName = offer.client?.name ?? "";
 
   const infoItems = [
-    offer.contract_type && { icon: "📋", label: t("info.contract"), value: offer.contract_type },
-    offer.location && { icon: "📍", label: t("info.location"), value: offer.location },
-    offer.salary && { icon: "💰", label: t("info.salary"), value: offer.salary },
-    offer.experience_required && { icon: "🎯", label: t("info.experience"), value: offer.experience_required },
+    offer.contract_type && { icon: FileText, label: t("info.contract"), value: offer.contract_type },
+    offer.location && { icon: MapPin, label: t("info.location"), value: offer.location },
+    offer.salary && { icon: Wallet, label: t("info.salary"), value: offer.salary },
+    offer.experience_required && { icon: Target, label: t("info.experience"), value: offer.experience_required },
     offer.number_of_profiles && {
-      icon: "👥",
+      icon: Users,
       label: t("info.numberOfProfiles"),
       value: String(offer.number_of_profiles),
     },
-  ].filter(Boolean) as { icon: string; label: string; value: string }[];
+  ].filter(Boolean) as { icon: ComponentType<{ size?: number; strokeWidth?: number; className?: string }>; label: string; value: string }[];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -212,17 +212,17 @@ export default function PublicJobPage() {
           >
             {offer.location && (
               <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-white/80 bg-white/10 border border-white/10 backdrop-blur-sm">
-                📍 {offer.location}
+                <MapPin size={14} strokeWidth={1.8} /> {offer.location}
               </span>
             )}
             {offer.contract_type && (
               <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-white/80 bg-white/10 border border-white/10 backdrop-blur-sm">
-                📋 {offer.contract_type}
+                <FileText size={14} strokeWidth={1.8} /> {offer.contract_type}
               </span>
             )}
             {offer.experience_required && (
               <span className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-white/80 bg-white/10 border border-white/10 backdrop-blur-sm">
-                🎯 {offer.experience_required}
+                <Target size={14} strokeWidth={1.8} /> {offer.experience_required}
               </span>
             )}
           </motion.div>
@@ -477,7 +477,7 @@ export default function PublicJobPage() {
                     transition={{ delay: 0.3 + i * 0.07 }}
                     className="flex items-start gap-3"
                   >
-                    <span className="text-lg flex-shrink-0">{item.icon}</span>
+                    <span className="flex-shrink-0 text-gray-500"><item.icon size={18} strokeWidth={1.8} className="icon-glow" /></span>
                     <div>
                       <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{item.label}</p>
                       <p className="text-sm font-semibold text-gray-800 mt-0.5">{item.value}</p>

@@ -12,6 +12,7 @@ import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { useLoginMutation } from "@/lib/services/authApi";
 import { loginSchema } from "@/validations/authValidation";
 import type { ApiError } from "@/types/auth";
+import { store } from "@/lib/store";
 
 interface LoginFormInputs {
   email: string;
@@ -42,6 +43,14 @@ export default function SignInForm() {
     try {
       const response = await login(data).unwrap();
       console.log('🔐 Connexion réussie:', response);
+
+      // Si on se connecte à un compte B sans s'être déconnecté du compte A (pas de passage par
+      // "Déconnexion", qui vide déjà tout), les requêtes mises en cache sous le compte A restent
+      // dans le store RTK Query et peuvent s'afficher pour le compte B (ex: lien public d'une
+      // offre, liste de CV...). On vide donc systématiquement les caches API après une connexion
+      // réussie, avant d'entrer dans l'app — l'état d'auth, lui, vient d'être mis à jour par
+      // login.matchFulfilled et n'est pas affecté.
+      store.resetApiCaches();
 
       // Page d'accueil = Statistiques pour tous les rôles, SAUF l'espace client
       // qui n'a pas accès aux statistiques (voir usePermissions.ts::canAccessPath).

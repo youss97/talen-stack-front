@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Eye, ShieldCheck, CalendarClock, Mail, Copy } from "lucide-react";
-import { buildCandidateScorePrompt } from "@/utils/candidateScorePrompt";
+import { Eye, ShieldCheck, CalendarClock, Mail } from "lucide-react";
 import { toExternalUrl } from "@/utils/externalUrl";
 import { useTranslations } from "next-intl";
 import { Modal } from "@/components/ui/modal";
@@ -387,24 +386,6 @@ export default function RecruiterDetailModal({
             {t("subtitle")}
           </p>
         )}
-        {recruiter && (
-          <button
-            type="button"
-            onClick={async () => {
-              try {
-                await navigator.clipboard.writeText(buildCandidateScorePrompt(recruiter));
-                success(t("scorePrompt.copiedTitle"), t("scorePrompt.copiedMessage"));
-              } catch {
-                showError(t("scorePrompt.copyErrorTitle"), t("scorePrompt.copyErrorMessage"));
-              }
-            }}
-            title={t("scorePrompt.buttonTitle")}
-            className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
-          >
-            <Copy size={14} strokeWidth={1.8} className="icon-glow" />
-            {t("scorePrompt.button")}
-          </button>
-        )}
       </div>
 
       <div className={asPage ? "" : "flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar"}>
@@ -431,6 +412,19 @@ export default function RecruiterDetailModal({
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <DetailItem label={t("phone")} value={recruiter.cv.candidate_phone || "-"} />
+                    {recruiter.cv.portfolio_url && (
+                      <div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t("portfolio")}</p>
+                        <a
+                          href={toExternalUrl(recruiter.cv.portfolio_url) ?? undefined}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-400 break-all"
+                        >
+                          {recruiter.cv.portfolio_url}
+                        </a>
+                      </div>
+                    )}
                     {recruiter.cv.linkedin_url && (
                       <div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">LinkedIn</p>
@@ -719,7 +713,6 @@ export default function RecruiterDetailModal({
                     label={t("state")}
                     value={
                       recruiter.workflow_status === 'active' ? t("statePublished")
-                        : recruiter.workflow_status === 'archived' ? t("stateArchived")
                         : t("stateDraft")
                     }
                   />
@@ -736,7 +729,7 @@ export default function RecruiterDetailModal({
             {/* Rémunération */}
             {(recruiter.salary_confidential || recruiter.current_salary != null || recruiter.daily_rate != null || recruiter.package_rate != null
               || recruiter.salary_expectation != null || recruiter.daily_rate_expectation != null
-              || recruiter.package_current || recruiter.package_desired) && (
+              || recruiter.package_current || recruiter.package_desired || recruiter.salary_expectation_notes) && (
               <div className="border-t border-[color:var(--border)] pt-4">
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                   {t("remunerationSection")}
@@ -759,12 +752,15 @@ export default function RecruiterDetailModal({
                     </>
                   )}
                   {recruiter.salary_expectation != null && wantsSalaryExpectation && (
-                    <DetailItem label={t("desiredSalary")} value={`${recruiter.salary_expectation.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}`} />
+                    <DetailItem label={t("desiredSalary")} value={`${recruiter.salary_expectation.toLocaleString("fr-FR")} ${recruiter.expectation_currency || recruiter.currency || "MAD"}`} />
                   )}
                   {recruiter.daily_rate_expectation != null && wantsTjmExpectation && (
                     <DetailItem label={t("desiredDailyRate")} value={`${recruiter.daily_rate_expectation.toLocaleString("fr-FR")} ${recruiter.currency || "MAD"}${t("perDay")}`} />
                   )}
                   {recruiter.package_desired && <DetailItem label={t("desiredPackage")} value={recruiter.package_desired} />}
+                  {recruiter.salary_expectation_notes && (
+                    <DetailItem label={t("salaryExpectationNotes")} value={recruiter.salary_expectation_notes} />
+                  )}
                 </div>
               </div>
             )}
@@ -785,22 +781,18 @@ export default function RecruiterDetailModal({
                 {recruiter.availability_type && (
                   <DetailItem
                     label={t("availability")}
-                    value={t.has(`availabilityLabels.${recruiter.availability_type}`) ? t(`availabilityLabels.${recruiter.availability_type}`) : recruiter.availability_type}
-                  />
-                )}
-                {recruiter.availability_days != null && (
-                  <DetailItem label={t("availabilityDelay")} value={String(recruiter.availability_days)} />
-                )}
-                {recruiter.availability_custom_value != null && (
-                  <DetailItem
-                    label={t("customDelay")}
-                    value={`${recruiter.availability_custom_value} ${recruiter.availability_custom_unit === 'months' ? t("months") : t("days")}`}
+                    // Disponibilité "personnalisée" avec valeur saisie : on affiche directement la
+                    // valeur ("21 jours") plutôt que le libellé générique + une seconde ligne
+                    // "Délai personnalisé" redondante — "Personnalisée (21 jours)" répété sur deux
+                    // lignes séparées n'avait pas de sens pris isolément.
+                    value={
+                      recruiter.availability_type === 'other' && recruiter.availability_custom_value != null
+                        ? `${recruiter.availability_custom_value} ${recruiter.availability_custom_unit === 'months' ? t("months") : t("days")}`
+                        : t.has(`availabilityLabels.${recruiter.availability_type}`) ? t(`availabilityLabels.${recruiter.availability_type}`) : recruiter.availability_type
+                    }
                   />
                 )}
                 {recruiter.availability_reason && <DetailItem label={t("reason")} value={recruiter.availability_reason} />}
-                {recruiter.availability_negotiable != null && (
-                  <DetailItem label={t("negotiable")} value={recruiter.availability_negotiable ? tc("labels.yes") : tc("labels.no")} />
-                )}
                 {recruiter.adjusted_experience != null && (
                   <DetailItem label={t("adjustedExperience")} value={t("yearsValue", { years: recruiter.adjusted_experience })} />
                 )}
@@ -902,8 +894,8 @@ export default function RecruiterDetailModal({
 
               {recruiter.feedbacks && recruiter.feedbacks.length > 0 ? (
                 <div className="space-y-3">
-                  {recruiter.feedbacks.slice(0, 2).map((feedback) => (
-                    <div 
+                  {recruiter.feedbacks.slice(0, 3).map((feedback) => (
+                    <div
                       key={feedback.id}
                       className={`rounded-lg p-4 border-s-4 ${getFeedbackCardColor(feedback)}`}
                     >
@@ -913,9 +905,10 @@ export default function RecruiterDetailModal({
                         </h4>
                       </div>
                       {feedback.description && (
-                        <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words line-clamp-2 mb-3">
-                          {feedback.description}
-                        </p>
+                        <div
+                          className="text-sm text-gray-700 dark:text-gray-300 break-words line-clamp-3 mb-3 [&_p]:m-0 [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5"
+                          dangerouslySetInnerHTML={{ __html: sanitizeHtml(feedback.description) }}
+                        />
                       )}
                       {feedback.audio_url && <audio controls preload="none" src={feedback.audio_url} className="mb-3 h-9 w-full" />}
                       <div className="flex items-center justify-between text-xs">
@@ -938,12 +931,16 @@ export default function RecruiterDetailModal({
                       </div>
                     </div>
                   ))}
-                  {recruiter.feedbacks.length > 2 && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 text-center pt-2 border-t border-gray-200 dark:border-gray-700">
-                      {recruiter.feedbacks.length - 2 > 1
-                        ? t("moreFeedbacksPlural", { count: recruiter.feedbacks.length - 2 })
-                        : t("moreFeedbacks", { count: recruiter.feedbacks.length - 2 })}
-                    </p>
+                  {recruiter.feedbacks.length > 3 && (
+                    <button
+                      type="button"
+                      onClick={handleOpenFeedbacks}
+                      className="block w-full text-center text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 pt-2 border-t border-gray-200 dark:border-gray-700"
+                    >
+                      {recruiter.feedbacks.length - 3 > 1
+                        ? t("moreFeedbacksPlural", { count: recruiter.feedbacks.length - 3 })
+                        : t("moreFeedbacks", { count: recruiter.feedbacks.length - 3 })}
+                    </button>
                   )}
                 </div>
               ) : (

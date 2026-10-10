@@ -50,7 +50,7 @@
     "selectStepPlaceholder": "Sélectionner une étape…",
     "updating": "...",
     "updateButton": "Mettre à jour",
-    "feedbackPlaceholder": "Feedback (optionnel) pour cette étape…",
+    "feedbackPlaceholder": "Message (optionnel) pour cette étape…",
     "reasonRequired": "Un motif est requis pour cette étape.",
     "closeApplicationTitle": "Clôturer la candidature",
     "accepted": "Accepté",
@@ -59,37 +59,37 @@
     "reasonPlaceholder": "Motif (obligatoire) pour « {step} »…",
     "reasonRequiredShort": "Le motif est obligatoire.",
     "confirmButton": "Confirmer {step}",
-    "addFeedbackTitle": "Ajouter un feedback à une étape (sans la changer)",
+    "addFeedbackTitle": "Ajouter un message à une étape (sans la changer)",
     "chooseStepPlaceholder": "Choisir une étape…",
-    "feedbackForStepPlaceholder": "Votre feedback pour cette étape…",
-    "chooseStepAndFeedback": "Choisissez une étape et saisissez un feedback.",
+    "feedbackForStepPlaceholder": "Votre message pour cette étape…",
+    "chooseStepAndFeedback": "Choisissez une étape et saisissez un message.",
     "adding": "Ajout...",
-    "addFeedbackButton": "Ajouter le feedback",
+    "addFeedbackButton": "Ajouter le message",
     "stepClickTitle": "Passer à l'étape « {step} »",
-    "stepClickHint": "Le motif est obligatoire et sera enregistré comme feedback de cette étape.",
+    "stepClickHint": "Le motif est obligatoire et sera enregistré comme message de cette étape.",
     "stepReasonPlaceholder": "Motif (obligatoire)…"
   },
   "feedback": {
-    "title": "Ajouter un feedback",
+    "title": "Ajouter un message",
     "titleLabel": "Titre",
-    "titlePlaceholder": "Ex: Excellent profil technique",
+    "titlePlaceholder": "Ex: Mise à jour du CV demandée",
     "descriptionLabel": "Description",
-    "descriptionPlaceholder": "Décrivez votre feedback en détail...",
+    "descriptionPlaceholder": "Ex: Merci de mettre à jour le CV, le candidat est-il mobile hors de Casablanca ?, Demande des coordonnées du candidat anonyme...",
     "adding": "Ajout...",
     "addButton": "Ajouter",
     "errors": {
       "fillAllFields": "Veuillez remplir tous les champs",
-      "addFailed": "Erreur lors de l'ajout du feedback"
+      "addFailed": "Erreur lors de l'ajout du message"
     }
   },
   "feedbackList": {
-    "title": "Feedbacks",
-    "addButton": "Ajouter un feedback",
-    "empty": "Aucun feedback pour le moment. Cliquez sur « Ajouter un feedback » pour commencer."
+    "title": "Messages et commentaires",
+    "addButton": "Ajouter un message",
+    "empty": "Aucun message pour le moment. Cliquez sur « Ajouter un message » pour commencer."
   },
   "candidateDetail": {
     "defaultName": "Candidat",
-    "feedbackTitleForStep": "Feedback — {step}",
+    "feedbackTitleForStep": "Message — {step}",
     "informationSection": "Informations",
     "position": "Poste",
     "reference": "Référence",
@@ -105,7 +105,7 @@
     "anonymized": "Anonymisée",
     "submittedOn": "Soumis le",
     "publishedOn": "Publiée le",
-    "proposedOn": "Proposé le",
+    "proposedOn": "Proposée le",
     "interviewDate": "Date entretien",
     "workflowSection": "Workflow",
     "workflowSectionClient": "Workflow du recrutement",
@@ -114,6 +114,7 @@
     "remunerationSection": "Rémunération",
     "salary": "Salaire",
     "confidential": "Confidentiel",
+    "portfolio": "Portfolio",
     "currentSalary": "Salaire actuel",
     "dailyRate": "Taux journalier",
     "perDay": "/jour",
@@ -132,7 +133,7 @@
     "remoteOnly": "Télétravail uniquement",
     "availability": "Disponibilité",
     "availabilityDelay": "Délai (jours)",
-    "customDelay": "Délai personnalisé",
+    "customDelay": "Disponibilité personnalisée",
     "months": "mois",
     "days": "jours",
     "reason": "Raison",
@@ -146,7 +147,8 @@
     "managerNotesSection": "Note client",
     "clientFeedbackSection": "Retour client",
     "evaluationsSection": "Évaluations ({count})",
-    "myFeedbacksSection": "Mes feedbacks ({count})",
+    "myFeedbacksSection": "Mes messages ({count})",
+    "commentsSection": "Messages et commentaires ({count})",
     "close": "Fermer",
     "availabilityLabels": {
       "immediate": "Immédiate",
@@ -154,7 +156,7 @@
       "one_month": "1 mois",
       "two_months": "2 mois",
       "three_months": "3 mois",
-      "other": "Autre"
+      "other": "Personnalisée"
     }
   }
 }

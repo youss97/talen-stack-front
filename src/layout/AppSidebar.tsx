@@ -41,11 +41,14 @@ const AppSidebar: React.FC = () => {
   const navItems = useNavigation();
   const user = useSelector((state: RootState) => state.auth.user);
 
-  // startsWith (pas juste égalité stricte) pour que les sous-routes (ex. /cvs/extract) gardent
-  // leur module de la sidebar en surbrillance — sauf "/" qui matcherait sinon toute la sidebar.
+  // startsWith (pas juste égalité stricte) pour que les sous-routes (ex. /talent-pool/extract)
+  // gardent leur module de la sidebar en surbrillance — sauf "/" qui matcherait sinon toute la
+  // sidebar. useNavigation.ts traduit déjà "/cvs" (droits) en "/talent-pool" (route réelle) pour
+  // nav.path — comparer directement au pathname réel, sans traduction, est donc correct ici.
+  const activePathname = pathname;
   const isActive = useCallback(
-    (path: string) => path === pathname || (path !== "/" && pathname.startsWith(`${path}/`)),
-    [pathname]
+    (path: string) => path === activePathname || (path !== "/" && activePathname.startsWith(`${path}/`)),
+    [activePathname]
   );
   const showFull = isExpanded || isHovered || isMobileOpen;
 

@@ -1,7 +1,7 @@
 {
   "list": {
     "title": "Vivier de talents",
-    "subtitle": "Gérez les talents et candidats",
+    "subtitle": "Gérez vos talents",
     "addButton": "Ajouter un talent",
     "assignAction": "Affecter",
     "assignEntityLabel": "ce talent",
@@ -20,7 +20,7 @@
       "sourceAll": "Source : Toutes"
     },
     "columns": {
-      "candidate": "Candidat",
+      "candidate": "Talent",
       "email": "Email",
       "position": "Poste",
       "specialty": "Spécialité pertinente",
@@ -61,12 +61,13 @@
     }
   },
   "extract": {
-    "backButton": "Retour au vivier talents",
+    "backButton": "Retour au vivier de talents",
     "steps": {
       "document": "Document CV",
-      "identity": "Informations du candidat",
+      "identity": "Informations du talent",
       "experiences": "Expériences professionnelles",
       "formations": "Formations",
+      "certifications": "Certifications",
       "skills": "Compétences clés",
       "languages": "Langues",
       "preferences": "Préférences & Mobilité",
@@ -143,8 +144,16 @@
       "placeholder": "Leadership, Communication... (séparées par des virgules)"
     },
     "certifications": {
-      "label": "Certifications",
-      "placeholder": "AWS Certified, PMP... (séparées par des virgules)"
+      "addButton": "Ajouter une certification",
+      "name": "Nom de la certification",
+      "namePlaceholder": "AWS Certified Solutions Architect",
+      "organization": "Organisme de délivrance",
+      "organizationPlaceholder": "Amazon Web Services",
+      "url": "URL de la certification",
+      "urlPlaceholder": "https://...",
+      "issueDate": "Date d'émission",
+      "expirationDate": "Date d'expiration",
+      "expirationHint": "(vide = pas d'expiration)"
     },
     "languages": {
       "namePlaceholder": "Français, Anglais...",
@@ -171,6 +180,7 @@
       "loadCvErrorTitle": "Erreur",
       "loadCvErrorMessage": "Erreur lors du chargement du CV",
       "invalidFileTitle": "Fichier non valide",
+      "fileTooLargeMessage": "La taille du CV dépasse la limite de 2 Mo. Merci de compresser le CV et réessayer.",
       "unsupportedFormat": "Format de fichier non supporté (PDF, DOC, DOCX, Images, TXT, RTF uniquement)",
       "openCvError": "Impossible d'ouvrir le CV",
       "extractSuccessTitle": "Extraction réussie",
@@ -184,6 +194,7 @@
       "missingFirstName": "Prénom",
       "missingLastName": "Nom",
       "missingEmail": "Email",
+      "missingSource": "Source",
       "updateSuccessTitle": "Succès",
       "updateSuccessMessage": "CV modifié avec succès",
       "createSuccessMessage": "CV créé avec succès",
@@ -207,9 +218,9 @@
   "anonymizedOptions": {
     "title": "CV anonymisé",
     "subtitle": "Modifiez le contenu, choisissez les sections et leur ordre, ajoutez vos propres blocs : l'aperçu se met à jour automatiquement.",
-    "privacyNote": "Le nom, l'email, le téléphone et l'adresse du candidat ne sont jamais ajoutés automatiquement. Ne les saisissez pas dans vos blocs libres.",
+    "privacyNote": "Le nom, l'email, le téléphone et l'adresse du talent ne sont jamais ajoutés automatiquement. Ne les saisissez pas dans vos blocs libres.",
     "showResponsible": "Afficher le responsable (pied de page)",
-    "editNote": "Ces modifications ne changent pas la fiche du candidat : elles ne s'appliquent qu'à ce PDF.",
+    "editNote": "Ces modifications ne changent pas la fiche du talent : elles ne s'appliquent qu'à ce PDF.",
     "orderLabel": "Sections et ordre",
     "tabEdit": "Modifier",
     "tabPreview": "Aperçu",
@@ -268,7 +279,7 @@
     }
   },
   "detailModal": {
-    "defaultCandidateName": "Candidat",
+    "defaultCandidateName": "Talent",
     "defaultTitle": "Détails du CV",
     "yearsExperience": "{years} ans d'expérience",
     "remoteWork": "Télétravail uniquement",

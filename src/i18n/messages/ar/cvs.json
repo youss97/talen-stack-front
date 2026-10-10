@@ -1,7 +1,7 @@
 {
   "list": {
     "title": "قاعدة المواهب",
-    "subtitle": "إدارة المواهب والمرشحين",
+    "subtitle": "إدارة مواهبك",
     "addButton": "إضافة موهبة",
     "assignAction": "إسناد",
     "assignEntityLabel": "هذه الموهبة",
@@ -20,7 +20,7 @@
       "sourceAll": "المصدر: الكل"
     },
     "columns": {
-      "candidate": "المرشح",
+      "candidate": "الموهبة",
       "email": "البريد الإلكتروني",
       "position": "المنصب",
       "specialty": "التخصص ذو الصلة",
@@ -64,9 +64,10 @@
     "backButton": "العودة إلى قاعدة المواهب",
     "steps": {
       "document": "وثيقة السيرة الذاتية",
-      "identity": "معلومات المرشح",
+      "identity": "معلومات الموهبة",
       "experiences": "الخبرات المهنية",
       "formations": "التكوين الدراسي",
+      "certifications": "الشهادات",
       "skills": "المهارات الرئيسية",
       "languages": "اللغات",
       "preferences": "التفضيلات والحركية",
@@ -143,8 +144,16 @@
       "placeholder": "القيادة، التواصل... (مفصولة بفواصل)"
     },
     "certifications": {
-      "label": "الشهادات",
-      "placeholder": "AWS Certified, PMP... (مفصولة بفواصل)"
+      "addButton": "إضافة شهادة",
+      "name": "اسم الشهادة",
+      "namePlaceholder": "AWS Certified Solutions Architect",
+      "organization": "الجهة المانحة",
+      "organizationPlaceholder": "Amazon Web Services",
+      "url": "رابط الشهادة",
+      "urlPlaceholder": "https://...",
+      "issueDate": "تاريخ الإصدار",
+      "expirationDate": "تاريخ الانتهاء",
+      "expirationHint": "(فارغ = بدون انتهاء)"
     },
     "languages": {
       "namePlaceholder": "الفرنسية، الإنجليزية...",
@@ -171,6 +180,7 @@
       "loadCvErrorTitle": "خطأ",
       "loadCvErrorMessage": "خطأ أثناء تحميل السيرة الذاتية",
       "invalidFileTitle": "ملف غير صالح",
+      "fileTooLargeMessage": "يتجاوز حجم السيرة الذاتية الحد المسموح به (2 ميغابايت). يرجى ضغط الملف وإعادة المحاولة.",
       "unsupportedFormat": "صيغة ملف غير مدعومة (PDF, DOC, DOCX, صور, TXT, RTF فقط)",
       "openCvError": "تعذر فتح السيرة الذاتية",
       "extractSuccessTitle": "نجح الاستخراج",
@@ -184,6 +194,7 @@
       "missingFirstName": "الاسم الشخصي",
       "missingLastName": "الاسم العائلي",
       "missingEmail": "البريد الإلكتروني",
+      "missingSource": "المصدر",
       "updateSuccessTitle": "نجاح",
       "updateSuccessMessage": "تم تعديل السيرة الذاتية بنجاح",
       "createSuccessMessage": "تم إنشاء السيرة الذاتية بنجاح",
@@ -207,9 +218,9 @@
   "anonymizedOptions": {
     "title": "السيرة الذاتية المجهولة",
     "subtitle": "عدّل المحتوى، اختر الأقسام وترتيبها، وأضف كتلك الخاصة: تتحدث المعاينة تلقائيًا.",
-    "privacyNote": "لا تتم إضافة اسم المرشح أو بريده أو هاتفه أو عنوانه تلقائيًا. لا تكتبها في الكتل الحرة.",
+    "privacyNote": "لا تتم إضافة اسم الموهبة أو بريدها أو هاتفها أو عنوانها تلقائيًا. لا تكتبها في الكتل الحرة.",
     "showResponsible": "عرض المسؤول (في أسفل الصفحة)",
-    "editNote": "هذه التعديلات لا تغيّر ملف المرشح: تنطبق فقط على ملف PDF هذا.",
+    "editNote": "هذه التعديلات لا تغيّر ملف الموهبة: تنطبق فقط على ملف PDF هذا.",
     "orderLabel": "الأقسام والترتيب",
     "tabEdit": "تعديل",
     "tabPreview": "معاينة",
@@ -268,7 +279,7 @@
     }
   },
   "detailModal": {
-    "defaultCandidateName": "مرشح",
+    "defaultCandidateName": "موهبة",
     "defaultTitle": "تفاصيل السيرة الذاتية",
     "yearsExperience": "{years} سنوات خبرة",
     "remoteWork": "عن بُعد فقط",

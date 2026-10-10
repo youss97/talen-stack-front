@@ -11,8 +11,8 @@ import {
 } from "@/lib/services/subscriptionApi";
 import type { Feature } from "@/types/role";
 import type { SubscriptionPlan } from "@/types/subscription";
-import { featureIcon, featureLabel } from "@/utils/featureLabels";
-import { Check } from "lucide-react";
+import { featureLabel } from "@/utils/featureLabels";
+import { Check, Package } from "lucide-react";
 
 // Features réservées au super admin — non proposées dans les abonnements
 const SYSTEM_FEATURE_NAMES = new Set(["Entreprises", "Logs", "Activity Management", "Company Management"]);
@@ -118,7 +118,7 @@ export default function SubscriptionPlanModal({
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl">
       <div className="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-gray-800">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
-          <span>📦</span>
+          <Package size={20} strokeWidth={1.8} className="icon-glow" />
           {isEditing ? t("planModal.title.edit") : t("planModal.title.new")}
         </h2>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -219,7 +219,6 @@ export default function SubscriptionPlanModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {availableFeatures.map((feature) => {
               const checked = selectedFeatureIds.has(feature.id);
-              const icon = featureIcon(feature.name);
               return (
                 <label
                   key={feature.id}
@@ -239,7 +238,6 @@ export default function SubscriptionPlanModal({
                   <input type="checkbox" checked={checked} onChange={() => toggle(feature.id)} className="sr-only" />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1">
-                      <span className="text-sm">{icon}</span>
                       <span className={`text-xs font-medium ${checked ? "text-brand-700 dark:text-brand-300" : "text-gray-700 dark:text-gray-300"}`}>
                         {featureLabel(feature)}
                       </span>

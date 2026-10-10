@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { ArrowUp, ArrowDown, ArrowUpDown, Globe, MapPin } from "lucide-react";
+import { useTableSort } from "@/components/tables/useTableSort";
 import { useGetInterviewsQuery, useCreateInterviewMutation } from "@/lib/services/interviewApi";
 import CreateInterviewSimpleModal from "@/components/interviews/CreateInterviewSimpleModal";
 import InterviewDetailModal from "@/components/interviews/InterviewDetailModal";
@@ -29,6 +31,23 @@ export default function InterviewsPage() {
   const [createInterview, { isLoading: isCreating }] = useCreateInterviewMutation();
 
   const interviews = data?.data || [];
+  const { sortedData: sortedInterviews, effectiveSortKey, effectiveSortOrder, handleSort } = useTableSort(
+    [
+      { key: "application.cv.candidate_first_name" },
+      { key: "title" },
+      { key: "scheduled_date" },
+      { key: "type" },
+      { key: "status" },
+    ],
+    interviews,
+    {}
+  );
+  const sortHeader = (key: string, label: string) => (
+    <button type="button" onClick={() => handleSort(key)} className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200">
+      {label}
+      {effectiveSortKey === key && effectiveSortOrder === "ASC" ? <ArrowUp size={12} strokeWidth={1.8} /> : effectiveSortKey === key && effectiveSortOrder === "DESC" ? <ArrowDown size={12} strokeWidth={1.8} /> : <ArrowUpDown size={12} strokeWidth={1.8} className="opacity-40" />}
+    </button>
+  );
   const totalInterviews = data?.pagination?.total || 0;
 
   const handleCreateInterview = async (applicationId: string, data: CreateInterviewRequest) => {
@@ -255,19 +274,19 @@ export default function InterviewsPage() {
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t("columns.candidate")}
+                      {sortHeader("application.cv.candidate_first_name", t("columns.candidate"))}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t("columns.titlePosition")}
+                      {sortHeader("title", t("columns.titlePosition"))}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t("columns.dateTime")}
+                      {sortHeader("scheduled_date", t("columns.dateTime"))}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t("columns.type")}
+                      {sortHeader("type", t("columns.type"))}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t("columns.status")}
+                      {sortHeader("status", t("columns.status"))}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       {t("columns.actions")}
@@ -275,7 +294,7 @@ export default function InterviewsPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {interviews.map((interview) => {
+                  {sortedInterviews.map((interview) => {
                     const candidateName = interview.application?.cv
                       ? `${interview.application.cv.candidate_first_name || ""} ${interview.application.cv.candidate_last_name || ""}`.trim()
                       : t("defaultCandidateName");
@@ -317,7 +336,7 @@ export default function InterviewsPage() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center text-sm text-gray-900 dark:text-white">
                             <span className="mr-2">
-                              {interview.type === 'online' ? '🌐' : '📍'}
+                              {interview.type === 'online' ? <Globe size={13} strokeWidth={1.8} className="icon-glow" /> : <MapPin size={13} strokeWidth={1.8} className="icon-glow" />}
                             </span>
                             {interview.type === 'online' ? t("online") : t("presential")}
                           </div>

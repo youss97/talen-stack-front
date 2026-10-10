@@ -64,7 +64,9 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
   };
 
   const cv = candidate.cv;
-  const fullName = `${cv?.candidate_first_name || ""} ${cv?.candidate_last_name || ""}`.trim() || t("candidateDetail.defaultName");
+  const fullName = (candidate.is_anonymized && candidate.anonymous_label)
+    ? candidate.anonymous_label
+    : `${cv?.candidate_first_name || ""} ${cv?.candidate_last_name || ""}`.trim() || t("candidateDetail.defaultName");
 
   // Prétentions affichées selon les types de contrat SOUHAITÉS pour l'offre — même règle
   // que RecruiterFormModal.tsx : CDI souhaité → salaire, Freelance souhaité → TJM,
@@ -73,13 +75,10 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
   const wantsTjmExpectation = offerTypes.some((v) => v?.toLowerCase() === "freelance");
   const wantsSalaryExpectation = offerTypes.length === 0 || offerTypes.some((v) => ["CDI", "CDD", "Stage", "Intérim", "Alternance"].includes(v));
 
+  // Un seul fil de commentaires, tous auteurs confondus (RH et client) — la distinction
+  // "Évaluation RH" / "Mes feedbacks" n'avait pas de sens pour le client : ici, comme côté
+  // compte entreprise, c'est une liste chronologique unique.
   const allFeedbacks = candidate.feedbacks || [];
-  const clientFeedbacks = allFeedbacks.filter(f =>
-    f.created_by?.role?.code?.startsWith("CLIENT_MANAGER_")
-  );
-  const rhFeedbacks = allFeedbacks.filter(f =>
-    !f.created_by?.role?.code?.startsWith("CLIENT_MANAGER_")
-  );
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl mx-4 my-4 max-h-[95vh] flex flex-col">
@@ -99,14 +98,23 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
           </h3>
           <div className="space-y-2">
             <Row label={t("candidateDetail.position")} value={candidate.request?.title} />
-            <Row label={t("candidateDetail.reference")} value={candidate.request?.reference} />
             <Row label={t("candidateDetail.email")} value={cv?.candidate_email} />
             <Row label={t("candidateDetail.phone")} value={cv?.candidate_phone} />
-            <Row label="LinkedIn" value={cv?.linkedin_url ? (
-              <a href={toExternalUrl(cv.linkedin_url) ?? undefined} target="_blank" rel="noopener noreferrer" className="text-brand-600 hover:underline dark:text-brand-400 break-all">
-                {cv.linkedin_url}
-              </a>
-            ) : undefined} />
+            {/* Jamais pour un candidat anonymisé : ces liens révèlent presque toujours l'identité réelle */}
+            {!candidate.is_anonymized && (
+              <>
+                <Row label="LinkedIn" value={cv?.linkedin_url ? (
+                  <a href={toExternalUrl(cv.linkedin_url) ?? undefined} target="_blank" rel="noopener noreferrer" className="text-brand-600 hover:underline dark:text-brand-400 break-all">
+                    {cv.linkedin_url}
+                  </a>
+                ) : undefined} />
+                <Row label={t("candidateDetail.portfolio")} value={cv?.portfolio_url ? (
+                  <a href={toExternalUrl(cv.portfolio_url) ?? undefined} target="_blank" rel="noopener noreferrer" className="text-brand-600 hover:underline dark:text-brand-400 break-all">
+                    {cv.portfolio_url}
+                  </a>
+                ) : undefined} />
+              </>
+            )}
             <Row label={t("candidateDetail.experience")} value={
               candidate.adjusted_experience != null
                 ? t("candidateDetail.yearsValue", { years: candidate.adjusted_experience })
@@ -117,19 +125,21 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
             {/* Statut interne, état de publication brut, date de soumission et date d'entretien
                 RH sont des informations internes au cabinet — non affichées au client (celui-ci
                 ne suit que les étapes du workflow, voir la section Étapes ci-dessous). */}
-            <Row label={t("candidateDetail.anonymized")} value={candidate.is_anonymized != null ? (candidate.is_anonymized ? tc("labels.yes") : tc("labels.no")) : undefined} />
+            {/* "Anonymisée : Non" n'apporte aucune information utile au client — on ne l'affiche que si c'est "Oui" */}
+            <Row label={t("candidateDetail.anonymized")} value={candidate.is_anonymized ? tc("labels.yes") : undefined} />
             <Row label={t("candidateDetail.proposedOn")} value={candidate.activated_at ? formatDate(candidate.activated_at) : undefined} />
           </div>
         </section>
 
-        {/* Compétences */}
-        {cv?.skills && cv.skills.length > 0 && (
+        {/* Compétences évaluées par le recruteur pour cette candidature — jamais celles du
+            vivier de talents, et masqué si le recruteur n'a rien saisi. */}
+        {candidate.skills && candidate.skills.length > 0 && (
           <section>
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
               {t("candidateDetail.skillsSection")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              {cv.skills.map((skill, i) => (
+              {candidate.skills.map((skill, i) => (
                 <span
                   key={i}
                   className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"
@@ -189,12 +199,12 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
                 <>
                   {candidate.salary_expectation != null && wantsSalaryExpectation && (
                     <Row label={t("candidateDetail.desiredSalary")} value={
-                      `${candidate.salary_expectation.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}`
+                      `${candidate.salary_expectation.toLocaleString("fr-FR")} ${candidate.expectation_currency || candidate.currency || "MAD"}`
                     } />
                   )}
                   {candidate.daily_rate_expectation != null && wantsTjmExpectation && (
                     <Row label={t("candidateDetail.desiredDailyRate")} value={
-                      `${candidate.daily_rate_expectation.toLocaleString("fr-FR")} ${candidate.currency || "MAD"}${t("candidateDetail.perDay")}`
+                      `${candidate.daily_rate_expectation.toLocaleString("fr-FR")} ${candidate.expectation_currency || candidate.currency || "MAD"}${t("candidateDetail.perDay")}`
                     } />
                   )}
                 </>
@@ -224,25 +234,24 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
                 ? candidate.currently_employed ? tc("labels.yes") : tc("labels.no")
                 : undefined
             } />
-            {/* "Télétravail uniquement" plutôt qu'un simple "Oui" : un booléen brut ne dit pas
-                si le candidat est ouvert au remote parmi d'autres options, ou s'il l'exige
-                exclusivement — ce champ signifie spécifiquement ce second cas. */}
-            {candidate.cv?.remote_preferred && (
-              <Row label={t("candidateDetail.remote")} value={t("candidateDetail.remoteOnly")} />
-            )}
             {/* Disponibilité — une seule ligne combinée ("1 mois (négociable à 3 semaines)") plutôt
                 que des champs "délai personnalisé"/"négociable"/"raison" séparés qui, affichés
                 côte à côte, n'avaient pas de sens pris isolément. */}
             <Row label={t("candidateDetail.availability")} value={(() => {
               if (!candidate.availability_type) return undefined;
+              // Disponibilité "personnalisée" avec valeur saisie : on affiche directement la
+              // valeur ("21 jours"), jamais le libellé générique du type en plus — "Personnalisée
+              // (21 jours)" n'apporte rien par rapport à "21 jours" seul.
+              if (candidate.availability_type === "other" && candidate.availability_custom_value != null) {
+                const unit = candidate.availability_custom_unit === "months" ? t("candidateDetail.months") : t("candidateDetail.days");
+                return `${candidate.availability_custom_value} ${unit}`;
+              }
               const base = t.has(`candidateDetail.availabilityLabels.${candidate.availability_type}`)
                 ? t(`candidateDetail.availabilityLabels.${candidate.availability_type}`)
                 : candidate.availability_type;
               let detail = "";
               if (candidate.availability_type === "less_than_one_month" && candidate.availability_days != null) {
                 detail = ` (${candidate.availability_days} ${t("candidateDetail.days")})`;
-              } else if (candidate.availability_type === "other" && candidate.availability_custom_value != null) {
-                detail = ` (${candidate.availability_custom_value} ${candidate.availability_custom_unit === "months" ? t("candidateDetail.months") : t("candidateDetail.days")})`;
               }
               let precision = "";
               if (candidate.availability_type === "immediate" && candidate.availability_reason) {
@@ -257,34 +266,25 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
           </div>
         </section>
 
-        {/* Langues — priorité aux langues évaluées sur la candidature, repli sur les langues du CV */}
+        {/* Langues évaluées par le recruteur pour cette candidature — jamais celles du vivier de
+            talents, et masqué si le recruteur n'a rien saisi. */}
         {(() => {
-          const hasApplicationLanguages = candidate.languages && candidate.languages.length > 0;
-          const hasCvLanguages = candidate.cv?.languages && candidate.cv.languages.length > 0;
-          if (!hasApplicationLanguages && !hasCvLanguages) return null;
+          const appLanguages = (candidate.languages || []).filter((l) => l && l.language);
+          if (appLanguages.length === 0) return null;
           return (
             <section>
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
                 {t("candidateDetail.languagesSection")}
               </h3>
               <div className="flex flex-wrap gap-2">
-                {hasApplicationLanguages
-                  ? candidate.languages!.map((l, i) => (
-                      <span
-                        key={i}
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                      >
-                        {l.language} — {l.level}/5
-                      </span>
-                    ))
-                  : candidate.cv!.languages!.map((lang, i) => (
-                      <span
-                        key={i}
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                      >
-                        {lang}
-                      </span>
-                    ))}
+                {appLanguages.map((l, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                  >
+                    {l.language} — {l.level}/5
+                  </span>
+                ))}
               </div>
             </section>
           );
@@ -347,14 +347,14 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
           </section>
         )}
 
-        {/* Feedbacks RH */}
-        {rhFeedbacks.length > 0 && (
+        {/* Commentaires — fil chronologique unique, tous auteurs confondus (comme côté compte entreprise) */}
+        {allFeedbacks.length > 0 && (
           <section>
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
-              {t("candidateDetail.evaluationsSection", { count: rhFeedbacks.length })}
+              {t("candidateDetail.commentsSection", { count: allFeedbacks.length })}
             </h3>
             <div className="space-y-3">
-              {rhFeedbacks.map(fb => (
+              {allFeedbacks.map(fb => (
                 <div
                   key={fb.id}
                   className={`rounded-lg p-4 border-s-4 ${getFeedbackCardColor(fb)}`}
@@ -369,9 +369,10 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
                   </div>
 
                   {fb.description && (
-                    <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words mb-3">
-                      {fb.description}
-                    </p>
+                    <div
+                      className="text-sm text-gray-700 dark:text-gray-300 break-words mb-3 [&_p]:m-0 [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5"
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(fb.description) }}
+                    />
                   )}
                   {fb.audio_url && <audio controls preload="none" src={fb.audio_url} className="mb-3 h-9 w-full" />}
 
@@ -394,7 +395,7 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
           </section>
         )}
 
-        {/* Workflow / étapes (3.2 + 4.1) — toujours affiché, juste au-dessus de "Mes feedbacks" */}
+        {/* Workflow / étapes (3.2 + 4.1) */}
         <section>
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
             {t("candidateDetail.stepsSection")}
@@ -411,53 +412,6 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
             />
           </div>
         </section>
-
-        {/* Mes feedbacks */}
-        {clientFeedbacks.length > 0 && (
-          <section>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
-              {t("candidateDetail.myFeedbacksSection", { count: clientFeedbacks.length })}
-            </h3>
-            <div className="space-y-3">
-              {clientFeedbacks.map(fb => (
-                <div
-                  key={fb.id}
-                  className={`rounded-lg p-4 border-s-4 ${getFeedbackCardColor(fb)}`}
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="text-base font-medium text-gray-900 dark:text-white">
-                      {fb.title}
-                    </h3>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap ms-4">
-                      {formatDateTime(fb.created_at)}
-                    </span>
-                  </div>
-
-                  {fb.description && (
-                    <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words mb-3">
-                      {fb.description}
-                    </p>
-                  )}
-                  {fb.audio_url && <audio controls preload="none" src={fb.audio_url} className="mb-3 h-9 w-full" />}
-
-                  {fb.created_by && (
-                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                      <span className="font-medium">
-                        {fb.created_by.first_name} {fb.created_by.last_name}
-                      </span>
-                      {fb.created_by.role && (
-                        <>
-                          <span>•</span>
-                          <span>{fb.created_by.role.name}</span>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
       </div>
 
       <div className="flex-shrink-0 flex justify-end p-5 border-t border-gray-100 dark:border-gray-800">

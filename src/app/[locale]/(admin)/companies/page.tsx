@@ -1,7 +1,7 @@
 "use client";
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { RefreshCw, Plus, Lock, Unlock, BellRing, BadgeCheck, BadgeX } from "lucide-react";
+import { RefreshCw, Plus, Lock, Unlock, BellRing, BadgeCheck, BadgeX, Trash2 } from "lucide-react";
 import DataTable, { type Column } from "@/components/tables/DataTable";
 import Pagination from "@/components/tables/Pagination";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
@@ -18,7 +18,9 @@ import {
   useCreateCompanyMutation,
   useUpdateCompanyMutation,
   useDeleteCompanyMutation,
+  usePermanentDeleteCompanyMutation,
 } from "@/lib/services/companyApi";
+import PermanentDeleteCompanyModal from "@/components/company/PermanentDeleteCompanyModal";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store";
 import { useSetCompanyFeaturesMutation } from "@/lib/services/roleApi";
@@ -84,6 +86,12 @@ export default function CompaniesPage() {
   const [createCompany, { isLoading: isCreating }] = useCreateCompanyMutation();
   const [updateCompany, { isLoading: isUpdating }] = useUpdateCompanyMutation();
   const [deleteCompany] = useDeleteCompanyMutation();
+  const [permanentDeleteCompany] = usePermanentDeleteCompanyMutation();
+  const [permanentModal, setPermanentModal] = useState<{ isOpen: boolean; company: Company | null }>({
+    isOpen: false,
+    company: null,
+  });
+  const [isPermanentDeleting, setIsPermanentDeleting] = useState(false);
   const [isReactivating, setIsReactivating] = useState(false);
   const [quickTogglingId, setQuickTogglingId] = useState<string | null>(null);
   const [setCompanyFeatures] = useSetCompanyFeaturesMutation();
@@ -247,6 +255,20 @@ export default function CompaniesPage() {
     }
   };
 
+  const handleConfirmPermanentDelete = async () => {
+    if (!permanentModal.company) return;
+    setIsPermanentDeleting(true);
+    try {
+      await permanentDeleteCompany(permanentModal.company.id).unwrap();
+      addToast("success", tc("status.success"), t("toasts.permanentDeleteSuccess"));
+      setPermanentModal({ isOpen: false, company: null });
+    } catch (error) {
+      addToast("error", tc("status.error"), getErrorMessage(error, t("toasts.permanentDeleteError")));
+    } finally {
+      setIsPermanentDeleting(false);
+    }
+  };
+
   const handleFormSubmit = async (
     data: CreateCompanyFormData & { featureIds?: string[]; planId?: string }
   ) => {
@@ -299,6 +321,8 @@ export default function CompaniesPage() {
         const formData = new FormData();
         Object.keys(companyFormData).forEach((key) => {
           const value = (companyFormData as Record<string, unknown>)[key];
+          // source : « aucune » (chaîne vide) n'est pas envoyée — le backend n'accepte que les valeurs listées
+          if (key === "source" && !value) return;
           if (value !== undefined && value !== null) {
             if ((key === "logo" || key === "adminPhoto") && value instanceof File) {
               formData.append(key, value);
@@ -425,6 +449,12 @@ export default function CompaniesPage() {
               hidden: (row) => row.status === "active",
             },
             {
+              label: t("list.rowActions.permanentDelete"),
+              icon: <Trash2 size={16} strokeWidth={1.8} className="icon-glow" />,
+              color: "error",
+              onClick: (row) => setPermanentModal({ isOpen: true, company: row }),
+            },
+            {
               label: t("list.rowActions.remind"),
               icon: <RemindIcon />,
               color: "default",
@@ -473,6 +503,14 @@ export default function CompaniesPage() {
         onClose={() => { setIsViewModalOpen(false); setViewCompany(null); }}
         company={viewCompany}
         isLoading={isLoadingDetail}
+      />
+
+      <PermanentDeleteCompanyModal
+        isOpen={permanentModal.isOpen}
+        companyName={permanentModal.company?.name || ""}
+        onClose={() => setPermanentModal({ isOpen: false, company: null })}
+        onConfirm={handleConfirmPermanentDelete}
+        isLoading={isPermanentDeleting}
       />
 
       <ConfirmModal

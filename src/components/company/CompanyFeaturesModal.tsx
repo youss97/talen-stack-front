@@ -10,7 +10,7 @@ import {
 } from "@/lib/services/roleApi";
 import type { Company } from "@/types/company";
 import type { Feature } from "@/types/role";
-import { featureIcon, featureLabel, pageLabel } from "@/utils/featureLabels";
+import { featureLabel, pageLabel } from "@/utils/featureLabels";
 
 interface CompanyFeaturesModalProps {
   isOpen: boolean;
@@ -148,7 +148,6 @@ export default function CompanyFeaturesModal({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {allFeatures.map((feature) => {
                 const checked = selectedIds.has(feature.id);
-                const icon = featureIcon(feature.name);
                 return (
                   <label
                     key={feature.id}
@@ -178,7 +177,6 @@ export default function CompanyFeaturesModal({
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg leading-none">{icon}</span>
                         <span className={`text-sm font-semibold ${
                           checked ? "text-brand-700 dark:text-brand-300" : "text-gray-700 dark:text-gray-200"
                         }`}>

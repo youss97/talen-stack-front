@@ -28,7 +28,7 @@ import {
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
-import type { CV } from "@/types/cv";
+import type { CV, CvCertificationEntry } from "@/types/cv";
 import { openCvInNewTab } from "@/utils/cvView";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { useGetRecruitersQuery } from "@/lib/services/recruiterApi";
@@ -38,6 +38,7 @@ import { formatDate } from "@/utils/dateFormat";
 import { toExternalUrl } from "@/utils/externalUrl";
 import Pagination from "@/components/tables/Pagination";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
+import DataTable from "@/components/tables/DataTable";
 
 interface CVDetailModalProps {
   isOpen: boolean;
@@ -135,7 +136,7 @@ export default function CVDetailModal({
     ? cv.details.technical_skills
     : (cv?.skills as string[]) || [];
   const effectiveSoftSkills: string[] = cv?.details?.soft_skills || [];
-  const effectiveCertifications: string[] = cv?.details?.certifications?.length
+  const effectiveCertifications: CvCertificationEntry[] = cv?.details?.certifications?.length
     ? cv.details.certifications
     : fullInfoExtraction.certifications || [];
   const effectiveNotes = cv?.details?.notes || fullInfoUserData.notes || null;
@@ -389,12 +390,29 @@ export default function CVDetailModal({
             {effectiveCertifications.length > 0 && (
               <Section title={t("detailModal.sections.certifications", { count: cv.details?.stats?.total_certifications || effectiveCertifications.length })} icon={Award}>
                 <ul className="space-y-2.5">
-                  {effectiveCertifications.map((cert: string, index: number) => (
-                    <li key={index} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--text)" }}>
-                      <Check size={15} strokeWidth={2} className="icon-glow mt-0.5 shrink-0" style={{ color: "var(--text-2)" }} />
-                      {cert}
-                    </li>
-                  ))}
+                  {/* Rétrocompatibilité : les CV créés avant cette évolution stockent une simple chaîne */}
+                  {effectiveCertifications.map((cert: CvCertificationEntry, index: number) => {
+                    const isStructured = typeof cert !== "string";
+                    const name = isStructured ? cert.name : cert;
+                    const meta = isStructured
+                      ? [cert.organization, [cert.issue_date, cert.expiration_date].filter(Boolean).join(" – ") || null]
+                          .filter(Boolean)
+                          .join(" • ")
+                      : null;
+                    return (
+                      <li key={index} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--text)" }}>
+                        <Check size={15} strokeWidth={2} className="icon-glow mt-0.5 shrink-0" style={{ color: "var(--text-2)" }} />
+                        <span>
+                          {isStructured && cert.url ? (
+                            <a href={cert.url} target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: "var(--brand)" }}>
+                              {name}
+                            </a>
+                          ) : name}
+                          {meta && <span className="block text-xs" style={{ color: "var(--text-2)" }}>{meta}</span>}
+                        </span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </Section>
             )}
@@ -518,42 +536,27 @@ function ApplicationsPreviewSection({ cvId }: { cvId: string }) {
 
   return (
     <Section title={t("detailModal.sections.applications", { count: total })} icon={Briefcase}>
-      <div className="overflow-x-auto -mx-1">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-xs" style={{ color: "var(--text-3)" }}>
-              <th className="px-1 pb-2 font-medium">{t("detailModal.applications.date")}</th>
-              <th className="px-1 pb-2 font-medium">{t("detailModal.applications.position")}</th>
-              <th className="px-1 pb-2 font-medium">{t("detailModal.applications.client")}</th>
-              <th className="px-1 pb-2 font-medium">{t("detailModal.applications.step")}</th>
-              <th className="px-1 pb-2 font-medium">{t("detailModal.applications.status")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {applications.map((app) => (
-              <tr key={app.id} className="border-t" style={{ borderColor: "var(--border)" }}>
-                <td className="px-1 py-2 whitespace-nowrap" style={{ color: "var(--text-2)" }}>
-                  {app.proposed_at ? formatDate(app.proposed_at) : "-"}
-                </td>
-                <td className="px-1 py-2 font-medium" style={{ color: "var(--text)" }}>
-                  {app.request?.title || "-"}
-                </td>
-                <td className="px-1 py-2" style={{ color: "var(--text-2)" }}>
-                  {app.request?.client?.name || "-"}
-                </td>
-                <td className="px-1 py-2" style={{ color: "var(--text-2)" }}>
-                  {app.current_step || "-"}
-                </td>
-                <td className="px-1 py-2">
-                  <Badge color="light" variant="light" size="sm">
-                    {resolveStatusLabel(app.status, applicationStatusesData?.data || [])}
-                  </Badge>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        columns={[
+          { key: "proposed_at", header: t("detailModal.applications.date"), sortable: true, render: (v) => (v ? formatDate(String(v)) : "-") },
+          { key: "request.title", header: t("detailModal.applications.position"), sortable: true },
+          { key: "request.client.name", header: t("detailModal.applications.client"), sortable: true },
+          { key: "current_step", header: t("detailModal.applications.step"), sortable: true },
+          {
+            key: "status",
+            header: t("detailModal.applications.status"),
+            sortable: true,
+            render: (v, row) => (
+              <Badge color="light" variant="light" size="sm">
+                {resolveStatusLabel(String(v ?? row.status ?? ""), applicationStatusesData?.data || [])}
+              </Badge>
+            ),
+          },
+        ]}
+        data={applications}
+        enableViewToggle={false}
+        useActionsMenu={false}
+      />
       {data?.pagination && (
         <div className="mt-3">
           <Pagination

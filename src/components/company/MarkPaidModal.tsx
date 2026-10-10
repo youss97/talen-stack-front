@@ -5,7 +5,7 @@ import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import { useGetFeaturesQuery, useGetCompanyFeaturesQuery, useSetCompanyFeaturesMutation } from "@/lib/services/roleApi";
 import { useGetSubscriptionPlansQuery, useAssignPlanToCompanyMutation } from "@/lib/services/subscriptionApi";
-import { featureIcon, featureLabel } from "@/utils/featureLabels";
+import { featureLabel } from "@/utils/featureLabels";
 import { getApiErrorMessage } from "@/utils/errorMessages";
 import type { Company } from "@/types/company";
 import type { SubscriptionPlan } from "@/types/subscription";
@@ -122,7 +122,6 @@ export default function MarkPaidModal({ isOpen, onClose, company, onDone }: Prop
                   }`}
                 >
                   <input type="checkbox" checked={checked} onChange={() => toggleFeature(f.id)} />
-                  <span>{featureIcon(f.name)}</span>
                   <span className="text-gray-700 dark:text-gray-300">{featureLabel(f)}</span>
                 </label>
               );

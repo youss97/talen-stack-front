@@ -183,12 +183,16 @@ export default function Profile() {
   const photoUrl = getImageUrl(user.photo_path) || null;
   const initials = `${user.first_name?.charAt(0) || ""}${user.last_name?.charAt(0) || ""}`.toUpperCase() || "U";
 
-  const tabs = [
+  // Collaborateur (compte client) : l'adresse/localisation vit sur la société cliente, jamais
+  // sur ce compte individuel — toujours vide et non pertinente à afficher ou modifier ici.
+  const isCollaborator = (user.role?.code || "").toUpperCase().startsWith("CLIENT_MANAGER");
+
+  const tabs: { key: "info" | "social" | "address" | "security"; label: string }[] = [
     { key: "info", label: t("modal.tabs.info") },
     { key: "social", label: t("modal.tabs.social") },
-    { key: "address", label: t("modal.tabs.address") },
+    ...(isCollaborator ? [] : [{ key: "address" as const, label: t("modal.tabs.address") }]),
     { key: "security", label: t("modal.tabs.security") },
-  ] as const;
+  ];
 
   return (
     <div className="space-y-5 pb-8">
@@ -288,17 +292,20 @@ export default function Profile() {
             )}
           </Section>
 
-          {/* Adresse */}
-          <Section title={t("sections.address")} icon={
-            <MapPin className="icon-glow" size={16} strokeWidth={1.8} />
-          }>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <InfoItem label={t("fields.country")} value={user.country} />
-              <InfoItem label={t("fields.city")} value={user.city} />
-              <InfoItem label={t("fields.postalCode")} value={user.postal_code} />
-              <InfoItem label={t("fields.taxId")} value={user.tax_id} />
-            </div>
-          </Section>
+          {/* Adresse — pas pertinente pour un collaborateur (compte client) : l'adresse est
+              celle de la société cliente, jamais de ce compte individuel */}
+          {!isCollaborator && (
+            <Section title={t("sections.address")} icon={
+              <MapPin className="icon-glow" size={16} strokeWidth={1.8} />
+            }>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <InfoItem label={t("fields.country")} value={user.country} />
+                <InfoItem label={t("fields.city")} value={user.city} />
+                <InfoItem label={t("fields.postalCode")} value={user.postal_code} />
+                <InfoItem label={t("fields.taxId")} value={user.tax_id} />
+              </div>
+            </Section>
+          )}
         </div>
 
         {/* Right column (1/3) */}
@@ -338,7 +345,6 @@ export default function Profile() {
               <Building2 className="icon-glow" size={16} strokeWidth={1.8} />
             }>
               <InfoItem label={t("fields.companyName")} value={user.company?.name} />
-              {user.company?.email && <InfoItem label={t("fields.email")} value={user.company?.email} />}
             </Section>
           )}
         </div>
@@ -432,8 +438,8 @@ export default function Profile() {
                 </div>
               )}
 
-              {/* Tab: Adresse */}
-              {activeTab === "address" && (
+              {/* Tab: Adresse — jamais proposé à un collaborateur (voir tabs ci-dessus) */}
+              {activeTab === "address" && !isCollaborator && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField label={t("modal.country")}>
                     <input className={inputCls} {...register("country")} placeholder={t("modal.countryPlaceholder")} />

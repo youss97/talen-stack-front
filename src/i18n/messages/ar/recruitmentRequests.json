@@ -23,6 +23,7 @@
       "skillsPlaceholder": "تصفية حسب المهارات المطلوبة...",
       "allExperienceLevels": "كل مستويات الخبرة",
       "allContractTypes": "كل أنواع العقود",
+      "allPriorities": "كل درجات الاستعجال",
       "locationPlaceholder": "تصفية حسب الموقع..."
     },
     "statusOptions": {
@@ -51,6 +52,9 @@
     "exportExcel": "تصدير إلى Excel",
     "addRequest": "إضافة طلب",
     "kanban": "لوحة كانبان",
+    "kanbanSearchPlaceholder": "البحث عن طلب...",
+    "kanbanPickerTitle": "فتح لوحة كانبان لطلب",
+    "kanbanPickerSubtitle": "ابحث واختر طلب التوظيف لعرضه في لوحة كانبان.",
     "assign": "تعيين",
     "duplicate": "تكرار"
   },
@@ -102,6 +106,8 @@
     "referenceBadge": "المرجع {ref}",
     "pipelineBadge": "مسار العمل",
     "dragHint": "اسحب وأفلت بين المراحل",
+    "switchRequestPlaceholder": "تبديل الطلب...",
+    "switchRequestEmpty": "لم يتم العثور على طلب",
     "candidateCount": "{count, plural, one {# ترشيح} other {# ترشيحات}}",
     "experienceYears": "{count, plural, one {# سنة} other {# سنوات}}",
     "skillsCount": "{count} مهارة",
@@ -274,7 +280,7 @@
     },
     "defaultWorkflowSteps": {
       "proposed": "مقترح",
-      "hrInterview": "مقابلة الموارد البشرية",
+      "hrInterview": "مقابلة تقنية",
       "clientInterview": "مقابلة العميل",
       "offer": "عرض"
     }
@@ -339,7 +345,7 @@
     "addStep": "+ إضافة مرحلة",
     "suggestions": {
       "proposed": "مقترح",
-      "hrInterview": "مقابلة الموارد البشرية",
+      "hrInterview": "مقابلة تقنية",
       "clientInterview": "مقابلة العميل",
       "offer": "عرض",
       "recruited": "تم التوظيف"

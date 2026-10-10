@@ -7,7 +7,9 @@ import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
-import DataTable from "@/components/tables/DataTable";
+import { Modal } from "@/components/ui/modal";
+import DataTableWithSelection from "@/components/tables/DataTableWithSelection";
+import InfiniteSelect from "@/components/form/InfiniteSelect";
 import Pagination from "@/components/tables/Pagination";
 import ApplicationRequestFormModal from "@/components/applicationRequest/ApplicationRequestFormModal";
 import ApplicationRequestDetailModal from "@/components/applicationRequest/ApplicationRequestDetailModal";
@@ -16,6 +18,7 @@ import PublicStatusCell from "@/components/recruitment/PublicStatusCell";
 import AssignModal from "@/components/assign/AssignModal";
 import {
   useGetApplicationRequestsQuery,
+  useGetApplicationRequestsForSelectInfiniteQuery,
   useLazyGetApplicationRequestByIdQuery,
   useCreateApplicationRequestMutation,
   useUpdateApplicationRequestMutation,
@@ -23,6 +26,7 @@ import {
   useDeleteApplicationRequestMutation,
   useAssignApplicationRequestMutation,
 } from "@/lib/services/applicationRequestApi";
+import { useGetContractTypesQuery } from "@/lib/services/contractTypeApi";
 import { publicJobOfferApi } from "@/lib/services/publicJobOfferApi";
 import { useAppDispatch } from "@/lib/hooks";
 import { useActions } from "@/hooks/useActions";
@@ -33,7 +37,7 @@ import type { CreateApplicationRequestFormData } from "@/validations/application
 import { getApiErrorMessage } from "@/utils/errorMessages";
 import { useTableSort } from "@/hooks/useTableSort";
 import { useLimitPreference } from "@/hooks/useLimitPreference";
-import { Plus, LayoutDashboard, UserPlus, Copy, Download, LayoutGrid } from "lucide-react";
+import { Plus, LayoutDashboard, UserPlus, Copy, Download } from "lucide-react";
 
 export default function RecruitmentPage() {
   const t = useTranslations("recruitmentRequests");
@@ -49,7 +53,7 @@ export default function RecruitmentPage() {
   const [isKanbanPickerOpen, setIsKanbanPickerOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [requiredSkillsFilter, setRequiredSkillsFilter] = useState<string>("");
-  const [experienceLevelFilter, setExperienceLevelFilter] = useState<string>("");
+  const [priorityFilter, setPriorityFilter] = useState<string>("");
   const [contractTypeFilter, setContractTypeFilter] = useState<string>("");
   const [locationFilter, setLocationFilter] = useState<string>("");
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
@@ -72,6 +76,7 @@ export default function RecruitmentPage() {
   const [isAssigning, setIsAssigning] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [optimisticPublicStates, setOptimisticPublicStates] = useState<Record<string, boolean>>({});
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const addToast = useCallback(
     (
@@ -92,13 +97,17 @@ export default function RecruitmentPage() {
   const [limit, setLimit] = useLimitPreference("recruitment-requests", 20);
   const { sortBy, sortOrder, handleSort } = useTableSort();
 
+  // Liste complète des types de contrat (paramétrés par la société, actifs uniquement)
+  const { data: contractTypesData } = useGetContractTypesQuery({ is_active: true, limit: 100 });
+  const contractTypes = contractTypesData?.data || [];
+
   const { data, isLoading, isFetching, refetch } = useGetApplicationRequestsQuery({
     page,
     limit,
     search: search || undefined,
     status: statusFilter || undefined,
     required_skills: requiredSkillsFilter || undefined,
-    experience_level: experienceLevelFilter || undefined,
+    priority: priorityFilter || undefined,
     contract_type: contractTypeFilter || undefined,
     location: locationFilter || undefined,
     sortBy,
@@ -716,39 +725,6 @@ export default function RecruitmentPage() {
             </p>
           </div>
           <div className="flex gap-3">
-            <div className="relative">
-              <Button
-                variant="outline"
-                onClick={() => setIsKanbanPickerOpen((v) => !v)}
-                startIcon={<LayoutGrid size={16} strokeWidth={1.8} className="icon-glow" />}
-              >
-                {t("actions.kanban")}
-              </Button>
-              {isKanbanPickerOpen && (
-                <>
-                  <div className="fixed inset-0 z-10" onClick={() => setIsKanbanPickerOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-72 max-h-80 overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg z-20 py-1">
-                    {requests.length === 0 ? (
-                      <p className="px-4 py-3 text-sm text-gray-400">{tc("status.noResults")}</p>
-                    ) : (
-                      requests.map((r) => (
-                        <button
-                          key={r.id}
-                          type="button"
-                          onClick={() => {
-                            setIsKanbanPickerOpen(false);
-                            router.push(`/recruitment-requests/${r.id}/kanban`);
-                          }}
-                          className="w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 truncate"
-                        >
-                          {r.title}
-                        </button>
-                      ))
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
             <Button
               onClick={handleExportExcel}
               variant="outline"
@@ -809,17 +785,18 @@ export default function RecruitmentPage() {
             </div>
             <div>
               <select
-                value={experienceLevelFilter}
+                value={priorityFilter}
                 onChange={(e) => {
-                  setExperienceLevelFilter(e.target.value);
+                  setPriorityFilter(e.target.value);
                   setPage(1);
                 }}
                 className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
               >
-                <option value="">{t("list.filters.allExperienceLevels")}</option>
-                <option value="Junior">Junior</option>
-                <option value="Mid">Mid</option>
-                <option value="Senior">Senior</option>
+                <option value="">{t("list.filters.allPriorities")}</option>
+                <option value="urgent">{t("list.urgencyLabels.urgent")}</option>
+                <option value="high">{t("list.urgencyLabels.high")}</option>
+                <option value="normal">{t("list.urgencyLabels.normal")}</option>
+                <option value="low">{t("list.urgencyLabels.low")}</option>
               </select>
             </div>
             <div>
@@ -832,9 +809,11 @@ export default function RecruitmentPage() {
                 className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
               >
                 <option value="">{t("list.filters.allContractTypes")}</option>
-                <option value="CDI">CDI</option>
-                <option value="CDD">CDD</option>
-                <option value="Freelance">Freelance</option>
+                {contractTypes.map((ct) => (
+                  <option key={ct.id} value={ct.name}>
+                    {ct.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
@@ -853,10 +832,12 @@ export default function RecruitmentPage() {
         </div>
 
         <div className="overflow-x-auto">
-          <DataTable<ApplicationRequest>
+          <DataTableWithSelection<ApplicationRequest>
             key={`datatable-${Object.keys(optimisticPublicStates).join('-')}`}
             columns={columns}
             data={requests}
+            selectedItems={selectedItems}
+            onSelectionChange={setSelectedItems}
             isLoading={isLoading || isFetching}
             onView={handleRowClick}
             onEdit={canUpdate ? handleEditClick : undefined}
@@ -864,6 +845,7 @@ export default function RecruitmentPage() {
             sortBy={sortBy}
             sortOrder={sortOrder}
             onSort={(key) => { handleSort(key); setPage(1); }}
+            extraViewTab={{ label: t("actions.kanban"), onClick: () => setIsKanbanPickerOpen((v) => !v) }}
             customActions={[
               { label: t("actions.kanban"), icon: <KanbanIcon />, onClick: (row: ApplicationRequest) => router.push(`/recruitment-requests/${row.id}/kanban`) },
               ...(canAssign ? [{ label: t("actions.assign"), icon: <AssignIcon />, onClick: handleAssignClick }] : []),
@@ -933,6 +915,33 @@ export default function RecruitmentPage() {
         entityLabel={t("confirmModal.entityLabel")}
         isLoading={isAssigning}
       />
+
+      {/* Choix de la demande pour le Kanban — modale opaque (évite le souci de panneau transparent
+          qui laissait voir le tableau en dessous) */}
+      <Modal isOpen={isKanbanPickerOpen} onClose={() => setIsKanbanPickerOpen(false)} className="max-w-md">
+        <div className="p-6">
+          <h3 className="mb-1 text-base font-semibold text-gray-800 dark:text-white">
+            {t("actions.kanbanPickerTitle")}
+          </h3>
+          <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+            {t("actions.kanbanPickerSubtitle")}
+          </p>
+          <InfiniteSelect<ApplicationRequest>
+            label=""
+            value=""
+            onChange={(_value, selectedItem) => {
+              setIsKanbanPickerOpen(false);
+              if (selectedItem) router.push(`/recruitment-requests/${selectedItem.id}/kanban`);
+            }}
+            useInfiniteQuery={useGetApplicationRequestsForSelectInfiniteQuery}
+            itemLabelKey="title"
+            itemValueKey="id"
+            placeholder={t("actions.kanbanSearchPlaceholder")}
+            emptyMessage={tc("status.noResults")}
+            defaultOpen
+          />
+        </div>
+      </Modal>
     </div>
   );
 }

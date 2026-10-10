@@ -50,7 +50,7 @@
     "selectStepPlaceholder": "Select a step…",
     "updating": "...",
     "updateButton": "Update",
-    "feedbackPlaceholder": "Feedback (optional) for this step…",
+    "feedbackPlaceholder": "Message (optional) for this step…",
     "reasonRequired": "A reason is required for this step.",
     "closeApplicationTitle": "Close application",
     "accepted": "Accepted",
@@ -59,37 +59,37 @@
     "reasonPlaceholder": "Reason (required) for \"{step}\"…",
     "reasonRequiredShort": "The reason is required.",
     "confirmButton": "Confirm {step}",
-    "addFeedbackTitle": "Add feedback to a step (without changing it)",
+    "addFeedbackTitle": "Add a message to a step (without changing it)",
     "chooseStepPlaceholder": "Choose a step…",
-    "feedbackForStepPlaceholder": "Your feedback for this step…",
-    "chooseStepAndFeedback": "Choose a step and enter feedback.",
+    "feedbackForStepPlaceholder": "Your message for this step…",
+    "chooseStepAndFeedback": "Choose a step and enter a message.",
     "adding": "Adding...",
-    "addFeedbackButton": "Add feedback",
+    "addFeedbackButton": "Add message",
     "stepClickTitle": "Move to step \"{step}\"",
-    "stepClickHint": "The reason is required and will be saved as feedback for this step.",
+    "stepClickHint": "The reason is required and will be saved as a message for this step.",
     "stepReasonPlaceholder": "Reason (required)…"
   },
   "feedback": {
-    "title": "Add feedback",
+    "title": "Add a message",
     "titleLabel": "Title",
-    "titlePlaceholder": "E.g.: Excellent technical profile",
+    "titlePlaceholder": "E.g.: CV update requested",
     "descriptionLabel": "Description",
-    "descriptionPlaceholder": "Describe your feedback in detail...",
+    "descriptionPlaceholder": "E.g.: Please update the CV, is the candidate open to relocating?, Requesting the anonymous candidate's contact details...",
     "adding": "Adding...",
     "addButton": "Add",
     "errors": {
       "fillAllFields": "Please fill in all fields",
-      "addFailed": "Error while adding the feedback"
+      "addFailed": "Error while adding the message"
     }
   },
   "feedbackList": {
-    "title": "Feedback",
-    "addButton": "Add feedback",
-    "empty": "No feedback yet. Click \"Add feedback\" to get started."
+    "title": "Messages and comments",
+    "addButton": "Add message",
+    "empty": "No messages yet. Click \"Add message\" to get started."
   },
   "candidateDetail": {
     "defaultName": "Candidate",
-    "feedbackTitleForStep": "Feedback — {step}",
+    "feedbackTitleForStep": "Message — {step}",
     "informationSection": "Information",
     "position": "Position",
     "reference": "Reference",
@@ -114,6 +114,7 @@
     "remunerationSection": "Compensation",
     "salary": "Salary",
     "confidential": "Confidential",
+    "portfolio": "Portfolio",
     "currentSalary": "Current salary",
     "dailyRate": "Daily rate",
     "perDay": "/day",
@@ -132,7 +133,7 @@
     "remoteOnly": "Remote only",
     "availability": "Availability",
     "availabilityDelay": "Delay (days)",
-    "customDelay": "Custom delay",
+    "customDelay": "Custom availability",
     "months": "months",
     "days": "days",
     "reason": "Reason",
@@ -146,7 +147,8 @@
     "managerNotesSection": "Client note",
     "clientFeedbackSection": "Client feedback",
     "evaluationsSection": "Evaluations ({count})",
-    "myFeedbacksSection": "My feedback ({count})",
+    "myFeedbacksSection": "My messages ({count})",
+    "commentsSection": "Messages and comments ({count})",
     "close": "Close",
     "availabilityLabels": {
       "immediate": "Immediate",
@@ -154,7 +156,7 @@
       "one_month": "1 month",
       "two_months": "2 months",
       "three_months": "3 months",
-      "other": "Other"
+      "other": "Custom"
     }
   }
 }

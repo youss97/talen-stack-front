@@ -60,7 +60,11 @@ export function useNavigation() {
         if (canAccessPath(path)) {
           const config = NAV_CONFIG[path];
           if (config) {
-            items.push({ title: t(`items.${path}`), path, icon: config.icon, group: config.group });
+            // Les droits sont toujours enregistrés sous l'ancien chemin "/cvs" (voir
+            // usePermissions.ts), mais la route a été renommée en "/talent-pool" — sans cette
+            // traduction, le lien de la sidebar pointait vers "/cvs", qui n'existe plus (404).
+            const linkPath = path === "/cvs" ? "/talent-pool" : path;
+            items.push({ title: t(`items.${path}`), path: linkPath, icon: config.icon, group: config.group });
             seenPaths.add(path);
           }
         }

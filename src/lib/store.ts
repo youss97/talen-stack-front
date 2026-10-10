@@ -146,4 +146,13 @@ const resetApp = () => {
   apiResetters.forEach((reset) => baseStore.dispatch(reset()));
 };
 
-export const store = Object.assign(baseStore, { resetApp });
+// Vide uniquement les caches RTK Query (pas l'état d'auth) — à appeler juste après une connexion
+// réussie. Sans ça, si un utilisateur se connecte à un second compte SANS passer par
+// "Déconnexion" (qui appelle resetApp), les données mises en cache par la session précédente
+// (ex: offres, liens publics, CV...) restent dans le store et peuvent s'afficher brièvement —
+// voire durablement selon le cache — pour le nouveau compte, malgré l'auth bien à jour.
+const resetApiCaches = () => {
+  apiResetters.forEach((reset) => baseStore.dispatch(reset()));
+};
+
+export const store = Object.assign(baseStore, { resetApp, resetApiCaches });

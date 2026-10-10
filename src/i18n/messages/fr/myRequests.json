@@ -53,7 +53,7 @@
     "qualificationScoreHint": "Score de qualification du candidat, sur 100, évalué par le recruteur par rapport aux critères recherchés pour ce poste.",
     "allSources": "Toutes les sources",
     "experienceYears": "{years} ans d'expérience",
-    "desiredSalaryValue": "Prétentions : {amount} {currency}",
+    "desiredSalaryValue": "Prétentions salariales : {amount} {currency}",
     "desiredDailyRateValue": "TJM souhaité : {amount} {currency}/j",
     "availabilityOptions": {
       "immediate": "Immédiate",
@@ -61,8 +61,10 @@
       "one_month": "1 mois",
       "two_months": "2 mois",
       "three_months": "3 mois",
-      "other": "Autres"
+      "other": "Personnalisée"
     },
+    "months": "mois",
+    "days": "jours",
     "terminalSteps": {
       "accepted": "Acceptée",
       "ko": "KO",
@@ -80,7 +82,7 @@
     "editOffer": "Modifier le recrutement",
     "refresh": "Actualiser",
     "searchPlaceholder": "Rechercher par nom, email...",
-    "allStatuses": "Tous les statuts",
+    "allStatuses": "Toutes les étapes",
     "empty": {
       "title": "Aucun candidat trouvé",
       "filtered": "Essayez de modifier vos filtres",
@@ -88,12 +90,15 @@
     },
     "years": "ans",
     "skillsLabel": "Compétences:",
+    "languagesLabel": "Langues:",
+    "languageLevel": "{language} — {level}/5",
     "feedback": {
       "hrEvaluations": "Évaluations RH ({count})",
-      "myFeedbacks": "Mes feedbacks ({count})",
-      "viewAll": "Voir tous"
+      "myFeedbacks": "Mes messages ({count})",
+      "viewAll": "Voir tous",
+      "more": "+{count} autre message — voir tous"
     },
-    "addFeedback": "Ajouter un feedback",
+    "addFeedback": "Ajouter un message",
     "consultApplication": "Consulter la candidature",
     "viewCv": "Voir le CV",
     "downloadCv": "Télécharger le CV",
@@ -186,7 +191,7 @@
     "editSubmit": "Modifier le recrutement",
     "defaultWorkflowSteps": {
       "proposed": "Proposé",
-      "hrInterview": "Entretien RH",
+      "hrInterview": "Entretien technique",
       "clientInterview": "Entretien client",
       "offer": "Offre"
     }

@@ -3,6 +3,28 @@
 // `feature.display_name` (FR, depuis le seed) en priorité, avec fallback ici.
 
 import type { Feature } from "@/types/role";
+import type { LucideIcon } from "lucide-react";
+import {
+  KeyRound,
+  UserCircle,
+  Shield,
+  Building2,
+  User,
+  ClipboardList,
+  Users,
+  Send,
+  Tag,
+  FileText,
+  Gem,
+  Mail,
+  Megaphone,
+  Calendar,
+  Link2,
+  BarChart3,
+  Factory,
+  Handshake,
+  Settings,
+} from "lucide-react";
 
 export const FEATURE_ICONS: Record<string, string> = {
   "User Management": "🔑",
@@ -74,6 +96,33 @@ export function featureLabel(feature: Pick<Feature, "name" | "display_name">): s
 
 export function featureIcon(name: string): string {
   return FEATURE_ICONS[name] || "⚙️";
+}
+
+// Version icône de bibliothèque (lucide-react) de featureIcon ci-dessus — à utiliser pour tout
+// nouvel affichage ; featureIcon (émoji) reste pour les écrans pas encore migrés.
+export const FEATURE_ICON_COMPONENTS: Record<string, LucideIcon> = {
+  "User Management": KeyRound,
+  "Profile Management": UserCircle,
+  "Role & Permission Management": Shield,
+  "Client Management": Building2,
+  "Client Managers": User,
+  "Recruitment Requests": ClipboardList,
+  "Applications (Candidatures)": Users,
+  "Manager Client Requests": Send,
+  "Application Status Management": Tag,
+  "Contract Type Management": FileText,
+  "CV Management": Gem,
+  "Email Management": Mail,
+  "Public Job Offers": Megaphone,
+  "Agenda (Interviews)": Calendar,
+  "Integration Management": Link2,
+  "Activity Management": BarChart3,
+  "Company Management": Factory,
+  "Assignment Management": Handshake,
+};
+
+export function featureIconComponent(name: string): LucideIcon {
+  return FEATURE_ICON_COMPONENTS[name] || Settings;
 }
 
 export function pageLabel(name: string): string {

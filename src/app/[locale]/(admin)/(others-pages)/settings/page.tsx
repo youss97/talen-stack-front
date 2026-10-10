@@ -110,6 +110,16 @@ export default function SettingsPage() {
       color: "purple",
     },
     {
+      id: "email-notifications",
+      title: t("categories.emailNotifications.title"),
+      description: t("categories.emailNotifications.description"),
+      icon: (
+        <Mail className="icon-glow" size={24} strokeWidth={1.8} />
+      ),
+      href: "/settings/email-notifications",
+      color: "purple",
+    },
+    {
       id: "business-cards",
       title: t("categories.businessCards.title"),
       description: t("categories.businessCards.description"),

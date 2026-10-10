@@ -1,7 +1,7 @@
 "use client";
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Plus } from "lucide-react";
+import { Plus, Package, Building2, CheckCircle2 } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import ConfirmModal from "@/components/ui/modal/ConfirmModal";
@@ -11,7 +11,7 @@ import {
   useDeleteSubscriptionPlanMutation,
 } from "@/lib/services/subscriptionApi";
 import { useGetFeaturesQuery } from "@/lib/services/roleApi";
-import { featureIcon, featureLabel } from "@/utils/featureLabels";
+import { featureLabel } from "@/utils/featureLabels";
 import type { SubscriptionPlan } from "@/types/subscription";
 import { useGetSubscriptionsStatsQuery } from "@/lib/services/statsApi";
 import dynamic from "next/dynamic";
@@ -60,7 +60,7 @@ export default function SubscriptionsPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-            <span className="text-2xl">📦</span> {t("page.title")}
+            <Package size={22} strokeWidth={1.8} className="icon-glow" /> {t("page.title")}
           </h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {t("page.subtitle")}
@@ -74,12 +74,14 @@ export default function SubscriptionsPage() {
       {/* ── Dashboard Abonnements ── */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {[
-          { label: t("stats.availablePlans"), value: subStats?.totalPlans, icon: "📦", color: "bg-brand-50 dark:bg-brand-500/10" },
-          { label: t("stats.subscribedCompanies"), value: subStats?.totalSubscribed, icon: "🏢", color: "bg-blue-50 dark:bg-blue-500/10" },
-          { label: t("stats.activePlans"), value: subStats?.plansDistribution.filter(p => p.companyCount > 0).length, icon: "✅", color: "bg-green-50 dark:bg-green-500/10" },
+          { label: t("stats.availablePlans"), value: subStats?.totalPlans, icon: Package, color: "bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400" },
+          { label: t("stats.subscribedCompanies"), value: subStats?.totalSubscribed, icon: Building2, color: "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400" },
+          { label: t("stats.activePlans"), value: subStats?.plansDistribution.filter(p => p.companyCount > 0).length, icon: CheckCircle2, color: "bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400" },
         ].map((card) => (
           <div key={card.label} className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-4">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${card.color}`}>{card.icon}</div>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${card.color}`}>
+              <card.icon size={20} strokeWidth={1.8} className="icon-glow" />
+            </div>
             <div className="mt-3">
               <p className="text-xs text-gray-500 dark:text-gray-400">{card.label}</p>
               <p className="text-2xl font-bold text-gray-800 dark:text-white mt-1">
@@ -100,7 +102,7 @@ export default function SubscriptionsPage() {
         </div>
       ) : plans.length === 0 ? (
         <div className="rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 p-16 text-center">
-          <p className="text-4xl mb-3">📦</p>
+          <Package size={40} strokeWidth={1.5} className="icon-glow mx-auto mb-3 text-gray-300 dark:text-gray-600" />
           <p className="text-lg font-medium text-gray-600 dark:text-gray-300">{t("emptyState.title")}</p>
           <p className="text-sm text-gray-400 mt-1 mb-4">{t("emptyState.subtitle")}</p>
           <Button onClick={() => { setEditingPlan(null); setIsModalOpen(true); }}>{t("emptyState.cta")}</Button>
@@ -203,7 +205,6 @@ function PlanCard({
         <div className="flex flex-wrap gap-1.5">
           {features.map((f) => (
             <span key={f.id} className="inline-flex items-center gap-1 rounded-lg bg-gray-100 dark:bg-gray-700 px-2 py-1 text-xs text-gray-600 dark:text-gray-300">
-              <span>{featureIcon(f.name)}</span>
               {featureLabel(f)}
             </span>
           ))}

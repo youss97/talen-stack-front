@@ -132,6 +132,14 @@ export const companyApi = createApi({
       }),
       invalidatesTags: [{ type: "Company", id: "LIST" }],
     }),
+    // DELETE /company/:id/permanent — suppression définitive (irréversible, super admin)
+    permanentDeleteCompany: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/company/${id}/permanent`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "Company", id: "LIST" }],
+    }),
   }),
 });
 
@@ -144,4 +152,5 @@ export const {
   useUpdateCompanyMutation,
   useUpdateClientCardFieldsMutation,
   useDeleteCompanyMutation,
+  usePermanentDeleteCompanyMutation,
 } = companyApi;

@@ -1,5 +1,23 @@
 {
   "backButton": "Back to settings",
+  "emailNotifications": {
+    "title": "Email notifications",
+    "subtitle": "Choose which automatic emails the platform sends. Unchecked = no email of this type is sent for your company (in-app notifications stay active).",
+    "saveError": "Error while saving.",
+    "types": {
+      "request_created": { "label": "Recruitment request created", "description": "Sent to the other side (RH ↔ client) when a request is created." },
+      "request_status": { "label": "Request status changed by client", "description": "Sent to RH when the client changes the status of its request." },
+      "application_proposed": { "label": "Application proposed", "description": "Sent to the client when an application is proposed." },
+      "application_status": { "label": "Application status or step changed", "description": "Sent to the client on each status or step change." },
+      "feedback_created": { "label": "Feedback added", "description": "Sent to the other side when feedback is added to an application." },
+      "interview_scheduled": { "label": "Interview scheduled", "description": "Invitation sent to the candidate, the invitees and the other side." },
+      "interview_rescheduled": { "label": "Interview rescheduled", "description": "Sent to the candidate and invitees when an interview is rescheduled." },
+      "interview_modified": { "label": "Interview modified", "description": "Sent to the candidate and invitees when interview details change." },
+      "interview_cancelled": { "label": "Interview cancelled", "description": "Sent to the candidate, invitees and the other side when an interview is cancelled." },
+      "candidate_tracking": { "label": "Application tracking (candidate)", "description": "Email sent to the candidate after applying to a public offer." },
+      "candidate_application_deleted": { "label": "Application withdrawn (candidate)", "description": "Email sent to the candidate when their public application is removed." }
+    }
+  },
   "emailTemplatesPage": {
     "title": "Email templates",
     "subtitle": "Customize the content of emails automatically sent by the platform (applications, interviews, notifications). You can save several variants per type and choose which one is used by default.",
@@ -133,6 +151,10 @@
       "cvSources": {
         "title": "CV Source Management",
         "description": "Manage CV sources (Public offer, Referral, LinkedIn, etc.)"
+      },
+      "emailNotifications": {
+        "title": "Email notifications",
+        "description": "Choose which automatic emails the platform sends for your company"
       },
       "emailTemplates": {
         "title": "Email templates",

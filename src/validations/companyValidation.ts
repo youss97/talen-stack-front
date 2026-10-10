@@ -6,6 +6,10 @@ export const createCompanySchema = yup.object({
     .required("La raison sociale est requise")
     .min(2, "La raison sociale doit contenir au moins 2 caractères"),
   company_identifier: yup.string().optional(),
+  source: yup
+    .string()
+    .oneOf(["website", "referral", "prospecting", "publication", "ads", "other", ""], "Origine invalide")
+    .optional(),
   address: yup.string().optional(),
   city: yup.string().optional(),
   postal_code: yup.string().optional(),
@@ -46,6 +50,10 @@ export const createCompanySchema = yup.object({
 export const updateCompanySchema = yup.object({
   name: yup.string().min(2, "La raison sociale doit contenir au moins 2 caractères"),
   company_identifier: yup.string().optional(),
+  source: yup
+    .string()
+    .oneOf(["website", "referral", "prospecting", "publication", "ads", "other", ""], "Origine invalide")
+    .optional(),
   address: yup.string(),
   city: yup.string(),
   postal_code: yup.string(),

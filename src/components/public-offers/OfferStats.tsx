@@ -1,6 +1,15 @@
 "use client";
 import { useTranslations } from "next-intl";
+import type { ComponentType } from "react";
+import { Smartphone, Link as LinkIcon, Briefcase, Globe, Eye, FileText, BarChart3 } from "lucide-react";
 import type { PublicJobOfferStats } from "@/types/publicJobOffer";
+
+const SOURCE_ICONS: Record<string, ComponentType<{ size?: number; strokeWidth?: number; className?: string }>> = {
+  qr: Smartphone,
+  direct: LinkIcon,
+  linkedin: Briefcase,
+  other: Globe,
+};
 
 interface OfferStatsProps {
   stats: PublicJobOfferStats;
@@ -16,13 +25,6 @@ export default function OfferStats({ stats, brandColor = "#3B82F6" }: OfferStats
     other: t("sourceLabels.other"),
   };
 
-  const sourceIcons: Record<string, string> = {
-    qr: "📱",
-    direct: "🔗",
-    linkedin: "💼",
-    other: "🌐",
-  };
-
   return (
     <div className="space-y-6">
       {/* Métriques principales */}
@@ -30,19 +32,19 @@ export default function OfferStats({ stats, brandColor = "#3B82F6" }: OfferStats
         <StatCard
           title={t("views")}
           value={stats.views}
-          icon="👁️"
+          icon={Eye}
           color="blue"
         />
         <StatCard
           title={t("applications")}
           value={stats.applications}
-          icon="📝"
+          icon={FileText}
           color="green"
         />
         <StatCard
           title={t("conversionRate")}
           value={`${stats.conversionRate}%`}
-          icon="📊"
+          icon={BarChart3}
           color="purple"
         />
       </div>
@@ -63,7 +65,7 @@ export default function OfferStats({ stats, brandColor = "#3B82F6" }: OfferStats
                 <div key={source} className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                      <span>{sourceIcons[source] || "🌐"}</span>
+                      {(() => { const SourceIcon = SOURCE_ICONS[source] || Globe; return <SourceIcon size={14} strokeWidth={1.8} className="icon-glow" />; })()}
                       {sourceLabels[source] || source}
                     </span>
                     <span className="font-medium text-gray-900 dark:text-white">
@@ -92,11 +94,11 @@ export default function OfferStats({ stats, brandColor = "#3B82F6" }: OfferStats
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: string;
+  icon: ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
   color: "blue" | "green" | "purple";
 }
 
-function StatCard({ title, value, icon, color }: StatCardProps) {
+function StatCard({ title, value, icon: Icon, color }: StatCardProps) {
   const colorClasses = {
     blue: "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800",
     green: "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800",
@@ -106,7 +108,7 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
   return (
     <div className={`rounded-lg border p-6 ${colorClasses[color]}`}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-2xl">{icon}</span>
+        <Icon size={24} strokeWidth={1.8} className="icon-glow text-gray-600 dark:text-gray-300" />
       </div>
       <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">{title}</p>
       <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>

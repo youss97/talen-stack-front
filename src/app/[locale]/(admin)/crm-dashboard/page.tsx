@@ -1,8 +1,9 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import PageHeader from "@/components/common/PageHeader";
+import { useTableSort } from "@/components/tables/useTableSort";
 import { useGetCrmDashboardQuery } from "@/lib/services/crmApi";
 import { LEAD_STATUSES } from "@/constants/crmProspecting";
 
@@ -64,6 +65,21 @@ export default function CrmDashboardPage() {
   const tp = useTranslations("crm.prospecting");
   const { data, isLoading } = useGetCrmDashboardQuery();
   const matrix = data?.poleStatusMatrix || [];
+  const { sortedData: sortedMatrix, effectiveSortKey, effectiveSortOrder, handleSort } = useTableSort(
+    [
+      { key: "pole" },
+      { key: "total" },
+      ...LEAD_STATUSES.map((s) => ({ key: `counts.${s.value}` })),
+    ],
+    matrix,
+    {}
+  );
+  const sortHeader = (key: string, label: string) => (
+    <button type="button" onClick={() => handleSort(key)} className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200">
+      {label}
+      {effectiveSortKey === key && effectiveSortOrder === "ASC" ? <ArrowUp size={12} strokeWidth={1.8} /> : effectiveSortKey === key && effectiveSortOrder === "DESC" ? <ArrowDown size={12} strokeWidth={1.8} /> : <ArrowUpDown size={12} strokeWidth={1.8} className="opacity-40" />}
+    </button>
+  );
 
   return (
     <div className="w-full">
@@ -84,15 +100,15 @@ export default function CrmDashboardPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 dark:border-gray-800 text-xs uppercase tracking-wide text-gray-400">
-                    <th className="px-4 py-3 text-start font-semibold">{tp("matrix.pole")}</th>
+                    <th className="px-4 py-3 text-start font-semibold">{sortHeader("pole", tp("matrix.pole"))}</th>
                     {LEAD_STATUSES.map((s) => (
-                      <th key={s.value} className="px-3 py-3 text-center font-semibold whitespace-nowrap">{tp(`leadStatus.${s.key}`)}</th>
+                      <th key={s.value} className="px-3 py-3 text-center font-semibold whitespace-nowrap">{sortHeader(`counts.${s.value}`, tp(`leadStatus.${s.key}`))}</th>
                     ))}
-                    <th className="px-4 py-3 text-center font-semibold">{tp("matrix.total")}</th>
+                    <th className="px-4 py-3 text-center font-semibold">{sortHeader("total", tp("matrix.total"))}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {matrix.map((row) => (
+                  {sortedMatrix.map((row) => (
                     <tr key={row.pole || "__none"} className="border-b border-gray-50 dark:border-gray-800/60">
                       <td className="px-4 py-3 font-medium text-gray-800 dark:text-white">{row.pole || tp("noPole")}</td>
                       {LEAD_STATUSES.map((s) => (

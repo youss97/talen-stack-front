@@ -50,7 +50,7 @@
     "selectStepPlaceholder": "اختر مرحلة…",
     "updating": "...",
     "updateButton": "تحديث",
-    "feedbackPlaceholder": "ملاحظات (اختيارية) لهذه المرحلة…",
+    "feedbackPlaceholder": "رسالة (اختيارية) لهذه المرحلة…",
     "reasonRequired": "السبب مطلوب لهذه المرحلة.",
     "closeApplicationTitle": "إغلاق الترشيح",
     "accepted": "مقبول",
@@ -59,37 +59,37 @@
     "reasonPlaceholder": "السبب (إلزامي) لـ « {step} »…",
     "reasonRequiredShort": "السبب إلزامي.",
     "confirmButton": "تأكيد {step}",
-    "addFeedbackTitle": "إضافة ملاحظات إلى مرحلة (دون تغييرها)",
+    "addFeedbackTitle": "إضافة رسالة إلى مرحلة (دون تغييرها)",
     "chooseStepPlaceholder": "اختر مرحلة…",
-    "feedbackForStepPlaceholder": "ملاحظاتك حول هذه المرحلة…",
-    "chooseStepAndFeedback": "اختر مرحلة وأدخل ملاحظة.",
+    "feedbackForStepPlaceholder": "رسالتك حول هذه المرحلة…",
+    "chooseStepAndFeedback": "اختر مرحلة وأدخل رسالة.",
     "adding": "جارٍ الإضافة...",
-    "addFeedbackButton": "إضافة الملاحظة",
+    "addFeedbackButton": "إضافة الرسالة",
     "stepClickTitle": "الانتقال إلى المرحلة « {step} »",
-    "stepClickHint": "السبب إلزامي وسيُحفظ كملاحظة لهذه المرحلة.",
+    "stepClickHint": "السبب إلزامي وسيُحفظ كرسالة لهذه المرحلة.",
     "stepReasonPlaceholder": "السبب (إلزامي)…"
   },
   "feedback": {
-    "title": "إضافة ملاحظة",
+    "title": "إضافة رسالة",
     "titleLabel": "العنوان",
-    "titlePlaceholder": "مثال: ملف تقني ممتاز",
+    "titlePlaceholder": "مثال: طلب تحديث السيرة الذاتية",
     "descriptionLabel": "الوصف",
-    "descriptionPlaceholder": "صف ملاحظتك بالتفصيل...",
+    "descriptionPlaceholder": "مثال: يرجى تحديث السيرة الذاتية، هل المرشح متاح للانتقال؟، طلب بيانات الاتصال بالمرشح المجهول...",
     "adding": "جارٍ الإضافة...",
     "addButton": "إضافة",
     "errors": {
       "fillAllFields": "يرجى ملء جميع الحقول",
-      "addFailed": "خطأ أثناء إضافة الملاحظة"
+      "addFailed": "خطأ أثناء إضافة الرسالة"
     }
   },
   "feedbackList": {
-    "title": "الملاحظات",
-    "addButton": "إضافة ملاحظة",
-    "empty": "لا توجد ملاحظات حتى الآن. انقر على «إضافة ملاحظة» للبدء."
+    "title": "رسائل وتعليقات",
+    "addButton": "إضافة رسالة",
+    "empty": "لا توجد رسائل حتى الآن. انقر على «إضافة رسالة» للبدء."
   },
   "candidateDetail": {
     "defaultName": "المرشح",
-    "feedbackTitleForStep": "ملاحظة — {step}",
+    "feedbackTitleForStep": "رسالة — {step}",
     "informationSection": "المعلومات",
     "position": "المنصب",
     "reference": "المرجع",
@@ -114,6 +114,7 @@
     "remunerationSection": "الأجر",
     "salary": "الراتب",
     "confidential": "سري",
+    "portfolio": "معرض الأعمال",
     "currentSalary": "الراتب الحالي",
     "dailyRate": "المعدل اليومي",
     "perDay": "/يوم",
@@ -132,7 +133,7 @@
     "remoteOnly": "عن بُعد فقط",
     "availability": "التوفر",
     "availabilityDelay": "المهلة (أيام)",
-    "customDelay": "مهلة مخصصة",
+    "customDelay": "إتاحة مخصصة",
     "months": "أشهر",
     "days": "أيام",
     "reason": "السبب",
@@ -146,7 +147,8 @@
     "managerNotesSection": "ملاحظة العميل",
     "clientFeedbackSection": "ملاحظات العميل",
     "evaluationsSection": "التقييمات ({count})",
-    "myFeedbacksSection": "ملاحظاتي ({count})",
+    "myFeedbacksSection": "رسائلي ({count})",
+    "commentsSection": "رسائل وتعليقات ({count})",
     "close": "إغلاق",
     "availabilityLabels": {
       "immediate": "فوري",
@@ -154,7 +156,7 @@
       "one_month": "شهر واحد",
       "two_months": "شهران",
       "three_months": "3 أشهر",
-      "other": "أخرى"
+      "other": "مخصصة"
     }
   }
 }

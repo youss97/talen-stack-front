@@ -8,7 +8,7 @@ export const createRecruiterSchema = yup.object({
   cv_id: yup.string().required('Le CV est requis'),
 
   // Workflow
-  workflow_status: yup.string().oneOf(['draft', 'active', 'archived']).nullable(),
+  workflow_status: yup.string().oneOf(['draft', 'active']).nullable(),
 
   // Situation actuelle
   currently_employed: yup.boolean(),
@@ -44,6 +44,10 @@ export const createRecruiterSchema = yup.object({
   package_desired: yup.string().nullable(),
   salary_expectation_notes: yup.string().nullable(),
   currency: yup.string().oneOf(VALID_CURRENCY_CODES, 'Devise non valide'),
+  expectation_currency: yup
+    .string()
+    .transform((value) => (value ? value : undefined))
+    .oneOf([...VALID_CURRENCY_CODES, undefined], 'Devise non valide'),
 
   // Type de contrat de l'offre
   offer_contract_types: yup.array().of(yup.string()),
@@ -58,12 +62,7 @@ export const createRecruiterSchema = yup.object({
   availability_days: yup
     .number()
     .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
-    .typeError('Veuillez saisir un nombre de jours valide')
-    .when('availability_type', {
-      is: 'less_than_one_month',
-      then: (schema) => schema.required('Le nombre de jours est requis').min(1).max(30),
-      otherwise: (schema) => schema.nullable(),
-    }),
+    .nullable(),
   availability_custom_value: yup
     .number()
     .transform((value, originalValue) => (String(originalValue).trim() === '' ? null : value))
@@ -103,6 +102,7 @@ export const createRecruiterSchema = yup.object({
 
   // Qualification
   qualification_report: yup.string().required('Le compte rendu de qualification est requis'),
+  skills: yup.array().of(yup.string().required()).optional(),
   qualification_score: yup
     .number()
     .transform((value, originalValue) => (String(originalValue).trim() === '' ? undefined : value))

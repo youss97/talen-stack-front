@@ -9,6 +9,7 @@ import Button from "@/components/ui/button/Button";
 import InputField from "@/components/form/input/InputField";
 import Pagination from "@/components/tables/Pagination";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useLimitPreference } from "@/hooks/useLimitPreference";
 import ManagerRequestFormModal from "@/components/applicationRequest/ManagerRequestFormModal";
 import { ToastContainer, type ToastItem } from "@/components/ui/toast/Toast";
 import { Inbox, Briefcase, MapPin, Clock } from "lucide-react";
@@ -17,6 +18,7 @@ export default function MyRequestsPage() {
   const t = useTranslations("myRequests.list");
   const router = useRouter();
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useLimitPreference("my-requests", 5);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [contractTypeFilter, setContractTypeFilter] = useState("");
@@ -41,7 +43,7 @@ export default function MyRequestsPage() {
 
   const { data, isLoading, isFetching } = useGetManagerRequestsQuery({
     page,
-    limit: 5,
+    limit,
     search: debouncedSearch,
     status: statusFilter || undefined,
     contract_type: contractTypeFilter || undefined,
@@ -327,8 +329,10 @@ export default function MyRequestsPage() {
           <Pagination
             currentPage={page}
             totalPages={data.pagination.totalPages}
+            totalItems={data.pagination.total}
             itemsPerPage={data.pagination.limit}
             onPageChange={setPage}
+            onItemsPerPageChange={(n) => { setLimit(n); setPage(1); }}
           />
         </div>
       )}

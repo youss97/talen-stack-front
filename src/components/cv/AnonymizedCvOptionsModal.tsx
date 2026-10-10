@@ -6,6 +6,7 @@ import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
+import RichTextEditor from "@/components/form/RichTextEditor";
 import { useGetCVByIdQuery } from "@/lib/services/cvApi";
 import {
   fetchAnonymizedSections,
@@ -33,17 +34,10 @@ interface FormRow {
   degree: string; field: string; institution: string; start_date: string; end_date: string;
 }
 
-const htmlToText = (value: unknown) =>
-  String(value ?? "")
-    .replace(/<br\s*\/?>|<\/p>|<\/li>/gi, "\n")
-    .replace(/<li[^>]*>/gi, "- ")
-    .replace(/<[^>]+>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .trim();
 
 const toExpRow = (e: any): ExpRow => ({
   title: e?.title || e?.poste || "", company: e?.company || e?.entreprise || "", location: e?.location || "",
-  start_date: e?.start_date || "", end_date: e?.end_date || "", description: htmlToText(e?.description),
+  start_date: e?.start_date || "", end_date: e?.end_date || "", description: e?.description || "",
 });
 
 const toFormRow = (f: any): FormRow => ({
@@ -86,7 +80,7 @@ export default function AnonymizedCvOptionsModal({
     return {
       title: cv.profile_title || cv.last_position || "",
       location: cv.location || "",
-      summary: htmlToText(cv.full_information?.summary || extraction.summary || ""),
+      summary: cv.full_information?.summary || extraction.summary || "",
       skills: (cv.skills?.length ? cv.skills : extraction.skills) || [],
       experiences: (cv.experiences?.length ? cv.experiences : extraction.experiences) || [],
       formations: (cv.formations?.length ? cv.formations : extraction.formations) || [],
@@ -273,11 +267,9 @@ export default function AnonymizedCvOptionsModal({
             </div>
             <div>
               <Label>{t("fields.summary")}</Label>
-              <textarea
+              <RichTextEditor
                 value={summary}
-                onChange={(e) => setSummary(e.target.value)}
-                rows={4}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                onChange={setSummary}
               />
             </div>
             <div>
@@ -302,12 +294,10 @@ export default function AnonymizedCvOptionsModal({
                       <Input placeholder={t("fields.startDate")} value={exp.start_date} onChange={(e) => setExperiences((p) => p.map((x, j) => (j === i ? { ...x, start_date: e.target.value } : x)))} />
                       <Input placeholder={t("fields.endDate")} value={exp.end_date} onChange={(e) => setExperiences((p) => p.map((x, j) => (j === i ? { ...x, end_date: e.target.value } : x)))} />
                     </div>
-                    <textarea
+                    <RichTextEditor
                       value={exp.description}
-                      onChange={(e) => setExperiences((p) => p.map((x, j) => (j === i ? { ...x, description: e.target.value } : x)))}
-                      rows={3}
+                      onChange={(html) => setExperiences((p) => p.map((x, j) => (j === i ? { ...x, description: html } : x)))}
                       placeholder={t("fields.description")}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                     />
                     <button type="button" onClick={() => setExperiences((p) => p.filter((_, j) => j !== i))} className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-error-500">
                       <Trash2 size={13} /> {t("fields.removeEntry")}
@@ -393,12 +383,10 @@ export default function AnonymizedCvOptionsModal({
                         <Trash2 size={16} />
                       </button>
                     </div>
-                    <textarea
+                    <RichTextEditor
                       value={block.text}
-                      onChange={(e) => updateBlock(block.id, { text: e.target.value })}
-                      rows={3}
+                      onChange={(html) => updateBlock(block.id, { text: html })}
                       placeholder={t("customBlocks.textPlaceholder")}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-hidden focus:ring-2 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
                     />
                   </div>
                 ))}
