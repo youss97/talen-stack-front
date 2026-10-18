@@ -135,7 +135,10 @@
         "estimatedValue": "القيمة التقديرية",
         "currency": "العملة",
         "expectedCloseDate": "تاريخ الإغلاق المتوقع",
-        "stage": "المرحلة"
+        "stage": "المرحلة",
+        "nextAction": "الإجراء التالي",
+        "nextActionPlaceholder": "مثال: المتابعة عبر الهاتف",
+        "nextActionDate": "تاريخ الإجراء التالي"
       },
       "contacts": {
         "label": "جهات اتصال الفرصة",
@@ -167,7 +170,8 @@
       "convertButton": "تحويل إلى عميل",
       "convertTitle": "تحويل إلى عميل",
       "convertSubtitle": "ينشئ حساب العميل والوصول إلى البوابة من هذه الفرصة المكسوبة.",
-      "alreadyConverted": "تم التحويل إلى عميل بالفعل"
+      "alreadyConverted": "تم التحويل إلى عميل بالفعل",
+      "noNextAction": "لم يتم تحديد إجراء تالٍ"
     },
     "convertForm": {
       "adminEmail": "بريد المسؤول",

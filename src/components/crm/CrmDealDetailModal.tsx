@@ -34,6 +34,9 @@ export default function CrmDealDetailModal({ isOpen, onClose, dealId, onDeleteRe
   const [showLostReason, setShowLostReason] = useState(false);
   const [lostReason, setLostReason] = useState("");
   const [showConvert, setShowConvert] = useState(false);
+  const [nextAction, setNextAction] = useState("");
+  const [nextActionDate, setNextActionDate] = useState("");
+  const [editingNextAction, setEditingNextAction] = useState(false);
 
   const addToast = (variant: "success" | "error", title: string, message?: string) => {
     setToasts((prev) => [...prev, { id: Date.now().toString(), variant, title, message }]);
@@ -62,6 +65,17 @@ export default function CrmDealDetailModal({ isOpen, onClose, dealId, onDeleteRe
     try {
       await updateDeal({ id: dealId, data: { status: "won" } }).unwrap();
       addToast("success", t("toasts.updateSuccess"));
+    } catch (error) {
+      addToast("error", getApiErrorMessage(error, t("toasts.updateError")));
+    }
+  };
+
+  const handleSaveNextAction = async () => {
+    if (!dealId) return;
+    try {
+      await updateDeal({ id: dealId, data: { next_action: nextAction, next_action_date: nextActionDate || undefined } }).unwrap();
+      addToast("success", t("toasts.updateSuccess"));
+      setEditingNextAction(false);
     } catch (error) {
       addToast("error", getApiErrorMessage(error, t("toasts.updateError")));
     }
@@ -115,6 +129,50 @@ export default function CrmDealDetailModal({ isOpen, onClose, dealId, onDeleteRe
             )}
             {deal.responsible && (
               <div><span className="text-gray-400">{t("detail.responsible")}: </span>{`${deal.responsible.first_name || ""} ${deal.responsible.last_name || ""}`.trim()}</div>
+            )}
+          </div>
+
+          <div className="rounded-xl border border-gray-200 p-3 dark:border-gray-700">
+            {editingNextAction ? (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs text-gray-400">{t("form.fields.nextAction")}</label>
+                  <input
+                    value={nextAction}
+                    onChange={(e) => setNextAction(e.target.value)}
+                    placeholder={t("form.fields.nextActionPlaceholder")}
+                    className="h-10 w-full rounded-lg border border-gray-300 px-3 text-sm dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs text-gray-400">{t("form.fields.nextActionDate")}</label>
+                  <input
+                    type="date"
+                    value={nextActionDate}
+                    onChange={(e) => setNextActionDate(e.target.value)}
+                    className="h-10 w-full rounded-lg border border-gray-300 px-3 text-sm dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+                  />
+                </div>
+                <div className="col-span-full flex justify-end gap-2">
+                  <Button size="sm" variant="outline" onClick={() => setEditingNextAction(false)} disabled={isUpdating}>
+                    {t("form.buttons.cancel")}
+                  </Button>
+                  <Button size="sm" onClick={handleSaveNextAction} disabled={isUpdating}>
+                    {t("form.buttons.save")}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => { setNextAction(deal.next_action || ""); setNextActionDate(deal.next_action_date || ""); setEditingNextAction(true); }}
+                className="flex w-full items-center justify-between text-sm"
+              >
+                <span className="text-gray-400">{t("form.fields.nextAction")}: </span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  {deal.next_action ? `${deal.next_action}${deal.next_action_date ? ` (${deal.next_action_date})` : ""}` : t("detail.noNextAction")}
+                </span>
+              </button>
             )}
           </div>
 

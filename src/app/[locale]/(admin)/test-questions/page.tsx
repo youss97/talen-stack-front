@@ -24,7 +24,6 @@ import type { TestQuestion, CreateTestQuestionRequest, TestQuestionType } from "
 
 const TYPE_COLORS: Record<TestQuestionType, "info" | "success"> = {
   technique: "info",
-  psychotechnique: "success",
 };
 
 export default function TestQuestionsPage() {
@@ -35,7 +34,6 @@ export default function TestQuestionsPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useLimitPreference("test-questions", 20);
   const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("");
   const [categoryFilter, setCategoryFilter] = useState<string>("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<TestQuestion | null>(null);
@@ -51,7 +49,6 @@ export default function TestQuestionsPage() {
     page,
     limit,
     search: search || undefined,
-    type: (typeFilter || undefined) as TestQuestionType | undefined,
     category: categoryFilter || undefined,
   });
   const { data: categories = [] } = useGetTestQuestionCategoriesQuery();
@@ -59,7 +56,7 @@ export default function TestQuestionsPage() {
   const [updateQuestion, { isLoading: isUpdating }] = useUpdateTestQuestionMutation();
   const [deleteQuestion, { isLoading: isDeleting }] = useDeleteTestQuestionMutation();
 
-  const availableCategories = Array.from(new Set(categories.filter((c) => !typeFilter || c.type === typeFilter).map((c) => c.category))).sort();
+  const availableCategories = Array.from(new Set(categories.map((c) => c.category))).sort();
 
   const handleSubmit = async (formData: CreateTestQuestionRequest) => {
     try {
@@ -144,15 +141,6 @@ export default function TestQuestionsPage() {
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           className="h-11 flex-1 min-w-[220px] rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
         />
-        <select
-          value={typeFilter}
-          onChange={(e) => { setTypeFilter(e.target.value); setCategoryFilter(""); setPage(1); }}
-          className="h-11 rounded-lg border border-gray-300 px-4 py-2.5 text-sm dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
-        >
-          <option value="">{t("page.allTypes")}</option>
-          <option value="technique">{t("types.technique")}</option>
-          <option value="psychotechnique">{t("types.psychotechnique")}</option>
-        </select>
         <select
           value={categoryFilter}
           onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}

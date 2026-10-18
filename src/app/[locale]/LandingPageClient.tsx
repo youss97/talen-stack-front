@@ -132,7 +132,7 @@ export default function LandingPageClient() {
   // Afficher la landing page pour les utilisateurs non connectés
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const c = (content || {}) as any;
-  const brand = c.brandColor || "#8AB925";
+  const brand = c.brandColor || "#3B82F6";
   return (
     <div className="landing-page min-h-screen bg-white" style={brandScaleVars(brand)}>
       <Navbar logoUrl={c.logoUrl} siteName={c.siteName} />

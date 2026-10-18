@@ -30,7 +30,24 @@
     "crmProspects": "Prospects CRM",
     "crmOpenDeals": "Opportunités ouvertes",
     "crmWonDeals": "Opportunités gagnées",
-    "crmPipelineValue": "Valeur du pipeline CRM"
+    "crmPipelineValue": "Valeur du pipeline CRM",
+    "topClientConcentration": "Concentration top client"
+  },
+  "alerts": {
+    "title": "Alertes",
+    "requestsOverdue": "Demandes en retard",
+    "requestsWithoutResponsible": "Sans responsable",
+    "requestsWithoutApplications": "Sans candidature",
+    "crmOverdueTasks": "Tâches CRM en retard"
+  },
+  "links": {
+    "crmTitle": "CRM",
+    "conversionRate": "Taux de conversion",
+    "avgSalesCycleDays": "Cycle commercial moyen",
+    "daysValue": "{count} j",
+    "integrationsTitle": "Intégrations",
+    "trialSuccessRate": "Réussite période d'essai",
+    "viewDetail": "Voir le détail →"
   },
   "filters": {
     "presets": {

@@ -1,4 +1,4 @@
-// Email Types for TalentStack
+// Email Types for TALOPSIA
 
 export enum BulkEmailType {
   MANUAL = 'manual',

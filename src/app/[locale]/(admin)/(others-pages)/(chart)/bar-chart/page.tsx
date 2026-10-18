@@ -5,9 +5,9 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Bar Chart | TalentStack",
+  title: "Next.js Bar Chart | TALOPSIA",
   description:
-    "This is Next.js Bar Chart page for TalentStack",
+    "This is Next.js Bar Chart page for TALOPSIA",
 };
 
 export default function page() {

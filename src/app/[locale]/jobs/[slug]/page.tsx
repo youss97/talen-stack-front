@@ -13,10 +13,10 @@ import {
 
 const ThreeParticles = dynamic(() => import("@/components/common/ThreeParticles"), { ssr: false });
 
-const BRAND = "#8AB925";
-const BRAND_DARK = "#1c2906";
-const BRAND_LT = "#f5fae8";
-const BRAND_TX = "#5c7d17";
+const BRAND = "#3B82F6";
+const BRAND_DARK = "#0F172A";
+const BRAND_LT = "#F1F5F9";
+const BRAND_TX = "#1D4ED8";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -28,7 +28,7 @@ const fadeUp: Variants = {
 };
 
 const inputClass =
-  "w-full h-11 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8AB925]/30 focus:border-[#8AB925] transition-colors";
+  "w-full h-11 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/30 focus:border-[#3B82F6] transition-colors";
 
 export default function PublicJobPage() {
   const t = useTranslations("public.jobs");
@@ -98,12 +98,12 @@ export default function PublicJobPage() {
   /* ── Loading ── */
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#f5fae8]">
+      <div className="flex items-center justify-center min-h-screen bg-[#F1F5F9]">
         <div className="flex flex-col items-center gap-4">
           <div
-            className="w-12 h-12 rounded-full border-4 border-[#8AB925]/30 border-t-[#8AB925] animate-spin"
+            className="w-12 h-12 rounded-full border-4 border-[#3B82F6]/30 border-t-[#3B82F6] animate-spin"
           />
-          <p className="text-sm text-[#5c7d17] font-medium">{t("loading")}</p>
+          <p className="text-sm text-[#1D4ED8] font-medium">{t("loading")}</p>
         </div>
       </div>
     );
@@ -112,7 +112,7 @@ export default function PublicJobPage() {
   /* ── Not found ── */
   if (error || !offer) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#f5fae8]">
+      <div className="flex items-center justify-center min-h-screen bg-[#F1F5F9]">
         <div className="text-center px-6">
           <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-6">
             <Frown size={40} strokeWidth={1.5} className="icon-glow text-gray-400" />

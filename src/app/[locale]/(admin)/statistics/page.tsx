@@ -6,10 +6,13 @@ import { useTranslations } from "next-intl";
 import type { RootState } from "@/lib/store";
 import { useGetDashboardStatsQuery } from "@/lib/services/statsApi";
 import { useGetCompaniesInfiniteInfiniteQuery } from "@/lib/services/companyApi";
+import { useGetCrmDashboardQuery } from "@/lib/services/crmApi";
+import { useGetStatisticsQuery as useGetIntegrationStatisticsQuery } from "@/lib/services/integrationApi";
 import InfiniteSelect from "@/components/form/InfiniteSelect";
 import PageHeader from "@/components/common/PageHeader";
 import DatePicker from "@/components/form/date-picker";
 import DataTable from "@/components/tables/DataTable";
+import { Link } from "@/i18n/navigation";
 
 const PRESETS: { id: string; days: number | null }[] = [
   { id: "7d", days: 7 },
@@ -23,14 +26,28 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const BRAND = "#8AB925";
-const PALETTE = ["#8AB925", "#3B82F6", "#22C55E", "#F59E0B", "#EF4444", "#8B5CF6", "#06B6D4"];
+const BRAND = "#3B82F6";
+const PALETTE = ["#3B82F6", "#64748B", "#22C55E", "#F59E0B", "#EF4444", "#8B5CF6", "#06B6D4"];
 
 function KpiCard({ label, value }: { label: string; value: number }) {
   return (
     <div className="gw-card p-5">
       <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--text-3)" }}>{label}</p>
       <p className="mt-2 text-3xl font-bold tracking-tight" style={{ color: "var(--text)" }}>{value ?? 0}</p>
+    </div>
+  );
+}
+
+function LinkKpiCard({ label, value, href, linkLabel }: { label: string; value: string | number; href: string; linkLabel: string }) {
+  return (
+    <div className="gw-card p-5 flex flex-col justify-between">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--text-3)" }}>{label}</p>
+        <p className="mt-2 text-3xl font-bold tracking-tight" style={{ color: "var(--text)" }}>{value}</p>
+      </div>
+      <Link href={href} className="mt-3 text-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400">
+        {linkLabel}
+      </Link>
     </div>
   );
 }
@@ -132,6 +149,11 @@ export default function StatisticsPage() {
     endDate: endDate || undefined,
     companyId: companyFilter || undefined,
   });
+  // Consolidation de KPI déjà calculés ailleurs (CRM, Intégrations) — pas de nouvel appel
+  // backend, juste réutilisation des hooks existants. Hors sujet pour la vue super admin
+  // (ces endpoints sont scopés à la société de l'utilisateur courant).
+  const { data: crmDashboard } = useGetCrmDashboardQuery(undefined, { skip: isSuperAdminUser });
+  const { data: integrationStats } = useGetIntegrationStatisticsQuery(undefined, { skip: isSuperAdminUser });
 
   const TOTAL_LABELS: Record<string, string> = {
     companies: t("kpis.companies"),
@@ -259,7 +281,57 @@ export default function StatisticsPage() {
         {data?.crmPipelineValue != null && (
           <KpiCard label={t("kpis.crmPipelineValue")} value={data.crmPipelineValue} />
         )}
+        {data?.topClientConcentration != null && (
+          <KpiCard label={t("kpis.topClientConcentration")} value={data.topClientConcentration} />
+        )}
       </div>
+
+      {/* Alertes opérationnelles — uniquement vues société/client, pas la vue super admin */}
+      {!isSuperAdmin && data?.alerts && (
+        <div className="mt-6">
+          <h2 className="mb-3 text-sm font-semibold" style={{ color: "var(--text)" }}>{t("alerts.title")}</h2>
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <KpiCard label={t("alerts.requestsOverdue")} value={data.alerts.requestsOverdue} />
+            {data.alerts.requestsWithoutResponsible != null && (
+              <KpiCard label={t("alerts.requestsWithoutResponsible")} value={data.alerts.requestsWithoutResponsible} />
+            )}
+            <KpiCard label={t("alerts.requestsWithoutApplications")} value={data.alerts.requestsWithoutApplications} />
+            {data.alerts.crmOverdueTasks != null && (
+              <KpiCard label={t("alerts.crmOverdueTasks")} value={data.alerts.crmOverdueTasks} />
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* KPI déjà calculés côté CRM/Intégrations, juste consolidés ici avec un lien vers le détail */}
+      {!isSuperAdmin && (crmDashboard || integrationStats) && (
+        <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {crmDashboard && (
+            <>
+              <LinkKpiCard
+                label={`${t("links.crmTitle")} — ${t("links.conversionRate")}`}
+                value={`${crmDashboard.conversionRate}%`}
+                href="/crm-dashboard"
+                linkLabel={t("links.viewDetail")}
+              />
+              <LinkKpiCard
+                label={`${t("links.crmTitle")} — ${t("links.avgSalesCycleDays")}`}
+                value={t("links.daysValue", { count: crmDashboard.avgSalesCycleDays })}
+                href="/crm-dashboard"
+                linkLabel={t("links.viewDetail")}
+              />
+            </>
+          )}
+          {integrationStats && (
+            <LinkKpiCard
+              label={`${t("links.integrationsTitle")} — ${t("links.trialSuccessRate")}`}
+              value={`${integrationStats.trial_period.success_rate}%`}
+              href="/integrations"
+              linkLabel={t("links.viewDetail")}
+            />
+          )}
+        </div>
+      )}
 
       {/* Charts */}
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">

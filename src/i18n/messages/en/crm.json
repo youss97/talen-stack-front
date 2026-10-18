@@ -135,7 +135,10 @@
         "estimatedValue": "Estimated value",
         "currency": "Currency",
         "expectedCloseDate": "Expected close date",
-        "stage": "Stage"
+        "stage": "Stage",
+        "nextAction": "Next action",
+        "nextActionPlaceholder": "E.g. Follow up by phone",
+        "nextActionDate": "Next action date"
       },
       "contacts": {
         "label": "Opportunity contacts",
@@ -167,7 +170,8 @@
       "convertButton": "Convert to client",
       "convertTitle": "Convert to client",
       "convertSubtitle": "Creates the client account and portal access from this won deal.",
-      "alreadyConverted": "Already converted to client"
+      "alreadyConverted": "Already converted to client",
+      "noNextAction": "No next action set"
     },
     "convertForm": {
       "adminEmail": "Admin email",

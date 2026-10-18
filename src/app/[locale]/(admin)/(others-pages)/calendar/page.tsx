@@ -4,9 +4,9 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Calender | TalentStack",
+  title: "Next.js Calender | TALOPSIA",
   description:
-    "This is Next.js Calender page for TalentStack",
+    "This is Next.js Calender page for TALOPSIA",
   // other metadata
 };
 export default function page() {

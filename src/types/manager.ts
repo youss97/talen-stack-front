@@ -1,4 +1,4 @@
-// Manager Types for TalentStack
+// Manager Types for TALOPSIA
 
 export interface ManagerRole {
   id: string;

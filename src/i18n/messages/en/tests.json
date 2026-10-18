@@ -1,16 +1,14 @@
 {
   "page": {
-    "title": "Technical & psychometric tests",
-    "subtitle": "Question bank for evaluating candidates",
+    "title": "Technical tests",
+    "subtitle": "Technical question bank to assess candidates",
     "addButton": "Add a question",
     "searchPlaceholder": "Search a question...",
-    "allTypes": "All types",
     "allCategories": "All categories",
     "emptyState": "No question found"
   },
   "types": {
-    "technique": "Technical",
-    "psychotechnique": "Psychometric"
+    "technique": "Technical"
   },
   "difficulties": {
     "easy": "Easy",
@@ -35,7 +33,10 @@
     "status": "Status"
   },
   "form": {
-    "titles": { "add": "New question", "edit": "Edit question" },
+    "titles": {
+      "add": "New question",
+      "edit": "Edit question"
+    },
     "fields": {
       "type": "Type",
       "domain": "IT domain",
@@ -50,7 +51,12 @@
       "difficulty": "Difficulty",
       "active": "Active"
     },
-    "buttons": { "cancel": "Cancel", "save": "Save", "add": "Create", "saving": "Saving..." }
+    "buttons": {
+      "cancel": "Cancel",
+      "save": "Save",
+      "add": "Create",
+      "saving": "Saving..."
+    }
   },
   "deleteConfirm": {
     "title": "Delete this question?",
@@ -64,8 +70,8 @@
     "deleteError": "Error while deleting"
   },
   "prepareModal": {
-    "button": "Prepare a test",
-    "title": "Prepare a test",
+    "button": "Prepare an assessment",
+    "title": "Prepare an assessment",
     "modeVivier": "From talent pool",
     "modeManual": "External candidate",
     "candidate": "Candidate",
@@ -74,36 +80,51 @@
     "lastName": "Last name",
     "email": "Email",
     "phone": "Phone",
-    "type": "Test type",
-    "types": { "both": "Technical + Psychometric", "technique": "Technical only", "psychotechnique": "Psychometric only", "personality": "Personality (Big Five + workplace behavior)" },
-    "personalityHint": "The candidate answers a series of statements on an agreement scale (no right or wrong answer). Result: a profile per dimension (Big Five + professional behavioral scales).",
+    "type": "Assessment type",
+    "types": {
+      "technique": "Technical test (MCQ)",
+      "talopsia": "TALOPSIA Profile (personality & work behaviors)"
+    },
     "questionCount": "Number of questions",
     "timePerQuestion": "Time per question (seconds)",
     "timePerQuestionHint": "The candidate automatically moves to the next question once this time has elapsed.",
     "difficulty": "Difficulty",
     "difficultyAny": "Any difficulty",
-    "difficulties": { "easy": "Easy", "medium": "Medium", "hard": "Hard" },
+    "difficulties": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
     "domain": "IT domain",
     "domainAny": "Any domain",
-    "domains": { "frontend": "Frontend", "backend": "Backend", "fullstack": "Fullstack", "devops": "DevOps" },
-    "includeCoding": "Include real coding exercises (sandboxed execution)",
-    "codingChallengeCount": "Number of coding exercises",
-    "codingHint": "The candidate will write code that is actually executed and automatically checked against test cases.",
+    "domains": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "fullstack": "Fullstack",
+      "devops": "DevOps"
+    },
     "randomHint": "Questions are randomly selected on every generation, so the candidate never takes the same test twice.",
     "cancel": "Cancel",
     "generate": "Generate link",
     "generating": "Generating...",
-    "linkGenerated": "The test has been prepared. Share this link with the candidate:",
+    "linkGenerated": "The assessment has been prepared. Share this link with the candidate:",
     "copy": "Copy",
     "copied": "Copied!",
     "close": "Close",
-    "error": "Error while preparing the test"
+    "error": "Error while preparing the assessment",
+    "talopsiaHint": "The candidate answers 80 statements (agreement scale from 1 to 5) and then 20 choices between two options. There are no right or wrong answers. Result: an intensity profile across 15 dimensions and 60 facets, visible to the recruiter only.",
+    "attachSection": "Link (optional)",
+    "application": "Application",
+    "applicationNone": "No application",
+    "request": "Recruitment request",
+    "requestPlaceholder": "Search a request...",
+    "attachHint": "If an application is selected, its recruitment request is linked automatically."
   },
   "sessions": {
-    "title": "Sent tests",
-    "subtitle": "Track prepared tests and their results",
-    "addButton": "New test",
-    "emptyState": "No test sent",
+    "title": "Sent assessments",
+    "subtitle": "Track prepared assessments and their results",
+    "addButton": "New assessment",
+    "emptyState": "No assessment sent",
     "cheatingDetected": "Cheating detected (tab switch)",
     "searchPlaceholder": "Search a candidate...",
     "allStatuses": "All statuses",
@@ -115,84 +136,328 @@
       "score": "Score",
       "link": "Link"
     },
-    "types": { "both": "Technical + Psycho", "technique": "Technical", "psychotechnique": "Psychometric", "personality": "Personality" },
-    "statuses": { "pending": "Pending", "in_progress": "In progress", "completed": "Completed", "expired": "Expired" },
-    "dimensions": {
-      "openness": "Openness to experience",
-      "conscientiousness": "Conscientiousness",
-      "extraversion": "Extraversion",
-      "agreeableness": "Agreeableness",
-      "neuroticism": "Emotional stability",
-      "pace": "Pace of action",
-      "leadership": "Leadership / decision-making",
-      "detail_orientation": "Attention to detail",
-      "authority_relation": "Relationship to authority",
-      "results_orientation": "Results orientation"
+    "types": {
+      "technique": "Technical",
+      "talopsia": "TALOPSIA"
     },
-    "personalityResultsSection": "Personality test results",
-    "personalityResultsHint": "Average score per dimension on a 1-to-5 scale (no right or wrong answer).",
+    "statuses": {
+      "pending": "Pending",
+      "in_progress": "In progress",
+      "completed": "Completed",
+      "expired": "Expired"
+    },
     "copyLink": "Copy link",
     "copied": "Copied!",
-    "deleteConfirm": { "title": "Delete this test?", "message": "This action is irreversible." },
-    "toasts": { "deleteSuccess": "Test deleted", "deleteError": "Error while deleting" },
+    "deleteConfirm": {
+      "title": "Delete this assessment?",
+      "message": "This action cannot be undone."
+    },
+    "toasts": {
+      "deleteSuccess": "Assessment deleted",
+      "deleteError": "Error while deleting"
+    },
     "detail": {
-      "notCompletedYet": "This test has not been submitted by the candidate yet.",
+      "notCompletedYet": "This assessment has not been submitted by the candidate yet.",
       "cheatingDetected": "Cheating detected",
       "cheatingCount": "{count} tab switch(es) detected during the test",
       "overallScore": "Overall score",
       "mcqScore": "MCQ score",
-      "codingScore": "Coding score",
       "questionsTitle": "Questions & answers",
       "correct": "Correct",
       "incorrect": "Incorrect",
       "candidateChoice": "Candidate's answer",
-      "codingTitle": "Coding exercises",
-      "testCasesPassed": "{passed}/{total} test cases passed",
-      "noCodeSubmitted": "No code submitted",
       "close": "Close"
-    }
+    },
+    "profileOnly": "Profile"
   },
-  "coding": {
-    "page": {
-      "title": "Coding exercises",
-      "subtitle": "Manage real, automatically-evaluated coding exercises",
-      "addButton": "Add an exercise",
-      "emptyState": "No exercise found",
-      "searchPlaceholder": "Search an exercise...",
-      "allDomains": "All domains",
-      "allDifficulties": "All difficulties"
+  "talopsia": {
+    "name": "TALOPSIA Profile",
+    "forcedChoiceInstruction": "Which of these two statements describes you best?",
+    "categories": {
+      "personality": "Personality",
+      "professional_behavior": "Work behaviors"
     },
-    "columns": {
-      "domain": "Domain",
-      "title": "Title",
-      "difficulty": "Difficulty",
-      "testCases": "Test cases",
-      "status": "Status"
+    "report": {
+      "title": "TALOPSIA Profile",
+      "disclaimer": "This profile describes tendencies reported by the candidate, expressed as an intensity from 1 (very low) to 5 (very high). It is neither a diagnosis nor a judgment of the candidate's worth, and should be complemented by an interview.",
+      "topPatterns": "Main tendencies",
+      "patternsHint": "Combinations of intensities observed across several dimensions, to explore in interview. These are not psychological types.",
+      "noPatterns": "No marked combination of tendencies was identified.",
+      "notAvailable": "Not available",
+      "scoringVersion": "Scoring method: {version}",
+      "error": "Unable to load the TALOPSIA profile.",
+      "variants": {
+        "recruiter": "Recruiter report",
+        "candidate": "Candidate report",
+        "client": "Client report"
+      },
+      "candidateShareHint": "Preview of the report intended for the candidate. It is never sent automatically: you decide whether to share it.",
+      "patternsHintCandidate": "Combinations of tendencies emerging from your answers. These are not psychological types.",
+      "summary": "Summary",
+      "highlights": "Highlights",
+      "pointsToExplore": "Points to explore",
+      "attentionPoints": "Food for thought",
+      "alignment": {
+        "title": "Alignment with the job profile",
+        "importance": "Importance: {label}",
+        "labels": {
+          "veryAligned": "Strongly aligned",
+          "aligned": "Aligned",
+          "partial": "Partially aligned",
+          "toExamine": "To examine"
+        }
+      },
+      "interviewGuide": {
+        "title": "Interview guide",
+        "hint": "Topics to explore during the interview — not conclusions."
+      },
+      "responses": {
+        "title": "Raw answers",
+        "likert": "Statements (1 to 5)",
+        "forcedChoice": "Forced choices",
+        "reverse": "reversed"
+      }
     },
-    "deleteConfirm": { "title": "Delete this exercise?", "message": "This action is irreversible." },
-    "toasts": {
-      "createSuccess": "Exercise created successfully",
-      "updateSuccess": "Exercise updated successfully",
-      "deleteSuccess": "Exercise deleted successfully",
-      "saveError": "Error while saving",
-      "deleteError": "Error while deleting"
+    "levels": {
+      "1": "Very low",
+      "2": "Low",
+      "3": "Moderate",
+      "4": "High",
+      "5": "Very high"
+    },
+    "dimensions": {
+      "Openness": "Openness",
+      "Conscientiousness": "Conscientiousness",
+      "Extraversion": "Extraversion",
+      "Agreeableness": "Agreeableness",
+      "EmotionalStability": "Emotional Stability",
+      "Results": "Results Orientation",
+      "Organization": "Organization & Structure",
+      "Autonomy": "Autonomy",
+      "Adaptability": "Adaptability",
+      "DecisionMaking": "Decision Making",
+      "Influence": "Influence & Assertiveness",
+      "Cooperation": "Cooperation",
+      "Leadership": "Leadership",
+      "Rigor": "Rigor & Attention to Detail",
+      "Pressure": "Pressure Management"
+    },
+    "facets": {
+      "Openness": {
+        "Curiosity": "Curiosity",
+        "Exploration": "Exploration",
+        "Creativity": "Creativity",
+        "IntellectualFlexibility": "Intellectual flexibility"
+      },
+      "Conscientiousness": {
+        "Organization": "Organization",
+        "Reliability": "Reliability",
+        "Persistence": "Persistence",
+        "SelfDiscipline": "Self-discipline"
+      },
+      "Extraversion": {
+        "Sociability": "Sociability",
+        "SocialEnergy": "Social energy",
+        "Assertiveness": "Assertiveness",
+        "Dynamism": "Dynamism"
+      },
+      "Agreeableness": {
+        "Cooperation": "Cooperation",
+        "Empathy": "Empathy",
+        "Consideration": "Consideration",
+        "Trust": "Trust"
+      },
+      "EmotionalStability": {
+        "EmotionalRegulation": "Emotional regulation",
+        "Calm": "Calm",
+        "Resilience": "Resilience",
+        "SelfControl": "Self-control"
+      },
+      "Results": {
+        "Ambition": "Ambition",
+        "GoalOrientation": "Goal orientation",
+        "Persistence": "Persistence",
+        "Efficiency": "Efficiency"
+      },
+      "Organization": {
+        "Planning": "Planning",
+        "Prioritization": "Prioritization",
+        "Structuring": "Structuring",
+        "FollowUp": "Follow-up"
+      },
+      "Autonomy": {
+        "Initiative": "Initiative",
+        "Independence": "Independence",
+        "ResponsibilityOwnership": "Responsibility/Ownership",
+        "SelfDirection": "Self-direction"
+      },
+      "Adaptability": {
+        "Flexibility": "Flexibility",
+        "AcceptanceOfChange": "Acceptance of change",
+        "Learning": "Learning",
+        "ContextualAdjustment": "Contextual adjustment"
+      },
+      "DecisionMaking": {
+        "Analysis": "Analysis",
+        "Discernment": "Discernment",
+        "Decision": "Decision",
+        "DecisionResponsibility": "Decision responsibility"
+      },
+      "Influence": {
+        "Expression": "Expression",
+        "Conviction": "Conviction",
+        "Assertion": "Assertion",
+        "Negotiation": "Negotiation"
+      },
+      "Cooperation": {
+        "Teamwork": "Teamwork",
+        "Listening": "Listening",
+        "Coordination": "Coordination",
+        "Contribution": "Contribution"
+      },
+      "Leadership": {
+        "Direction": "Direction",
+        "Mobilization": "Mobilization",
+        "Responsibility": "Responsibility",
+        "Vision": "Vision"
+      },
+      "Rigor": {
+        "Precision": "Precision",
+        "ControlChecking": "Control/checking",
+        "Quality": "Quality",
+        "Vigilance": "Vigilance"
+      },
+      "Pressure": {
+        "StressResistance": "Stress resistance",
+        "Stability": "Stability",
+        "Composure": "Composure",
+        "Recovery": "Recovery"
+      }
+    },
+    "patterns": {
+      "P01": {
+        "label": "Collaborative autonomy",
+        "description": "Tends to work independently while staying oriented towards collective work."
+      },
+      "P02": {
+        "label": "Rigorous performance",
+        "description": "Tends to combine a drive for results with high quality standards."
+      },
+      "P03": {
+        "label": "Reliable organization",
+        "description": "Tends to rely on keeping commitments and a structured organization."
+      },
+      "P04": {
+        "label": "Adaptation and exploration",
+        "description": "Tends to seek novelty and readily adjust the way of working."
+      },
+      "P05": {
+        "label": "Relational leadership",
+        "description": "Tends to take a leading role while relying on cooperation."
+      },
+      "P06": {
+        "label": "Structured influence",
+        "description": "Tends to defend positions based on an analysis of the situation."
+      },
+      "P07": {
+        "label": "Stability under pressure",
+        "description": "Tends to remain emotionally stable and effective in demanding contexts."
+      },
+      "P08": {
+        "label": "Responsible autonomy",
+        "description": "Tends to act independently with a strong sense of commitment."
+      },
+      "P09": {
+        "label": "Results/rigor tension",
+        "description": "Strong results orientation with lower intensity in rigor: a point to explore in interview (speed vs. checking)."
+      },
+      "P10": {
+        "label": "Rigor/results tension",
+        "description": "Strong rigor with lower intensity in results orientation: a point to explore in interview (quality vs. deadlines)."
+      },
+      "P11": {
+        "label": "Autonomy/cooperation tension",
+        "description": "Strong autonomy with lower intensity in cooperation: a point to explore in interview (teamwork)."
+      },
+      "P12": {
+        "label": "Cooperation / low influence",
+        "description": "Strong cooperation with lower intensity in influence: a point to explore in interview (voicing one's positions)."
+      },
+      "P13": {
+        "label": "Adaptability / low organization",
+        "description": "Strong adaptability with lower intensity in organization: a point to explore in interview (structuring work)."
+      },
+      "P14": {
+        "label": "Organization / low adaptability",
+        "description": "Strong organization with lower intensity in adaptability: a point to explore in interview (response to change)."
+      },
+      "P15": {
+        "label": "Assertive leadership",
+        "description": "Tends to take the lead and put forward ideas."
+      },
+      "P16": {
+        "label": "Reinforced relational leadership",
+        "description": "Tends to lead through cooperation, with at least moderate influence."
+      },
+      "P17": {
+        "label": "Autonomous leadership",
+        "description": "Tends to take on leadership responsibilities independently."
+      },
+      "P18": {
+        "label": "Structured execution",
+        "description": "Tends to carry out work in an organized, reliable and precise way."
+      },
+      "P19": {
+        "label": "Structured autonomous performance",
+        "description": "Tends to pursue results in an independent and organized way."
+      },
+      "P20": {
+        "label": "Adaptive performance",
+        "description": "Tends to pursue results while adjusting the way of working."
+      },
+      "P21": {
+        "label": "Social communication",
+        "description": "Tends to seek interaction and put forward ideas."
+      },
+      "P22": {
+        "label": "Influence without strong sociability",
+        "description": "Strong influence, with a lower preference for frequent social interaction."
+      },
+      "P23": {
+        "label": "Relational cooperation",
+        "description": "Tends to favour harmonious relationships and collective work."
+      },
+      "P24": {
+        "label": "Exploration and learning",
+        "description": "Tends to seek novelty, adapt, and evolve practices through learning."
+      },
+      "P25": {
+        "label": "Low-adaptability structure",
+        "description": "Strong organization and reliability with lower intensity in adaptability: a point to explore in interview."
+      },
+      "P26": {
+        "label": "Structured resilience",
+        "description": "Tends to remain stable under pressure, relying on a reliable way of working."
+      },
+      "P27": {
+        "label": "Results-oriented resilience",
+        "description": "Tends to stay focused on results in demanding contexts."
+      }
+    },
+    "jobProfile": {
+      "tab": "TALOPSIA job profile",
+      "hint": "Set how important each dimension is for this position. Importance is not a minimum score: it only describes how assessed candidates align, and never filters or ranks them automatically.",
+      "importance": {
+        "0": "Not assessed",
+        "1": "Low importance",
+        "2": "Moderate importance",
+        "3": "Important",
+        "4": "Very important"
+      },
+      "save": "Save",
+      "saving": "Saving...",
+      "saved": "Profile saved",
+      "error": "Unable to load the TALOPSIA job profile."
     }
-  },
-  "codingForm": {
-    "titles": { "add": "New coding exercise", "edit": "Edit exercise" },
-    "fields": {
-      "domain": "Domain",
-      "difficulty": "Difficulty",
-      "title": "Title",
-      "description": "Prompt",
-      "starterCode": "Starter code",
-      "testCases": "Test cases (input → expected output)",
-      "addTestCase": "Add a test case",
-      "testInputPlaceholder": "Input",
-      "testOutputPlaceholder": "Expected output",
-      "testCasesHint": "These test cases are hidden from the candidate and used to automatically verify their solution.",
-      "active": "Active"
-    },
-    "buttons": { "cancel": "Cancel", "save": "Save", "add": "Create", "saving": "Saving..." }
   }
 }

@@ -8,6 +8,7 @@ import type { ApplicationRequest } from "@/types/applicationRequest";
 import { getSkillName, getSkillLevel } from "@/types/applicationRequest";
 import { Star } from "lucide-react";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
+import TalopsiaJobProfileEditor from "./TalopsiaJobProfileEditor";
 
 const StarIcon = ({ filled }: { filled: boolean }) => (
   <Star
@@ -54,6 +55,9 @@ interface ApplicationRequestDetailModalProps {
   applicationRequest: ApplicationRequest | null;
   isLoading?: boolean;
   onStatusUpdate?: (requestId: string, newStatus: string) => Promise<void>;
+  /** Onglet « Profil TALOPSIA du poste » (Job Profile) — cabinet uniquement, jamais côté client */
+  showTalopsiaJobProfile?: boolean;
+  canEditTalopsiaJobProfile?: boolean;
 }
 
 export default function ApplicationRequestDetailModal({
@@ -62,9 +66,19 @@ export default function ApplicationRequestDetailModal({
   applicationRequest,
   isLoading = false,
   onStatusUpdate,
+  showTalopsiaJobProfile = false,
+  canEditTalopsiaJobProfile = false,
 }: ApplicationRequestDetailModalProps) {
   const t = useTranslations("recruitmentRequests");
   const tc = useTranslations("common");
+  const tTalopsia = useTranslations("tests.talopsia");
+  const [activeTab, setActiveTab] = useState<"details" | "talopsia">("details");
+  const [tabRequestId, setTabRequestId] = useState<string | undefined>(applicationRequest?.id);
+  // Revenir sur l'onglet Détails à chaque ouverture d'une autre demande
+  if (applicationRequest?.id !== tabRequestId) {
+    setTabRequestId(applicationRequest?.id);
+    setActiveTab("details");
+  }
   const [isEditingStatus, setIsEditingStatus] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
@@ -166,6 +180,26 @@ export default function ApplicationRequestDetailModal({
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {t("detailModal.subtitle")}
         </p>
+        {showTalopsiaJobProfile && applicationRequest && (
+          <div className="mt-4 flex gap-4" role="tablist">
+            {(["details", "talopsia"] as const).map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab}
+                onClick={() => setActiveTab(tab)}
+                className={`-mb-px border-b-2 pb-2 text-sm font-medium transition-colors ${
+                  activeTab === tab
+                    ? "border-brand-500 text-brand-600 dark:text-brand-400"
+                    : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                }`}
+              >
+                {tab === "details" ? t("detailModal.title") : tTalopsia("jobProfile.tab")}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 custom-scrollbar">
@@ -173,6 +207,8 @@ export default function ApplicationRequestDetailModal({
           <div className="flex items-center justify-center py-12">
             <div className="w-8 h-8 border-4 border-gray-200 border-t-brand-500 rounded-full animate-spin" />
           </div>
+        ) : showTalopsiaJobProfile && activeTab === "talopsia" && applicationRequest ? (
+          <TalopsiaJobProfileEditor requestId={applicationRequest.id} canEdit={canEditTalopsiaJobProfile} />
         ) : applicationRequest ? (
           <div className="space-y-6">
             {/* En-tête avec titre et urgence */}

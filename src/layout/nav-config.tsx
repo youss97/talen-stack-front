@@ -11,7 +11,7 @@ import {
   EnvelopeIcon,
   CalenderIcon,
 } from "../icons/index";
-import { Handshake, Building2, LayoutDashboard, ClipboardList, ClipboardCheck, Code2, Users } from "lucide-react";
+import { Handshake, Building2, LayoutDashboard, ClipboardList, ClipboardCheck, Users } from "lucide-react";
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +28,7 @@ export const GROUP_ORDER = [
   "Commercial",
   "Recrutement",
   "Talents",
+  "Evaluations",
   "Suivi",
   "Communication",
   "Administration",
@@ -155,19 +156,14 @@ export const NAV_CONFIG: Record<string, { title: string; icon: React.ReactNode; 
     group: "Commercial",
   },
   "/test-questions": {
-    title: "Tests techniques & psychotechniques",
+    title: "Tests techniques",
     icon: <ClipboardList size={18} strokeWidth={1.8} className="icon-glow" />,
-    group: "Talents",
+    group: "Evaluations",
   },
   "/test-sessions": {
-    title: "Tests envoyés",
+    title: "Évaluations envoyées",
     icon: <ClipboardCheck size={18} strokeWidth={1.8} className="icon-glow" />,
-    group: "Talents",
-  },
-  "/coding-challenges": {
-    title: "Exercices de code",
-    icon: <Code2 size={18} strokeWidth={1.8} className="icon-glow" />,
-    group: "Talents",
+    group: "Evaluations",
   },
 };
 

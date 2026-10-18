@@ -1,4 +1,4 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" fill="#3b82f6" rx="51.2"/>
-  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="204.8" font-weight="bold">TS</text>
+  <rect width="512" height="512" fill="#0F172A" rx="51.2"/>
+  <rect x="97.28" y="97.28" width="317.44" height="317.44" rx="79.36" fill="#3B82F6"/><rect x="166.72" y="171.68" width="178.56" height="44.64" rx="12.4" fill="#FFFFFF"/><rect x="233.68" y="171.68" width="44.64" height="168.64" rx="12.4" fill="#FFFFFF"/>
 </svg>

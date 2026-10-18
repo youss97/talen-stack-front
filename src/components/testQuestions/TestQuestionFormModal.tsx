@@ -74,7 +74,6 @@ export default function TestQuestionFormModal({ isOpen, onClose, onSubmit, quest
               className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
             >
               <option value="technique">{tRoot("types.technique")}</option>
-              <option value="psychotechnique">{tRoot("types.psychotechnique")}</option>
             </select>
           </div>
           <div>

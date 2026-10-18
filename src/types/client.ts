@@ -1,4 +1,4 @@
-// Client Types for TalentStack
+// Client Types for TALOPSIA
 
 export interface Client {
   [key: string]: unknown;

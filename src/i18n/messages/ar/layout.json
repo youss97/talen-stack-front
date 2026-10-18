@@ -5,6 +5,7 @@
       "Commercial": "المبيعات",
       "Recrutement": "التوظيف",
       "Talents": "الكفاءات",
+      "Evaluations": "التقييمات",
       "Suivi": "المتابعة",
       "Communication": "التواصل",
       "Administration": "الإدارة"
@@ -35,9 +36,8 @@
       "/crm-companies": "العملاء المحتملون",
       "/crm-deals": "الفرص التجارية",
       "/crm-dashboard": "لوحة تحكم CRM",
-      "/test-questions": "اختبارات تقنية ونفسية تقنية",
-      "/test-sessions": "الاختبارات المرسلة",
-      "/coding-challenges": "تمارين البرمجة"
+      "/test-questions": "اختبارات تقنية",
+      "/test-sessions": "التقييمات المرسلة"
     }
   },
   "sidebar": {

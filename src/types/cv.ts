@@ -1,4 +1,4 @@
-// CV Types for TalentStack
+// CV Types for TALOPSIA
 
 export interface CvExperience {
   company: string;
@@ -81,6 +81,9 @@ export interface CV {
   portfolio_url?: string;
   candidate_first_name?: string;
   candidate_last_name?: string;
+  is_anonymous?: boolean;
+  /** Code stable attribué quand le CV est anonymisé (ex. "CV-00008"), affiché pour le RH à titre de repère. */
+  anonymous_code?: string;
   profile_title?: string;
   skills?: string[];
   additional_skills?: string[];

@@ -4,7 +4,7 @@
 
 @theme {
   --font-*: initial;
-  --font-outfit: Outfit, sans-serif;
+  --font-sora: var(--font-sora-next), Sora, sans-serif;
 
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;
@@ -38,18 +38,19 @@
   --color-white: #ffffff;
   --color-black: #101828;
 
-  --color-brand-25: #f5fae8;
-  --color-brand-50: #edf5d2;
-  --color-brand-100: #d8ecaa;
-  --color-brand-200: #bedd77;
-  --color-brand-300: #a3cf4d;
-  --color-brand-400: #93c234;
-  --color-brand-500: #8AB925;
-  --color-brand-600: #739c1e;
-  --color-brand-700: #5c7d17;
-  --color-brand-800: #476211;
-  --color-brand-900: #344a0c;
-  --color-brand-950: #1c2906;
+  /* TALOPSIA — bleu d'action #3B82F6 (palier 500) */
+  --color-brand-25: #f5f9ff;
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3B82F6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
+  --color-brand-950: #172554;
 
   --color-blue-light-25: #f5fbff;
   --color-blue-light-50: #f0f9ff;
@@ -148,7 +149,7 @@
     0px 20px 24px -4px rgba(16, 24, 40, 0.08),
     0px 8px 8px -4px rgba(16, 24, 40, 0.03);
   --shadow-datepicker: -5px 0 0 #262d3c, 5px 0 0 #262d3c;
-  --shadow-focus-ring: 0px 0px 0px 4px rgba(138, 185, 37, 0.12);
+  --shadow-focus-ring: 0px 0px 0px 4px rgba(59, 130, 246, 0.12);
   --shadow-slider-navigation:
     0px 1px 2px 0px rgba(16, 24, 40, 0.1), 0px 1px 3px 0px rgba(16, 24, 40, 0.1);
   --shadow-tooltip:
@@ -311,12 +312,12 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Icônes "pro" (lucide-react) — légère ombre portée verte pour donner du relief */
+/* Icônes "pro" (lucide-react) — légère ombre portée bleue pour donner du relief */
 .icon-glow {
-  filter: drop-shadow(0 2px 3px rgb(34 197 94 / 0.45));
+  filter: drop-shadow(0 2px 3px rgb(59 130 246 / 0.45));
 }
 .dark .icon-glow {
-  filter: drop-shadow(0 2px 4px rgb(74 222 128 / 0.55));
+  filter: drop-shadow(0 2px 4px rgb(96 165 250 / 0.55));
 }
 
 /* third-party libraries CSS */
@@ -494,13 +495,13 @@ span.flatpickr-weekday,
 .flatpickr-day.selected.nextMonthDay,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
-  background: #8AB925;
+  background: #3B82F6;
   @apply !border-brand-500 !bg-brand-500 hover:!border-brand-50 hover:!bg-brand-500;
 }
 .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n + 1)) {
-  box-shadow: -10px 0 0 #8AB925;
+  box-shadow: -10px 0 0 #3B82F6;
 }
 
 .flatpickr-months .flatpickr-prev-month svg,
@@ -808,31 +809,34 @@ span.flatpickr-weekday,
 }
 
 /* ============================================================
-   GW — Design System (refonte UI/UX)
-   Tokens + primitives. N'affecte que les composants qui les
-   utilisent (classes .gw-*), donc non-cassant pour l'existant.
+   GW — Design System TALOPSIA (source de vérité unique)
+   Palette "Slate Premium" : nuit #0F172A, bleu d'action #3B82F6,
+   gris bleu #94A3B8, bordures #CBD5E1, fond clair #F1F5F9,
+   texte secondaire #64748B. L'échelle Tailwind brand-* (@theme)
+   est alignée sur le même bleu.
    ============================================================ */
 :root {
-  --brand: #8AB925;
-  --brand-strong: #6E9A1D;
-  --brand-deep: #55791A;
-  --brand-soft: #F1F7E1;
-  --brand-ink: #26340F;
+  --brand: #3B82F6;
+  --brand-strong: #2563EB;
+  --brand-deep: #1D4ED8;
+  --brand-soft: #EFF6FF;
+  /* Texte posé sur un fond plein var(--brand) (boutons primaires, item actif) */
+  --brand-ink: #FFFFFF;
 
-  --bg: #F7F8F3;
+  --bg: #F1F5F9;
   --surface: #FFFFFF;
-  --surface-2: #FBFCF8;
-  --border: #E7EBDE;
-  --border-strong: #D6DCCA;
+  --surface-2: #F8FAFC;
+  --border: #CBD5E1;
+  --border-strong: #94A3B8;
 
-  --text: #1B2413;
-  --text-2: #5E6B52;
-  --text-3: #95A085;
+  --text: #0F172A;
+  --text-2: #64748B;
+  --text-3: #94A3B8;
 
-  --rail: #19210E;
-  --rail-2: #24300F;
+  --rail: #0F172A;
+  --rail-2: #111827;
 
-  --blue: #2563EB;   --blue-soft: #EAF1FE;
+  --blue: #3B82F6;   --blue-soft: #EFF6FF;
   --amber: #C77800;  --amber-soft: #FBF1DF;
   --violet: #7C3AED; --violet-soft: #F1EBFE;
   --rose: #DC2626;   --rose-soft: #FCEBEB;
@@ -840,34 +844,42 @@ span.flatpickr-weekday,
   --radius: 12px;
   --radius-sm: 10px;
   --radius-lg: 16px;
-  --ds-ring: 0 0 0 3px rgba(138, 185, 37, 0.35);
-  --ds-shadow-card: 0 1px 2px rgba(27, 36, 19, 0.04), 0 1px 3px rgba(27, 36, 19, 0.06);
+  --radius-xl: 24px;
+  --ds-ring: 0 0 0 3px rgba(59, 130, 246, 0.35);
+  --ds-shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
 }
 
-/* Mode sombre = vert forêt foncé (comme le sidebar) + texte clair.
+/* Mode sombre = nuit ardoise #0F172A + texte clair. Le bleu de marque ne change pas.
    On surcharge uniquement les tokens : toutes les surfaces .gw-* / var() suivent. */
 .dark {
-  --bg: #10160A;
-  --surface: #19210E;
-  --surface-2: #1E2812;
-  --border: #2C3A19;
-  --border-strong: #3A4B22;
-  --text: #EDF2E4;
-  --text-2: #BAC5A9;
-  --text-3: #8C9878;
-  --brand-soft: #223212;
+  --bg: #0F172A;
+  --surface: #111827;
+  --surface-2: #1E293B;
+  --border: #1E293B;
+  --border-strong: #334155;
+  --text: #F1F5F9;
+  --text-2: #CBD5E1;
+  --text-3: #94A3B8;
+  --brand-soft: #172554;
+  --blue-soft: #172554;
   --ds-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
 
-  /* Remap des GRIS FONCÉS (fonds) vers du vert foncé en mode sombre.
+  /* Remap des GRIS FONCÉS (fonds) vers l'ardoise TALOPSIA en mode sombre.
      → tous les dark:bg-gray-900/800/700 (skeletons, cartes, tableaux, login) suivent,
      sans éditer chaque fichier. On ne touche pas aux gris clairs (texte). */
-  --color-gray-950: #0B1006;
-  --color-gray-900: #10160A;
-  --color-gray-800: #19210E;
-  --color-gray-700: #253114;
-  --color-gray-dark: #10160A;
+  --color-gray-950: #020617;
+  --color-gray-900: #0F172A;
+  --color-gray-800: #111827;
+  --color-gray-700: #1E293B;
+  --color-gray-dark: #0F172A;
 }
 .dark body { background: var(--bg); }
+/* Mode sombre : texte des badges marque lisible sur --brand-soft foncé */
+.dark .gw-badge-brand { color: #93C5FD; }
+.dark .gw-badge-info,
+.dark .gw-badge-blue { color: #60A5FA; }
+.dark .gw-badge-neutral,
+.dark .gw-chip { background: var(--surface-2); }
 
 /* Mode sombre : supprimer les fonds noirs (gris-900) des champs/selects/tabs
    → surfaces vertes cohérentes, sans devoir éditer chaque page. */
@@ -894,13 +906,13 @@ span.flatpickr-weekday,
   .gw-btn:focus-visible { outline: none; box-shadow: var(--ds-ring); }
   .gw-btn:disabled { opacity: .55; cursor: not-allowed; }
 
-  /* Primaire = fond lime + texte encre (contraste AA) */
+  /* Primaire = fond bleu marque + texte blanc */
   .gw-btn-primary { background: var(--brand); color: var(--brand-ink); }
   .gw-btn-primary:hover:not(:disabled) { background: var(--brand-strong); }
 
-  /* CTA alternatif = vert profond + texte blanc */
+  /* CTA alternatif = bleu profond + texte blanc */
   .gw-btn-cta { background: var(--brand-deep); color: #fff; }
-  .gw-btn-cta:hover:not(:disabled) { background: #47670f; }
+  .gw-btn-cta:hover:not(:disabled) { background: #1E40AF; }
 
   /* Secondaire (ghost/outline) */
   .gw-btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
@@ -908,7 +920,7 @@ span.flatpickr-weekday,
 
   /* Tertiaire (texte seul) */
   .gw-btn-text { background: transparent; color: var(--text-2); }
-  .gw-btn-text:hover:not(:disabled) { background: rgba(38, 52, 15, .05); color: var(--text); }
+  .gw-btn-text:hover:not(:disabled) { background: rgba(15, 23, 42, .05); color: var(--text); }
 
   .gw-btn-danger { background: var(--rose); color: #fff; }
   .gw-btn-danger:hover:not(:disabled) { background: #b91c1c; }
@@ -944,14 +956,16 @@ span.flatpickr-weekday,
   .gw-badge { display:inline-flex; align-items:center; gap:.35rem; height:1.5rem; padding:0 .55rem; border-radius:999px; font-size:12.5px; font-weight:600; line-height:1; border:1px solid transparent; }
   .gw-badge-brand  { background: var(--brand-soft);  color: var(--brand-deep); }
   .gw-badge-blue   { background: var(--blue-soft);   color: var(--blue); }
+  /* Info = bleu de marque (charte TALOPSIA : info = couleur d'action) */
+  .gw-badge-info   { background: var(--brand-soft);  color: var(--brand); }
   .gw-badge-amber  { background: var(--amber-soft);  color: var(--amber); }
   .gw-badge-violet { background: var(--violet-soft); color: var(--violet); }
   .gw-badge-rose   { background: var(--rose-soft);   color: var(--rose); }
-  .gw-badge-neutral{ background: #EFF1EA;            color: var(--text-2); }
+  .gw-badge-neutral{ background: #F1F5F9;            color: var(--text-2); }
   .gw-badge-dot { width:.4rem; height:.4rem; border-radius:999px; background: currentColor; }
 
   /* Chips compétences */
-  .gw-chip { display:inline-flex; align-items:center; height:1.55rem; padding:0 .6rem; border-radius:8px; font-size:12.5px; font-weight:500; background:#EFF1EA; color:var(--text-2); border:1px solid var(--border); }
+  .gw-chip { display:inline-flex; align-items:center; height:1.55rem; padding:0 .6rem; border-radius:8px; font-size:12.5px; font-weight:500; background:#F1F5F9; color:var(--text-2); border:1px solid var(--border); }
 }
 
 /* Landing page specific styles */
@@ -1125,9 +1139,9 @@ html {
 }
 .dark .rbc-toolbar button.rbc-active,
 .dark .rbc-toolbar button.rbc-active:hover {
-  background-color: #8AB925;
+  background-color: #3B82F6;
   color: #ffffff;
-  border-color: #8AB925;
+  border-color: #3B82F6;
 }
 
 /* Headers (day names) */
@@ -1160,13 +1174,13 @@ html {
   color: #6b7280;
 }
 .dark .rbc-today {
-  background-color: rgba(138, 185, 37, 0.1);
+  background-color: rgba(59, 130, 246, 0.1);
 }
 .dark .rbc-date-cell {
   color: #d1d5db;
 }
 .dark .rbc-date-cell.rbc-now .rbc-button-link {
-  color: #8AB925;
+  color: #3B82F6;
   font-weight: 700;
 }
 .dark .rbc-button-link {
@@ -1206,7 +1220,7 @@ html {
   border-top-color: #374151;
 }
 .dark .rbc-current-time-indicator {
-  background-color: #8AB925;
+  background-color: #3B82F6;
 }
 
 /* Agenda view */
@@ -1238,7 +1252,7 @@ html {
 
 /* Show more link */
 .dark .rbc-show-more {
-  color: #8AB925;
+  color: #3B82F6;
   background-color: transparent;
 }
 

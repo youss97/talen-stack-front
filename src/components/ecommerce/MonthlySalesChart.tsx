@@ -13,9 +13,9 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 
 export default function MonthlySalesChart() {
   const options: ApexOptions = {
-    colors: ["#8AB925"],
+    colors: ["#3B82F6"],
     chart: {
-      fontFamily: "Outfit, sans-serif",
+      fontFamily: "Sora, sans-serif",
       type: "bar",
       height: 180,
       toolbar: {
@@ -64,7 +64,7 @@ export default function MonthlySalesChart() {
       show: true,
       position: "top",
       horizontalAlign: "left",
-      fontFamily: "Outfit",
+      fontFamily: "Sora",
     },
     yaxis: {
       title: {

@@ -5,6 +5,7 @@
       "Commercial": "Commercial",
       "Recrutement": "Recruitment",
       "Talents": "Talents",
+      "Evaluations": "Assessments",
       "Suivi": "Tracking",
       "Communication": "Communication",
       "Administration": "Administration"
@@ -35,9 +36,8 @@
       "/crm-companies": "Prospects",
       "/crm-deals": "Deals",
       "/crm-dashboard": "CRM Dashboard",
-      "/test-questions": "Technical & psychometric tests",
-      "/test-sessions": "Sent tests",
-      "/coding-challenges": "Coding exercises"
+      "/test-questions": "Technical tests",
+      "/test-sessions": "Sent assessments"
     }
   },
   "sidebar": {

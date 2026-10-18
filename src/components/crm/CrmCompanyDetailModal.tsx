@@ -90,13 +90,14 @@ export default function CrmCompanyDetailModal({ isOpen, onClose, crmCompanyId }:
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between gap-3 mb-1">
-              <div className="flex items-center gap-3">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{company.name}</h2>
-                <Badge color={STAGE_COLORS[company.stage] || "info"} variant="light" size="sm">
-                  {t(`list.stage.${company.stage}`)}
-                </Badge>
-              </div>
+            <div className="flex items-center gap-3 mb-1 pr-10 sm:pr-12">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{company.name}</h2>
+              <Badge color={STAGE_COLORS[company.stage] || "info"} variant="light" size="sm">
+                {t(`list.stage.${company.stage}`)}
+              </Badge>
+            </div>
+            {company.industry && <p className="text-sm text-gray-500 dark:text-gray-400">{company.industry}</p>}
+            <div className="mt-3">
               {company.converted_client_id ? (
                 <span className="text-xs font-medium text-success-600 dark:text-success-400">{t("convertToClient.alreadyConverted")}</span>
               ) : (
@@ -105,7 +106,6 @@ export default function CrmCompanyDetailModal({ isOpen, onClose, crmCompanyId }:
                 </Button>
               )}
             </div>
-            {company.industry && <p className="text-sm text-gray-500 dark:text-gray-400">{company.industry}</p>}
           </>
         )}
       </div>

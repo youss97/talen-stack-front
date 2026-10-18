@@ -7,7 +7,7 @@ import Button from '@/components/ui/button/Button';
 import LanguageSwitcher from '@/components/header/LanguageSwitcher';
 import { motion } from 'framer-motion';
 
-export default function Navbar({ logoUrl, siteName = "Hire Stack" }: { logoUrl?: string; siteName?: string } = {}) {
+export default function Navbar({ logoUrl, siteName = "TALOPSIA" }: { logoUrl?: string; siteName?: string } = {}) {
   const t = useTranslations("landing.navbar");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 

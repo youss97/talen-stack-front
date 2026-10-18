@@ -6,25 +6,26 @@
 import { useState, type ReactNode } from "react";
 
 const brandScale = [
-  ["--brand-soft", "#F1F7E1"],
-  ["--brand", "#8AB925"],
-  ["--brand-strong", "#6E9A1D"],
-  ["--brand-deep", "#55791A"],
-  ["--brand-ink", "#26340F"],
+  ["--brand-soft", "#EFF6FF"],
+  ["--brand", "#3B82F6"],
+  ["--brand-strong", "#2563EB"],
+  ["--brand-deep", "#1D4ED8"],
+  ["--brand-ink", "#FFFFFF"],
 ];
 const surfaces = [
-  ["--bg", "#F7F8F3"],
+  ["--bg", "#F1F5F9"],
   ["--surface", "#FFFFFF"],
-  ["--surface-2", "#FBFCF8"],
-  ["--border", "#E7EBDE"],
-  ["--border-strong", "#D6DCCA"],
+  ["--surface-2", "#F8FAFC"],
+  ["--border", "#CBD5E1"],
+  ["--border-strong", "#94A3B8"],
 ];
 const texts = [
-  ["--text", "#1B2413"],
-  ["--text-2", "#5E6B52"],
-  ["--text-3", "#95A085"],
+  ["--text", "#0F172A"],
+  ["--text-2", "#64748B"],
+  ["--text-3", "#94A3B8"],
 ];
 const statuses = [
+  ["Info", "--brand", "gw-badge-info"],
   ["Blue", "--blue", "gw-badge-blue"],
   ["Amber", "--amber", "gw-badge-amber"],
   ["Violet", "--violet", "gw-badge-violet"],
@@ -56,21 +57,21 @@ function Section({ title, desc, children }: { title: string; desc?: string; chil
 export default function DesignSystemPage() {
   const [err, setErr] = useState(false);
   return (
-    <div style={{ background: "var(--bg)", minHeight: "100vh", color: "var(--text)", fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div style={{ background: "var(--bg)", minHeight: "100vh", color: "var(--text)", fontFamily: "var(--font-sora-next), Sora, system-ui, sans-serif" }}>
       <div style={{ maxWidth: 1080, margin: "0 auto", padding: "48px 24px 80px" }}>
         <header style={{ marginBottom: 40 }}>
           <div className="gw-badge gw-badge-brand" style={{ marginBottom: 12 }}>
-            <span className="gw-badge-dot" /> Design System GW
+            <span className="gw-badge-dot" /> Design System TALOPSIA
           </div>
           <h1 style={{ fontSize: 26, fontWeight: 700, letterSpacing: "-0.02em" }}>Aperçu — à valider</h1>
           <p style={{ fontSize: 16, color: "var(--text-2)", marginTop: 6, maxWidth: 640 }}>
-            Système visuel : marque lime, surfaces chaudes, typographie Inter, coins doux, bordures fines.
+            Charte TALOPSIA — palette Slate Premium : bleu d'action, surfaces ardoise, typographie Sora, rayons 12 / 16 / 24 px.
             Valide ces bases avant l'application écran par écran.
           </p>
         </header>
 
         {/* Couleurs */}
-        <Section title="Couleurs — marque" desc="Le lime décliné : soft → ink. Le primaire utilise le texte encre (contraste AA).">
+        <Section title="Couleurs — marque" desc="Le bleu d'action décliné : soft → deep. Le primaire porte un texte blanc.">
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 12 }}>
             {brandScale.map(([n, v]) => <Swatch key={n} name={n} value={v} />)}
           </div>
@@ -82,7 +83,7 @@ export default function DesignSystemPage() {
           </div>
         </Section>
 
-        <Section title="Couleurs — statuts" desc="Distincts du vert de marque, avec leur variante « soft » en fond.">
+        <Section title="Couleurs — statuts" desc="Strictement fonctionnelles : info = bleu de marque, avec leur variante « soft » en fond.">
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
             {statuses.map(([label, , cls]) => (
               <span key={label} className={`gw-badge ${cls}`}><span className="gw-badge-dot" /> {label}</span>
@@ -93,7 +94,7 @@ export default function DesignSystemPage() {
         </Section>
 
         {/* Typographie */}
-        <Section title="Typographie" desc="Inter / system-ui — échelle 12 / 13.5 / 14 / 16 / 20 / 22 / 26.">
+        <Section title="Typographie" desc="Sora — échelle 12 / 13.5 / 14 / 16 / 20 / 22 / 26.">
           <div className="gw-card" style={{ padding: 24, display: "grid", gap: 10 }}>
             <div style={{ fontSize: 26, fontWeight: 700, letterSpacing: "-0.02em" }}>Titre 26 — Recrutement</div>
             <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.01em" }}>Titre 22 — Pipeline des candidats</div>
@@ -106,7 +107,7 @@ export default function DesignSystemPage() {
         </Section>
 
         {/* Boutons */}
-        <Section title="Boutons" desc="Une action primaire lime par écran ; le reste en secondaire/ghost.">
+        <Section title="Boutons" desc="Une action primaire bleue par écran ; le reste en secondaire/ghost.">
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
             <button className="gw-btn gw-btn-primary">Enregistrer les modifications</button>
             <button className="gw-btn gw-btn-cta">Nouveau candidat</button>
@@ -123,7 +124,7 @@ export default function DesignSystemPage() {
         </Section>
 
         {/* Champs */}
-        <Section title="Champs" desc="Focus ring vert visible, états erreur/désactivé gérés.">
+        <Section title="Champs" desc="Focus ring bleu visible, états erreur/désactivé gérés.">
           <div className="gw-card" style={{ padding: 24, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, maxWidth: 640 }}>
             <div>
               <label className="gw-field-label">Nom du candidat</label>
@@ -158,7 +159,7 @@ export default function DesignSystemPage() {
               { n: "Yassine Amrani", r: "Product Designer", s: "Présélection", cls: "gw-badge-blue", tags: ["Figma", "UX"] },
             ].map((c) => (
               <div key={c.n} className="gw-card" style={{ padding: 16, transition: "box-shadow .15s, transform .15s" }}
-                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 18px rgba(27,36,19,.10)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 18px rgba(15,23,42,.10)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "var(--ds-shadow-card)"; e.currentTarget.style.transform = "none"; }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <div style={{ width: 40, height: 40, borderRadius: 999, background: "var(--brand-soft)", color: "var(--brand-deep)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>

@@ -41,8 +41,8 @@ const STATUS_LABEL_KEYS: Record<string, string> = {
   failed: "failed",
 };
 
-const BRAND = "#8AB925";
-const COLORS = [BRAND, "#739c1e", "#5c7d17", "#a3cf4d", "#d8ecaa", "#bedd77", "#476211"];
+const BRAND = "#3B82F6";
+const COLORS = [BRAND, "#2563EB", "#1D4ED8", "#93C5FD", "#DBEAFE", "#BFDBFE", "#1E40AF"];
 
 function formatMonths(months: MonthCount[]) {
   return months.map((m) => {
@@ -187,7 +187,7 @@ export default function DashboardCharts({ stats, isSuperAdmin }: Props) {
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
               {t("charts.requestsPerMonth")}
             </h3>
-            <MonthlyBarChart data={monthlyRequests} label={t("cards.requests")} color="#739c1e" />
+            <MonthlyBarChart data={monthlyRequests} label={t("cards.requests")} color="#2563EB" />
           </div>
         )}
       </div>

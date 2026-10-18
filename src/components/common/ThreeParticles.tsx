@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function ThreeParticles({
-  color = "#8AB925",
+  color = "#3B82F6",
   count = 55,
   opacity = 0.6,
   className = "",

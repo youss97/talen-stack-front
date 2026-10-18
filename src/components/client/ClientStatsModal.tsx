@@ -6,8 +6,8 @@ import { useGetDashboardStatsQuery } from "@/lib/services/statsApi";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const BRAND = "#8AB925";
-const PALETTE = ["#8AB925", "#3B82F6", "#22C55E", "#F59E0B", "#EF4444", "#8B5CF6", "#06B6D4"];
+const BRAND = "#3B82F6";
+const PALETTE = ["#3B82F6", "#64748B", "#22C55E", "#F59E0B", "#EF4444", "#8B5CF6", "#06B6D4"];
 
 interface Props {
   isOpen: boolean;

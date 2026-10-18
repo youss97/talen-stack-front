@@ -170,14 +170,16 @@ export default function CrmCompanyFormModal({ isOpen, onClose, onSubmit, company
                   ))}
                 </select>
               </div>
-              <div>
-                <Label>{t("fields.stage")}</Label>
-                <select {...register("stage")} className={SELECT_CLASS}>
-                  <option value="prospect">Prospect</option>
-                  <option value="client">Client</option>
-                  <option value="perdu">Perdu</option>
-                </select>
-              </div>
+              {isEditing && (
+                <div>
+                  <Label>{t("fields.stage")}</Label>
+                  <select {...register("stage")} className={SELECT_CLASS}>
+                    <option value="prospect">Prospect</option>
+                    <option value="client">Client</option>
+                    <option value="perdu">Perdu</option>
+                  </select>
+                </div>
+              )}
             </div>
 
             <div className="rounded-xl border border-gray-200 dark:border-gray-700 p-4 space-y-4">

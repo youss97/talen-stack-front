@@ -117,6 +117,7 @@
     "downloadAnonymizedCvError": "خطأ أثناء تحميل السيرة الذاتية المجهولة الهوية",
     "downloadError": "خطأ أثناء التحميل",
     "name": "الاسم",
+    "anonymousCode": "الرمز المجهول (جهة العميل)",
     "email": "البريد الإلكتروني",
     "phone": "الهاتف",
     "requestSection": "طلب التوظيف",

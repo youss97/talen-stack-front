@@ -5,9 +5,9 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Badge | TalentStack",
+  title: "Next.js Badge | TALOPSIA",
   description:
-    "This is Next.js Badge page for TalentStack",
+    "This is Next.js Badge page for TALOPSIA",
   // other metadata
 };
 

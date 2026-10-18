@@ -13,9 +13,9 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Form Elements | TalentStack",
+  title: "Next.js Form Elements | TALOPSIA",
   description:
-    "This is Next.js Form Elements page for TalentStack",
+    "This is Next.js Form Elements page for TALOPSIA",
 };
 
 export default function FormElements() {

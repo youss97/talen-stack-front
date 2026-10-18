@@ -5,9 +5,9 @@ import { Link } from "@/i18n/navigation";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Error 404 | TalentStack",
+  title: "Next.js Error 404 | TALOPSIA",
   description:
-    "This is Next.js Error 404 page for TalentStack",
+    "This is Next.js Error 404 page for TALOPSIA",
 };
 
 export default function Error404() {
@@ -47,7 +47,7 @@ export default function Error404() {
       </div>
       {/* <!-- Footer --> */}
       <p className="absolute text-sm text-center text-gray-500 -translate-x-1/2 bottom-6 left-1/2 dark:text-gray-400">
-        &copy; {new Date().getFullYear()} - TalentStack
+        &copy; {new Date().getFullYear()} - TALOPSIA
       </p>
     </div>
   );

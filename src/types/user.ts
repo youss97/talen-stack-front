@@ -1,4 +1,4 @@
-// User Types for TalentStack
+// User Types for TALOPSIA
 
 export interface User {
   id: string;

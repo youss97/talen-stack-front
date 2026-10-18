@@ -1,4 +1,4 @@
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Sora } from 'next/font/google';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import '../globals.css';
@@ -11,19 +11,22 @@ import AuthInitializer from '@/components/auth/AuthInitializer';
 import PermissionsRefresher from '@/components/auth/PermissionsRefresher';
 import GlobalToaster from '@/components/common/GlobalToaster';
 
-const jakarta = Plus_Jakarta_Sans({
+// Police de la charte TALOPSIA. Sora est une police variable : sans `weight`
+// explicite, tous les poids (Light 300 → ExtraBold 800) sont disponibles.
+const sora = Sora({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-sora-next",
+  display: "swap",
 });
 
 export const metadata = {
-  title: 'Hire Stack',
+  title: 'TALOPSIA — The AI Talent Operating System',
   description: 'Application de gestion des talents et recrutement',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Hire Stack',
+    title: 'TALOPSIA',
   },
 };
 
@@ -47,11 +50,11 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={dir}>
       <head>
-        <meta name="theme-color" content="#8AB925" />
+        <meta name="theme-color" content="#3B82F6" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
       </head>
-      <body className={`${jakarta.className} dark:bg-gray-900`}>
+      <body className={`${sora.className} ${sora.variable} dark:bg-gray-900`}>
         <NextIntlClientProvider>
           <StoreProvider>
             <AuthInitializer />

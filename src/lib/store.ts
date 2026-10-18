@@ -28,7 +28,6 @@ import { crmApi } from './services/crmApi';
 import { crmIndustryApi } from './services/crmIndustryApi';
 import { testQuestionApi } from './services/testQuestionApi';
 import { testSessionApi } from './services/testSessionApi';
-import { codingChallengeApi } from './services/codingChallengeApi';
 import authReducer, { logout } from './slices/authSlice';
 import { errorToastMiddleware } from './errorToastMiddleware';
 
@@ -62,7 +61,6 @@ const apiMiddlewares = [
   crmIndustryApi.middleware,
   testQuestionApi.middleware,
   testSessionApi.middleware,
-  codingChallengeApi.middleware,
 ];
 
 const apiResetters = [
@@ -95,7 +93,6 @@ const apiResetters = [
   crmIndustryApi.util.resetApiState,
   testQuestionApi.util.resetApiState,
   testSessionApi.util.resetApiState,
-  codingChallengeApi.util.resetApiState,
 ];
 
 const appReducer = combineReducers({
@@ -129,7 +126,6 @@ const appReducer = combineReducers({
   [crmIndustryApi.reducerPath]: crmIndustryApi.reducer,
   [testQuestionApi.reducerPath]: testQuestionApi.reducer,
   [testSessionApi.reducerPath]: testSessionApi.reducer,
-  [codingChallengeApi.reducerPath]: codingChallengeApi.reducer,
 });
 
 const baseStore = configureStore({

@@ -32,6 +32,8 @@ export default function CrmDealFormModal({ isOpen, onClose, onSubmit, isLoading 
       estimated_value: undefined,
       currency: "MAD",
       expected_close_date: "",
+      next_action: "",
+      next_action_date: "",
     },
   });
 
@@ -45,6 +47,8 @@ export default function CrmDealFormModal({ isOpen, onClose, onSubmit, isLoading 
         estimated_value: undefined,
         currency: "MAD",
         expected_close_date: "",
+        next_action: "",
+        next_action_date: "",
       });
     }
   }, [isOpen, defaultCrmCompanyId, reset]);
@@ -119,6 +123,17 @@ export default function CrmDealFormModal({ isOpen, onClose, onSubmit, isLoading 
             <div>
               <Label>{t("fields.expectedCloseDate")}</Label>
               <Input type="date" {...register("expected_close_date")} />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>{t("fields.nextAction")}</Label>
+                <Input placeholder={t("fields.nextActionPlaceholder")} {...register("next_action")} />
+              </div>
+              <div>
+                <Label>{t("fields.nextActionDate")}</Label>
+                <Input type="date" {...register("next_action_date")} />
+              </div>
             </div>
           </div>
         </div>

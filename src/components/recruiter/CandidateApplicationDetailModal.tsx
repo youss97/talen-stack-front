@@ -11,6 +11,8 @@ import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import type { Recruiter } from "@/types/recruiter";
 import WorkflowStepper from "./WorkflowStepper";
 import { useChangeApplicationStepMutation, useCreateFeedbackMutation } from "@/lib/services/recruiterApi";
+import { useGetManagerClientTalopsiaReportQuery } from "@/lib/services/testSessionApi";
+import TalopsiaProfileView from "@/components/testQuestions/TalopsiaProfileView";
 
 interface Props {
   isOpen: boolean;
@@ -34,6 +36,12 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
   const tc = useTranslations("common");
   const [changeStep, { isLoading: isChangingStep }] = useChangeApplicationStepMutation();
   const [createFeedback, { isLoading: isAddingFeedback }] = useCreateFeedbackMutation();
+  const tTalopsia = useTranslations("tests.talopsia");
+  // Rapport TALOPSIA « client » uniquement (synthèse, alignement qualitatif, sujets d'entretien) —
+  // jamais les facettes, réponses brutes ni pondérations internes : filtrées côté serveur.
+  const { data: talopsiaClientReport } = useGetManagerClientTalopsiaReportQuery(candidate?.id ?? "", {
+    skip: !isOpen || !candidate?.id,
+  });
 
   if (!candidate) return null;
 
@@ -313,6 +321,16 @@ export default function CandidateApplicationDetailModal({ isOpen, onClose, candi
                 dangerouslySetInnerHTML={{ __html: sanitizeHtml(candidate.qualification_report) }}
               />
             )}
+          </section>
+        )}
+
+        {/* Profil TALOPSIA — rapport client (affiché seulement si une évaluation complétée existe) */}
+        {talopsiaClientReport?.available && (
+          <section>
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
+              {tTalopsia("report.title")}
+            </h3>
+            <TalopsiaProfileView variant="client" applicationId={candidate.id} />
           </section>
         )}
 

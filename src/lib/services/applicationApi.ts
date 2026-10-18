@@ -9,6 +9,7 @@ export interface ApplicationsQueryParams {
   status?: string;
   workflow_status?: string;
   request_id?: string;
+  cv_id?: string;
   recruiter_id?: string;
 }
 

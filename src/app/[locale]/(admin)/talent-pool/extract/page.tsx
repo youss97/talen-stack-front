@@ -50,6 +50,7 @@ const emptyCertification = (): CvCertification => ({
 export default function CVExtractPage() {
   const t = useTranslations("cvs.extract");
   const tStatus = useTranslations("cvs.status");
+  const tCv = useTranslations("cvs");
   const router = useRouter();
   const searchParams = useSearchParams();
   const cvId = searchParams.get("id");
@@ -62,6 +63,8 @@ export default function CVExtractPage() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   // ── Form state ────────────────────────────────────────────────────────────
+  // Repère interne RH : code sous lequel ce CV apparaît une fois anonymisé (vide si non anonymisé).
+  const [anonymousCode, setAnonymousCode] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -127,6 +130,7 @@ export default function CVExtractPage() {
     getCVById(cvId)
       .unwrap()
       .then((cv) => {
+        setAnonymousCode(cv.is_anonymous && cv.anonymous_code ? cv.anonymous_code : "");
         setFirstName(cv.candidate_first_name || "");
         setLastName(cv.candidate_last_name || "");
         setEmail(cv.candidate_email || "");
@@ -487,10 +491,15 @@ export default function CVExtractPage() {
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       {/* Back */}
-      <div className="mb-6">
+      <div className="mb-6 flex items-center gap-3">
         <Button variant="outline" onClick={() => router.push("/talent-pool")} startIcon={<ArrowLeftIcon />}>
           {t("backButton")}
         </Button>
+        {anonymousCode && (
+          <span className="inline-flex items-center rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600 dark:bg-brand-900/30 dark:text-brand-400">
+            {tCv("detailModal.anonymousCode", { code: anonymousCode })}
+          </span>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">

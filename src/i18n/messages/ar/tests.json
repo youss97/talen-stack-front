@@ -1,16 +1,14 @@
 {
   "page": {
-    "title": "اختبارات تقنية ونفسية تقنية",
-    "subtitle": "بنك الأسئلة لتقييم المرشحين",
+    "title": "اختبارات تقنية",
+    "subtitle": "بنك أسئلة تقنية لتقييم المرشحين",
     "addButton": "إضافة سؤال",
     "searchPlaceholder": "البحث عن سؤال...",
-    "allTypes": "جميع الأنواع",
     "allCategories": "جميع الفئات",
     "emptyState": "لم يتم العثور على أي سؤال"
   },
   "types": {
-    "technique": "تقني",
-    "psychotechnique": "نفسي تقني"
+    "technique": "تقني"
   },
   "difficulties": {
     "easy": "سهل",
@@ -35,7 +33,10 @@
     "status": "الحالة"
   },
   "form": {
-    "titles": { "add": "سؤال جديد", "edit": "تعديل السؤال" },
+    "titles": {
+      "add": "سؤال جديد",
+      "edit": "تعديل السؤال"
+    },
     "fields": {
       "type": "النوع",
       "domain": "المجال التقني",
@@ -50,7 +51,12 @@
       "difficulty": "الصعوبة",
       "active": "نشط"
     },
-    "buttons": { "cancel": "إلغاء", "save": "حفظ", "add": "إنشاء", "saving": "جارٍ الحفظ..." }
+    "buttons": {
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "add": "إنشاء",
+      "saving": "جارٍ الحفظ..."
+    }
   },
   "deleteConfirm": {
     "title": "حذف هذا السؤال؟",
@@ -64,8 +70,8 @@
     "deleteError": "خطأ أثناء الحذف"
   },
   "prepareModal": {
-    "button": "تحضير اختبار",
-    "title": "تحضير اختبار",
+    "button": "إعداد تقييم",
+    "title": "إعداد تقييم",
     "modeVivier": "من قاعدة المرشحين",
     "modeManual": "مرشح خارجي",
     "candidate": "المرشح",
@@ -74,36 +80,51 @@
     "lastName": "اسم العائلة",
     "email": "البريد الإلكتروني",
     "phone": "الهاتف",
-    "type": "نوع الاختبار",
-    "types": { "both": "تقني + نفسي تقني", "technique": "تقني فقط", "psychotechnique": "نفسي تقني فقط", "personality": "الشخصية (Big Five + سلوك مهني)" },
-    "personalityHint": "يجيب المرشح على سلسلة من العبارات على مقياس درجة الموافقة (لا توجد إجابة صحيحة أو خاطئة). النتيجة: ملف تعريف حسب البعد (Big Five + مقاييس سلوكية مهنية).",
+    "type": "نوع التقييم",
+    "types": {
+      "technique": "اختبار تقني (أسئلة متعددة الخيارات)",
+      "talopsia": "TALOPSIA Profile (الشخصية والسلوكيات المهنية)"
+    },
     "questionCount": "عدد الأسئلة",
     "timePerQuestion": "الوقت لكل سؤال (ثوانٍ)",
     "timePerQuestionHint": "ينتقل المرشح تلقائيًا إلى السؤال التالي بعد انتهاء هذا الوقت.",
     "difficulty": "الصعوبة",
     "difficultyAny": "جميع المستويات",
-    "difficulties": { "easy": "سهل", "medium": "متوسط", "hard": "صعب" },
+    "difficulties": {
+      "easy": "سهل",
+      "medium": "متوسط",
+      "hard": "صعب"
+    },
     "domain": "المجال التقني",
     "domainAny": "جميع المجالات",
-    "domains": { "frontend": "الواجهة الأمامية", "backend": "الخلفية", "fullstack": "Fullstack", "devops": "DevOps" },
-    "includeCoding": "تضمين تمارين برمجة حقيقية (تنفيذ في بيئة معزولة)",
-    "codingChallengeCount": "عدد تمارين البرمجة",
-    "codingHint": "سيكتب المرشح كودًا يتم تنفيذه فعليًا والتحقق منه تلقائيًا مقابل حالات اختبار.",
+    "domains": {
+      "frontend": "الواجهة الأمامية",
+      "backend": "الخلفية",
+      "fullstack": "Fullstack",
+      "devops": "DevOps"
+    },
     "randomHint": "يتم اختيار الأسئلة عشوائيًا في كل مرة، حتى لا يجتاز المرشح نفس الاختبار مرتين.",
     "cancel": "إلغاء",
     "generate": "إنشاء الرابط",
     "generating": "جارٍ الإنشاء...",
-    "linkGenerated": "تم تحضير الاختبار. شارك هذا الرابط مع المرشح:",
+    "linkGenerated": "تم إعداد التقييم. شارك هذا الرابط مع المرشح:",
     "copy": "نسخ",
     "copied": "تم النسخ!",
     "close": "إغلاق",
-    "error": "خطأ أثناء تحضير الاختبار"
+    "error": "خطأ أثناء إعداد التقييم",
+    "talopsiaHint": "يجيب المرشح على 80 عبارة (مقياس موافقة من 1 إلى 5) ثم على 20 اختياراً بين اقتراحين. لا توجد إجابات صحيحة أو خاطئة. النتيجة: ملف شدة عبر 15 بعداً و60 جانباً، يطلع عليه المسؤول عن التوظيف فقط.",
+    "attachSection": "الربط (اختياري)",
+    "application": "الترشيح",
+    "applicationNone": "بدون ترشيح",
+    "request": "طلب التوظيف",
+    "requestPlaceholder": "البحث عن طلب...",
+    "attachHint": "عند اختيار ترشيح، يتم ربط طلب التوظيف المرتبط به تلقائياً."
   },
   "sessions": {
-    "title": "الاختبارات المرسلة",
-    "subtitle": "تتبع الاختبارات المحضّرة ونتائجها",
-    "addButton": "اختبار جديد",
-    "emptyState": "لا يوجد اختبار مرسل",
+    "title": "التقييمات المرسلة",
+    "subtitle": "تابع التقييمات المعدة ونتائجها",
+    "addButton": "تقييم جديد",
+    "emptyState": "لا توجد تقييمات مرسلة",
     "cheatingDetected": "تم اكتشاف غش (تبديل علامة التبويب)",
     "searchPlaceholder": "البحث عن مرشح...",
     "allStatuses": "جميع الحالات",
@@ -115,84 +136,328 @@
       "score": "النتيجة",
       "link": "الرابط"
     },
-    "types": { "both": "تقني + نفسي", "technique": "تقني", "psychotechnique": "نفسي تقني", "personality": "الشخصية" },
-    "statuses": { "pending": "في الانتظار", "in_progress": "قيد التقدم", "completed": "منتهٍ", "expired": "منتهي الصلاحية" },
-    "dimensions": {
-      "openness": "الانفتاح على التجربة",
-      "conscientiousness": "الضمير المهني",
-      "extraversion": "الانبساط",
-      "agreeableness": "الوداعة",
-      "neuroticism": "الاستقرار العاطفي",
-      "pace": "إيقاع العمل",
-      "leadership": "القيادة / اتخاذ القرار",
-      "detail_orientation": "الاهتمام بالتفاصيل",
-      "authority_relation": "العلاقة مع السلطة",
-      "results_orientation": "التوجه نحو النتائج"
+    "types": {
+      "technique": "تقني",
+      "talopsia": "TALOPSIA"
     },
-    "personalityResultsSection": "نتائج اختبار الشخصية",
-    "personalityResultsHint": "متوسط النتيجة لكل بعد على مقياس من 1 إلى 5 (لا توجد إجابة صحيحة أو خاطئة).",
+    "statuses": {
+      "pending": "في الانتظار",
+      "in_progress": "قيد التقدم",
+      "completed": "منتهٍ",
+      "expired": "منتهي الصلاحية"
+    },
     "copyLink": "نسخ الرابط",
     "copied": "تم النسخ!",
-    "deleteConfirm": { "title": "حذف هذا الاختبار؟", "message": "هذا الإجراء نهائي." },
-    "toasts": { "deleteSuccess": "تم حذف الاختبار", "deleteError": "خطأ أثناء الحذف" },
+    "deleteConfirm": {
+      "title": "حذف هذا التقييم؟",
+      "message": "لا يمكن التراجع عن هذا الإجراء."
+    },
+    "toasts": {
+      "deleteSuccess": "تم حذف التقييم",
+      "deleteError": "خطأ أثناء الحذف"
+    },
     "detail": {
-      "notCompletedYet": "لم يتم إرسال هذا الاختبار من طرف المرشح بعد.",
+      "notCompletedYet": "لم يقدم المرشح هذا التقييم بعد.",
       "cheatingDetected": "تم اكتشاف غش",
       "cheatingCount": "تم اكتشاف {count} تبديل (تبديلات) للعلامة التبويب أثناء الاختبار",
       "overallScore": "النتيجة الإجمالية",
       "mcqScore": "نتيجة الأسئلة",
-      "codingScore": "نتيجة البرمجة",
       "questionsTitle": "الأسئلة والإجابات",
       "correct": "صحيح",
       "incorrect": "غير صحيح",
       "candidateChoice": "إجابة المرشح",
-      "codingTitle": "تمارين البرمجة",
-      "testCasesPassed": "{passed}/{total} حالة اختبار ناجحة",
-      "noCodeSubmitted": "لم يتم إرسال أي كود",
       "close": "إغلاق"
-    }
+    },
+    "profileOnly": "ملف"
   },
-  "coding": {
-    "page": {
-      "title": "تمارين البرمجة",
-      "subtitle": "إدارة تمارين البرمجة المنفذة فعليًا والمقيّمة تلقائيًا",
-      "addButton": "إضافة تمرين",
-      "emptyState": "لم يتم العثور على أي تمرين",
-      "searchPlaceholder": "البحث عن تمرين...",
-      "allDomains": "جميع المجالات",
-      "allDifficulties": "جميع مستويات الصعوبة"
+  "talopsia": {
+    "name": "TALOPSIA Profile",
+    "forcedChoiceInstruction": "أي من هذين الاقتراحين يصفك بشكل أفضل؟",
+    "categories": {
+      "personality": "الشخصية",
+      "professional_behavior": "السلوكيات المهنية"
     },
-    "columns": {
-      "domain": "المجال",
-      "title": "العنوان",
-      "difficulty": "الصعوبة",
-      "testCases": "حالات الاختبار",
-      "status": "الحالة"
+    "report": {
+      "title": "ملف TALOPSIA",
+      "disclaimer": "يصف هذا الملف ميولاً صرّح بها المرشح، معبراً عنها بشدة من 1 (منخفضة جداً) إلى 5 (مرتفعة جداً). وهو ليس تشخيصاً ولا حكماً على قيمة المرشح، ويجب استكماله بمقابلة.",
+      "topPatterns": "الميول الرئيسية",
+      "patternsHint": "تركيبات من الشدة لوحظت بين عدة أبعاد، للاستكشاف في المقابلة. وهي ليست أنماطاً نفسية.",
+      "noPatterns": "لم يتم تحديد أي تركيبة ميول واضحة.",
+      "notAvailable": "غير متوفر",
+      "scoringVersion": "طريقة الحساب: {version}",
+      "error": "تعذر تحميل ملف TALOPSIA.",
+      "variants": {
+        "recruiter": "تقرير المسؤول عن التوظيف",
+        "candidate": "تقرير المرشح",
+        "client": "تقرير العميل"
+      },
+      "candidateShareHint": "معاينة التقرير الموجه للمرشح. لا يُرسل تلقائياً أبداً: القرار لك في مشاركته.",
+      "patternsHintCandidate": "تركيبات من الميول تظهر من إجاباتك. ليست أنماطاً نفسية.",
+      "summary": "ملخص",
+      "highlights": "أبرز النقاط",
+      "pointsToExplore": "نقاط للاستكشاف",
+      "attentionPoints": "محاور للتفكير",
+      "alignment": {
+        "title": "التوافق مع ملف الوظيفة",
+        "importance": "الأهمية: {label}",
+        "labels": {
+          "veryAligned": "متوافق جداً",
+          "aligned": "متوافق",
+          "partial": "متوافق جزئياً",
+          "toExamine": "للفحص"
+        }
+      },
+      "interviewGuide": {
+        "title": "دليل المقابلة",
+        "hint": "مواضيع للاستكشاف خلال المقابلة — وليست استنتاجات."
+      },
+      "responses": {
+        "title": "الإجابات الخام",
+        "likert": "العبارات (1 إلى 5)",
+        "forcedChoice": "الاختيارات الإجبارية",
+        "reverse": "معكوسة"
+      }
     },
-    "deleteConfirm": { "title": "حذف هذا التمرين؟", "message": "هذا الإجراء نهائي." },
-    "toasts": {
-      "createSuccess": "تم إنشاء التمرين بنجاح",
-      "updateSuccess": "تم تعديل التمرين بنجاح",
-      "deleteSuccess": "تم حذف التمرين بنجاح",
-      "saveError": "خطأ أثناء الحفظ",
-      "deleteError": "خطأ أثناء الحذف"
+    "levels": {
+      "1": "منخفض جداً",
+      "2": "منخفض",
+      "3": "معتدل",
+      "4": "مرتفع",
+      "5": "مرتفع جداً"
+    },
+    "dimensions": {
+      "Openness": "الانفتاح",
+      "Conscientiousness": "يقظة الضمير",
+      "Extraversion": "الانبساط",
+      "Agreeableness": "التوافق",
+      "EmotionalStability": "الاستقرار العاطفي",
+      "Results": "التوجه نحو النتائج",
+      "Organization": "التنظيم والهيكلة",
+      "Autonomy": "الاستقلالية",
+      "Adaptability": "القدرة على التكيف",
+      "DecisionMaking": "اتخاذ القرار",
+      "Influence": "التأثير وتأكيد الذات",
+      "Cooperation": "التعاون",
+      "Leadership": "القيادة",
+      "Rigor": "الدقة والانتباه للتفاصيل",
+      "Pressure": "إدارة الضغط"
+    },
+    "facets": {
+      "Openness": {
+        "Curiosity": "الفضول",
+        "Exploration": "الاستكشاف",
+        "Creativity": "الإبداع",
+        "IntellectualFlexibility": "المرونة الفكرية"
+      },
+      "Conscientiousness": {
+        "Organization": "التنظيم",
+        "Reliability": "الموثوقية",
+        "Persistence": "المثابرة",
+        "SelfDiscipline": "الانضباط الذاتي"
+      },
+      "Extraversion": {
+        "Sociability": "الاجتماعية",
+        "SocialEnergy": "الطاقة الاجتماعية",
+        "Assertiveness": "تأكيد الذات",
+        "Dynamism": "الحيوية"
+      },
+      "Agreeableness": {
+        "Cooperation": "التعاون",
+        "Empathy": "التعاطف",
+        "Consideration": "المراعاة",
+        "Trust": "الثقة"
+      },
+      "EmotionalStability": {
+        "EmotionalRegulation": "التنظيم العاطفي",
+        "Calm": "الهدوء",
+        "Resilience": "الصمود",
+        "SelfControl": "ضبط النفس"
+      },
+      "Results": {
+        "Ambition": "الطموح",
+        "GoalOrientation": "التوجه نحو الأهداف",
+        "Persistence": "المثابرة",
+        "Efficiency": "الفعالية"
+      },
+      "Organization": {
+        "Planning": "التخطيط",
+        "Prioritization": "تحديد الأولويات",
+        "Structuring": "الهيكلة",
+        "FollowUp": "المتابعة"
+      },
+      "Autonomy": {
+        "Initiative": "المبادرة",
+        "Independence": "الاستقلال",
+        "ResponsibilityOwnership": "المسؤولية / التملك",
+        "SelfDirection": "التوجيه الذاتي"
+      },
+      "Adaptability": {
+        "Flexibility": "المرونة",
+        "AcceptanceOfChange": "تقبل التغيير",
+        "Learning": "التعلم",
+        "ContextualAdjustment": "التكيف مع السياق"
+      },
+      "DecisionMaking": {
+        "Analysis": "التحليل",
+        "Discernment": "التمييز",
+        "Decision": "القرار",
+        "DecisionResponsibility": "مسؤولية القرار"
+      },
+      "Influence": {
+        "Expression": "التعبير",
+        "Conviction": "الاقتناع",
+        "Assertion": "التأكيد",
+        "Negotiation": "التفاوض"
+      },
+      "Cooperation": {
+        "Teamwork": "العمل الجماعي",
+        "Listening": "الإصغاء",
+        "Coordination": "التنسيق",
+        "Contribution": "المساهمة"
+      },
+      "Leadership": {
+        "Direction": "التوجيه",
+        "Mobilization": "التعبئة",
+        "Responsibility": "المسؤولية",
+        "Vision": "الرؤية"
+      },
+      "Rigor": {
+        "Precision": "الإتقان",
+        "ControlChecking": "المراقبة / التحقق",
+        "Quality": "الجودة",
+        "Vigilance": "اليقظة"
+      },
+      "Pressure": {
+        "StressResistance": "مقاومة الإجهاد",
+        "Stability": "الثبات",
+        "Composure": "رباطة الجأش",
+        "Recovery": "التعافي"
+      }
+    },
+    "patterns": {
+      "P01": {
+        "label": "استقلالية تعاونية",
+        "description": "ميل إلى العمل باستقلالية مع البقاء موجهاً نحو العمل الجماعي."
+      },
+      "P02": {
+        "label": "أداء دقيق",
+        "description": "ميل إلى الجمع بين السعي إلى النتائج ومتطلبات الجودة."
+      },
+      "P03": {
+        "label": "تنظيم موثوق",
+        "description": "ميل إلى الاعتماد على احترام الالتزامات وتنظيم منهجي."
+      },
+      "P04": {
+        "label": "تكيف واستكشاف",
+        "description": "ميل إلى البحث عن الجديد وتعديل طريقة العمل بسهولة."
+      },
+      "P05": {
+        "label": "قيادة علائقية",
+        "description": "ميل إلى ممارسة دور قيادي بالاعتماد على التعاون."
+      },
+      "P06": {
+        "label": "تأثير منهجي",
+        "description": "ميل إلى الدفاع عن المواقف بالاعتماد على تحليل الوضعيات."
+      },
+      "P07": {
+        "label": "الثبات تحت الضغط",
+        "description": "ميل إلى البقاء مستقراً عاطفياً والحفاظ على الفعالية في سياق متطلب."
+      },
+      "P08": {
+        "label": "استقلالية مسؤولة",
+        "description": "ميل إلى التصرف باستقلالية مع حس واضح بالالتزام."
+      },
+      "P09": {
+        "label": "توتر النتائج/الدقة",
+        "description": "توجه واضح نحو النتائج مع شدة أقل في الدقة: نقطة للاستكشاف في المقابلة (السرعة مقابل التحقق)."
+      },
+      "P10": {
+        "label": "توتر الدقة/النتائج",
+        "description": "دقة واضحة مع شدة أقل في التوجه نحو النتائج: نقطة للاستكشاف في المقابلة (الجودة مقابل الآجال)."
+      },
+      "P11": {
+        "label": "توتر الاستقلالية/التعاون",
+        "description": "استقلالية واضحة مع شدة أقل في التعاون: نقطة للاستكشاف في المقابلة (العمل ضمن فريق)."
+      },
+      "P12": {
+        "label": "تعاون مع تأثير ضعيف",
+        "description": "تعاون واضح مع شدة أقل في التأثير: نقطة للاستكشاف في المقابلة (التعبير عن المواقف)."
+      },
+      "P13": {
+        "label": "تكيف مع تنظيم ضعيف",
+        "description": "قدرة واضحة على التكيف مع شدة أقل في التنظيم: نقطة للاستكشاف في المقابلة (هيكلة العمل)."
+      },
+      "P14": {
+        "label": "تنظيم مع تكيف ضعيف",
+        "description": "تنظيم واضح مع شدة أقل في التكيف: نقطة للاستكشاف في المقابلة (التعامل مع التغيير)."
+      },
+      "P15": {
+        "label": "قيادة حازمة",
+        "description": "ميل إلى أخذ زمام المبادرة وإبراز الأفكار."
+      },
+      "P16": {
+        "label": "قيادة علائقية معززة",
+        "description": "ميل إلى القيادة بالاعتماد على التعاون، مع قدرة تأثير معتدلة على الأقل."
+      },
+      "P17": {
+        "label": "قيادة مستقلة",
+        "description": "ميل إلى تحمل مسؤوليات قيادية باستقلالية."
+      },
+      "P18": {
+        "label": "تنفيذ منهجي",
+        "description": "ميل إلى إنجاز العمل بطريقة منظمة وموثوقة ودقيقة."
+      },
+      "P19": {
+        "label": "أداء مستقل ومنظم",
+        "description": "ميل إلى السعي نحو النتائج باستقلالية وتنظيم."
+      },
+      "P20": {
+        "label": "أداء تكيفي",
+        "description": "ميل إلى السعي نحو النتائج مع تعديل طريقة العمل."
+      },
+      "P21": {
+        "label": "تواصل اجتماعي",
+        "description": "ميل إلى البحث عن التبادل وإبراز الأفكار."
+      },
+      "P22": {
+        "label": "تأثير دون اجتماعية قوية",
+        "description": "قدرة تأثير واضحة مع تفضيل أقل للتفاعلات الاجتماعية المتكررة."
+      },
+      "P23": {
+        "label": "تعاون علائقي",
+        "description": "ميل إلى تفضيل العلاقات المتناغمة والعمل الجماعي."
+      },
+      "P24": {
+        "label": "استكشاف وتعلم",
+        "description": "ميل إلى البحث عن الجديد والتكيف وتطوير الممارسات عبر التعلم."
+      },
+      "P25": {
+        "label": "هيكلة قليلة التكيف",
+        "description": "تنظيم وموثوقية واضحان مع شدة أقل في التكيف: نقطة للاستكشاف في المقابلة."
+      },
+      "P26": {
+        "label": "صمود منهجي",
+        "description": "ميل إلى البقاء مستقراً تحت الضغط بالاعتماد على طريقة عمل موثوقة."
+      },
+      "P27": {
+        "label": "صمود موجه نحو النتائج",
+        "description": "ميل إلى الحفاظ على التوجه نحو النتائج في سياق متطلب."
+      }
+    },
+    "jobProfile": {
+      "tab": "ملف TALOPSIA للوظيفة",
+      "hint": "حدد أهمية كل بُعد لهذه الوظيفة. الأهمية ليست حداً أدنى للنتيجة: تُستخدم فقط لوصف توافق المرشحين، دون تصفيتهم أو ترتيبهم تلقائياً.",
+      "importance": {
+        "0": "غير مُقيَّم",
+        "1": "أهمية ضعيفة",
+        "2": "أهمية متوسطة",
+        "3": "مهم",
+        "4": "مهم جداً"
+      },
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ...",
+      "saved": "تم حفظ الملف",
+      "error": "تعذر تحميل ملف TALOPSIA للوظيفة."
     }
-  },
-  "codingForm": {
-    "titles": { "add": "تمرين برمجة جديد", "edit": "تعديل التمرين" },
-    "fields": {
-      "domain": "المجال",
-      "difficulty": "الصعوبة",
-      "title": "العنوان",
-      "description": "الوصف",
-      "starterCode": "الكود الأولي",
-      "testCases": "حالات الاختبار (مدخل ← مخرج متوقع)",
-      "addTestCase": "إضافة حالة اختبار",
-      "testInputPlaceholder": "المدخل",
-      "testOutputPlaceholder": "المخرج المتوقع",
-      "testCasesHint": "حالات الاختبار هذه مخفية عن المرشح وتُستخدم للتحقق التلقائي من حله.",
-      "active": "نشط"
-    },
-    "buttons": { "cancel": "إلغاء", "save": "حفظ", "add": "إنشاء", "saving": "جارٍ الحفظ..." }
   }
 }

@@ -5,9 +5,9 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Basic Table | TalentStack",
+  title: "Next.js Basic Table | TALOPSIA",
   description:
-    "This is Next.js Basic Table  page for TalentStack",
+    "This is Next.js Basic Table  page for TALOPSIA",
   // other metadata
 };
 

@@ -151,7 +151,7 @@ export default function CompanyLandingPage() {
   if (!data) return null;
 
   const c = data.company;
-  const brand = c.brand_color || "#8AB925";
+  const brand = c.brand_color || "#3B82F6";
   const brandDark = shade(brand, -0.25);
   const logoSrc = c.logo_path ? (c.logo_path.startsWith("http") ? c.logo_path : `${API}/${c.logo_path}`) : "";
 

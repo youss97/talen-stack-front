@@ -3,8 +3,8 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Blank Page | TalentStack",
-  description: "This is Next.js Blank Page TalentStack",
+  title: "Next.js Blank Page | TALOPSIA",
+  description: "This is Next.js Blank Page TALOPSIA",
 };
 
 export default function BlankPage() {

@@ -410,6 +410,11 @@ export default function RecruiterDetailModal({
                     />
                     <DetailItem label={t("email")} value={recruiter.cv.candidate_email || "-"} />
                   </div>
+                  {/* Repère interne RH : cette candidature est anonymisée pour le client, voici
+                      le code sous lequel le CV apparaît côté client. */}
+                  {recruiter.is_anonymized && recruiter.cv.anonymous_code && (
+                    <DetailItem label={t("anonymousCode")} value={recruiter.cv.anonymous_code} />
+                  )}
                   <div className="grid grid-cols-2 gap-4">
                     <DetailItem label={t("phone")} value={recruiter.cv.candidate_phone || "-"} />
                     {recruiter.cv.portfolio_url && (

@@ -4,9 +4,9 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Videos | TalentStack",
+  title: "Next.js Videos | TALOPSIA",
   description:
-    "This is Next.js Videos page for TalentStack",
+    "This is Next.js Videos page for TALOPSIA",
 };
 
 export default function VideoPage() {

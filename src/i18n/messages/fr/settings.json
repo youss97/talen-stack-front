@@ -26,7 +26,7 @@
     "delete": "Supprimer",
     "setDefault": "Définir par défaut",
     "addTemplate": "+ Nouveau template",
-    "noneSaved": "Aucun template personnalisé — le modèle par défaut de TalentStack est utilisé.",
+    "noneSaved": "Aucun template personnalisé — le modèle par défaut de TALOPSIA est utilisé.",
     "deleteConfirm": {
       "title": "Supprimer le template",
       "message": "Êtes-vous sûr de vouloir supprimer le template « {name} » ? Cette action est irréversible.",

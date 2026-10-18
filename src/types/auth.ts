@@ -1,4 +1,4 @@
-// Auth Types for TalentStack
+// Auth Types for TALOPSIA
 
 export interface LoginRequest {
   email: string;

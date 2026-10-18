@@ -70,7 +70,7 @@ export default function PublicCardPage() {
   if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-400">{t("loading")}</div>;
   if (error || !card) return <div className="min-h-screen flex items-center justify-center text-red-500">{t("notFound")}</div>;
 
-  const brand = card.brand_color || "#8AB925";
+  const brand = card.brand_color || "#3B82F6";
   const template = card.branding?.template || "snow";
   const theme = getTheme(template, brand);
 

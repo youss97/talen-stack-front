@@ -1,4 +1,4 @@
-// Log Types for TalentStack
+// Log Types for TALOPSIA
 
 export interface LogUser {
   id: string;

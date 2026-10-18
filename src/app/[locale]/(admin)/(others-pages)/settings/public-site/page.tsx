@@ -19,7 +19,7 @@ export default function PublicSiteSettingsPage() {
   const [updateCompany, { isLoading: saving }] = useUpdateCompanyMutation();
 
   const [toasts, setToasts] = useState<ToastItem[]>([]);
-  const [form, setForm] = useState({ slug: "", public_description: "", public_brand_color: "#8AB925" });
+  const [form, setForm] = useState({ slug: "", public_description: "", public_brand_color: "#3B82F6" });
 
   const addToast = (variant: ToastItem["variant"], title: string, message?: string) =>
     setToasts((p) => [...p, { id: Date.now().toString(), variant, title, message }]);
@@ -37,7 +37,7 @@ export default function PublicSiteSettingsPage() {
       setForm({
         slug: c.slug || "",
         public_description: c.public_description || "",
-        public_brand_color: c.public_brand_color || "#8AB925",
+        public_brand_color: c.public_brand_color || "#3B82F6",
       });
     }
   }, [company]);

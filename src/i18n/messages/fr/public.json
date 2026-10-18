@@ -1,5 +1,5 @@
 {
-  "poweredBy": "Powered by TalentStack",
+  "poweredBy": "Powered by TALOPSIA",
   "jobsMeta": {
     "title": "Offre d'emploi",
     "description": "Consultez et postulez à cette offre d'emploi."
@@ -230,7 +230,7 @@
     "genericError": "Une erreur est survenue",
     "welcomeTitle": "Bienvenue à votre test d'évaluation",
     "welcomeGreeting": "Bonjour {name},",
-    "instructions": "Ce test comporte {count} épreuve(s) (questions et/ou exercices de code). Prenez votre temps et répondez du mieux possible.",
+    "instructions": "Ce test comporte {count} question(s). Prenez votre temps et répondez du mieux possible.",
     "startButton": "Commencer le test",
     "title": "Test d'évaluation",
     "progress": "{answered}/{total} répondues",
@@ -249,19 +249,23 @@
     "resultTitle": "Test terminé !",
     "resultMessage": "Merci d'avoir passé ce test. Voici votre score :",
     "mcqScoreLabel": "Score QCM : {score}%",
-    "codingScoreLabel": "Score code : {score}%",
-    "codingSectionTitle": "Exercices de code",
-    "codingChallengeLabel": "Exercice {n}",
     "alreadyCompletedTitle": "Test déjà soumis",
     "alreadyCompletedMessage": "Vous avez déjà répondu à ce test. Merci !",
-    "personalityStepLabel": "Affirmation {n}",
-    "personalityInstruction": "Indiquez votre degré d'accord avec cette affirmation. Il n'y a pas de bonne ou de mauvaise réponse : répondez spontanément.",
     "likert1": "Pas du tout d'accord",
     "likert2": "Plutôt pas d'accord",
-    "likert3": "Neutre",
+    "likert3": "Ni d'accord ni pas d'accord",
     "likert4": "Plutôt d'accord",
     "likert5": "Tout à fait d'accord",
-    "personalityResultTitle": "Test terminé !",
-    "personalityResultMessage": "Merci d'avoir répondu à toutes les affirmations. Vos résultats seront analysés par le recruteur."
+    "talopsiaTitle": "Questionnaire TALOPSIA Profile",
+    "talopsiaWelcomeTitle": "Bienvenue dans votre questionnaire TALOPSIA Profile",
+    "talopsiaInstructions": "Ce questionnaire comporte {likert} affirmations, puis {blocks} choix entre deux propositions. Comptez environ 15 à 20 minutes.",
+    "talopsiaNoRightAnswer": "Il n'y a pas de bonne ou de mauvaise réponse : répondez spontanément, en pensant à votre manière habituelle d'agir au travail.",
+    "likertStepLabel": "Affirmation {n} / {total}",
+    "likertInstruction": "Indiquez votre degré d'accord avec cette affirmation.",
+    "forcedChoiceStepLabel": "Choix {n} / {total}",
+    "forcedChoiceInstruction": "Laquelle de ces deux propositions vous correspond le mieux ?",
+    "previousButton": "Précédent",
+    "talopsiaResultTitle": "Merci !",
+    "talopsiaResultMessage": "Vos réponses ont bien été enregistrées. Elles seront analysées par le recruteur."
   }
 }

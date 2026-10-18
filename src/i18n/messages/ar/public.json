@@ -1,5 +1,5 @@
 {
-  "poweredBy": "بدعم من TalentStack",
+  "poweredBy": "بدعم من TALOPSIA",
   "jobsMeta": {
     "title": "عرض عمل",
     "description": "اطّلعوا على هذا العرض وقدّموا ترشيحكم."
@@ -230,7 +230,7 @@
     "genericError": "حدث خطأ",
     "welcomeTitle": "مرحبًا بك في اختبار التقييم",
     "welcomeGreeting": "مرحبًا {name}،",
-    "instructions": "يحتوي هذا الاختبار على {count} عنصر (أسئلة و/أو تمارين برمجة). خذ وقتك وأجب بأفضل ما لديك.",
+    "instructions": "يتضمن هذا الاختبار {count} سؤالاً. خذ وقتك وأجب بأفضل ما يمكنك.",
     "startButton": "بدء الاختبار",
     "title": "اختبار التقييم",
     "progress": "{answered}/{total} تمت الإجابة عليها",
@@ -249,19 +249,23 @@
     "resultTitle": "انتهى الاختبار!",
     "resultMessage": "شكرًا لك على إجراء هذا الاختبار. إليك نتيجتك:",
     "mcqScoreLabel": "نتيجة الأسئلة: {score}%",
-    "codingScoreLabel": "نتيجة البرمجة: {score}%",
-    "codingSectionTitle": "تمارين البرمجة",
-    "codingChallengeLabel": "التمرين {n}",
     "alreadyCompletedTitle": "تم إرسال الاختبار بالفعل",
     "alreadyCompletedMessage": "لقد أجبت بالفعل على هذا الاختبار. شكرًا لك!",
-    "personalityStepLabel": "العبارة {n}",
-    "personalityInstruction": "حدد درجة موافقتك على هذه العبارة. لا توجد إجابة صحيحة أو خاطئة: أجب بعفوية.",
-    "likert1": "غير موافق إطلاقًا",
-    "likert2": "غير موافق نوعًا ما",
-    "likert3": "محايد",
-    "likert4": "موافق نوعًا ما",
-    "likert5": "موافق تمامًا",
-    "personalityResultTitle": "انتهى الاختبار!",
-    "personalityResultMessage": "شكرًا لإجابتك على جميع العبارات. سيتم مراجعة نتائجك من قبل المسؤول عن التوظيف."
+    "likert1": "غير موافق إطلاقاً",
+    "likert2": "غير موافق إلى حد ما",
+    "likert3": "لا موافق ولا غير موافق",
+    "likert4": "موافق إلى حد ما",
+    "likert5": "موافق تماماً",
+    "talopsiaTitle": "استبيان TALOPSIA Profile",
+    "talopsiaWelcomeTitle": "مرحباً بك في استبيان TALOPSIA Profile",
+    "talopsiaInstructions": "يتضمن هذا الاستبيان {likert} عبارة، تليها {blocks} اختيارات بين اقتراحين. يستغرق حوالي 15 إلى 20 دقيقة.",
+    "talopsiaNoRightAnswer": "لا توجد إجابات صحيحة أو خاطئة: أجب بعفوية، مفكراً في طريقتك المعتادة في العمل.",
+    "likertStepLabel": "العبارة {n} / {total}",
+    "likertInstruction": "حدد مدى موافقتك على هذه العبارة.",
+    "forcedChoiceStepLabel": "الاختيار {n} / {total}",
+    "forcedChoiceInstruction": "أي من هذين الاقتراحين يصفك بشكل أفضل؟",
+    "previousButton": "السابق",
+    "talopsiaResultTitle": "شكراً لك!",
+    "talopsiaResultMessage": "تم تسجيل إجاباتك. سيقوم المسؤول عن التوظيف بتحليلها."
   }
 }

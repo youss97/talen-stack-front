@@ -8,6 +8,7 @@ import ConfirmModal from "@/components/ui/modal/ConfirmModal";
 import CrmDealFormModal from "@/components/crm/CrmDealFormModal";
 import CrmDealDetailModal from "@/components/crm/CrmDealDetailModal";
 import CrmPipelineSettingsModal from "@/components/crm/CrmPipelineSettingsModal";
+import { Modal } from "@/components/ui/modal";
 import {
   useGetCrmDealsQuery,
   useGetCrmPipelineStagesQuery,
@@ -37,13 +38,20 @@ export default function CrmDealsPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [search, setSearch] = useState("");
   const [responsibleFilter, setResponsibleFilter] = useState("");
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [dragOverCol, setDragOverCol] = useState<string | null>(null);
+  const [lostDeal, setLostDeal] = useState<CrmDeal | null>(null);
+  const [lostReason, setLostReason] = useState("");
 
   const addToast = useCallback((variant: "success" | "error", title: string, message?: string) => {
     setToasts((prev) => [...prev, { id: Date.now().toString(), variant, title, message }]);
   }, []);
   const removeToast = useCallback((id: string) => setToasts((prev) => prev.filter((t) => t.id !== id)), []);
 
-  const { data: deals = [], isLoading } = useGetCrmDealsQuery({ status: "open" });
+  // Pas de filtre "status: open" ici : une opportunité marquée gagnée/perdue garde son
+  // current_stage d'origine mais son `status` change — la filtrer dès la requête la faisait
+  // disparaître du Kanban. On récupère tout et on la range dans les colonnes "Gagné"/"Perdu".
+  const { data: deals = [], isLoading } = useGetCrmDealsQuery();
   const { data: stages = [] } = useGetCrmPipelineStagesQuery();
   const [createDeal, { isLoading: isCreating }] = useCreateCrmDealMutation();
   const [updateDeal] = useUpdateCrmDealMutation();
@@ -81,9 +89,51 @@ export default function CrmDealsPage() {
 
   const handleMoveStage = async (deal: CrmDeal, stageName: string) => {
     try {
-      await updateDeal({ id: deal.id, data: { current_stage: stageName } }).unwrap();
+      await updateDeal({ id: deal.id, data: { current_stage: stageName, status: "open" } }).unwrap();
     } catch (error) {
       addToast("error", getErrorMessage(error, t("toasts.updateError")));
+    }
+  };
+
+  const handleMarkWon = async (deal: CrmDeal) => {
+    try {
+      await updateDeal({ id: deal.id, data: { status: "won" } }).unwrap();
+      addToast("success", t("toasts.updateSuccess"));
+    } catch (error) {
+      addToast("error", getErrorMessage(error, t("toasts.updateError")));
+    }
+  };
+
+  const handleConfirmLost = async () => {
+    if (!lostDeal) return;
+    try {
+      await updateDeal({ id: lostDeal.id, data: { status: "lost", lost_reason: lostReason } }).unwrap();
+      addToast("success", t("toasts.updateSuccess"));
+      setLostDeal(null);
+      setLostReason("");
+    } catch (error) {
+      addToast("error", getErrorMessage(error, t("toasts.updateError")));
+    }
+  };
+
+  const handleDrop = (targetCol: string) => {
+    setDragOverCol(null);
+    const deal = deals.find((d) => d.id === dragId);
+    setDragId(null);
+    if (!deal) return;
+    if (targetCol === "won") {
+      if (deal.status !== "won") handleMarkWon(deal);
+      return;
+    }
+    if (targetCol === "lost") {
+      if (deal.status !== "lost") {
+        setLostReason("");
+        setLostDeal(deal);
+      }
+      return;
+    }
+    if (deal.status !== "open" || deal.current_stage !== targetCol) {
+      handleMoveStage(deal, targetCol);
     }
   };
 
@@ -150,9 +200,17 @@ export default function CrmDealsPage() {
       ) : (
         <div className="flex gap-4 overflow-x-auto pb-4">
           {sortedStages.map((stage) => {
-            const stageDeals = filteredDeals.filter((d) => d.current_stage === stage.name);
+            const stageDeals = filteredDeals.filter((d) => d.status === "open" && d.current_stage === stage.name);
             return (
-              <div key={stage.name} className="flex-shrink-0 w-72 rounded-2xl border border-gray-200 bg-gray-50/50 dark:border-gray-800 dark:bg-white/[0.02] p-3">
+              <div
+                key={stage.name}
+                onDragOver={(e) => { e.preventDefault(); setDragOverCol(stage.name); }}
+                onDragLeave={() => setDragOverCol((c) => (c === stage.name ? null : c))}
+                onDrop={() => handleDrop(stage.name)}
+                className={`flex-shrink-0 w-72 rounded-2xl border bg-gray-50/50 dark:bg-white/[0.02] p-3 transition-colors ${
+                  dragOverCol === stage.name ? "border-brand-400 ring-2 ring-brand-400" : "border-gray-200 dark:border-gray-800"
+                }`}
+              >
                 <div className="flex items-center justify-between mb-3 px-1">
                   <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{stage.name}</h3>
                   <span className="text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-full px-2 py-0.5">{stageDeals.length}</span>
@@ -165,8 +223,13 @@ export default function CrmDealsPage() {
                     <button
                       key={deal.id}
                       type="button"
+                      draggable
+                      onDragStart={() => setDragId(deal.id)}
+                      onDragEnd={() => setDragId(null)}
                       onClick={() => setSelectedDealId(deal.id)}
-                      className="w-full text-left rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 shadow-sm hover:shadow-md transition-shadow"
+                      className={`w-full text-left rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing ${
+                        dragId === deal.id ? "opacity-40" : ""
+                      }`}
                     >
                       <p className="text-sm font-medium text-gray-800 dark:text-white truncate">{deal.title}</p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{deal.crmCompany?.name}</p>
@@ -175,16 +238,61 @@ export default function CrmDealsPage() {
                           {deal.estimated_value.toLocaleString()} {deal.currency}
                         </p>
                       )}
-                      <select
-                        value={deal.current_stage}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => { e.stopPropagation(); handleMoveStage(deal, e.target.value); }}
-                        className="mt-2 w-full h-8 text-xs rounded-md border border-gray-200 dark:border-gray-700 dark:bg-gray-800 px-2"
-                      >
-                        {sortedStages.map((s) => (
-                          <option key={s.name} value={s.name}>{s.name}</option>
-                        ))}
-                      </select>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Colonnes terminales fixes : une opportunité gagnée/perdue garde son current_stage
+              d'origine (ex. "Négociation") mais doit rester visible — on la range ici selon
+              son `status`, pas selon le pipeline configurable ci-dessus. */}
+          {([
+            { key: "won" as const, label: t("detail.status.won"), dot: "bg-success-500" },
+            { key: "lost" as const, label: t("detail.status.lost"), dot: "bg-error-500" },
+          ]).map(({ key, label, dot }) => {
+            const closedDeals = filteredDeals.filter((d) => d.status === key);
+            return (
+              <div
+                key={key}
+                onDragOver={(e) => { e.preventDefault(); setDragOverCol(key); }}
+                onDragLeave={() => setDragOverCol((c) => (c === key ? null : c))}
+                onDrop={() => handleDrop(key)}
+                className={`flex-shrink-0 w-72 rounded-2xl border bg-gray-50/50 dark:bg-white/[0.02] p-3 transition-colors ${
+                  dragOverCol === key ? "border-brand-400 ring-2 ring-brand-400" : "border-gray-200 dark:border-gray-800"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-3 px-1">
+                  <h3 className="flex items-center gap-1.5 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    <span className={`w-2 h-2 rounded-full ${dot}`} />
+                    {label}
+                  </h3>
+                  <span className="text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-full px-2 py-0.5">{closedDeals.length}</span>
+                </div>
+                <div className="space-y-2 min-h-[60px]">
+                  {closedDeals.length === 0 && (
+                    <p className="text-xs text-gray-400 text-center py-4">{t("list.noDeals")}</p>
+                  )}
+                  {closedDeals.map((deal) => (
+                    <button
+                      key={deal.id}
+                      type="button"
+                      draggable
+                      onDragStart={() => setDragId(deal.id)}
+                      onDragEnd={() => setDragId(null)}
+                      onClick={() => setSelectedDealId(deal.id)}
+                      className={`w-full text-left rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing ${
+                        dragId === deal.id ? "opacity-40" : ""
+                      }`}
+                    >
+                      <p className="text-sm font-medium text-gray-800 dark:text-white truncate">{deal.title}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{deal.crmCompany?.name}</p>
+                      {deal.estimated_value != null && (
+                        <p className="text-xs font-semibold text-brand-600 dark:text-brand-400 mt-1">
+                          {deal.estimated_value.toLocaleString()} {deal.currency}
+                        </p>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -210,6 +318,28 @@ export default function CrmDealsPage() {
       />
 
       <CrmPipelineSettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+
+      <Modal isOpen={!!lostDeal} onClose={() => setLostDeal(null)} className="max-w-md m-4">
+        <div className="p-6">
+          <h3 className="text-base font-semibold text-gray-800 dark:text-white mb-1">{t("detail.markLost")}</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 truncate">{lostDeal?.title}</p>
+          <textarea
+            value={lostReason}
+            onChange={(e) => setLostReason(e.target.value)}
+            rows={3}
+            placeholder={t("detail.lostReasonPlaceholder")}
+            className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
+          />
+          <div className="flex justify-end gap-2 mt-4">
+            <Button size="sm" variant="outline" onClick={() => setLostDeal(null)}>
+              {tc("actions.cancel")}
+            </Button>
+            <Button size="sm" className="bg-error-500 hover:bg-error-600" onClick={handleConfirmLost}>
+              {t("detail.markLost")}
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       <ConfirmModal
         isOpen={confirmModal.isOpen}

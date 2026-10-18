@@ -30,6 +30,13 @@ export interface TopItem {
   requestsCount?: number;
 }
 
+export interface StatsAlerts {
+  requestsOverdue: number;
+  requestsWithoutResponsible?: number;
+  requestsWithoutApplications: number;
+  crmOverdueTasks?: number;
+}
+
 export interface DashboardStats {
   totals: StatsTotals;
   monthlyApplications?: MonthCount[];
@@ -40,7 +47,9 @@ export interface DashboardStats {
   integrationsByStatus?: StatusCount[];
   topCompanies?: TopItem[];
   topClients?: TopItem[];
+  topClientConcentration?: number;
   crmPipelineValue?: number;
+  alerts?: StatsAlerts;
   // Vue super admin centrée entreprises
   monthlyCompanies?: MonthCount[];
   companiesByStatus?: StatusCount[];

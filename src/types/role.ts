@@ -1,4 +1,4 @@
-// Role Types for TalentStack
+// Role Types for TALOPSIA
 
 export interface Action {
   id: string;

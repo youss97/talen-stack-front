@@ -1,24 +1,13 @@
 "use client";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Check, X, AlertTriangle } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Badge from "@/components/ui/badge/Badge";
 import { useGetTestSessionByIdQuery } from "@/lib/services/testSessionApi";
-import type { TestSessionStatus, PersonalityDimension } from "@/types/testSession";
-
-const PERSONALITY_ORDER: PersonalityDimension[] = [
-  "openness",
-  "conscientiousness",
-  "extraversion",
-  "agreeableness",
-  "neuroticism",
-  "pace",
-  "leadership",
-  "detail_orientation",
-  "authority_relation",
-  "results_orientation",
-];
+import type { TalopsiaReportVariant, TestSessionStatus } from "@/types/testSession";
+import TalopsiaProfileView from "./TalopsiaProfileView";
 
 interface Props {
   isOpen: boolean;
@@ -46,6 +35,10 @@ function ScoreCard({ label, value, accent }: { label: string; value: string; acc
 export default function TestSessionDetailModal({ isOpen, onClose, sessionId }: Props) {
   const t = useTranslations("tests.sessions.detail");
   const tSessions = useTranslations("tests.sessions");
+  const tTalopsia = useTranslations("tests.talopsia");
+  // Rapport recruteur par défaut ; les variantes candidat / client sont des APERÇUS que le
+  // recruteur peut choisir de partager manuellement (aucun envoi automatique).
+  const [reportVariant, setReportVariant] = useState<TalopsiaReportVariant>("recruiter");
 
   const { data: session, isLoading } = useGetTestSessionByIdQuery(sessionId ?? "", { skip: !isOpen || !sessionId });
 
@@ -92,35 +85,32 @@ export default function TestSessionDetailModal({ isOpen, onClose, sessionId }: P
                 </div>
               )}
 
-              {session.type !== "personality" && (
+              {session.type === "talopsia" ? (
+                <>
+                  <div className="flex flex-wrap gap-2" role="tablist">
+                    {(["recruiter", "candidate", "client"] as const).map((variant) => (
+                      <button
+                        key={variant}
+                        type="button"
+                        role="tab"
+                        aria-selected={reportVariant === variant}
+                        onClick={() => setReportVariant(variant)}
+                        className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                          reportVariant === variant
+                            ? "bg-brand-500 text-white"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-white/[0.06] dark:text-gray-300"
+                        }`}
+                      >
+                        {tTalopsia(`report.variants.${variant}`)}
+                      </button>
+                    ))}
+                  </div>
+                  <TalopsiaProfileView key={reportVariant} variant={reportVariant} sessionId={session.id} />
+                </>
+              ) : (
                 <div className="grid grid-cols-3 gap-4">
                   <ScoreCard label={t("overallScore")} value={`${session.score ?? 0}%`} accent={(session.score ?? 0) >= 50 ? "success" : "error"} />
                   {session.mcq_score != null && <ScoreCard label={t("mcqScore")} value={`${session.mcq_score}%`} />}
-                  {session.coding_score != null && <ScoreCard label={t("codingScore")} value={`${session.coding_score}%`} />}
-                </div>
-              )}
-
-              {session.personality_dimension_scores && Object.keys(session.personality_dimension_scores).length > 0 && (
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{tSessions("personalityResultsSection")}</h3>
-                  <p className="text-xs text-gray-400 mb-3">{tSessions("personalityResultsHint")}</p>
-                  <div className="space-y-3">
-                    {PERSONALITY_ORDER.filter((dim) => session.personality_dimension_scores?.[dim]).map((dim) => {
-                      const average = session.personality_dimension_scores![dim]!.average;
-                      const percent = Math.round(((average - 1) / 4) * 100);
-                      return (
-                        <div key={dim}>
-                          <div className="flex items-center justify-between text-sm mb-1">
-                            <span className="text-gray-700 dark:text-gray-300">{tSessions(`dimensions.${dim}`)}</span>
-                            <span className="font-semibold text-gray-900 dark:text-white">{average.toFixed(2)} / 5</span>
-                          </div>
-                          <div className="h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                            <div className="h-full rounded-full bg-brand-500" style={{ width: `${percent}%` }} />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
                 </div>
               )}
 
@@ -178,34 +168,6 @@ export default function TestSessionDetailModal({ isOpen, onClose, sessionId }: P
                 </div>
               )}
 
-              {(session.coding_results || []).length > 0 && (
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">{t("codingTitle")}</h3>
-                  <div className="space-y-3">
-                    {(session.coding_results || []).map((result) => {
-                      const passed = result.total > 0 && result.passed === result.total;
-                      const challenge = (session.codingChallenges || []).find((c) => c.id === result.challengeId);
-                      return (
-                        <div key={result.challengeId} className="rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-                          <div className="flex items-center justify-between gap-3 mb-2">
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{result.title}</p>
-                            <span className={`inline-flex items-center gap-1 text-xs font-medium ${passed ? "text-success-600 dark:text-success-400" : "text-error-500"}`}>
-                              {passed ? <Check size={14} /> : <X size={14} />}
-                              {t("testCasesPassed", { passed: result.passed, total: result.total })}
-                            </span>
-                          </div>
-                          {challenge?.description && (
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{challenge.description}</p>
-                          )}
-                          <pre className="rounded-lg border border-gray-700 bg-gray-900 text-gray-100 font-mono text-xs p-3 overflow-x-auto whitespace-pre-wrap">
-                            {result.code || t("noCodeSubmitted")}
-                          </pre>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
             </>
           )}
         </div>

@@ -281,6 +281,7 @@
   "detailModal": {
     "defaultCandidateName": "Talent",
     "defaultTitle": "CV Details",
+    "anonymousCode": "Anonymous code: {code}",
     "yearsExperience": "{years} years of experience",
     "remoteWork": "Remote only",
     "portfolio": "Portfolio",

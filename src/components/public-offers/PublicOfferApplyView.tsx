@@ -24,10 +24,10 @@ const ThreeParticles = dynamic(() => import("@/components/common/ThreeParticles"
 // rendu, jamais des variables mutables au niveau module — sinon une requête concurrente pour
 // une autre société écraserait ces valeurs pendant le rendu d'une autre (page qui "suit" la
 // mauvaise société/session).
-const DEFAULT_BRAND    = "#8AB925";
-const DEFAULT_BRAND_DK = "#1c2906";
-const DEFAULT_BRAND_LT = "#f5fae8";
-const DEFAULT_BRAND_TX = "#5c7d17";
+const DEFAULT_BRAND    = "#3B82F6";
+const DEFAULT_BRAND_DK = "#0F172A";
+const DEFAULT_BRAND_LT = "#F1F5F9";
+const DEFAULT_BRAND_TX = "#1D4ED8";
 
 type BrandTheme = { BRAND: string; BRAND_DK: string; BRAND_LT: string; BRAND_TX: string };
 const DEFAULT_BRAND_THEME: BrandTheme = {
@@ -57,7 +57,7 @@ const fadeUp: Variants = {
 
 const inputCls =
   "w-full h-11 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 " +
-  "placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8AB925]/30 focus:border-[#8AB925] transition-colors";
+  "placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/30 focus:border-[#3B82F6] transition-colors";
 
 /* ── Popup des questions personnalisées (style LinkedIn), affichée avant le formulaire ── */
 function ApplicationQuestionsModal({

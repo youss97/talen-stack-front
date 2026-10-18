@@ -1,4 +1,4 @@
-// Recruiter Types for TalentStack (Applications/Candidatures)
+// Recruiter Types for TALOPSIA (Applications/Candidatures)
 
 export type Currency = string; // Accepte tous les codes de devises de la bibliothèque
 export type AvailabilityType = 'immediate' | 'less_than_one_month' | 'one_month' | 'two_months' | 'three_months' | 'other';
@@ -81,6 +81,7 @@ export interface Recruiter {
 
   cv?: {
     id: string;
+    anonymous_code?: string;
     candidate_first_name?: string;
     candidate_last_name?: string;
     candidate_email?: string;

@@ -26,7 +26,7 @@
     "delete": "Delete",
     "setDefault": "Set as default",
     "addTemplate": "+ New template",
-    "noneSaved": "No custom template — TalentStack's default template is used.",
+    "noneSaved": "No custom template — TALOPSIA's default template is used.",
     "deleteConfirm": {
       "title": "Delete template",
       "message": "Are you sure you want to delete the template \"{name}\"? This action is irreversible.",

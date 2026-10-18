@@ -170,6 +170,13 @@ export default function CVDetailModal({
                   {getStatusLabel(cv.status)}
                 </Badge>
               )}
+              {/* Repère interne RH : le code sous lequel ce CV apparaît une fois anonymisé
+                  (ex. côté client), pour pouvoir le retrouver même après anonymisation. */}
+              {cv?.is_anonymous && cv.anonymous_code && (
+                <Badge color="info" variant="light" size="sm">
+                  {t("detailModal.anonymousCode", { code: cv.anonymous_code })}
+                </Badge>
+              )}
             </div>
             {(cv?.profile_title || cv?.last_position) && (
               <p className="mt-1 text-sm font-medium" style={{ color: "var(--brand-deep)" }}>

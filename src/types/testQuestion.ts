@@ -1,4 +1,4 @@
-export type TestQuestionType = "technique" | "psychotechnique";
+export type TestQuestionType = "technique";
 export type TestQuestionDifficulty = "easy" | "medium" | "hard";
 export type TestQuestionDomain = "frontend" | "backend" | "fullstack" | "devops";
 

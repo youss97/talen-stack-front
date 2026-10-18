@@ -16,8 +16,8 @@ import type { SubscriptionsStats } from "@/lib/services/statsApi";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
-const BRAND = "#8AB925";
-const COLORS = [BRAND, "#739c1e", "#5c7d17", "#a3cf4d", "#d8ecaa", "#bedd77", "#476211"];
+const BRAND = "#3B82F6";
+const COLORS = [BRAND, "#2563EB", "#1D4ED8", "#93C5FD", "#DBEAFE", "#BFDBFE", "#1E40AF"];
 
 export default function SubscriptionCharts({ stats }: { stats: SubscriptionsStats }) {
   const t = useTranslations("subscriptions");

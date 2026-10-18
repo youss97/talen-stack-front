@@ -33,9 +33,9 @@ export default function AuthLayout({
             {children}
 
             {/* Decorated right panel */}
-            <div className="lg:w-1/2 w-full h-full lg:flex flex-col items-center justify-center hidden relative overflow-hidden" style={{ background: "var(--rail)" }}>
+            <div className="lg:w-1/2 w-full h-full lg:flex flex-col items-center justify-center hidden relative overflow-hidden lg:rounded-s-[var(--radius-xl)]" style={{ background: "var(--rail)" }}>
               {/* Three.js particle background */}
-              <ThreeParticles color="#8AB925" count={60} opacity={0.5} />
+              <ThreeParticles color="#3B82F6" count={60} opacity={0.5} />
 
               {/* Subtle grid pattern overlay */}
               <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -45,11 +45,23 @@ export default function AuthLayout({
               {/* Radial glow */}
               <div
                 className="absolute inset-0 pointer-events-none"
-                style={{ background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(138,185,37,0.12) 0%, transparent 70%)" }}
+                style={{ background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(59,130,246,0.14) 0%, transparent 70%)" }}
               />
 
               {/* Content */}
               <div className="relative z-10 flex flex-col items-center px-12 max-w-md w-full">
+                {/* Logo TALOPSIA */}
+                <motion.img
+                  src="/images/logo/auth-logo.svg"
+                  alt="TALOPSIA"
+                  width={210}
+                  height={72}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  className="mb-8 h-auto w-[210px]"
+                />
+
                 {/* Tagline */}
                 <motion.h2
                   initial={{ opacity: 0, y: 20 }}

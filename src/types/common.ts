@@ -1,4 +1,4 @@
-// Common Types for TalentStack
+// Common Types for TALOPSIA
 
 // Pagination response with nested pagination object
 export interface PaginatedResponse<T> {

@@ -143,7 +143,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 start-0 bg-white text-gray-900 border-gray-200 dark:bg-[#19210E] dark:text-white/90 dark:border-white/10 h-screen transition-all duration-300 ease-in-out z-50 border-e
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 start-0 bg-white text-gray-900 border-gray-200 dark:bg-[#0F172A] dark:text-white/90 dark:border-white/10 h-screen transition-all duration-300 ease-in-out z-50 border-e
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -203,14 +203,14 @@ const AppSidebar: React.FC = () => {
                 <>
                   <Image
                     src="/images/logo/logo.svg"
-                    alt="TalentStack"
+                    alt="TALOPSIA"
                     width={150}
                     height={52}
                     className="dark:hidden"
                   />
                   <Image
                     src="/images/logo/logo-dark.svg"
-                    alt="TalentStack"
+                    alt="TALOPSIA"
                     width={150}
                     height={52}
                     className="hidden dark:block"
@@ -244,7 +244,7 @@ const AppSidebar: React.FC = () => {
               ) : isSuperAdmin ? null : (
                 <Image
                   src="/images/logo/logo-icon.svg"
-                  alt="TalentStack"
+                  alt="TALOPSIA"
                   width={36}
                   height={36}
                 />

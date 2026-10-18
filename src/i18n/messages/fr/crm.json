@@ -135,7 +135,10 @@
         "estimatedValue": "Valeur estimée",
         "currency": "Devise",
         "expectedCloseDate": "Date de clôture prévue",
-        "stage": "Étape"
+        "stage": "Étape",
+        "nextAction": "Prochaine action",
+        "nextActionPlaceholder": "Ex. Relancer par téléphone",
+        "nextActionDate": "Date prochaine action"
       },
       "contacts": {
         "label": "Contacts de l'opportunité",
@@ -167,7 +170,8 @@
       "convertButton": "Convertir en client",
       "convertTitle": "Convertir en client",
       "convertSubtitle": "Crée le compte client et son accès portail à partir de cette opportunité gagnée.",
-      "alreadyConverted": "Déjà converti en client"
+      "alreadyConverted": "Déjà converti en client",
+      "noNextAction": "Aucune prochaine action définie"
     },
     "convertForm": {
       "adminEmail": "Email de l'administrateur",

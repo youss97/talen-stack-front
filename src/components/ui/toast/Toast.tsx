@@ -83,9 +83,9 @@ const Toast: React.FC<ToastProps> = ({
       bar: "bg-warning-500",
     },
     info: {
-      container: "border-blue-500 bg-white dark:bg-gray-900",
-      icon: "text-blue-500",
-      bar: "bg-blue-500",
+      container: "border-brand-500 bg-white dark:bg-gray-900",
+      icon: "text-brand-500",
+      bar: "bg-brand-500",
     },
   };
 
@@ -98,7 +98,7 @@ const Toast: React.FC<ToastProps> = ({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-lg border shadow-lg ${variantClasses[variant].container} animate-slide-in-right min-w-[320px] max-w-[400px]`}
+      className={`relative overflow-hidden rounded-xl border shadow-lg ${variantClasses[variant].container} animate-slide-in-right min-w-[320px] max-w-[400px]`}
     >
       <div className="flex items-start gap-3 p-4">
         <div className={`flex-shrink-0 ${variantClasses[variant].icon}`}>

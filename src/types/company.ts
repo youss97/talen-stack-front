@@ -1,4 +1,4 @@
-// Company Types for TalentStack
+// Company Types for TALOPSIA
 
 export interface CompanyUser {
   id: string;

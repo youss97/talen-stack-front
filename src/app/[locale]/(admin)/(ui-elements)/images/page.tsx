@@ -7,9 +7,9 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Next.js Images | TalentStack",
+  title: "Next.js Images | TALOPSIA",
   description:
-    "This is Next.js Images page for TalentStack",
+    "This is Next.js Images page for TALOPSIA",
   // other metadata
 };
 

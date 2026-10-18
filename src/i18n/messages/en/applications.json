@@ -117,6 +117,7 @@
     "downloadAnonymizedCvError": "Error downloading the anonymized CV",
     "downloadError": "Error while downloading",
     "name": "Name",
+    "anonymousCode": "Anonymous code (client side)",
     "email": "Email",
     "phone": "Phone",
     "requestSection": "Recruitment request",

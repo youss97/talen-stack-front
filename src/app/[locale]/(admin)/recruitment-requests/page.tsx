@@ -893,6 +893,8 @@ export default function RecruitmentPage() {
         applicationRequest={selectedRequest}
         isLoading={isLoadingDetail}
         onStatusUpdate={canUpdate ? handleStatusUpdate : undefined}
+        showTalopsiaJobProfile
+        canEditTalopsiaJobProfile={canUpdate}
       />
 
       <ConfirmModal

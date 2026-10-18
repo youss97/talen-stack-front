@@ -44,7 +44,7 @@ export default function BusinessCardsPage() {
   const [confirmDelete, setConfirmDelete] = useState<{ isOpen: boolean; card: BusinessCard | null }>({ isOpen: false, card: null });
   const [isDeleting, setIsDeleting] = useState(false);
   const company = (user as unknown as { company?: { public_brand_color?: string; logo_path?: string; name?: string } } | null)?.company;
-  const brandColor = company?.public_brand_color || "#8AB925";
+  const brandColor = company?.public_brand_color || "#3B82F6";
   const companyLogo = company?.logo_path;
   const companyName = company?.name;
 

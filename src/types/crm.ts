@@ -76,6 +76,8 @@ export interface CrmDeal {
   created_at?: string;
   updated_at?: string;
   closed_at?: string | null;
+  next_action?: string | null;
+  next_action_date?: string | null;
 }
 
 export interface CrmPipelineStage {
@@ -128,6 +130,8 @@ export interface CreateCrmDealRequest {
   expected_close_date?: string;
   responsible_id?: string;
   contact_ids?: string[];
+  next_action?: string;
+  next_action_date?: string;
 }
 
 export interface UpdateCrmDealRequest extends Partial<CreateCrmDealRequest> {

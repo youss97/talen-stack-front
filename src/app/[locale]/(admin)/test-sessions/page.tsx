@@ -101,7 +101,14 @@ export default function TestSessionsPage() {
       header: t("columns.score"),
       render: (value, row) => (
         <span className="inline-flex items-center gap-1.5">
-          {value != null ? <span className="font-semibold">{value as number}%</span> : <span className="text-gray-400">—</span>}
+          {row.type === "talopsia" ? (
+            // TALOPSIA : un profil, pas une note — aucun pourcentage affiché
+            <span className="text-gray-500">{row.status === "completed" ? t("profileOnly") : "—"}</span>
+          ) : value != null ? (
+            <span className="font-semibold">{value as number}%</span>
+          ) : (
+            <span className="text-gray-400">—</span>
+          )}
           {row.cheating_detected && (
             <span title={t("cheatingDetected")}>
               <AlertTriangle size={14} className="text-error-500" />
@@ -167,9 +174,8 @@ export default function TestSessionsPage() {
           className="h-11 rounded-lg border border-gray-300 px-4 py-2.5 text-sm dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
         >
           <option value="">{t("allTypes")}</option>
-          <option value="both">{t("types.both")}</option>
           <option value="technique">{t("types.technique")}</option>
-          <option value="psychotechnique">{t("types.psychotechnique")}</option>
+          <option value="talopsia">{t("types.talopsia")}</option>
         </select>
       </div>
 

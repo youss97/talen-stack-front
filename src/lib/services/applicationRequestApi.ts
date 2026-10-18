@@ -5,6 +5,7 @@ import type {
   UpdateApplicationRequestRequest,
   ApplicationRequestPaginationParams,
 } from "@/types/applicationRequest";
+import type { TalopsiaJobProfile, TalopsiaJobProfileEntry } from "@/types/testSession";
 import { baseQueryWithReauth } from "./baseQueryWithReauth";
 
 interface ApplicationRequestPaginatedResponse {
@@ -167,6 +168,18 @@ export const applicationRequestApi = createApi({
       }),
       invalidatesTags: (_result, _error, { id }) => [{ type: "ApplicationRequest", id }],
     }),
+
+    // GET /applications/requests/:id/talopsia-profile - Job Profile TALOPSIA (importance 0-4 par dimension)
+    getTalopsiaJobProfile: builder.query<TalopsiaJobProfile, string>({
+      query: (id) => ({ url: `/applications/requests/${id}/talopsia-profile`, method: "GET" }),
+      providesTags: (_result, _error, id) => [{ type: "ApplicationRequest", id: `talopsia-${id}` }],
+    }),
+
+    // POST /applications/requests/:id/talopsia-profile - Remplace le Job Profile (dimensions absentes → 0)
+    setTalopsiaJobProfile: builder.mutation<TalopsiaJobProfile, { id: string; entries: TalopsiaJobProfileEntry[] }>({
+      query: ({ id, entries }) => ({ url: `/applications/requests/${id}/talopsia-profile`, method: "POST", body: { entries } }),
+      invalidatesTags: (_result, _error, { id }) => [{ type: "ApplicationRequest", id: `talopsia-${id}` }],
+    }),
   }),
 });
 
@@ -180,4 +193,6 @@ export const {
   useDeleteApplicationRequestMutation,
   useAssignApplicationRequestMutation,
   useUpdateRequestQuestionsMutation,
+  useGetTalopsiaJobProfileQuery,
+  useSetTalopsiaJobProfileMutation,
 } = applicationRequestApi;

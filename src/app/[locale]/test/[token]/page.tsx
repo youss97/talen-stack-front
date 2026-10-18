@@ -2,55 +2,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Check, Code2, Terminal, Clock, Trophy, ShieldAlert } from "lucide-react";
-
-interface PublicQuestion {
-  id: string;
-  type: string;
-  category: string;
-  question: string;
-  options: string[];
-}
-
-interface PublicCodingChallenge {
-  id: string;
-  domain: string;
-  title: string;
-  description: string;
-  language: string;
-  starter_code: string;
-}
-
-interface PublicPersonalityItem {
-  id: string;
-  statement: string;
-}
-
-interface PersonalityDimensionScore {
-  average: number;
-  count: number;
-}
-
-interface PublicSession {
-  status: "pending" | "in_progress" | "completed" | "expired";
-  candidateName?: string;
-  timePerQuestionSeconds?: number | null;
-  questions?: PublicQuestion[];
-  codingChallenges?: PublicCodingChallenge[];
-  personalityItems?: PublicPersonalityItem[];
-}
-
-interface SubmitResult {
-  score: number;
-  mcqScore: number | null;
-  codingScore: number | null;
-  personalityDimensionScores?: Record<string, PersonalityDimensionScore> | null;
-}
+import { Check, Terminal, Clock, Trophy, ShieldAlert, ChevronLeft } from "lucide-react";
+import type {
+  PublicTestSession,
+  PublicTestQuestion,
+  PublicLikertItem,
+  PublicForcedChoiceBlock,
+  SubmitTestResult,
+  ForcedChoiceAnswer,
+} from "@/types/testSession";
 
 type Step =
-  | { kind: "mcq"; data: PublicQuestion }
-  | { kind: "coding"; data: PublicCodingChallenge }
-  | { kind: "personality"; data: PublicPersonalityItem };
+  | { kind: "mcq"; data: PublicTestQuestion }
+  | { kind: "likert"; data: PublicLikertItem; index: number }
+  | { kind: "forcedChoice"; data: PublicForcedChoiceBlock; index: number };
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -80,15 +45,15 @@ export default function PublicTestPage() {
   const tRoot = useTranslations("public");
   const { token } = useParams() as { token: string };
 
-  const [session, setSession] = useState<PublicSession | null>(null);
+  const [session, setSession] = useState<PublicTestSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [started, setStarted] = useState(false);
   const [answers, setAnswers] = useState<Record<string, number>>({});
-  const [personalityAnswers, setPersonalityAnswers] = useState<Record<string, number>>({});
-  const [codeByChallenge, setCodeByChallenge] = useState<Record<string, string>>({});
+  const [likertAnswers, setLikertAnswers] = useState<Record<string, number>>({});
+  const [forcedChoiceAnswers, setForcedChoiceAnswers] = useState<Record<string, ForcedChoiceAnswer>>({});
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<SubmitResult | null>(null);
+  const [result, setResult] = useState<SubmitTestResult | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [stepIndex, setStepIndex] = useState(0);
@@ -101,11 +66,8 @@ export default function PublicTestPage() {
     if (!token) return;
     fetch(`${API}/public/test-sessions/${token}`)
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((data: PublicSession) => {
+      .then((data: PublicTestSession) => {
         setSession(data);
-        const initialCode: Record<string, string> = {};
-        (data.codingChallenges || []).forEach((c) => { initialCode[c.id] = c.starter_code; });
-        setCodeByChallenge(initialCode);
         setLoading(false);
       })
       .catch(() => { setError(t("notFound")); setLoading(false); });
@@ -119,40 +81,51 @@ export default function PublicTestPage() {
     [5, t("likert5")],
   ];
 
+  const isTalopsia = session?.type === "talopsia";
+  const likertItems = useMemo(() => session?.likertItems || [], [session]);
+  const forcedChoiceBlocks = useMemo(() => session?.forcedChoiceBlocks || [], [session]);
+
+  // TALOPSIA : 80 affirmations Likert puis 20 blocs à choix forcé, dans l'ordre fixe reçu du serveur.
   const steps: Step[] = useMemo(() => {
     const questions = session?.questions || [];
-    const challenges = session?.codingChallenges || [];
-    const personalityItems = session?.personalityItems || [];
     return [
       ...questions.map((q): Step => ({ kind: "mcq", data: q })),
-      ...challenges.map((c): Step => ({ kind: "coding", data: c })),
-      ...personalityItems.map((p): Step => ({ kind: "personality", data: p })),
+      ...likertItems.map((item, index): Step => ({ kind: "likert", data: item, index })),
+      ...forcedChoiceBlocks.map((block, index): Step => ({ kind: "forcedChoice", data: block, index })),
     ];
-  }, [session]);
+  }, [session, likertItems, forcedChoiceBlocks]);
+
+  const isStepAnswered = (step: Step | undefined): boolean => {
+    if (!step) return false;
+    if (step.kind === "likert") return likertAnswers[step.data.id] != null;
+    if (step.kind === "forcedChoice") return forcedChoiceAnswers[step.data.id] != null;
+    return true; // QCM technique : une question peut être laissée sans réponse
+  };
 
   const handleSubmit = async (cheating = false) => {
     if (!session) return;
     setSubmitting(true);
     setSubmitError(null);
     try {
-      const orderedAnswers = (session.questions || []).map((q) => (answers[q.id] ?? -1));
-      const codeSubmissions = (session.codingChallenges || []).map((c) => ({ challengeId: c.id, code: codeByChallenge[c.id] || "" }));
-      // Réponse neutre (3) par défaut si un item de personnalité n'a pas été répondu, pour rester
-      // cohérent avec le comportement permissif des QCM (skippables) plutôt que de bloquer l'envoi.
-      const orderedPersonalityAnswers = (session.personalityItems || []).map((p) => (personalityAnswers[p.id] ?? 3));
+      const body = isTalopsia
+        ? {
+            // Chaque étape TALOPSIA exige une réponse avant de passer à la suivante : toutes les
+            // réponses sont donc présentes à la soumission.
+            likert_answers: likertItems.map((item) => likertAnswers[item.id]),
+            forced_choice_answers: forcedChoiceBlocks.map((block) => forcedChoiceAnswers[block.id]),
+          }
+        : {
+            answers: (session.questions || []).map((q) => (answers[q.id] ?? -1)),
+            cheatingDetected: cheating || undefined,
+            tabSwitchCount: cheating ? tabSwitchCount + 1 : undefined,
+          };
       const res = await fetch(`${API}/public/test-sessions/${token}/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          answers: orderedAnswers,
-          personality_answers: orderedPersonalityAnswers,
-          codeSubmissions,
-          cheatingDetected: cheating || undefined,
-          tabSwitchCount: cheating ? tabSwitchCount + 1 : undefined,
-        }),
+        body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error();
-      const data: SubmitResult = await res.json();
+      const data: SubmitTestResult = await res.json();
       setResult(data);
     } catch {
       if (!cheating) setSubmitError(t("submitError"));
@@ -160,6 +133,8 @@ export default function PublicTestPage() {
       setSubmitting(false);
     }
   };
+
+  const goToPreviousStep = () => setStepIndex((idx) => Math.max(0, idx - 1));
 
   const goToNextStep = () => {
     setStepIndex((idx) => {
@@ -191,9 +166,11 @@ export default function PublicTestPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft]);
 
-  // Détection de changement d'onglet : interdit pendant le test, considéré comme de la triche.
+  // Détection de changement d'onglet : interdit pendant un test technique, considéré comme de la
+  // triche. Non appliquée à TALOPSIA (questionnaire sans bonne réponse : rien à rechercher ailleurs,
+  // et une clôture forcée perdrait un profil presque complet).
   useEffect(() => {
-    if (!started || result || cheatingTerminated || cheatingHandled) return;
+    if (!started || result || cheatingTerminated || cheatingHandled || isTalopsia) return;
     const onVisibilityChange = () => {
       if (document.hidden) {
         setCheatingHandled(true);
@@ -205,7 +182,7 @@ export default function PublicTestPage() {
     document.addEventListener("visibilitychange", onVisibilityChange);
     return () => document.removeEventListener("visibilitychange", onVisibilityChange);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [started, result, cheatingTerminated, cheatingHandled, answers, codeByChallenge]);
+  }, [started, result, cheatingTerminated, cheatingHandled, answers, isTalopsia]);
 
   if (loading) {
     return (
@@ -246,15 +223,14 @@ export default function PublicTestPage() {
   }
 
   if (result) {
-    // Session de personnalité pure (pas de QCM/code) : pas de score global pertinent, on
-    // affiche un simple écran de remerciement — le recruteur consultera le détail par dimension.
-    if (result.mcqScore == null && result.codingScore == null && result.personalityDimensionScores) {
+    // TALOPSIA : aucun score ni profil n'est montré au candidat — simple écran de remerciement.
+    if (isTalopsia || result.score == null) {
       return (
         <div className="min-h-screen bg-[#0b0e14] flex items-center justify-center px-6">
           <div className="max-w-md w-full rounded-2xl border border-white/10 bg-[#11151d] p-8 text-center">
             <Check size={40} className="mx-auto mb-3 text-emerald-500" />
-            <h1 className="text-xl font-bold text-white mb-2">{t("personalityResultTitle")}</h1>
-            <p className="text-sm text-gray-400 leading-relaxed">{t("personalityResultMessage")}</p>
+            <h1 className="text-xl font-bold text-white mb-2">{t("talopsiaResultTitle")}</h1>
+            <p className="text-sm text-gray-400 leading-relaxed">{t("talopsiaResultMessage")}</p>
           </div>
         </div>
       );
@@ -269,9 +245,6 @@ export default function PublicTestPage() {
           <div className="mt-6 flex justify-center gap-6 text-xs text-gray-400">
             {result.mcqScore != null && (
               <span className="rounded-full bg-white/5 px-3 py-1.5">{t("mcqScoreLabel", { score: result.mcqScore })}</span>
-            )}
-            {result.codingScore != null && (
-              <span className="rounded-full bg-white/5 px-3 py-1.5">{t("codingScoreLabel", { score: result.codingScore })}</span>
             )}
           </div>
         </div>
@@ -289,15 +262,26 @@ export default function PublicTestPage() {
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10">
             <Terminal size={26} className="text-emerald-400" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">{t("welcomeTitle")}</h1>
+          <h1 className="text-2xl font-bold text-white mb-2">{isTalopsia ? t("talopsiaWelcomeTitle") : t("welcomeTitle")}</h1>
           {session.candidateName && <p className="text-sm text-gray-400 mb-4">{t("welcomeGreeting", { name: session.candidateName })}</p>}
-          <p className="text-sm text-gray-400 mb-2 leading-relaxed">{t("instructions", { count: totalItems })}</p>
-          {session.timePerQuestionSeconds ? (
-            <p className="text-sm text-emerald-400 mb-2 leading-relaxed">{t("timerNotice", { seconds: session.timePerQuestionSeconds })}</p>
+          {isTalopsia ? (
+            <>
+              <p className="text-sm text-gray-400 mb-2 leading-relaxed">
+                {t("talopsiaInstructions", { likert: likertItems.length, blocks: forcedChoiceBlocks.length })}
+              </p>
+              <p className="text-sm text-gray-500 mb-8 leading-relaxed">{t("talopsiaNoRightAnswer")}</p>
+            </>
           ) : (
-            <p className="text-sm text-gray-500 mb-2 leading-relaxed">{t("takeYourTime")}</p>
+            <>
+              <p className="text-sm text-gray-400 mb-2 leading-relaxed">{t("instructions", { count: totalItems })}</p>
+              {session.timePerQuestionSeconds ? (
+                <p className="text-sm text-emerald-400 mb-2 leading-relaxed">{t("timerNotice", { seconds: session.timePerQuestionSeconds })}</p>
+              ) : (
+                <p className="text-sm text-gray-500 mb-2 leading-relaxed">{t("takeYourTime")}</p>
+              )}
+              <p className="text-xs text-red-400/80 mb-8 leading-relaxed">{t("tabSwitchNotice")}</p>
+            </>
           )}
-          <p className="text-xs text-red-400/80 mb-8 leading-relaxed">{t("tabSwitchNotice")}</p>
           <button
             type="button"
             onClick={() => setStarted(true)}
@@ -313,6 +297,11 @@ export default function PublicTestPage() {
 
   const currentStep = steps[stepIndex];
   const isLastStep = stepIndex === steps.length - 1;
+  const canAdvance = isStepAnswered(currentStep);
+  const answeredCount = isTalopsia
+    ? Object.keys(likertAnswers).length + Object.keys(forcedChoiceAnswers).length
+    : stepIndex;
+  const progressPercent = steps.length > 0 ? Math.round((answeredCount / steps.length) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-[#0b0e14]">
@@ -320,14 +309,21 @@ export default function PublicTestPage() {
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2 text-white">
             <Terminal size={18} className="text-emerald-400" />
-            <h1 className="text-sm font-semibold">{t("title")}</h1>
+            <h1 className="text-sm font-semibold">{isTalopsia ? t("talopsiaTitle") : t("title")}</h1>
           </div>
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-1">
-              {steps.map((_, i) => (
-                <span key={i} className={`h-1.5 w-4 rounded-full ${i < stepIndex ? "bg-emerald-500" : i === stepIndex ? "bg-emerald-500/50" : "bg-white/10"}`} />
-              ))}
-            </div>
+            {isTalopsia ? (
+              // 100 interactions : une barre continue plutôt qu'un segment par question
+              <div className="hidden sm:block w-40 h-1.5 rounded-full bg-white/10 overflow-hidden" aria-hidden>
+                <div className="h-full bg-emerald-500 transition-all" style={{ width: `${progressPercent}%` }} />
+              </div>
+            ) : (
+              <div className="hidden sm:flex items-center gap-1">
+                {steps.map((_, i) => (
+                  <span key={i} className={`h-1.5 w-4 rounded-full ${i < stepIndex ? "bg-emerald-500" : i === stepIndex ? "bg-emerald-500/50" : "bg-white/10"}`} />
+                ))}
+              </div>
+            )}
             <span className="text-xs text-gray-400">{t("questionProgress", { current: stepIndex + 1, total: steps.length })}</span>
             {timeLeft !== null && (
               <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${timeLeft <= 10 ? "bg-red-500/15 text-red-400" : "bg-white/5 text-gray-300"}`}>
@@ -386,24 +382,23 @@ export default function PublicTestPage() {
           </div>
         )}
 
-        {currentStep.kind === "personality" && (
+        {currentStep.kind === "likert" && (
           <div className="rounded-2xl border border-white/10 bg-[#11151d] p-6">
             <div className="flex items-center gap-2 mb-3">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-semibold text-emerald-400">
-                {stepIndex + 1}
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                {t("likertStepLabel", { n: currentStep.index + 1, total: likertItems.length })}
               </span>
-              <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t("personalityStepLabel", { n: stepIndex + 1 })}</span>
             </div>
             <p className="text-base font-medium text-white mb-2">{currentStep.data.statement}</p>
-            <p className="text-xs text-gray-500 mb-5">{t("personalityInstruction")}</p>
+            <p className="text-xs text-gray-500 mb-5">{t("likertInstruction")}</p>
             <div className="grid grid-cols-5 gap-2">
               {LIKERT_LABELS.map(([value, label]) => {
-                const isSelected = personalityAnswers[currentStep.data.id] === value;
+                const isSelected = likertAnswers[currentStep.data.id] === value;
                 return (
                   <button
                     key={value}
                     type="button"
-                    onClick={() => setPersonalityAnswers((a) => ({ ...a, [currentStep.data.id]: value }))}
+                    onClick={() => setLikertAnswers((a) => ({ ...a, [currentStep.data.id]: value }))}
                     className={`flex flex-col items-center gap-2 rounded-xl border px-2 py-3 text-center transition-colors ${
                       isSelected
                         ? "border-emerald-500/50 bg-emerald-500/10 text-white"
@@ -425,41 +420,63 @@ export default function PublicTestPage() {
           </div>
         )}
 
-        {currentStep.kind === "coding" && (
-          <div className="rounded-2xl border border-white/10 bg-[#11151d] overflow-hidden">
-            <div className="p-5 pb-4 border-b border-white/5">
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1 flex items-center gap-1.5">
-                <Code2 size={13} className="text-emerald-400" /> {t("codingChallengeLabel", { n: stepIndex + 1 })} · {currentStep.data.domain}
-              </p>
-              <p className="text-sm font-semibold text-white mb-1">{currentStep.data.title}</p>
-              <p className="text-sm text-gray-400 whitespace-pre-wrap break-words leading-relaxed">{currentStep.data.description}</p>
+        {currentStep.kind === "forcedChoice" && (
+          <div className="rounded-2xl border border-white/10 bg-[#11151d] p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                {t("forcedChoiceStepLabel", { n: currentStep.index + 1, total: forcedChoiceBlocks.length })}
+              </span>
             </div>
-            <div className="bg-[#0d1117]">
-              <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5">
-                <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
-                <span className="h-2.5 w-2.5 rounded-full bg-amber-500/70" />
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/70" />
-                <span className="ms-2 text-xs text-gray-500 font-mono">solution.{currentStep.data.language === "python" ? "py" : "js"}</span>
-              </div>
-              <textarea
-                value={codeByChallenge[currentStep.data.id] ?? currentStep.data.starter_code}
-                onChange={(e) => setCodeByChallenge((prev) => ({ ...prev, [currentStep.data.id]: e.target.value }))}
-                spellCheck={false}
-                rows={16}
-                className="w-full bg-transparent text-gray-100 font-mono text-sm p-4 focus:outline-none resize-y leading-relaxed"
-              />
+            <p className="text-base font-medium text-white mb-5">{t("forcedChoiceInstruction")}</p>
+            <div className="space-y-3">
+              {(["A", "B"] as const).map((option) => {
+                const isSelected = forcedChoiceAnswers[currentStep.data.id] === option;
+                const text = option === "A" ? currentStep.data.a : currentStep.data.b;
+                return (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => setForcedChoiceAnswers((a) => ({ ...a, [currentStep.data.id]: option }))}
+                    className={`w-full flex items-start gap-3 rounded-xl border px-4 py-4 text-start text-sm transition-colors ${
+                      isSelected
+                        ? "border-emerald-500/50 bg-emerald-500/10 text-white"
+                        : "border-white/10 text-gray-300 hover:border-white/25 hover:bg-white/[0.03]"
+                    }`}
+                  >
+                    <span
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold ${
+                        isSelected ? "border-emerald-400 bg-emerald-400 text-[#0b0e14]" : "border-gray-600 text-gray-400"
+                      }`}
+                    >
+                      {option}
+                    </span>
+                    <span className="leading-relaxed">{text}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
 
         <div className="flex items-center justify-between border-t border-white/10 pt-6 mt-8">
-          <span className="inline-flex items-center gap-1.5 text-xs text-gray-500">
-            <Clock size={13} /> {timeLeft !== null ? t("timeLeftLabel") + `: ${timeLeft}s` : t("takeYourTime")}
-          </span>
+          {isTalopsia ? (
+            <button
+              type="button"
+              onClick={goToPreviousStep}
+              disabled={submitting || stepIndex === 0}
+              className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft size={16} /> {t("previousButton")}
+            </button>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 text-xs text-gray-500">
+              <Clock size={13} /> {timeLeft !== null ? t("timeLeftLabel") + `: ${timeLeft}s` : t("takeYourTime")}
+            </span>
+          )}
           <button
             type="button"
             onClick={goToNextStep}
-            disabled={submitting}
+            disabled={submitting || !canAdvance}
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-8 py-3 text-sm font-semibold text-[#0b0e14] hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-500/20 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
           >
             {submitting ? t("submitting") : isLastStep ? t("finishButton") : t("nextButton")}

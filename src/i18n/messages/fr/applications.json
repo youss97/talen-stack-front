@@ -117,6 +117,7 @@
     "downloadAnonymizedCvError": "Erreur lors du téléchargement du CV anonymisé",
     "downloadError": "Erreur lors du téléchargement",
     "name": "Nom",
+    "anonymousCode": "Code anonyme (côté client)",
     "email": "Email",
     "phone": "Téléphone",
     "requestSection": "Demande de recrutement",

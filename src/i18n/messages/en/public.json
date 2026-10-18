@@ -1,5 +1,5 @@
 {
-  "poweredBy": "Powered by TalentStack",
+  "poweredBy": "Powered by TALOPSIA",
   "jobsMeta": {
     "title": "Job offer",
     "description": "View this job offer and apply."
@@ -230,7 +230,7 @@
     "genericError": "An error occurred",
     "welcomeTitle": "Welcome to your assessment test",
     "welcomeGreeting": "Hello {name},",
-    "instructions": "This test contains {count} item(s) (questions and/or coding exercises). Take your time and answer as best you can.",
+    "instructions": "This test contains {count} question(s). Take your time and answer as best you can.",
     "startButton": "Start the test",
     "title": "Assessment test",
     "progress": "{answered}/{total} answered",
@@ -249,19 +249,23 @@
     "resultTitle": "Test completed!",
     "resultMessage": "Thank you for taking this test. Here is your score:",
     "mcqScoreLabel": "MCQ score: {score}%",
-    "codingScoreLabel": "Coding score: {score}%",
-    "codingSectionTitle": "Coding exercises",
-    "codingChallengeLabel": "Exercise {n}",
     "alreadyCompletedTitle": "Test already submitted",
     "alreadyCompletedMessage": "You have already answered this test. Thank you!",
-    "personalityStepLabel": "Statement {n}",
-    "personalityInstruction": "Indicate how much you agree with this statement. There is no right or wrong answer: answer spontaneously.",
     "likert1": "Strongly disagree",
     "likert2": "Somewhat disagree",
-    "likert3": "Neutral",
+    "likert3": "Neither agree nor disagree",
     "likert4": "Somewhat agree",
     "likert5": "Strongly agree",
-    "personalityResultTitle": "Test completed!",
-    "personalityResultMessage": "Thank you for answering all the statements. Your results will be reviewed by the recruiter."
+    "talopsiaTitle": "TALOPSIA Profile questionnaire",
+    "talopsiaWelcomeTitle": "Welcome to your TALOPSIA Profile questionnaire",
+    "talopsiaInstructions": "This questionnaire contains {likert} statements, followed by {blocks} choices between two options. Allow about 15 to 20 minutes.",
+    "talopsiaNoRightAnswer": "There are no right or wrong answers: answer spontaneously, thinking of how you usually act at work.",
+    "likertStepLabel": "Statement {n} / {total}",
+    "likertInstruction": "Indicate how much you agree with this statement.",
+    "forcedChoiceStepLabel": "Choice {n} / {total}",
+    "forcedChoiceInstruction": "Which of these two statements describes you best?",
+    "previousButton": "Previous",
+    "talopsiaResultTitle": "Thank you!",
+    "talopsiaResultMessage": "Your answers have been recorded. They will be reviewed by the recruiter."
   }
 }
