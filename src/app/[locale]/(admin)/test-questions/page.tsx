@@ -12,7 +12,6 @@ import { ToastContainer, ToastItem } from "@/components/ui/toast/Toast";
 import TestQuestionFormModal from "@/components/testQuestions/TestQuestionFormModal";
 import {
   useGetTestQuestionsQuery,
-  useGetTestQuestionCategoriesQuery,
   useCreateTestQuestionMutation,
   useUpdateTestQuestionMutation,
   useDeleteTestQuestionMutation,
@@ -34,7 +33,6 @@ export default function TestQuestionsPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useLimitPreference("test-questions", 20);
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<TestQuestion | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -49,14 +47,10 @@ export default function TestQuestionsPage() {
     page,
     limit,
     search: search || undefined,
-    category: categoryFilter || undefined,
   });
-  const { data: categories = [] } = useGetTestQuestionCategoriesQuery();
   const [createQuestion, { isLoading: isCreating }] = useCreateTestQuestionMutation();
   const [updateQuestion, { isLoading: isUpdating }] = useUpdateTestQuestionMutation();
   const [deleteQuestion, { isLoading: isDeleting }] = useDeleteTestQuestionMutation();
-
-  const availableCategories = Array.from(new Set(categories.map((c) => c.category))).sort();
 
   const handleSubmit = async (formData: CreateTestQuestionRequest) => {
     try {
@@ -141,16 +135,6 @@ export default function TestQuestionsPage() {
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           className="h-11 flex-1 min-w-[220px] rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
         />
-        <select
-          value={categoryFilter}
-          onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
-          className="h-11 rounded-lg border border-gray-300 px-4 py-2.5 text-sm dark:bg-gray-900 dark:text-white/90 dark:border-gray-700"
-        >
-          <option value="">{t("page.allCategories")}</option>
-          {availableCategories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
       </div>
 
       <DataTable<TestQuestion>

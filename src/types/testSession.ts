@@ -123,6 +123,14 @@ export interface PublicTestSession {
   questions?: PublicTestQuestion[];
   likertItems?: PublicLikertItem[];
   forcedChoiceBlocks?: PublicForcedChoiceBlock[];
+  /** Reprise de progression : réponses déjà sauvegardées (null si aucune ou si complété). */
+  savedLikertAnswers?: (number | null)[] | null;
+  savedForcedChoiceAnswers?: (ForcedChoiceAnswer | null)[] | null;
+}
+
+export interface SaveTalopsiaProgressRequest {
+  likert_answers?: (number | null)[];
+  forced_choice_answers?: (ForcedChoiceAnswer | null)[];
 }
 
 export interface SubmitTestRequest {

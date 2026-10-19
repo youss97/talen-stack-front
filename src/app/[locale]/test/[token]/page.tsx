@@ -17,7 +17,7 @@ type Step =
   | { kind: "likert"; data: PublicLikertItem; index: number }
   | { kind: "forcedChoice"; data: PublicForcedChoiceBlock; index: number };
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 function ScoreRing({ score }: { score: number }) {
   const circumference = 2 * Math.PI * 54;
@@ -65,12 +65,53 @@ export default function PublicTestPage() {
   useEffect(() => {
     if (!token) return;
     fetch(`${API}/public/test-sessions/${token}`)
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((r) => {
+        if (!r.ok) {
+          const err = new Error(`HTTP ${r.status}`);
+          (err as Error & { status?: number }).status = r.status;
+          throw err;
+        }
+        return r.json();
+      })
       .then((data: PublicTestSession) => {
         setSession(data);
+        // Reprise de progression : réinjecte les réponses déjà sauvegardées et reprend à la
+        // première question non répondue, pour ne pas faire tout recommencer le candidat.
+        const savedLikert = data.savedLikertAnswers;
+        const savedForcedChoice = data.savedForcedChoiceAnswers;
+        let resumeIndex = 0;
+        if (savedLikert?.some((v) => v != null) || savedForcedChoice?.some((v) => v != null)) {
+          const likertMap: Record<string, number> = {};
+          (data.likertItems || []).forEach((item, i) => {
+            const v = savedLikert?.[i];
+            if (v != null) likertMap[item.id] = v;
+          });
+          const fcMap: Record<string, ForcedChoiceAnswer> = {};
+          (data.forcedChoiceBlocks || []).forEach((block, i) => {
+            const v = savedForcedChoice?.[i];
+            if (v != null) fcMap[block.id] = v;
+          });
+          setLikertAnswers(likertMap);
+          setForcedChoiceAnswers(fcMap);
+          const resumeSteps: Step[] = [
+            ...(data.likertItems || []).map((item, index): Step => ({ kind: "likert", data: item, index })),
+            ...(data.forcedChoiceBlocks || []).map((block, index): Step => ({ kind: "forcedChoice", data: block, index })),
+          ];
+          const firstUnanswered = resumeSteps.findIndex((step) =>
+            step.kind === "likert" ? likertMap[step.data.id] == null : fcMap[step.data.id] == null,
+          );
+          resumeIndex = firstUnanswered >= 0 ? firstUnanswered : resumeSteps.length - 1;
+        }
+        setStepIndex(resumeIndex);
         setLoading(false);
       })
-      .catch(() => { setError(t("notFound")); setLoading(false); });
+      .catch((err: Error & { status?: number }) => {
+        // Distinguer un vrai 404 (token inconnu) d'un autre échec (réseau, CORS, serveur indisponible)
+        // — les deux affichaient auparavant le même message, rendant le diagnostic impossible.
+        console.error("Public test session fetch failed:", err.status ?? "network error", err.message);
+        setError(err.status === 404 ? t("notFound") : t("genericError"));
+        setLoading(false);
+      });
   }, [token, t]);
 
   const LIKERT_LABELS: [number, string][] = [
@@ -136,7 +177,23 @@ export default function PublicTestPage() {
 
   const goToPreviousStep = () => setStepIndex((idx) => Math.max(0, idx - 1));
 
+  // Sauvegarde best-effort de la progression TALOPSIA — erreurs ignorées volontairement : ça ne
+  // doit jamais bloquer le candidat, seulement limiter la perte de réponses si le navigateur se ferme.
+  const saveProgress = (nextLikertAnswers: Record<string, number>, nextForcedChoiceAnswers: Record<string, ForcedChoiceAnswer>) => {
+    if (!isTalopsia) return;
+    const body = {
+      likert_answers: likertItems.map((item) => nextLikertAnswers[item.id] ?? null),
+      forced_choice_answers: forcedChoiceBlocks.map((block) => nextForcedChoiceAnswers[block.id] ?? null),
+    };
+    fetch(`${API}/public/test-sessions/${token}/progress`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).catch(() => {});
+  };
+
   const goToNextStep = () => {
+    saveProgress(likertAnswers, forcedChoiceAnswers);
     setStepIndex((idx) => {
       if (idx + 1 >= steps.length) {
         handleSubmit();
