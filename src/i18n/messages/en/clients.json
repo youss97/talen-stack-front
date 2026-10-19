@@ -112,6 +112,15 @@
       "internalNoteEmpty": "No internal note",
       "sourcePlaceholder": "E.g.: Referral, LinkedIn, Trade show...",
       "sourceEmpty": "Not specified",
+      "sources": {
+        "placeholder": "— Select —",
+        "website": "Via website",
+        "referral": "Via referral",
+        "prospecting": "Via prospecting",
+        "publication": "Via publication",
+        "ads": "Via ads",
+        "other": "Other"
+      },
       "logo": "Client logo",
       "logoHelper": "Accepted formats: JPEG, PNG, GIF, WebP (max 5MB)",
       "name": "Company name",

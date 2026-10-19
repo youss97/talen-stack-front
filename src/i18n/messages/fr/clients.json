@@ -112,6 +112,15 @@
       "internalNoteEmpty": "Aucune note interne",
       "sourcePlaceholder": "Ex : Recommandation, LinkedIn, Salon professionnel...",
       "sourceEmpty": "Non renseignée",
+      "sources": {
+        "placeholder": "— Sélectionner —",
+        "website": "Via le site",
+        "referral": "Via recommandation",
+        "prospecting": "Via prospection",
+        "publication": "Via publication",
+        "ads": "Via publicité (ads)",
+        "other": "Autre"
+      },
       "logo": "Logo du client",
       "logoHelper": "Formats acceptés: JPEG, PNG, GIF, WebP (max 5MB)",
       "name": "Raison sociale",

@@ -11,18 +11,13 @@ import { useTranslations } from "next-intl";
 
 const ThreeParticles = dynamic(() => import("@/components/common/ThreeParticles"), { ssr: false });
 
-const FEATURE_ICONS = ["🚀", "🤖", "🫥", "📊"];
-
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const t = useTranslations("auth.marketing");
-  const features = (t.raw("features") as Array<{ title: string; desc: string }>).map((f, i) => ({
-    ...f,
-    icon: FEATURE_ICONS[i],
-  }));
+  const features = t.raw("features") as Array<{ title: string; desc: string }>;
   const stats = t.raw("stats") as Array<{ value: string; label: string }>;
 
   return (
@@ -52,14 +47,14 @@ export default function AuthLayout({
               <div className="relative z-10 flex flex-col items-center px-12 max-w-md w-full">
                 {/* Logo TALOPSIA */}
                 <motion.img
-                  src="/images/logo/auth-logo.svg"
+                  src="/images/logo/auth-logo-real.svg"
                   alt="TALOPSIA"
-                  width={210}
-                  height={72}
+                  width={240}
+                  height={111}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, ease: "easeOut" }}
-                  className="mb-8 h-auto w-[210px]"
+                  className="mb-8 h-auto w-[240px]"
                 />
 
                 {/* Tagline */}
@@ -88,13 +83,10 @@ export default function AuthLayout({
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.5, delay: 0.35 + i * 0.1, ease: "easeOut" }}
-                      className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-xl px-4 py-3 backdrop-blur-sm"
+                      className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 backdrop-blur-sm"
                     >
-                      <span className="text-2xl flex-shrink-0">{f.icon}</span>
-                      <div>
-                        <p className="text-white font-semibold text-sm">{f.title}</p>
-                        <p className="text-brand-300/80 text-xs mt-0.5">{f.desc}</p>
-                      </div>
+                      <p className="text-white font-semibold text-sm">{f.title}</p>
+                      <p className="text-brand-300/80 text-xs mt-0.5">{f.desc}</p>
                     </motion.div>
                   ))}
                 </div>

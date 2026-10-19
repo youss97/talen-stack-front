@@ -25,6 +25,8 @@ import { Lock } from "lucide-react";
 import { getImageUrl } from "@/utils/imageHelper";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
+const SOURCE_CODES = ["website", "referral", "prospecting", "publication", "ads", "other"];
+
 interface ClientFormModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -444,24 +446,24 @@ export default function ClientFormModal({
               {t("sections.source")}
             </h3>
             {readOnly ? (
-              <p className="text-sm text-gray-900 dark:text-white">{client?.source || t("fields.sourceEmpty")}</p>
+              <p className="text-sm text-gray-900 dark:text-white">
+                {client?.source
+                  ? (SOURCE_CODES.includes(client.source) ? t(`fields.sources.${client.source}`) : client.source)
+                  : t("fields.sourceEmpty")}
+              </p>
             ) : (
-              <>
-                <input
-                  {...register("source")}
-                  list="client-source-suggestions"
-                  placeholder={t("fields.sourcePlaceholder")}
-                  className="w-full h-11 rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
-                />
-                <datalist id="client-source-suggestions">
-                  <option value="Recommandation" />
-                  <option value="LinkedIn" />
-                  <option value="Salon professionnel" />
-                  <option value="Démarchage direct" />
-                  <option value="Site web" />
-                  <option value="Ancien client" />
-                </datalist>
-              </>
+              <select
+                {...register("source")}
+                className="h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden focus:ring-3 focus:border-brand-300 focus:ring-brand-500/10 dark:bg-gray-900 dark:text-white/90 dark:border-gray-700 dark:focus:border-brand-800"
+              >
+                <option value="">{t("fields.sources.placeholder")}</option>
+                <option value="website">{t("fields.sources.website")}</option>
+                <option value="referral">{t("fields.sources.referral")}</option>
+                <option value="prospecting">{t("fields.sources.prospecting")}</option>
+                <option value="publication">{t("fields.sources.publication")}</option>
+                <option value="ads">{t("fields.sources.ads")}</option>
+                <option value="other">{t("fields.sources.other")}</option>
+              </select>
             )}
           </section>
 
